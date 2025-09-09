@@ -1,0 +1,49 @@
+@page
+@model SysJaky_N.Pages.Courses.CalendarModel
+
+<h1>Kalendář kurzů</h1>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Po</th>
+            <th>Út</th>
+            <th>St</th>
+            <th>Čt</th>
+            <th>Pá</th>
+            <th>So</th>
+            <th>Ne</th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var week in Model.Weeks)
+{
+    <tr>
+    @foreach (var day in week)
+    {
+        if (day == null)
+        {
+            <td></td>
+        }
+        else
+        {
+            var date = day.Value;
+            <td>
+                <div>@date.Day</div>
+                <ul class="list-unstyled">
+                @if (Model.CoursesByDate.ContainsKey(date))
+                {
+                    foreach (var course in Model.CoursesByDate[date])
+                    {
+                        <li><a asp-page="/Courses/Details" asp-route-id="@course.Id">@course.Title</a></li>
+                    }
+                }
+                </ul>
+            </td>
+        }
+    }
+    </tr>
+}
+    </tbody>
+</table>
+

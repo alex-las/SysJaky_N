@@ -6,6 +6,7 @@
 <p>@Model.Course.Description</p>
 <p>Price: @Model.Course.Price.ToString("C")</p>
 <p>Date: @Model.Course.Date.ToShortDateString()</p>
+<p><a href="/Courses/ICS/@Model.Course.Id">Přidat do kalendáře</a></p>
 
 <form method="post">
     <button type="submit" class="btn btn-primary">Add to cart</button>
