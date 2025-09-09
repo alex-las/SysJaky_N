@@ -6,6 +6,7 @@ using SysJaky_N.Models;
 using SysJaky_N.Services;
 using DinkToPdf;
 using DinkToPdf.Contracts;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,6 +31,8 @@ builder.Services.AddRazorPages();
 builder.Services.Configure<PaymentGatewayOptions>(builder.Configuration.GetSection("PaymentGateway"));
 builder.Services.AddScoped<PaymentService>();
 builder.Services.AddSingleton<IConverter>(new SynchronizedConverter(new PdfTools()));
+builder.Services.Configure<SmtpOptions>(builder.Configuration.GetSection("Smtp"));
+builder.Services.AddScoped<IEmailSender, EmailSender>();
 
 var app = builder.Build();
 
@@ -64,6 +67,35 @@ app.MapPost("/payment/webhook", async (HttpRequest request, PaymentService payme
 {
     await paymentService.HandleWebhookAsync(request);
     return Results.Ok();
+});
+
+app.MapGet("/Courses/ICS/{id:int}", async (int id, ApplicationDbContext context) =>
+{
+    var course = await context.Courses.FindAsync(id);
+    if (course == null)
+    {
+        return Results.NotFound();
+    }
+
+    var builder = new StringBuilder();
+    builder.AppendLine("BEGIN:VCALENDAR");
+    builder.AppendLine("VERSION:2.0");
+    builder.AppendLine("PRODID:-//SysJaky_N//EN");
+    builder.AppendLine("BEGIN:VEVENT");
+    builder.AppendLine($"UID:{course.Id}@sysjaky_n");
+    builder.AppendLine($"DTSTAMP:{DateTime.UtcNow:yyyyMMddTHHmmssZ}");
+    builder.AppendLine($"DTSTART;VALUE=DATE:{course.Date:yyyyMMdd}");
+    builder.AppendLine($"DTEND;VALUE=DATE:{course.Date.AddDays(1):yyyyMMdd}");
+    builder.AppendLine($"SUMMARY:{course.Title}");
+    if (!string.IsNullOrWhiteSpace(course.Description))
+    {
+        builder.AppendLine($"DESCRIPTION:{course.Description}");
+    }
+    builder.AppendLine("END:VEVENT");
+    builder.AppendLine("END:VCALENDAR");
+
+    var bytes = Encoding.UTF8.GetBytes(builder.ToString());
+    return Results.File(bytes, "text/calendar", $"{course.Title}.ics");
 });
 
 app.Run();
