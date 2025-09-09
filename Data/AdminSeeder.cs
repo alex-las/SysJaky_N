@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SysJaky_N.Models;
@@ -17,7 +17,8 @@ public class AdminSeeder
     public async Task SeedAsync()
     {
         using var scope = _serviceProvider.CreateScope();
-        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+        var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
         var configuration = scope.ServiceProvider.GetRequiredService<IConfiguration>();
 
         var email = configuration["SeedAdmin:Email"];
@@ -29,20 +30,27 @@ public class AdminSeeder
             return;
         }
 
-        if (await context.ApplicationUsers.AnyAsync(u => u.Email == email))
+        if (await userManager.FindByEmailAsync(email) != null)
         {
             return;
         }
 
+        if (!await roleManager.RoleExistsAsync(role))
+        {
+            await roleManager.CreateAsync(new IdentityRole(role));
+        }
+
         var user = new ApplicationUser
         {
-            Email = email,
-            Password = password,
-            Role = role
+            UserName = email,
+            Email = email
         };
 
-        context.ApplicationUsers.Add(user);
-        await context.SaveChangesAsync();
+        var result = await userManager.CreateAsync(user, password);
+        if (result.Succeeded)
+        {
+            await userManager.AddToRoleAsync(user, role);
+        }
     }
 }
 
