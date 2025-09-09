@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SysJaky_N.Data;
 using SysJaky_N.Models;
@@ -20,6 +21,8 @@ public class EditModel : PageModel
     [BindProperty]
     public Course Course { get; set; } = new();
 
+    public SelectList CourseGroups { get; set; } = default!;
+
     public async Task<IActionResult> OnGetAsync(int id)
     {
         Course? course = await _context.Courses.FindAsync(id);
@@ -28,6 +31,7 @@ public class EditModel : PageModel
             return NotFound();
         }
         Course = course;
+        CourseGroups = new SelectList(_context.CourseGroups, "Id", "Name");
         return Page();
     }
 
@@ -35,6 +39,7 @@ public class EditModel : PageModel
     {
         if (!ModelState.IsValid)
         {
+            CourseGroups = new SelectList(_context.CourseGroups, "Id", "Name");
             return Page();
         }
 

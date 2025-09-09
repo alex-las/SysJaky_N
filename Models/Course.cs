@@ -18,4 +18,8 @@ public class Course
 
     [DataType(DataType.Date)]
     public DateTime Date { get; set; }
+
+    public int? CourseGroupId { get; set; }
+
+    public CourseGroup? CourseGroup { get; set; }
 }
