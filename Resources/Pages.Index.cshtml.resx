@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="HeroTitle" xml:space="preserve">
+    <value>Školení ISO, ekologie, metrologie</value>
+  </data>
+  <data name="HeroDescription" xml:space="preserve">
+    <value>Profesionální kurzy a školení pro vaši firmu.</value>
+  </data>
+  <data name="HowItWorksTitle" xml:space="preserve">
+    <value>Jak to funguje</value>
+  </data>
+  <data name="StepSelectTitle" xml:space="preserve">
+    <value>Vyberte kurz</value>
+  </data>
+  <data name="StepSelectDescription" xml:space="preserve">
+    <value>Prohlédněte si naši nabídku a zvolte si ten správný kurz.</value>
+  </data>
+  <data name="StepRegisterTitle" xml:space="preserve">
+    <value>Přihlaste se</value>
+  </data>
+  <data name="StepRegisterDescription" xml:space="preserve">
+    <value>Jednoduše se zaregistrujte a vytvořte si účet.</value>
+  </data>
+  <data name="StepPayTitle" xml:space="preserve">
+    <value>Zaplaťte</value>
+  </data>
+  <data name="StepPayDescription" xml:space="preserve">
+    <value>Bezpečná online platba zajistí vaše místo na kurzu.</value>
+  </data>
+</root>

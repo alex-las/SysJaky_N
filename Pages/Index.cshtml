@@ -1,8 +1,35 @@
-﻿@page
+@page
 @model IndexModel
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
 @{
     ViewData["Title"] = "Home page";
 }
+
+<section class="text-center py-5 bg-light">
+    <h1 class="display-4">@Localizer["HeroTitle"]</h1>
+    <p class="lead">@Localizer["HeroDescription"]</p>
+</section>
+
+<section class="py-5">
+    <h2 class="text-center mb-4">@Localizer["HowItWorksTitle"]</h2>
+    <div class="row text-center">
+        <div class="col-md-4">
+            <i class="bi bi-journal display-4 mb-3"></i>
+            <h3>@Localizer["StepSelectTitle"]</h3>
+            <p>@Localizer["StepSelectDescription"]</p>
+        </div>
+        <div class="col-md-4">
+            <i class="bi bi-person-check display-4 mb-3"></i>
+            <h3>@Localizer["StepRegisterTitle"]</h3>
+            <p>@Localizer["StepRegisterDescription"]</p>
+        </div>
+        <div class="col-md-4">
+            <i class="bi bi-credit-card display-4 mb-3"></i>
+            <h3>@Localizer["StepPayTitle"]</h3>
+            <p>@Localizer["StepPayDescription"]</p>
+        </div>
+    </div>
+</section>
 
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>

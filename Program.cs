@@ -7,6 +7,8 @@ using SysJaky_N.Services;
 using DinkToPdf;
 using DinkToPdf.Contracts;
 using System.Text;
+using Microsoft.AspNetCore.Localization;
+using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,7 +29,8 @@ builder.Services.ConfigureApplicationCookie(options =>
 
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession();
-builder.Services.AddRazorPages();
+builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+builder.Services.AddRazorPages().AddViewLocalization();
 builder.Services.Configure<PaymentGatewayOptions>(builder.Configuration.GetSection("PaymentGateway"));
 builder.Services.AddScoped<PaymentService>();
 builder.Services.AddSingleton<IConverter>(new SynchronizedConverter(new PdfTools()));
@@ -58,6 +61,12 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+var localizationOptions = new RequestLocalizationOptions()
+    .SetDefaultCulture("cs")
+    .AddSupportedCultures("cs", "en")
+    .AddSupportedUICultures("cs", "en");
+app.UseRequestLocalization(localizationOptions);
 
 app.UseSession();
 app.UseAuthentication();
