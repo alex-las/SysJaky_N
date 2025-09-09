@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using SysJaky_N.Data;
 using SysJaky_N.Models;
+using SysJaky_N.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +25,8 @@ builder.Services.ConfigureApplicationCookie(options =>
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession();
 builder.Services.AddRazorPages();
+builder.Services.Configure<PaymentGatewayOptions>(builder.Configuration.GetSection("PaymentGateway"));
+builder.Services.AddScoped<PaymentService>();
 
 var app = builder.Build();
 
@@ -54,5 +57,10 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapRazorPages();
+app.MapPost("/payment/webhook", async (HttpRequest request, PaymentService paymentService) =>
+{
+    await paymentService.HandleWebhookAsync(request);
+    return Results.Ok();
+});
 
 app.Run();
