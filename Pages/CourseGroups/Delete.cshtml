@@ -1,0 +1,18 @@
+@page "{id:int}"
+@model SysJaky_N.Pages.CourseGroups.DeleteModel
+@{
+    ViewData["Title"] = "Delete Group";
+}
+
+<h1>Delete Group</h1>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>@Model.CourseGroup.Name</h4>
+</div>
+
+<form method="post">
+    <input type="hidden" asp-for="CourseGroup.Id" />
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a asp-page="Index" class="btn btn-secondary">Back to List</a>
+</form>

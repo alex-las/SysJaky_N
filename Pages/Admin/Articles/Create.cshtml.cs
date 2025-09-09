@@ -1,41 +1,42 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using SysJaky_N.Data;
 using SysJaky_N.Models;
 
-namespace SysJaky_N.Pages.Courses;
+namespace SysJaky_N.Pages.Admin.Articles;
 
 [Authorize(Roles = "Admin")]
 public class CreateModel : PageModel
 {
     private readonly ApplicationDbContext _context;
+    private readonly UserManager<ApplicationUser> _userManager;
 
-    public CreateModel(ApplicationDbContext context)
+    public CreateModel(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
     {
         _context = context;
+        _userManager = userManager;
     }
 
     [BindProperty]
-    public Course Course { get; set; } = new();
-
-    public SelectList CourseGroups { get; set; } = default!;
+    public Article Article { get; set; } = new();
 
     public void OnGet()
     {
-        CourseGroups = new SelectList(_context.CourseGroups, "Id", "Name");
     }
 
     public async Task<IActionResult> OnPostAsync()
     {
         if (!ModelState.IsValid)
         {
-            CourseGroups = new SelectList(_context.CourseGroups, "Id", "Name");
             return Page();
         }
 
-        _context.Courses.Add(Course);
+        Article.AuthorId = _userManager.GetUserId(User);
+        Article.CreatedAt = DateTime.UtcNow;
+
+        _context.Articles.Add(Article);
         await _context.SaveChangesAsync();
         return RedirectToPage("Index");
     }

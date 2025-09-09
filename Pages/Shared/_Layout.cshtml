@@ -29,6 +29,15 @@
                             <a class="nav-link text-dark" asp-area="" asp-page="/Courses/Index">Courses</a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-page="/Articles/Index">Articles</a>
+                        </li>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-page="/Admin/Articles/Index">Manage Articles</a>
+                            </li>
+                        }
+                        <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-page="/Cart/Index">Cart</a>
                         </li>
                         <li class="nav-item">

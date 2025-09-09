@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SysJaky_N.Data;
 using SysJaky_N.Extensions;
@@ -21,12 +22,22 @@ public class IndexModel : PageModel
     [BindProperty(SupportsGet = true)]
     public int PageNumber { get; set; } = 1;
 
+    [BindProperty(SupportsGet = true)]
+    public int? CourseGroupId { get; set; }
+
+    public SelectList CourseGroups { get; set; } = default!;
+
     public int TotalPages { get; set; }
 
     public async Task OnGetAsync()
     {
         const int pageSize = 10;
-        var query = _context.Courses.OrderBy(c => c.Date);
+        CourseGroups = new SelectList(_context.CourseGroups, "Id", "Name");
+        var query = _context.Courses.Include(c => c.CourseGroup).OrderBy(c => c.Date);
+        if (CourseGroupId.HasValue)
+        {
+            query = query.Where(c => c.CourseGroupId == CourseGroupId);
+        }
         var count = await query.CountAsync();
         TotalPages = (int)Math.Ceiling(count / (double)pageSize);
         Courses = await query.Skip((PageNumber - 1) * pageSize).Take(pageSize).ToListAsync();

@@ -1,0 +1,16 @@
+@page
+@model SysJaky_N.Pages.Articles.IndexModel
+@{
+    ViewData["Title"] = "Articles";
+}
+
+<h1>Articles</h1>
+
+<ul>
+@foreach (var item in Model.Articles)
+{
+    <li>
+        <a asp-page="Details" asp-route-id="@item.Id">@item.Title</a> (@item.CreatedAt.ToString("d"))
+    </li>
+}
+</ul>

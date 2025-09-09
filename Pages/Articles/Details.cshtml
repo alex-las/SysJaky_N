@@ -1,0 +1,11 @@
+@page "{id:int}"
+@model SysJaky_N.Pages.Articles.DetailsModel
+@{
+    ViewData["Title"] = Model.Article?.Title;
+}
+
+<h1>@Model.Article?.Title</h1>
+
+<p>@Model.Article?.Content</p>
+
+<p><small>@Model.Article?.CreatedAt.ToString("g")</small></p>
