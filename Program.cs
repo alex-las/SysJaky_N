@@ -21,6 +21,8 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.LoginPath = "/Account/Login";
 });
 
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession();
 builder.Services.AddRazorPages();
 
 var app = builder.Build();
@@ -47,6 +49,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseSession();
 app.UseAuthentication();
 app.UseAuthorization();
 

@@ -1,0 +1,32 @@
+@page "{id:int}"
+@model SysJaky_N.Pages.Orders.DetailsModel
+@{
+    ViewData["Title"] = "Order Details";
+}
+
+<h1>Order @Model.Order.Id</h1>
+<p>Status: @Model.Order.Status</p>
+<p>Date: @Model.Order.CreatedAt</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Course</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Total</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model.Order.Items)
+    {
+        <tr>
+            <td>@item.Course?.Title</td>
+            <td>@item.Quantity</td>
+            <td>@item.Course?.Price</td>
+            <td>@((item.Course?.Price ?? 0) * item.Quantity)</td>
+        </tr>
+    }
+    </tbody>
+</table>
+<p>Total: @Model.Order.TotalPrice</p>

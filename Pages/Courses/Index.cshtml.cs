@@ -1,14 +1,12 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
 using SysJaky_N.Data;
+using SysJaky_N.Extensions;
 using SysJaky_N.Models;
 
 namespace SysJaky_N.Pages.Courses;
 
-[Authorize(Roles = "Admin")]
 public class IndexModel : PageModel
 {
     private readonly ApplicationDbContext _context;
@@ -32,5 +30,21 @@ public class IndexModel : PageModel
         var count = await query.CountAsync();
         TotalPages = (int)Math.Ceiling(count / (double)pageSize);
         Courses = await query.Skip((PageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
+    }
+
+    public IActionResult OnPostAddToCart(int courseId)
+    {
+        var cart = HttpContext.Session.GetObject<List<CartItem>>("Cart") ?? new List<CartItem>();
+        var item = cart.FirstOrDefault(c => c.CourseId == courseId);
+        if (item == null)
+        {
+            cart.Add(new CartItem { CourseId = courseId, Quantity = 1 });
+        }
+        else
+        {
+            item.Quantity++;
+        }
+        HttpContext.Session.SetObject("Cart", cart);
+        return RedirectToPage();
     }
 }
