@@ -8,7 +8,16 @@ html {
   }
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+:root {
+  --primary: #002b5c;
+  --accent: #ffed9a;
+}
+
+.btn:focus,
+.btn:active:focus,
+.btn-link.nav-link:focus,
+.form-control:focus,
+.form-check-input:focus {
   box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
@@ -19,4 +28,43 @@ html {
 
 body {
   margin-bottom: 60px;
+  font-family: 'Roboto', sans-serif;
+  background-color: var(--accent);
+  color: var(--primary);
+}
+
+a {
+  color: var(--primary);
+}
+
+a:hover,
+a:focus {
+  color: var(--primary);
+  background-color: var(--accent);
+}
+
+.bg-primary {
+  background-color: var(--primary) !important;
+}
+
+.navbar-dark .nav-link {
+  color: var(--accent);
+}
+
+.navbar-dark .nav-link:hover,
+.navbar-dark .nav-link:focus {
+  color: #fff;
+}
+
+.btn-primary {
+  color: var(--accent);
+  background-color: var(--primary);
+  border-color: var(--primary);
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+  color: var(--primary);
+  background-color: var(--accent);
+  border-color: var(--accent);
 }
