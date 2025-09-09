@@ -21,6 +21,8 @@ public class Order
 
     public string? PaymentConfirmation { get; set; }
 
+    public string? InvoicePath { get; set; }
+
     [DataType(DataType.DateTime)]
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 }

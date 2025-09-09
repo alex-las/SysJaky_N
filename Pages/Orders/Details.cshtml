@@ -42,3 +42,8 @@
         <button type="submit" class="btn btn-primary">Zaplatit online</button>
     </form>
 }
+
+@if (Model.Order.Status == OrderStatus.Paid)
+{
+    <a class="btn btn-secondary" asp-page-handler="DownloadInvoice" asp-route-id="@Model.Order.Id">Download Invoice</a>
+}
