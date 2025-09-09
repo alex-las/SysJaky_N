@@ -36,7 +36,7 @@ public class IndexModel : PageModel
         var query = _context.Courses.Include(c => c.CourseGroup).OrderBy(c => c.Date);
         if (CourseGroupId.HasValue)
         {
-            query = query.Where(c => c.CourseGroupId == CourseGroupId);
+            query = query.Where(c => c.CourseGroupId == CourseGroupId).OrderBy(c => c.Date);
         }
         var count = await query.CountAsync();
         TotalPages = (int)Math.Ceiling(count / (double)pageSize);
