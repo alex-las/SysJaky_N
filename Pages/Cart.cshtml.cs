@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using SysJaky_N.Data;
 using SysJaky_N.Extensions;
 using SysJaky_N.Models;
+using SysJaky_N.Services;
 
 namespace SysJaky_N.Pages;
 
@@ -14,11 +15,13 @@ public class CartModel : PageModel
 {
     private readonly ApplicationDbContext _context;
     private readonly UserManager<ApplicationUser> _userManager;
+    private readonly IAuditService _auditService;
 
-    public CartModel(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+    public CartModel(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IAuditService auditService)
     {
         _context = context;
         _userManager = userManager;
+        _auditService = auditService;
     }
 
     public List<CartItemView> Items { get; set; } = new();
@@ -69,6 +72,7 @@ public class CartModel : PageModel
         };
         _context.Orders.Add(order);
         await _context.SaveChangesAsync();
+        await _auditService.LogAsync(userId, "CreateOrder", $"OrderId:{order.Id}");
         HttpContext.Session.Remove("Cart");
         HttpContext.Session.Remove("DiscountCodeId");
         return RedirectToPage("/Orders/Index");

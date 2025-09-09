@@ -27,6 +27,7 @@ builder.Services.AddSession();
 builder.Services.AddRazorPages();
 builder.Services.Configure<PaymentGatewayOptions>(builder.Configuration.GetSection("PaymentGateway"));
 builder.Services.AddScoped<PaymentService>();
+builder.Services.AddScoped<IAuditService, AuditService>();
 
 var app = builder.Build();
 

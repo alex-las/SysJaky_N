@@ -17,5 +17,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<OrderItem> OrderItems { get; set; } = default!;
     public DbSet<DiscountCode> DiscountCodes { get; set; } = default!;
     public DbSet<Article> Articles { get; set; } = default!;
+    public DbSet<AuditLog> AuditLogs { get; set; } = default!;
 
 }
