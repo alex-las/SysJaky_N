@@ -1,0 +1,35 @@
+@page
+@model SysJaky_N.Pages.Admin.CourseReviews.IndexModel
+
+<h1>Course Reviews</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Course</th>
+            <th>User</th>
+            <th>Rating</th>
+            <th>Comment</th>
+            <th>Created</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var review in Model.Reviews)
+    {
+        <tr>
+            <td>@review.Course?.Title</td>
+            <td>@review.User?.UserName</td>
+            <td>@review.Rating</td>
+            <td>@review.Comment</td>
+            <td>@review.CreatedAt.ToString("g")</td>
+            <td>
+                <form method="post" asp-page-handler="Delete">
+                    <input type="hidden" name="id" value="@review.Id" />
+                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                </form>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

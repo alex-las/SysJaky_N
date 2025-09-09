@@ -12,3 +12,43 @@
     <button type="submit" class="btn btn-primary">Add to cart</button>
 </form>
 
+@if (Model.Reviews.Any())
+{
+    <h2>Reviews</h2>
+    <ul>
+        @foreach (var review in Model.Reviews)
+        {
+            <li>
+                <strong>@review.Rating/5</strong> @review.User?.UserName on @review.CreatedAt.ToShortDateString()
+                <div>@review.Comment</div>
+            </li>
+        }
+    </ul>
+}
+
+@if (User.Identity?.IsAuthenticated ?? false)
+{
+    <h3>Add Review</h3>
+    <form method="post" asp-page-handler="Review">
+        <div class="mb-3">
+            <label asp-for="NewReview.Rating" class="form-label"></label>
+            <input asp-for="NewReview.Rating" class="form-control" min="1" max="5" />
+            <span asp-validation-for="NewReview.Rating" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="NewReview.Comment" class="form-label"></label>
+            <textarea asp-for="NewReview.Comment" class="form-control"></textarea>
+            <span asp-validation-for="NewReview.Comment" class="text-danger"></span>
+        </div>
+        <button type="submit" class="btn btn-success">Submit</button>
+    </form>
+}
+else
+{
+    <p><a asp-page="/Account/Login">Log in</a> to add a review.</p>
+}
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
