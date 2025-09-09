@@ -23,7 +23,7 @@ public class IndexModel : PageModel
 
     public async Task OnGetAsync()
     {
-        var query = _context.Orders.Include(o => o.Items);
+        var query = _context.Orders.Include(o => o.Items).AsQueryable();
         if (!User.IsInRole("Admin"))
         {
             var userId = _userManager.GetUserId(User);
