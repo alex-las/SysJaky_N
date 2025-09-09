@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SysJaky_N.Data;
 using SysJaky_N.Models;
+using SysJaky_N.Services;
+using System.Security.Claims;
 
 namespace SysJaky_N.Pages.Courses;
 
@@ -12,10 +14,12 @@ namespace SysJaky_N.Pages.Courses;
 public class EditModel : PageModel
 {
     private readonly ApplicationDbContext _context;
+    private readonly IAuditService _auditService;
 
-    public EditModel(ApplicationDbContext context)
+    public EditModel(ApplicationDbContext context, IAuditService auditService)
     {
         _context = context;
+        _auditService = auditService;
     }
 
     [BindProperty]
@@ -48,6 +52,8 @@ public class EditModel : PageModel
         try
         {
             await _context.SaveChangesAsync();
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            await _auditService.LogAsync(userId, "CourseEdited", $"Course {Course.Id} edited");
         }
         catch (DbUpdateConcurrencyException)
         {

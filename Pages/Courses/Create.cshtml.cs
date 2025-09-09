@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using SysJaky_N.Data;
 using SysJaky_N.Models;
+using SysJaky_N.Services;
+using System.Security.Claims;
 
 namespace SysJaky_N.Pages.Courses;
 
@@ -11,10 +13,12 @@ namespace SysJaky_N.Pages.Courses;
 public class CreateModel : PageModel
 {
     private readonly ApplicationDbContext _context;
+    private readonly IAuditService _auditService;
 
-    public CreateModel(ApplicationDbContext context)
+    public CreateModel(ApplicationDbContext context, IAuditService auditService)
     {
         _context = context;
+        _auditService = auditService;
     }
 
     [BindProperty]
@@ -37,6 +41,8 @@ public class CreateModel : PageModel
 
         _context.Courses.Add(Course);
         await _context.SaveChangesAsync();
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        await _auditService.LogAsync(userId, "CourseCreated", $"Course {Course.Id} created");
         return RedirectToPage("Index");
     }
 }

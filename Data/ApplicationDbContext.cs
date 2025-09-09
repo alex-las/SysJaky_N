@@ -18,5 +18,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<DiscountCode> DiscountCodes { get; set; } = default!;
     public DbSet<Article> Articles { get; set; } = default!;
     public DbSet<CourseReview> CourseReviews { get; set; } = default!;
+    public DbSet<AuditLog> AuditLogs { get; set; } = default!;
 
 }

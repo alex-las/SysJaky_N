@@ -16,12 +16,14 @@ public class CartModel : PageModel
     private readonly ApplicationDbContext _context;
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly IEmailSender _emailSender;
+    private readonly IAuditService _auditService;
 
-    public CartModel(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IEmailSender emailSender)
+    public CartModel(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IEmailSender emailSender, IAuditService auditService)
     {
         _context = context;
         _userManager = userManager;
         _emailSender = emailSender;
+        _auditService = auditService;
     }
 
     public List<CartItemView> Items { get; set; } = new();
@@ -73,6 +75,7 @@ public class CartModel : PageModel
         };
         _context.Orders.Add(order);
         await _context.SaveChangesAsync();
+        await _auditService.LogAsync(userId, "OrderCreated", $"Order {order.Id} created");
         await _emailSender.SendEmailAsync(user.Email!, "Order Created", $"Your order {order.Id} has been created.");
         HttpContext.Session.Remove("Cart");
         HttpContext.Session.Remove("DiscountCodeId");
