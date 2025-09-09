@@ -42,10 +42,21 @@
                         <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-page="/Cart/Index">Cart</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-page="/Account/Manage">Profile</a>
-
-                        </li>
+                        @if (!User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <a class="btn btn-outline-light me-2" asp-page="/Account/Login">Login</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="btn btn-primary" asp-page="/Account/Register">Register</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-page="/Account/Manage">@User.Identity?.Name</a>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>
