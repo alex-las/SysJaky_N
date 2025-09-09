@@ -35,3 +35,10 @@
 {
     <img src="@Model.QrCodeImage" alt="QR code" />
 }
+
+@if (Model.PaymentEnabled && Model.Order.Status != OrderStatus.Paid)
+{
+    <form method="post" asp-page-handler="Pay">
+        <button type="submit" class="btn btn-primary">Zaplatit online</button>
+    </form>
+}

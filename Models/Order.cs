@@ -19,6 +19,8 @@ public class Order
     public int? DiscountCodeId { get; set; }
     public DiscountCode? DiscountCode { get; set; }
 
+    public string? PaymentConfirmation { get; set; }
+
     [DataType(DataType.DateTime)]
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 }
