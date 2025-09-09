@@ -1,0 +1,37 @@
+@page
+@model SysJaky_N.Pages.Admin.DiscountCodes.IndexModel
+@{
+    ViewData["Title"] = "Discount Codes";
+}
+
+<h1>Discount Codes</h1>
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Code</th>
+            <th>Percentage</th>
+            <th>Amount</th>
+            <th>Expires At</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model.DiscountCodes)
+    {
+        <tr>
+            <td>@item.Code</td>
+            <td>@item.Percentage</td>
+            <td>@item.Amount</td>
+            <td>@item.ExpiresAt</td>
+            <td>
+                <a asp-page="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-page="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

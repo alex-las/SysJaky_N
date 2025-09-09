@@ -16,6 +16,9 @@ public class Order
     [DataType(DataType.Currency)]
     public decimal TotalPrice { get; set; }
 
+    public int? DiscountCodeId { get; set; }
+    public DiscountCode? DiscountCode { get; set; }
+
     [DataType(DataType.DateTime)]
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 }

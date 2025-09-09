@@ -33,6 +33,18 @@ else
         }
         </tbody>
     </table>
+    <form method="post" asp-page-handler="ApplyDiscount">
+        <input type="text" name="code" placeholder="Discount code" />
+        <button type="submit">Apply</button>
+        @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+        {
+            <span class="text-danger">@Model.ErrorMessage</span>
+        }
+    </form>
+    @if (Model.AppliedDiscount != null)
+    {
+        <p>Discount applied: @Model.AppliedDiscount.Code (@Model.DiscountAmount)</p>
+    }
     <p>Total: @Model.Total</p>
     <form method="post" asp-page-handler="Checkout">
         <button type="submit">Create Order</button>
