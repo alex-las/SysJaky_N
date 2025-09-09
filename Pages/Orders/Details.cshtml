@@ -30,3 +30,8 @@
     </tbody>
 </table>
 <p>Total: @Model.Order.TotalPrice</p>
+
+@if (!string.IsNullOrEmpty(Model.QrCodeImage))
+{
+    <img src="@Model.QrCodeImage" alt="QR code" />
+}
