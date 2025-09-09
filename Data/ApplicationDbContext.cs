@@ -13,4 +13,5 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 
     public DbSet<Course> Courses => Set<Course>();
     public DbSet<Order> Orders => Set<Order>();
+    public DbSet<OrderItem> OrderItems => Set<OrderItem>();
 }
