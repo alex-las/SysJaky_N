@@ -1,0 +1,36 @@
+@page
+@model SysJaky_N.Pages.Courses.CreateModel
+@{
+    ViewData["Title"] = "Create Course";
+}
+
+<h1>Create Course</h1>
+
+<form method="post">
+    <div class="form-group">
+        <label asp-for="Course.Title"></label>
+        <input asp-for="Course.Title" class="form-control" />
+        <span asp-validation-for="Course.Title" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Course.Description"></label>
+        <textarea asp-for="Course.Description" class="form-control"></textarea>
+        <span asp-validation-for="Course.Description" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Course.Price"></label>
+        <input asp-for="Course.Price" class="form-control" />
+        <span asp-validation-for="Course.Price" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Course.Date"></label>
+        <input asp-for="Course.Date" class="form-control" />
+        <span asp-validation-for="Course.Date" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Create</button>
+    <a asp-page="Index" class="btn btn-secondary">Back to List</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
