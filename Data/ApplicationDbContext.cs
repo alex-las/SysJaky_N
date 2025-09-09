@@ -11,11 +11,11 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
     }
 
-    public DbSet<Course> Courses => Set<Course>();
-    public DbSet<CourseGroup> CourseGroups => Set<CourseGroup>();
-    public DbSet<Order> Orders => Set<Order>();
-    public DbSet<OrderItem> OrderItems => Set<OrderItem>();
-    public DbSet<DiscountCode> DiscountCodes => Set<DiscountCode>();
-    public DbSet<Article> Articles => Set<Article>();
+    public DbSet<Course> Courses { get; set; } = default!;
+    public DbSet<CourseGroup> CourseGroups { get; set; } = default!;
+    public DbSet<Order> Orders { get; set; } = default!;
+    public DbSet<OrderItem> OrderItems { get; set; } = default!;
+    public DbSet<DiscountCode> DiscountCodes { get; set; } = default!;
+    public DbSet<Article> Articles { get; set; } = default!;
 
 }

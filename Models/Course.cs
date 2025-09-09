@@ -21,5 +21,5 @@ public class Course
 
     public int? CourseGroupId { get; set; }
 
-    public CourseGroup? CourseGroup { get; set; }
+    public virtual CourseGroup? CourseGroup { get; set; }
 }
