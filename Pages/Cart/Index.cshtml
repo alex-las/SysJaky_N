@@ -1,7 +1,53 @@
 @page
 @model SysJaky_N.Pages.Cart.IndexModel
+@{
+    ViewData["Title"] = "Cart";
+}
 
 <h1>Cart</h1>
 
-<p>Your cart is empty.</p>
+@if (Model.Items.Count == 0)
+{
+    <p>Your cart is empty.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Course</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model.Items)
+        {
+            <tr>
+                <td>@item.Course.Title</td>
+                <td>@item.Quantity</td>
+                <td>@item.Course.Price</td>
+                <td>@(item.Course.Price * item.Quantity)</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+    <form method="post" asp-page-handler="ApplyDiscount">
+        <input type="text" name="code" placeholder="Discount code" />
+        <button type="submit">Apply</button>
+        @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+        {
+            <span class="text-danger">@Model.ErrorMessage</span>
+        }
+    </form>
+    @if (Model.AppliedDiscount != null)
+    {
+        <p>Discount applied: @Model.AppliedDiscount.Code (@Model.DiscountAmount)</p>
+    }
+    <p>Total: @Model.Total</p>
+    <form method="post" asp-page-handler="Checkout">
+        <button type="submit">Create Order</button>
+    </form>
+}
 
