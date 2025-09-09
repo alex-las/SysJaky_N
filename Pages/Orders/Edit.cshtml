@@ -1,0 +1,15 @@
+@page "{id:int}"
+@model SysJaky_N.Pages.Orders.EditModel
+@{
+    ViewData["Title"] = "Change Order Status";
+}
+
+<h1>Change Order Status</h1>
+
+<form method="post">
+    <div class="form-group">
+        <label asp-for="Order.Status"></label>
+        <select asp-for="Order.Status" asp-items="Html.GetEnumSelectList<OrderStatus>()"></select>
+    </div>
+    <button type="submit">Save</button>
+</form>

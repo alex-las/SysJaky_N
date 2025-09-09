@@ -1,0 +1,40 @@
+@page
+@model SysJaky_N.Pages.CartModel
+@{
+    ViewData["Title"] = "Cart";
+}
+
+<h1>Cart</h1>
+
+@if (Model.Items.Count == 0)
+{
+    <p>Your cart is empty.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Course</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model.Items)
+        {
+            <tr>
+                <td>@item.Course.Title</td>
+                <td>@item.Quantity</td>
+                <td>@item.Course.Price</td>
+                <td>@(item.Course.Price * item.Quantity)</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+    <p>Total: @Model.Total</p>
+    <form method="post" asp-page-handler="Checkout">
+        <button type="submit">Create Order</button>
+    </form>
+}
