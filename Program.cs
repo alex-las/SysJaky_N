@@ -33,6 +33,7 @@ builder.Services.AddScoped<PaymentService>();
 builder.Services.AddSingleton<IConverter>(new SynchronizedConverter(new PdfTools()));
 builder.Services.Configure<SmtpOptions>(builder.Configuration.GetSection("Smtp"));
 builder.Services.AddScoped<IEmailSender, EmailSender>();
+builder.Services.AddScoped<IAuditService, AuditService>();
 
 var app = builder.Build();
 

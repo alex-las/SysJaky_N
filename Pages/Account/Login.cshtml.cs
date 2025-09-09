@@ -2,16 +2,19 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using SysJaky_N.Models;
+using SysJaky_N.Services;
 
 namespace SysJaky_N.Pages.Account;
 
 public class LoginModel : PageModel
 {
     private readonly SignInManager<ApplicationUser> _signInManager;
+    private readonly IAuditService _auditService;
 
-    public LoginModel(SignInManager<ApplicationUser> signInManager)
+    public LoginModel(SignInManager<ApplicationUser> signInManager, IAuditService auditService)
     {
         _signInManager = signInManager;
+        _auditService = auditService;
     }
 
     [BindProperty]
@@ -38,6 +41,8 @@ public class LoginModel : PageModel
         var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
         if (result.Succeeded)
         {
+            var user = await _signInManager.UserManager.FindByEmailAsync(Input.Email);
+            await _auditService.LogAsync(user?.Id, "Login");
             return RedirectToPage("/Index");
         }
 
