@@ -1,0 +1,13 @@
+@page "{id:int}"
+@model SysJaky_N.Pages.Courses.DetailsModel
+
+<h1>@Model.Course.Title</h1>
+
+<p>@Model.Course.Description</p>
+<p>Price: @Model.Course.Price.ToString("C")</p>
+<p>Date: @Model.Course.Date.ToShortDateString()</p>
+
+<form method="post">
+    <button type="submit" class="btn btn-primary">Add to cart</button>
+</form>
+
