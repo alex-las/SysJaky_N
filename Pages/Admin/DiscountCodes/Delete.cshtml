@@ -1,0 +1,19 @@
+@page "{id:int}"
+@model SysJaky_N.Pages.Admin.DiscountCodes.DeleteModel
+@{
+    ViewData["Title"] = "Delete Discount Code";
+}
+
+<h1>Delete Discount Code</h1>
+
+<div>
+    <h4>Are you sure you want to delete this?</h4>
+    <div>
+        <strong>@Model.DiscountCode.Code</strong>
+    </div>
+    <form method="post">
+        <input type="hidden" asp-for="DiscountCode.Id" />
+        <button type="submit" class="btn btn-danger">Delete</button>
+        <a asp-page="Index" class="btn btn-secondary">Back to List</a>
+    </form>
+</div>

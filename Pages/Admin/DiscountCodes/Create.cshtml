@@ -1,0 +1,36 @@
+@page
+@model SysJaky_N.Pages.Admin.DiscountCodes.CreateModel
+@{
+    ViewData["Title"] = "Create Discount Code";
+}
+
+<h1>Create Discount Code</h1>
+
+<form method="post">
+    <div class="form-group">
+        <label asp-for="DiscountCode.Code"></label>
+        <input asp-for="DiscountCode.Code" class="form-control" />
+        <span asp-validation-for="DiscountCode.Code" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="DiscountCode.Percentage"></label>
+        <input asp-for="DiscountCode.Percentage" class="form-control" />
+        <span asp-validation-for="DiscountCode.Percentage" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="DiscountCode.Amount"></label>
+        <input asp-for="DiscountCode.Amount" class="form-control" />
+        <span asp-validation-for="DiscountCode.Amount" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="DiscountCode.ExpiresAt"></label>
+        <input asp-for="DiscountCode.ExpiresAt" class="form-control" />
+        <span asp-validation-for="DiscountCode.ExpiresAt" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Create</button>
+    <a asp-page="Index" class="btn btn-secondary">Back to List</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
