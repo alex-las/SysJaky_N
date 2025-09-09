@@ -27,6 +27,8 @@ builder.Services.AddSession();
 builder.Services.AddRazorPages();
 builder.Services.Configure<PaymentGatewayOptions>(builder.Configuration.GetSection("PaymentGateway"));
 builder.Services.AddScoped<PaymentService>();
+builder.Services.Configure<SmtpOptions>(builder.Configuration.GetSection("Smtp"));
+builder.Services.AddScoped<IEmailSender, EmailSender>();
 
 var app = builder.Build();
 

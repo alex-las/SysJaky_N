@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using SysJaky_N.Data;
 using SysJaky_N.Extensions;
 using SysJaky_N.Models;
+using SysJaky_N.Services;
 
 namespace SysJaky_N.Pages;
 
@@ -14,11 +15,13 @@ public class CartModel : PageModel
 {
     private readonly ApplicationDbContext _context;
     private readonly UserManager<ApplicationUser> _userManager;
+    private readonly IEmailSender _emailSender;
 
-    public CartModel(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+    public CartModel(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IEmailSender emailSender)
     {
         _context = context;
         _userManager = userManager;
+        _emailSender = emailSender;
     }
 
     public List<CartItemView> Items { get; set; } = new();
@@ -38,8 +41,9 @@ public class CartModel : PageModel
         var cart = HttpContext.Session.GetObject<List<CartItem>>("Cart") ?? new List<CartItem>();
         if (!cart.Any()) return RedirectToPage();
 
-        var userId = _userManager.GetUserId(User);
-        if (userId == null) return Challenge();
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null) return Challenge();
+        var userId = user.Id;
 
         var ids = cart.Select(c => c.CourseId).ToList();
         var courses = await _context.Courses.Where(c => ids.Contains(c.Id)).ToListAsync();
@@ -69,6 +73,7 @@ public class CartModel : PageModel
         };
         _context.Orders.Add(order);
         await _context.SaveChangesAsync();
+        await _emailSender.SendEmailAsync(user.Email!, "Order Created", $"Your order {order.Id} has been created.");
         HttpContext.Session.Remove("Cart");
         HttpContext.Session.Remove("DiscountCodeId");
         return RedirectToPage("/Orders/Index");
