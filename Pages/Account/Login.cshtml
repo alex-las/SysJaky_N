@@ -1,0 +1,25 @@
+@page
+@model SysJaky_N.Pages.Account.LoginModel
+
+<h1>Login</h1>
+
+<form method="post">
+    <div asp-validation-summary="All"></div>
+    <div>
+        <label asp-for="Input.Email"></label>
+        <input asp-for="Input.Email" />
+    </div>
+    <div>
+        <label asp-for="Input.Password"></label>
+        <input asp-for="Input.Password" type="password" />
+    </div>
+    <div>
+        <input asp-for="Input.RememberMe" />
+        <label asp-for="Input.RememberMe">Remember me</label>
+    </div>
+    <button type="submit">Login</button>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
