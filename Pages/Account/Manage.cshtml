@@ -1,0 +1,22 @@
+@page
+@model SysJaky_N.Pages.Account.ManageModel
+
+<h1>Profile</h1>
+
+<form method="post">
+    <div asp-validation-summary="All"></div>
+    <div>
+        <label asp-for="Input.Email"></label>
+        <input asp-for="Input.Email" />
+    </div>
+    <div>
+        <label asp-for="Input.PhoneNumber"></label>
+        <input asp-for="Input.PhoneNumber" />
+    </div>
+    <button type="submit">Save</button>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
