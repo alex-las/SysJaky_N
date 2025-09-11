@@ -40,7 +40,10 @@
                         @if (User.IsInRole("Admin"))
                         {
                             <li class="nav-item">
+                                <a class="nav-link" asp-page="/Admin/Dashboard/Index">Admin</a>
+
                                 <a class="nav-link" asp-area="" asp-page="/Admin/Articles/Index" aria-current="@(ViewContext.RouteData.Values["page"]?.ToString() == "/Admin/Articles/Index" ? "page" : null)">Manage Articles</a>
+
                             </li>
                         }
                         <li class="nav-item">
