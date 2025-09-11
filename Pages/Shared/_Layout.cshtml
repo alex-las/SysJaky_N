@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/SysJaky_N.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/lib/altcha/altcha.min.css" />
 </head>
 <body>
     <a class="visually-hidden-focusable" href="#main-content">Přeskočit na obsah</a>
@@ -52,10 +53,7 @@
                         @if (!User.Identity.IsAuthenticated)
                         {
                             <li class="nav-item">
-                                <a class="btn btn-outline-light me-2" asp-page="/Account/Login" aria-current="@(ViewContext.RouteData.Values["page"]?.ToString() == "/Account/Login" ? "page" : null)">Login</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="btn btn-primary" asp-page="/Account/Register" aria-current="@(ViewContext.RouteData.Values["page"]?.ToString() == "/Account/Register" ? "page" : null)">Register</a>
+                                <a class="btn btn-outline-light" data-bs-toggle="modal" data-bs-target="#authModal">Login / Register</a>
                             </li>
                         }
                         else
@@ -83,7 +81,72 @@
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/altcha/altcha.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+
+    @if (!User.Identity.IsAuthenticated)
+    {
+        <div class="modal fade" id="authModal" tabindex="-1" aria-labelledby="authModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="authModalLabel">Login</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <ul class="nav nav-tabs mb-3" id="authTab" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="login-tab" data-bs-toggle="tab" data-bs-target="#login-tab-pane" type="button" role="tab">Login</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="register-tab" data-bs-toggle="tab" data-bs-target="#register-tab-pane" type="button" role="tab">Register</button>
+                            </li>
+                        </ul>
+                        <div class="tab-content" id="authTabContent">
+                            <div class="tab-pane fade show active" id="login-tab-pane" role="tabpanel" aria-labelledby="login-tab">
+                                <form method="post" asp-page="/Account/Login">
+                                    <div class="mb-3">
+                                        <label for="loginEmail" class="form-label">Email</label>
+                                        <input type="email" class="form-control" id="loginEmail" name="Input.Email" required />
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="loginPassword" class="form-label">Password</label>
+                                        <input type="password" class="form-control" id="loginPassword" name="Input.Password" required />
+                                    </div>
+                                    <div class="mb-3">
+                                        <div class="altcha" data-target="#login-captcha"></div>
+                                        <input type="hidden" id="login-captcha" name="Input.Captcha" />
+                                    </div>
+                                    <div class="mb-3 form-check">
+                                        <input type="checkbox" class="form-check-input" id="rememberMe" name="Input.RememberMe" />
+                                        <label class="form-check-label" for="rememberMe">Remember me</label>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary w-100">Login</button>
+                                </form>
+                            </div>
+                            <div class="tab-pane fade" id="register-tab-pane" role="tabpanel" aria-labelledby="register-tab">
+                                <form method="post" asp-page="/Account/Register">
+                                    <div class="mb-3">
+                                        <label for="registerEmail" class="form-label">Email</label>
+                                        <input type="email" class="form-control" id="registerEmail" name="Input.Email" required />
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="registerPassword" class="form-label">Password</label>
+                                        <input type="password" class="form-control" id="registerPassword" name="Input.Password" required />
+                                    </div>
+                                    <div class="mb-3">
+                                        <div class="altcha" data-target="#register-captcha"></div>
+                                        <input type="hidden" id="register-captcha" name="Input.Captcha" />
+                                    </div>
+                                    <button type="submit" class="btn btn-success w-100">Register</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>
