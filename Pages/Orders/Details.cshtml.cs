@@ -124,6 +124,30 @@ public class DetailsModel : PageModel
         return File(pdf, "application/pdf", fileName);
     }
 
+    public async Task<IActionResult> OnGetDownloadQrAsync(int id)
+    {
+        var order = await _context.Orders.FindAsync(id);
+        if (order == null)
+            return NotFound();
+
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (!User.IsInRole("Admin") && order.UserId != userId)
+            return Forbid();
+
+        var iban = _configuration["Payment:Iban"] ?? string.Empty;
+        var vsPrefix = _configuration["Payment:VsPrefix"] ?? string.Empty;
+        var vs = $"{vsPrefix}{order.Id}";
+        var amount = order.TotalPrice.ToString("0.00", CultureInfo.InvariantCulture);
+        var payload = $"SPD*1.0*ACC:{iban}*AM:{amount}*CC:CZK*X-VS:{vs}";
+
+        var generator = new QRCodeGenerator();
+        var data = generator.CreateQrCode(payload, QRCodeGenerator.ECCLevel.Q);
+        var qrCode = new PngByteQRCode(data);
+        var bytes = qrCode.GetGraphic(20);
+
+        return File(bytes, "image/png", $"qr_{order.Id}.png");
+    }
+
     private async Task<string> RenderViewAsync<TModel>(string viewPath, TModel model)
     {
         var actionContext = new ActionContext(HttpContext, RouteData, PageContext.ActionDescriptor);
