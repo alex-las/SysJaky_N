@@ -195,11 +195,16 @@ namespace SysJaky_N.Migrations
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("tinyint(1)");
 
+                    b.Property<int?>("CompanyProfileId")
+                        .HasColumnType("int");
+
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
                         .HasColumnType("varchar(256)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CompanyProfileId");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -404,6 +409,54 @@ namespace SysJaky_N.Migrations
                     b.ToTable("OrderItems");
                 });
 
+            modelBuilder.Entity("SysJaky_N.Models.CompanyProfile", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("ManagerId")
+                        .HasColumnType("varchar(255)")
+                        .HasAnnotation("MySql:CharSet", "utf8mb4");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)")
+                        .HasAnnotation("MySql:CharSet", "utf8mb4");
+
+                    b.Property<string>("ReferenceCode")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)")
+                        .HasAnnotation("MySql:CharSet", "utf8mb4");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ManagerId");
+
+                    b.HasIndex("ReferenceCode")
+                        .IsUnique();
+
+                    b.ToTable("CompanyProfiles");
+                });
+
+            modelBuilder.Entity("SysJaky_N.Models.WishlistItem", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("varchar(255)")
+                        .HasAnnotation("MySql:CharSet", "utf8mb4");
+
+                    b.Property<int>("CourseId")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserId", "CourseId");
+
+                    b.HasIndex("CourseId");
+
+                    b.ToTable("WishlistItems");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -469,6 +522,15 @@ namespace SysJaky_N.Migrations
                     b.Navigation("CourseGroup");
                 });
 
+            modelBuilder.Entity("SysJaky_N.Models.ApplicationUser", b =>
+                {
+                    b.HasOne("SysJaky_N.Models.CompanyProfile", "CompanyProfile")
+                        .WithMany("Users")
+                        .HasForeignKey("CompanyProfileId");
+
+                    b.Navigation("CompanyProfile");
+                });
+
             modelBuilder.Entity("SysJaky_N.Models.Order", b =>
                 {
                     b.HasOne("SysJaky_N.Models.DiscountCode", "DiscountCode")
@@ -506,6 +568,34 @@ namespace SysJaky_N.Migrations
             modelBuilder.Entity("SysJaky_N.Models.CourseGroup", b =>
                 {
                     b.Navigation("Courses");
+                });
+
+            modelBuilder.Entity("SysJaky_N.Models.CompanyProfile", b =>
+                {
+                    b.HasOne("SysJaky_N.Models.ApplicationUser", "Manager")
+                        .WithMany()
+                        .HasForeignKey("ManagerId");
+
+                    b.Navigation("Manager");
+                    b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("SysJaky_N.Models.WishlistItem", b =>
+                {
+                    b.HasOne("SysJaky_N.Models.Course", "Course")
+                        .WithMany()
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SysJaky_N.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Course");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("SysJaky_N.Models.CourseBlock", b =>

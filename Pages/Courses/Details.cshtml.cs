@@ -83,6 +83,23 @@ public class DetailsModel : PageModel
     }
 
     [Authorize]
+    public async Task<IActionResult> OnPostAddToWishlistAsync(int id)
+    {
+        var userId = _userManager.GetUserId(User);
+        if (userId == null)
+        {
+            return Challenge();
+        }
+        bool exists = await _context.WishlistItems.AnyAsync(w => w.UserId == userId && w.CourseId == id);
+        if (!exists)
+        {
+            _context.WishlistItems.Add(new WishlistItem { UserId = userId, CourseId = id });
+            await _context.SaveChangesAsync();
+        }
+        return RedirectToPage(new { id });
+    }
+
+    [Authorize]
     public async Task<IActionResult> OnPostReviewAsync(int id)
     {
         Course? course = await _context.Courses.FindAsync(id);
