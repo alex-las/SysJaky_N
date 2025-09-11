@@ -8,10 +8,17 @@
     <div>
         <label asp-for="Input.Email"></label>
         <input asp-for="Input.Email" />
+        <span asp-validation-for="Input.Email"></span>
     </div>
     <div>
         <label asp-for="Input.Password"></label>
         <input asp-for="Input.Password" type="password" />
+        <span asp-validation-for="Input.Password"></span>
+    </div>
+    <div>
+        <div class="altcha" data-target="#captcha-input"></div>
+        <input type="hidden" id="captcha-input" asp-for="Input.Captcha" />
+        <span asp-validation-for="Input.Captcha"></span>
     </div>
     <div>
         <input asp-for="Input.RememberMe" />
@@ -22,4 +29,5 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script src="https://cdn.jsdelivr.net/npm/altcha@latest/dist/altcha.min.js"></script>
 }

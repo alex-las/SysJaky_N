@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using SysJaky_N.Models;
 using SysJaky_N.Services;
+using System.ComponentModel.DataAnnotations;
 
 namespace SysJaky_N.Pages.Account;
 
@@ -22,9 +23,20 @@ public class LoginModel : PageModel
 
     public class InputModel
     {
+        [Required]
+        [EmailAddress]
         public string Email { get; set; } = string.Empty;
+
+        [Required]
+        [DataType(DataType.Password)]
+        [StringLength(100, MinimumLength = 6)]
+        [RegularExpression("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).+$", ErrorMessage = "Password must contain upper and lower case letters and numbers.")]
         public string Password { get; set; } = string.Empty;
+
         public bool RememberMe { get; set; }
+
+        [Required(ErrorMessage = "Captcha verification is required.")]
+        public string Captcha { get; set; } = string.Empty;
     }
 
     public void OnGet()
@@ -35,6 +47,12 @@ public class LoginModel : PageModel
     {
         if (!ModelState.IsValid)
         {
+            return Page();
+        }
+
+        if (string.IsNullOrEmpty(Input.Captcha))
+        {
+            ModelState.AddModelError(string.Empty, "Captcha verification failed.");
             return Page();
         }
 
