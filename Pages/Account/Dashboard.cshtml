@@ -33,8 +33,40 @@
         </tbody>
     </table>
 }
+  else
+  {
+      <p>Nemáte žádné nadcházející kurzy.</p>
+  }
+<h2>Wishlist</h2>
+@if (Model.WishlistItems.Any())
+{
+    <ul>
+    @foreach (var item in Model.WishlistItems)
+    {
+        <li>@item.Course?.Title</li>
+    }
+    </ul>
+}
 else
 {
-    <p>Nemáte žádné nadcházející kurzy.</p>
+    <p>Wishlist je prázdný.</p>
 }
 
+@if (Model.CompanyWishlistItems.Any())
+{
+    <h2>Wishlist uživatelů firmy</h2>
+    <table class="table">
+        <thead>
+            <tr><th>Uživatel</th><th>Kurz</th></tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model.CompanyWishlistItems)
+        {
+            <tr>
+                <td>@item.User?.Email</td>
+                <td>@item.Course?.Title</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}

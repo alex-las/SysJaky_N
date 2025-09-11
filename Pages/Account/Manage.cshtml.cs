@@ -35,7 +35,11 @@ public class ManageModel : PageModel
 
         [Phone]
         public string? PhoneNumber { get; set; }
+
+        public string? ReferenceCode { get; set; }
     }
+
+    public CompanyProfile? Company { get; set; }
 
     public async Task<IActionResult> OnGetAsync()
     {
@@ -52,6 +56,7 @@ public class ManageModel : PageModel
         };
 
         Orders = await _context.Orders.Where(o => o.UserId == user.Id).OrderByDescending(o => o.CreatedAt).ToListAsync();
+        Company = await _context.CompanyProfiles.FirstOrDefaultAsync(c => c.Id == user.CompanyProfileId);
 
         return Page();
     }
@@ -72,6 +77,16 @@ public class ManageModel : PageModel
         user.Email = Input.Email;
         user.UserName = Input.Email;
         user.PhoneNumber = Input.PhoneNumber;
+
+        if (!string.IsNullOrWhiteSpace(Input.ReferenceCode))
+        {
+            var company = await _context.CompanyProfiles.FirstOrDefaultAsync(c => c.ReferenceCode == Input.ReferenceCode);
+            if (company != null)
+            {
+                user.CompanyProfileId = company.Id;
+            }
+        }
+
         await _userManager.UpdateAsync(user);
         await _signInManager.RefreshSignInAsync(user);
 

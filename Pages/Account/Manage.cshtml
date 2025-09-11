@@ -9,12 +9,21 @@
         <label asp-for="Input.Email"></label>
         <input asp-for="Input.Email" />
     </div>
-    <div>
-        <label asp-for="Input.PhoneNumber"></label>
-        <input asp-for="Input.PhoneNumber" />
-    </div>
-    <button type="submit">Save</button>
-</form>
+      <div>
+          <label asp-for="Input.PhoneNumber"></label>
+          <input asp-for="Input.PhoneNumber" />
+      </div>
+      <div>
+          <label asp-for="Input.ReferenceCode"></label>
+          <input asp-for="Input.ReferenceCode" />
+      </div>
+      <button type="submit">Save</button>
+  </form>
+
+  @if (Model.Company != null)
+  {
+      <p>Firma: @Model.Company.Name</p>
+  }
 
 @if (Model.Orders.Any())
 {

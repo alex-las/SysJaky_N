@@ -21,5 +21,21 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<AuditLog> AuditLogs { get; set; } = default!;
     public DbSet<ContactMessage> ContactMessages { get; set; } = default!;
     public DbSet<CourseBlock> CourseBlocks { get; set; } = default!;
+    public DbSet<WishlistItem> WishlistItems { get; set; } = default!;
+    public DbSet<CompanyProfile> CompanyProfiles { get; set; } = default!;
 
+    protected override void OnModelCreating(ModelBuilder builder)
+    {
+        base.OnModelCreating(builder);
+        builder.Entity<WishlistItem>().HasKey(w => new { w.UserId, w.CourseId });
+        builder.Entity<CompanyProfile>().HasIndex(c => c.ReferenceCode).IsUnique();
+        builder.Entity<CompanyProfile>()
+            .HasMany(c => c.Users)
+            .WithOne(u => u.CompanyProfile)
+            .HasForeignKey(u => u.CompanyProfileId);
+        builder.Entity<CompanyProfile>()
+            .HasOne(c => c.Manager)
+            .WithMany()
+            .HasForeignKey(c => c.ManagerId);
+    }
 }

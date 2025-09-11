@@ -23,6 +23,13 @@
     <button type="submit" class="btn btn-primary" aria-label="Add @Model.Course.Title to cart">Add to cart</button>
 </form>
 
+@if (User.Identity?.IsAuthenticated ?? false)
+{
+    <form method="post" asp-page-handler="AddToWishlist">
+        <button type="submit" class="btn btn-outline-secondary">Přidat do wishlistu</button>
+    </form>
+}
+
 @if (Model.Reviews.Any())
 {
     <h2>Reviews</h2>
