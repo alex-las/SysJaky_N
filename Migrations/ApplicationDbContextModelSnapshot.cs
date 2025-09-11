@@ -655,7 +655,6 @@ namespace SysJaky_N.Migrations
                         .HasForeignKey("ManagerId");
 
                     b.Navigation("Manager");
-                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("SysJaky_N.Models.WishlistItem", b =>
