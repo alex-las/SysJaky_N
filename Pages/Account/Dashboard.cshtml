@@ -1,0 +1,40 @@
+@page
+@model SysJaky_N.Pages.Account.DashboardModel
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<h1>Přihlášené kurzy</h1>
+
+@if (Model.UpcomingItems.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Datum</th>
+                <th>Stav</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model.UpcomingItems)
+        {
+            <tr>
+                <td>@item.Course?.Date.ToString("d")</td>
+                <td>@item.Order?.Status</td>
+                <td>
+                    @if (item.Order?.Status == OrderStatus.Paid)
+                    {
+                        <a class="btn btn-secondary" asp-page="/Orders/Details" asp-route-id="@item.Order.Id" asp-page-handler="DownloadInvoice">Stáhnout fakturu</a>
+                    }
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>Nemáte žádné nadcházející kurzy.</p>
+}
+
