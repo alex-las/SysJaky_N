@@ -10,30 +10,6 @@ namespace SysJaky_N.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "CompanyProfiles",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    ReferenceCode = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    ManagerId = table.Column<string>(type: "varchar(255)", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CompanyProfiles", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_CompanyProfiles_AspNetUsers_ManagerId",
-                        column: x => x.ManagerId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id");
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
                 name: "WishlistItems",
                 columns: table => new
                 {
@@ -71,17 +47,6 @@ namespace SysJaky_N.Migrations
                 column: "CompanyProfileId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CompanyProfiles_ManagerId",
-                table: "CompanyProfiles",
-                column: "ManagerId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_CompanyProfiles_ReferenceCode",
-                table: "CompanyProfiles",
-                column: "ReferenceCode",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
                 name: "IX_WishlistItems_CourseId",
                 table: "WishlistItems",
                 column: "CourseId");
@@ -102,9 +67,6 @@ namespace SysJaky_N.Migrations
 
             migrationBuilder.DropTable(
                 name: "WishlistItems");
-
-            migrationBuilder.DropTable(
-                name: "CompanyProfiles");
 
             migrationBuilder.DropIndex(
                 name: "IX_AspNetUsers_CompanyProfileId",
