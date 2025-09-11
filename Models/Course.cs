@@ -19,6 +19,14 @@ public class Course
     [DataType(DataType.Date)]
     public DateTime Date { get; set; }
 
+    [Range(0, int.MaxValue)]
+    public int ReminderDays { get; set; }
+
+    [StringLength(1000)]
+    public string? ReminderMessage { get; set; }
+
+    public CourseType Type { get; set; } = CourseType.Online;
+
     public int? CourseGroupId { get; set; }
 
     public virtual CourseGroup? CourseGroup { get; set; }
@@ -26,4 +34,11 @@ public class Course
     public int? CourseBlockId { get; set; }
 
     public virtual CourseBlock? CourseBlock { get; set; }
+}
+
+public enum CourseType
+{
+    Online,
+    InPerson,
+    Hybrid
 }
