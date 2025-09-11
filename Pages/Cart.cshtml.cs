@@ -184,7 +184,29 @@ public class CartModel : PageModel
     {
         var ids = cart.Select(c => c.CourseId).ToList();
         var courses = await _context.Courses.Where(c => ids.Contains(c.Id)).ToListAsync();
-        var total = cart.Sum(ci => ci.Quantity * courses.First(c => c.Id == ci.CourseId).Price);
+
+        decimal total = 0m;
+        var removed = false;
+        foreach (var ci in cart.ToList())
+        {
+            var course = courses.FirstOrDefault(c => c.Id == ci.CourseId);
+            if (course != null)
+            {
+                total += ci.Quantity * course.Price;
+            }
+            else
+            {
+                cart.Remove(ci);
+                removed = true;
+            }
+        }
+
+        if (removed)
+        {
+            HttpContext.Session.SetObject("Cart", cart);
+            ErrorMessage = "Some items were removed from your cart because they are no longer available.";
+        }
+
         var bundleIds = HttpContext.Session.GetObject<List<int>>("Bundles") ?? new List<int>();
         var blocks = await _context.CourseBlocks.Include(b => b.Modules).Where(b => bundleIds.Contains(b.Id)).ToListAsync();
         foreach (var block in blocks.ToList())
