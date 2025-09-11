@@ -16,6 +16,48 @@
     <button type="submit">Save</button>
 </form>
 
+@if (Model.Orders.Any())
+{
+    <h2>Orders</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Total</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var order in Model.Orders)
+        {
+            <tr>
+                <td>@order.Id</td>
+                <td>@order.CreatedAt</td>
+                <td>@order.Status</td>
+                <td>@order.TotalPrice</td>
+                <td>
+                    <a asp-page="/Orders/Details" asp-route-id="@order.Id">Detail</a>
+                    @if (order.Status == OrderStatus.Paid)
+                    {
+                        <a asp-page="/Orders/Details" asp-page-handler="DownloadInvoice" asp-route-id="@order.Id">Invoice</a>
+                    }
+                    else if (order.Status == OrderStatus.Created)
+                    {
+                        <a asp-page="/Orders/Details" asp-page-handler="DownloadQr" asp-route-id="@order.Id">QR</a>
+                    }
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No orders found.</p>
+}
+
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }

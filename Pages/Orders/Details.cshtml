@@ -1,8 +1,15 @@
 @page "{id:int}"
 @model SysJaky_N.Pages.Orders.DetailsModel
-@{
-    ViewData["Title"] = "Order Details";
+@{ 
+    ViewData["Title"] = "Order Details"; 
 }
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-page="/Account/Manage">Profile</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Order @Model.Order.Id</li>
+    </ol>
+</nav>
 
 <h1>Order @Model.Order.Id</h1>
 <p>Status: @Model.Order.Status</p>
