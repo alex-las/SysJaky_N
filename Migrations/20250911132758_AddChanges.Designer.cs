@@ -11,8 +11,8 @@ using SysJaky_N.Data;
 namespace SysJaky_N.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250911124203_AddMore")]
-    partial class AddMore
+    [Migration("20250911132758_AddChanges")]
+    partial class AddChanges
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
