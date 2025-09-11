@@ -246,6 +246,9 @@ namespace SysJaky_N.Migrations
                     b.Property<int?>("CourseGroupId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("CourseBlockId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime(6)");
 
@@ -263,9 +266,34 @@ namespace SysJaky_N.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CourseBlockId");
+
                     b.HasIndex("CourseGroupId");
 
                     b.ToTable("Courses");
+                });
+
+            modelBuilder.Entity("SysJaky_N.Models.CourseBlock", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(1000)
+                        .HasColumnType("varchar(1000)");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CourseBlocks");
                 });
 
             modelBuilder.Entity("SysJaky_N.Models.CourseGroup", b =>
@@ -419,10 +447,15 @@ namespace SysJaky_N.Migrations
 
             modelBuilder.Entity("SysJaky_N.Models.Course", b =>
                 {
+                    b.HasOne("SysJaky_N.Models.CourseBlock", "CourseBlock")
+                        .WithMany("Modules")
+                        .HasForeignKey("CourseBlockId");
+
                     b.HasOne("SysJaky_N.Models.CourseGroup", "CourseGroup")
                         .WithMany("Courses")
                         .HasForeignKey("CourseGroupId");
 
+                    b.Navigation("CourseBlock");
                     b.Navigation("CourseGroup");
                 });
 
@@ -463,6 +496,11 @@ namespace SysJaky_N.Migrations
             modelBuilder.Entity("SysJaky_N.Models.CourseGroup", b =>
                 {
                     b.Navigation("Courses");
+                });
+
+            modelBuilder.Entity("SysJaky_N.Models.CourseBlock", b =>
+                {
+                    b.Navigation("Modules");
                 });
 
             modelBuilder.Entity("SysJaky_N.Models.Order", b =>

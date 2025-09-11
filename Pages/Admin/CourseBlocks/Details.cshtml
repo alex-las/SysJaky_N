@@ -1,0 +1,19 @@
+@page "{id:int}"
+@model SysJaky_N.Pages.Admin.CourseBlocks.DetailsModel
+@{
+    ViewData["Title"] = "Course Block Details";
+}
+<h1>@Model.CourseBlock.Title</h1>
+<p>@Model.CourseBlock.Description</p>
+<p>Price: @Model.CourseBlock.Price</p>
+<h3>Modules</h3>
+<ul>
+@foreach (var course in Model.CourseBlock.Modules)
+{
+    <li>@course.Title</li>
+}
+</ul>
+<p>
+    <a asp-page="Edit" asp-route-id="@Model.CourseBlock.Id">Edit</a> |
+    <a asp-page="Index">Back to list</a>
+</p>

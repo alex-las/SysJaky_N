@@ -20,5 +20,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<CourseReview> CourseReviews { get; set; } = default!;
     public DbSet<AuditLog> AuditLogs { get; set; } = default!;
     public DbSet<ContactMessage> ContactMessages { get; set; } = default!;
+    public DbSet<CourseBlock> CourseBlocks { get; set; } = default!;
 
 }

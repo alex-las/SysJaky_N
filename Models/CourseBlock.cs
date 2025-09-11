@@ -2,7 +2,7 @@ namespace SysJaky_N.Models;
 
 using System.ComponentModel.DataAnnotations;
 
-public class Course
+public class CourseBlock
 {
     public int Id { get; set; }
 
@@ -16,14 +16,6 @@ public class Course
     [Range(0, double.MaxValue)]
     public decimal Price { get; set; }
 
-    [DataType(DataType.Date)]
-    public DateTime Date { get; set; }
-
-    public int? CourseGroupId { get; set; }
-
-    public virtual CourseGroup? CourseGroup { get; set; }
-
-    public int? CourseBlockId { get; set; }
-
-    public virtual CourseBlock? CourseBlock { get; set; }
+    public ICollection<Course> Modules { get; set; } = new List<Course>();
 }
+

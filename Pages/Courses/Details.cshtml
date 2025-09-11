@@ -8,6 +8,17 @@
 <p>Date: @Model.Course.Date.ToShortDateString()</p>
 <p><a href="/Courses/ICS/@Model.Course.Id">Přidat do kalendáře</a></p>
 
+@if (Model.CourseBlock != null)
+{
+    <h2>Part of block: @Model.CourseBlock.Title</h2>
+    <p>@Model.CourseBlock.Description</p>
+    <p>Block price: @Model.CourseBlock.Price</p>
+    <form method="post" asp-page-handler="OrderBlock">
+        <input type="hidden" name="blockId" value="@Model.CourseBlock.Id" />
+        <button type="submit" class="btn btn-secondary">Order entire block</button>
+    </form>
+}
+
 <form method="post">
     <button type="submit" class="btn btn-primary" aria-label="Add @Model.Course.Title to cart">Add to cart</button>
 </form>

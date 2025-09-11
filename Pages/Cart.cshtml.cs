@@ -31,6 +31,8 @@ public class CartModel : PageModel
     public DiscountCode? AppliedDiscount { get; set; }
     public decimal DiscountAmount { get; set; }
     public string? ErrorMessage { get; set; }
+    public List<CourseBlock> BundleOffers { get; set; } = new();
+    public List<CourseBlock> AppliedBundles { get; set; } = new();
 
     public async Task OnGetAsync()
     {
@@ -49,7 +51,7 @@ public class CartModel : PageModel
 
         var ids = cart.Select(c => c.CourseId).ToList();
         var courses = await _context.Courses.Where(c => ids.Contains(c.Id)).ToListAsync();
-        var total = cart.Sum(ci => ci.Quantity * courses.First(c => c.Id == ci.CourseId).Price);
+        var total = await CalculateTotalAsync(cart);
         DiscountCode? discount = null;
         var discountId = HttpContext.Session.GetInt32("DiscountCodeId");
         if (discountId.HasValue)
@@ -79,6 +81,7 @@ public class CartModel : PageModel
         await _emailSender.SendEmailAsync(user.Email!, "Order Created", $"Your order {order.Id} has been created.");
         HttpContext.Session.Remove("Cart");
         HttpContext.Session.Remove("DiscountCodeId");
+        HttpContext.Session.Remove("Bundles");
         return RedirectToPage("/Orders/Index");
     }
 
@@ -102,7 +105,31 @@ public class CartModel : PageModel
         var ids = cart.Select(c => c.CourseId).ToList();
         var courses = await _context.Courses.Where(c => ids.Contains(c.Id)).ToListAsync();
         Items = cart.Join(courses, c => c.CourseId, c2 => c2.Id, (c, c2) => new CartItemView { Course = c2, Quantity = c.Quantity }).ToList();
-        Total = Items.Sum(i => i.Course.Price * i.Quantity);
+
+        var bundleIds = HttpContext.Session.GetObject<List<int>>("Bundles") ?? new List<int>();
+        var blocks = await _context.CourseBlocks.Include(b => b.Modules).ToListAsync();
+        foreach (var block in blocks)
+        {
+            var moduleIds = block.Modules.Select(m => m.Id).ToList();
+            if (moduleIds.All(id => cart.Any(ci => ci.CourseId == id)))
+            {
+                if (bundleIds.Contains(block.Id))
+                {
+                    AppliedBundles.Add(block);
+                }
+                else
+                {
+                    BundleOffers.Add(block);
+                }
+            }
+            else
+            {
+                bundleIds.Remove(block.Id);
+            }
+        }
+        HttpContext.Session.SetObject("Bundles", bundleIds);
+
+        Total = await CalculateTotalAsync(cart);
     }
 
     private async Task ApplyStoredDiscountAsync()
@@ -140,6 +167,42 @@ public class CartModel : PageModel
             return Math.Min(discount.Amount.Value, total);
         }
         return 0m;
+    }
+
+    public IActionResult OnPostApplyBundle(int blockId)
+    {
+        var bundles = HttpContext.Session.GetObject<List<int>>("Bundles") ?? new List<int>();
+        if (!bundles.Contains(blockId))
+        {
+            bundles.Add(blockId);
+            HttpContext.Session.SetObject("Bundles", bundles);
+        }
+        return RedirectToPage();
+    }
+
+    private async Task<decimal> CalculateTotalAsync(List<CartItem> cart)
+    {
+        var ids = cart.Select(c => c.CourseId).ToList();
+        var courses = await _context.Courses.Where(c => ids.Contains(c.Id)).ToListAsync();
+        var total = cart.Sum(ci => ci.Quantity * courses.First(c => c.Id == ci.CourseId).Price);
+        var bundleIds = HttpContext.Session.GetObject<List<int>>("Bundles") ?? new List<int>();
+        var blocks = await _context.CourseBlocks.Include(b => b.Modules).Where(b => bundleIds.Contains(b.Id)).ToListAsync();
+        foreach (var block in blocks.ToList())
+        {
+            var moduleIds = block.Modules.Select(m => m.Id).ToList();
+            if (moduleIds.All(id => cart.Any(ci => ci.CourseId == id)))
+            {
+                var moduleSum = block.Modules.Sum(m => m.Price);
+                total -= moduleSum;
+                total += block.Price;
+            }
+            else
+            {
+                bundleIds.Remove(block.Id);
+            }
+        }
+        HttpContext.Session.SetObject("Bundles", bundleIds);
+        return total;
     }
 
     public class CartItemView

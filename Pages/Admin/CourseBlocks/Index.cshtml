@@ -1,0 +1,32 @@
+@page
+@model SysJaky_N.Pages.Admin.CourseBlocks.IndexModel
+@{
+    ViewData["Title"] = "Course Blocks";
+}
+<h1>Course Blocks</h1>
+<p><a asp-page="Create">Create New</a></p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Price</th>
+            <th>Modules</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var block in Model.CourseBlocks)
+    {
+        <tr>
+            <td>@block.Title</td>
+            <td>@block.Price</td>
+            <td>@block.Modules.Count</td>
+            <td>
+                <a asp-page="Edit" asp-route-id="@block.Id">Edit</a> |
+                <a asp-page="Details" asp-route-id="@block.Id">Details</a> |
+                <a asp-page="Delete" asp-route-id="@block.Id">Delete</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
