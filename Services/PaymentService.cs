@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Stripe;
 using Stripe.Checkout;
@@ -17,13 +18,15 @@ public class PaymentService
 {
     private readonly PaymentGatewayOptions _options;
     private readonly ApplicationDbContext _context;
+    private readonly ILogger<PaymentService> _logger;
 
     public bool IsEnabled => _options.Enabled;
 
-    public PaymentService(IOptions<PaymentGatewayOptions> options, ApplicationDbContext context)
+    public PaymentService(IOptions<PaymentGatewayOptions> options, ApplicationDbContext context, ILogger<PaymentService> logger)
     {
         _options = options.Value;
         _context = context;
+        _logger = logger;
 
         if (_options.Enabled)
             StripeConfiguration.ApiKey = _options.ApiKey;
@@ -108,9 +111,11 @@ public class PaymentService
                 }
             }
         }
-        catch
+        catch (Exception ex)
         {
-            // ignore invalid webhook calls
+            _logger.LogError(ex,
+                "Error handling payment webhook. Signature: {Signature}, Payload: {Payload}",
+                request.Headers["Stripe-Signature"], json);
         }
     }
 }
