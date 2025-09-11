@@ -7,6 +7,7 @@
 <h1>Courses</h1>
 
 <form method="get" class="mb-3">
+    <input type="text" asp-for="SearchString" placeholder="Search..." class="form-control" style="width:auto;display:inline-block" />
     <select asp-for="CourseGroupId" asp-items="Model.CourseGroups" class="form-control" style="width:auto;display:inline-block">
         <option value="">All Groups</option>
     </select>
@@ -62,10 +63,10 @@
     <nav>
         <ul class="pagination">
             <li class="page-item @(Model.PageNumber <= 1 ? "disabled" : "")">
-                <a class="page-link" asp-route-PageNumber="@(Model.PageNumber - 1)" asp-route-CourseGroupId="@Model.CourseGroupId">Previous</a>
+                <a class="page-link" asp-route-PageNumber="@(Model.PageNumber - 1)" asp-route-CourseGroupId="@Model.CourseGroupId" asp-route-SearchString="@Model.SearchString">Previous</a>
             </li>
             <li class="page-item @(Model.PageNumber >= Model.TotalPages ? "disabled" : "")">
-                <a class="page-link" asp-route-PageNumber="@(Model.PageNumber + 1)" asp-route-CourseGroupId="@Model.CourseGroupId">Next</a>
+                <a class="page-link" asp-route-PageNumber="@(Model.PageNumber + 1)" asp-route-CourseGroupId="@Model.CourseGroupId" asp-route-SearchString="@Model.SearchString">Next</a>
             </li>
         </ul>
     </nav>
