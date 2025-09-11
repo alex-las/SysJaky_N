@@ -259,6 +259,16 @@ namespace SysJaky_N.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(65,30)");
 
+                    b.Property<int>("ReminderDays")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ReminderMessage")
+                        .HasMaxLength(1000)
+                        .HasColumnType("varchar(1000)");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(100)
