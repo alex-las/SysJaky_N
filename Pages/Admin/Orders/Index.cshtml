@@ -1,0 +1,35 @@
+@page
+@model SysJaky_N.Pages.Admin.Orders.IndexModel
+@{
+    ViewData["Title"] = "Orders";
+}
+
+<h1>Orders</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Date</th>
+            <th>Status</th>
+            <th>Total</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var order in Model.Orders)
+    {
+        <tr>
+            <td>@order.Id</td>
+            <td>@order.CreatedAt.ToString("g")</td>
+            <td>@order.Status</td>
+            <td>@order.TotalPrice</td>
+            <td>
+                <a asp-page="/Orders/Details" asp-route-id="@order.Id">Details</a> |
+                <a asp-page="/Orders/Edit" asp-route-id="@order.Id">Change Status</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
