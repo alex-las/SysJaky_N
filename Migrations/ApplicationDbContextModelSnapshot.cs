@@ -609,35 +609,6 @@ namespace SysJaky_N.Migrations
                     b.Navigation("CourseGroup");
                 });
 
-<<<<<<< HEAD
-            modelBuilder.Entity("SysJaky_N.Models.ApplicationUser", b =>
-                {
-                    b.HasOne("SysJaky_N.Models.CompanyProfile", "CompanyProfile")
-                        .WithMany("Users")
-                        .HasForeignKey("CompanyProfileId");
-
-                    b.Navigation("CompanyProfile");
-=======
-            modelBuilder.Entity("SysJaky_N.Models.CourseReview", b =>
-                {
-                    b.HasOne("SysJaky_N.Models.Course", "Course")
-                        .WithMany()
-                        .HasForeignKey("CourseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("SysJaky_N.Models.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Course");
-
-                    b.Navigation("User");
->>>>>>> EF Migrations
-                });
-
             modelBuilder.Entity("SysJaky_N.Models.Order", b =>
                 {
                     b.HasOne("SysJaky_N.Models.DiscountCode", "DiscountCode")
