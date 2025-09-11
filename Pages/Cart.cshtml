@@ -33,6 +33,29 @@ else
         }
         </tbody>
     </table>
+    @if (Model.BundleOffers.Any())
+    {
+        <h3>Bundle offers</h3>
+        @foreach (var block in Model.BundleOffers)
+        {
+            var normal = block.Modules.Sum(m => m.Price);
+            <p>You have all modules of <strong>@block.Title</strong>. Bundle price: @block.Price (save @(normal - block.Price)).</p>
+            <form method="post" asp-page-handler="ApplyBundle">
+                <input type="hidden" name="blockId" value="@block.Id" />
+                <button type="submit" class="btn btn-warning btn-sm">Apply bundle</button>
+            </form>
+        }
+    }
+    @if (Model.AppliedBundles.Any())
+    {
+        <h3>Applied bundles</h3>
+        <ul>
+        @foreach (var block in Model.AppliedBundles)
+        {
+            <li>@block.Title - @block.Price</li>
+        }
+        </ul>
+    }
     <form method="post" asp-page-handler="ApplyDiscount">
         <input type="text" name="code" placeholder="Discount code" />
         <button type="submit">Apply</button>
