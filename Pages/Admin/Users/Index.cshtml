@@ -5,27 +5,65 @@
 }
 
 <h1>Users</h1>
-<table class="table">
-    <thead>
-        <tr>
-            <th>Email</th>
-            <th>Phone</th>
-            <th>Roles</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-    @foreach (var user in Model.Users)
+
+<form method="get" class="mb-3">
+    <input type="text" name="Search" value="@Model.Search" placeholder="Search" />
+    <button type="submit">Search</button>
+</form>
+
+<form method="post">
+    <table class="table">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Roles</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var user in Model.Users)
+        {
+            <tr>
+                <td><input type="checkbox" name="SelectedUserIds" value="@user.Id" /></td>
+                <td>@user.Email</td>
+                <td>@user.PhoneNumber</td>
+                <td>@string.Join(", ", user.Roles)</td>
+                <td>
+                    <a asp-page="Edit" asp-route-id="@user.Id">Edit</a> |
+                    <a asp-page="Delete" asp-route-id="@user.Id">Delete</a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+
+    <div class="mb-3">
+        <select name="RoleName">
+            <option value="">-- role --</option>
+            @foreach (var role in Model.AllRoles)
+            {
+                <option value="@role">@role</option>
+            }
+        </select>
+        <button formaction="?handler=AssignRole" type="submit">Assign Role</button>
+        <button formaction="?handler=RemoveRole" type="submit">Remove Role</button>
+        <button formaction="?handler=Block" type="submit">Block</button>
+        <button formaction="?handler=Unblock" type="submit">Unblock</button>
+    </div>
+</form>
+
+<div>
+    @for (var i = 1; i <= Model.TotalPages; i++)
     {
-        <tr>
-            <td>@user.Email</td>
-            <td>@user.PhoneNumber</td>
-            <td>@string.Join(", ", user.Roles)</td>
-            <td>
-                <a asp-page="Edit" asp-route-id="@user.Id">Edit</a> |
-                <a asp-page="Delete" asp-route-id="@user.Id">Delete</a>
-            </td>
-        </tr>
+        if (i == Model.PageIndex)
+        {
+            <span>@i</span>
+        }
+        else
+        {
+            <a asp-page="./Index" asp-route-pageIndex="@i" asp-route-search="@Model.Search">@i</a>
+        }
     }
-    </tbody>
-</table>
+</div>

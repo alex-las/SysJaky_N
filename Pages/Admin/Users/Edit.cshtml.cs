@@ -4,6 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using SysJaky_N.Models;
+using SysJaky_N.Services;
+using System.Security.Claims;
+using System.Linq;
 
 namespace SysJaky_N.Pages.Admin.Users;
 
@@ -12,11 +15,13 @@ public class EditModel : PageModel
 {
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly RoleManager<IdentityRole> _roleManager;
+    private readonly IAuditService _auditService;
 
-    public EditModel(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
+    public EditModel(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IAuditService auditService)
     {
         _userManager = userManager;
         _roleManager = roleManager;
+        _auditService = auditService;
     }
 
     [BindProperty]
@@ -77,16 +82,34 @@ public class EditModel : PageModel
             return NotFound();
         }
 
+        var userRoles = await _userManager.GetRolesAsync(user);
+        var wasLocked = user.LockoutEnd.HasValue && user.LockoutEnd.Value > DateTimeOffset.UtcNow;
+
         user.Email = Input.Email;
         user.UserName = Input.Email;
         user.PhoneNumber = Input.PhoneNumber;
         await _userManager.SetLockoutEndDateAsync(user, Input.IsLocked ? DateTimeOffset.MaxValue : null);
         await _userManager.UpdateAsync(user);
 
-        var selectedRoles = Input.Roles.Where(r => r.Selected).Select(r => r.Name);
-        var userRoles = await _userManager.GetRolesAsync(user);
+        var selectedRoles = Input.Roles.Where(r => r.Selected).Select(r => r.Name).ToList();
         await _userManager.AddToRolesAsync(user, selectedRoles.Except(userRoles));
         await _userManager.RemoveFromRolesAsync(user, userRoles.Except(selectedRoles));
+
+        var adminId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        foreach (var role in selectedRoles.Except(userRoles))
+        {
+            await _auditService.LogAsync(adminId, "RoleAssigned", $"User {user.Id} assigned role {role}");
+        }
+        foreach (var role in userRoles.Except(selectedRoles))
+        {
+            await _auditService.LogAsync(adminId, "RoleRemoved", $"User {user.Id} removed from role {role}");
+        }
+
+        var isLocked = Input.IsLocked;
+        if (isLocked != wasLocked)
+        {
+            await _auditService.LogAsync(adminId, isLocked ? "AccountDeactivated" : "AccountActivated", $"User {user.Id} {(isLocked ? "locked" : "unlocked")}");
+        }
 
         return RedirectToPage("Index");
     }
