@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SysJaky_N.Data;
 
@@ -10,9 +11,11 @@ using SysJaky_N.Data;
 namespace SysJaky_N.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250911083108_AddAudit")]
+    partial class AddAudit
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -195,16 +198,11 @@ namespace SysJaky_N.Migrations
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<int?>("CompanyProfileId")
-                        .HasColumnType("int");
-
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
                         .HasColumnType("varchar(256)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CompanyProfileId");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -303,9 +301,6 @@ namespace SysJaky_N.Migrations
                     b.Property<int?>("CourseGroupId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("CourseBlockId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime(6)");
 
@@ -316,51 +311,16 @@ namespace SysJaky_N.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(65,30)");
 
-                    b.Property<int>("ReminderDays")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ReminderMessage")
-                        .HasMaxLength(1000)
-                        .HasColumnType("varchar(1000)");
-
-                    b.Property<int>("Type")
-                        .HasColumnType("int");
-
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("varchar(100)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CourseBlockId");
 
                     b.HasIndex("CourseGroupId");
 
                     b.ToTable("Courses");
-                });
-
-            modelBuilder.Entity("SysJaky_N.Models.CourseBlock", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(1000)
-                        .HasColumnType("varchar(1000)");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(65,30)");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("CourseBlocks");
                 });
 
             modelBuilder.Entity("SysJaky_N.Models.CourseGroup", b =>
@@ -496,54 +456,6 @@ namespace SysJaky_N.Migrations
                     b.ToTable("OrderItems");
                 });
 
-            modelBuilder.Entity("SysJaky_N.Models.CompanyProfile", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<string>("ManagerId")
-                        .HasColumnType("varchar(255)")
-                        .HasAnnotation("MySql:CharSet", "utf8mb4");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
-                        .HasAnnotation("MySql:CharSet", "utf8mb4");
-
-                    b.Property<string>("ReferenceCode")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
-                        .HasAnnotation("MySql:CharSet", "utf8mb4");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ManagerId");
-
-                    b.HasIndex("ReferenceCode")
-                        .IsUnique();
-
-                    b.ToTable("CompanyProfiles");
-                });
-
-            modelBuilder.Entity("SysJaky_N.Models.WishlistItem", b =>
-                {
-                    b.Property<string>("UserId")
-                        .HasColumnType("varchar(255)")
-                        .HasAnnotation("MySql:CharSet", "utf8mb4");
-
-                    b.Property<int>("CourseId")
-                        .HasColumnType("int");
-
-                    b.HasKey("UserId", "CourseId");
-
-                    b.HasIndex("CourseId");
-
-                    b.ToTable("WishlistItems");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -597,27 +509,13 @@ namespace SysJaky_N.Migrations
 
             modelBuilder.Entity("SysJaky_N.Models.Course", b =>
                 {
-                    b.HasOne("SysJaky_N.Models.CourseBlock", "CourseBlock")
-                        .WithMany("Modules")
-                        .HasForeignKey("CourseBlockId");
-
                     b.HasOne("SysJaky_N.Models.CourseGroup", "CourseGroup")
                         .WithMany("Courses")
                         .HasForeignKey("CourseGroupId");
 
-                    b.Navigation("CourseBlock");
                     b.Navigation("CourseGroup");
                 });
 
-<<<<<<< HEAD
-            modelBuilder.Entity("SysJaky_N.Models.ApplicationUser", b =>
-                {
-                    b.HasOne("SysJaky_N.Models.CompanyProfile", "CompanyProfile")
-                        .WithMany("Users")
-                        .HasForeignKey("CompanyProfileId");
-
-                    b.Navigation("CompanyProfile");
-=======
             modelBuilder.Entity("SysJaky_N.Models.CourseReview", b =>
                 {
                     b.HasOne("SysJaky_N.Models.Course", "Course")
@@ -635,7 +533,6 @@ namespace SysJaky_N.Migrations
                     b.Navigation("Course");
 
                     b.Navigation("User");
->>>>>>> EF Migrations
                 });
 
             modelBuilder.Entity("SysJaky_N.Models.Order", b =>
@@ -675,39 +572,6 @@ namespace SysJaky_N.Migrations
             modelBuilder.Entity("SysJaky_N.Models.CourseGroup", b =>
                 {
                     b.Navigation("Courses");
-                });
-
-            modelBuilder.Entity("SysJaky_N.Models.CompanyProfile", b =>
-                {
-                    b.HasOne("SysJaky_N.Models.ApplicationUser", "Manager")
-                        .WithMany()
-                        .HasForeignKey("ManagerId");
-
-                    b.Navigation("Manager");
-                    b.Navigation("Users");
-                });
-
-            modelBuilder.Entity("SysJaky_N.Models.WishlistItem", b =>
-                {
-                    b.HasOne("SysJaky_N.Models.Course", "Course")
-                        .WithMany()
-                        .HasForeignKey("CourseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("SysJaky_N.Models.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Course");
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("SysJaky_N.Models.CourseBlock", b =>
-                {
-                    b.Navigation("Modules");
                 });
 
             modelBuilder.Entity("SysJaky_N.Models.Order", b =>
