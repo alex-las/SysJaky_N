@@ -10,13 +10,11 @@ namespace SysJaky_N.Services;
 public class CourseReminderService : BackgroundService
 {
     private readonly IServiceScopeFactory _scopeFactory;
-    private readonly IEmailSender _emailSender;
     private readonly ILogger<CourseReminderService> _logger;
 
-    public CourseReminderService(IServiceScopeFactory scopeFactory, IEmailSender emailSender, ILogger<CourseReminderService> logger)
+    public CourseReminderService(IServiceScopeFactory scopeFactory, ILogger<CourseReminderService> logger)
     {
         _scopeFactory = scopeFactory;
-        _emailSender = emailSender;
         _logger = logger;
     }
 
@@ -48,6 +46,7 @@ public class CourseReminderService : BackgroundService
     {
         using var scope = _scopeFactory.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        var emailSender = scope.ServiceProvider.GetRequiredService<IEmailSender>();
 
         var today = DateTime.UtcNow.Date;
         var courses = await context.Courses
@@ -79,7 +78,7 @@ public class CourseReminderService : BackgroundService
 
             foreach (var email in recipients)
             {
-                await _emailSender.SendEmailAsync(email!, subject, message);
+                await emailSender.SendEmailAsync(email!, subject, message);
             }
         }
     }
