@@ -48,7 +48,7 @@
                             </li>
                         }
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-page="/Cart/Index" aria-current="@(ViewContext.RouteData.Values["page"]?.ToString() == "/Cart/Index" ? "page" : null)">Cart</a>
+                            <a class="nav-link" asp-area="" asp-page="/Cart" aria-current="@(ViewContext.RouteData.Values["page"]?.ToString() == "/Cart" ? "page" : null)">Cart</a>
                         </li>
                         @if (!User.Identity.IsAuthenticated)
                         {
