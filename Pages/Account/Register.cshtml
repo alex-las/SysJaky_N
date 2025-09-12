@@ -17,6 +17,7 @@
     </div>
     <div>
         <altcha-widget name="altcha" challengeurl="~/altcha/challenge" verifyurl="~/altcha/verify" workerurl="~/lib/altcha/altcha.worker.js" refetchonexpire></altcha-widget>
+        <noscript>Prosím povolte JavaScript.</noscript>
         <span asp-validation-for="Input.Captcha"></span>
     </div>
     <button type="submit">Register</button>

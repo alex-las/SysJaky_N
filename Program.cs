@@ -9,6 +9,8 @@ using DinkToPdf.Contracts;
 using System.Text;
 using Microsoft.AspNetCore.Localization;
 using System.Globalization;
+using Microsoft.AspNetCore.RateLimiting;
+using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -44,6 +46,20 @@ builder.Services.AddMemoryCache();
 builder.Services.Configure<AltchaOptions>(builder.Configuration.GetSection("Altcha"));
 builder.Services.AddScoped<IAltchaService, AltchaService>();
 
+builder.Services.AddRateLimiter(options =>
+{
+    options.AddPolicy("AltchaVerify", context =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            context.Connection.RemoteIpAddress?.ToString() ?? "anon",
+            _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 5,
+                Window = TimeSpan.FromMinutes(1),
+                QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                QueueLimit = 0
+            }));
+});
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
@@ -77,6 +93,7 @@ app.UseRequestLocalization(localizationOptions);
 app.UseSession();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseRateLimiter();
 
 app.MapRazorPages();
 app.MapControllers();
