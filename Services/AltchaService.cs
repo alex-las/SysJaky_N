@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Concurrent;
 using System.Security.Cryptography;
 using System.Text;
@@ -10,7 +11,6 @@ namespace SysJaky_N.Services;
 public class AltchaService : IAltchaService
 {
     private readonly ConcurrentDictionary<string, (int Answer, DateTime Expires)> _solutions = new();
-    private readonly Random _random = new();
     private readonly string _secretKey;
 
     public AltchaService(IOptions<AltchaOptions> options)
@@ -22,7 +22,7 @@ public class AltchaService : IAltchaService
     {
         var a = RandomNumberGenerator.GetInt32(1, 10);
         var b = RandomNumberGenerator.GetInt32(1, 10);
-        var id = Guid.NewGuid().ToString("N");
+        var id = Convert.ToHexString(RandomNumberGenerator.GetBytes(32)).ToLowerInvariant();
         var expiresAt = DateTime.UtcNow.AddMinutes(5);
         _solutions[id] = (a + b, expiresAt);
         var expires = new DateTimeOffset(expiresAt).ToUnixTimeSeconds();
