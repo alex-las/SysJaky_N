@@ -23,6 +23,7 @@ public class AltchaService : IAltchaService
         var a = RandomNumberGenerator.GetInt32(1, 10);
         var b = RandomNumberGenerator.GetInt32(1, 10);
         var challengeId = Convert.ToHexString(RandomNumberGenerator.GetBytes(32)).ToLowerInvariant();
+
         var expiresAt = DateTime.UtcNow.AddMinutes(5);
         _solutions[challengeId] = (a + b, expiresAt);
         var expires = new DateTimeOffset(expiresAt).ToUnixTimeSeconds();
