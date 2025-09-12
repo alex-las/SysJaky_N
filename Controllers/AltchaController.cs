@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using SysJaky_N.Services;
+using SysJaky_N.Models;
 using Microsoft.Extensions.Logging;
 
 namespace SysJaky_N.Controllers;
