@@ -2,6 +2,6 @@ namespace SysJaky_N.Models;
 
 public class AltchaOptions
 {
-    // Placeholder for Altcha configuration settings
+    public string SecretKey { get; set; } = string.Empty;
 }
 
