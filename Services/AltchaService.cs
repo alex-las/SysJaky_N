@@ -15,7 +15,9 @@ public class AltchaService : IAltchaService
         var b = _random.Next(1, 10);
         var id = Guid.NewGuid().ToString("N");
         _solutions[id] = a + b;
-        return new AltchaChallenge { Id = id, Question = $"{a} + {b}" };
+        var expires = DateTimeOffset.UtcNow.AddMinutes(5).ToUnixTimeSeconds();
+        var salt = $"{Guid.NewGuid()}?expires={expires}";
+        return new AltchaChallenge { Id = id, Question = $"{a} + {b}", Salt = salt };
     }
 
     public bool Verify(AltchaVerifyPayload payload)
