@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using System.Security.Cryptography;
 using System.Text.Json;
 using SysJaky_N.Models;
 
@@ -7,12 +8,11 @@ namespace SysJaky_N.Services;
 public class AltchaService : IAltchaService
 {
     private readonly ConcurrentDictionary<string, int> _solutions = new();
-    private readonly Random _random = new();
 
     public AltchaChallenge CreateChallenge()
     {
-        var a = _random.Next(1, 10);
-        var b = _random.Next(1, 10);
+        var a = RandomNumberGenerator.GetInt32(1, 10);
+        var b = RandomNumberGenerator.GetInt32(1, 10);
         var id = Guid.NewGuid().ToString("N");
         _solutions[id] = a + b;
         var expires = DateTimeOffset.UtcNow.AddMinutes(5).ToUnixTimeSeconds();
