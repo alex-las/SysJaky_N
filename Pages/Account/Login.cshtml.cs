@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using SysJaky_N.Models;
+using SysJaky_N.Attributes;
 using SysJaky_N.Services;
 using System.ComponentModel.DataAnnotations;
 
@@ -34,8 +35,6 @@ public class LoginModel : PageModel
         public string Password { get; set; } = string.Empty;
 
         public bool RememberMe { get; set; }
-
-        [Required(ErrorMessage = "Captcha verification is required.")]
         public string Captcha { get; set; } = string.Empty;
     }
 
@@ -43,19 +42,13 @@ public class LoginModel : PageModel
     {
     }
 
+    [AltchaValidate]
     public async Task<IActionResult> OnPostAsync()
     {
         if (!ModelState.IsValid)
         {
             return Page();
         }
-
-        if (string.IsNullOrEmpty(Input.Captcha))
-        {
-            ModelState.AddModelError(string.Empty, "Captcha verification failed.");
-            return Page();
-        }
-
         var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
         if (result.Succeeded)
         {

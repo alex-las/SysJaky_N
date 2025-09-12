@@ -16,7 +16,7 @@
         <span asp-validation-for="Input.Password"></span>
     </div>
     <div>
-        <altcha-widget name="altcha" challengeurl="~/altcha/challenge" verifyurl="~/altcha/verify" refetchonexpire></altcha-widget>
+        <altcha-widget name="altcha" challengeurl="~/altcha/challenge" verifyurl="~/altcha/verify" workerurl="~/lib/altcha/altcha.worker.js" refetchonexpire></altcha-widget>
         <span asp-validation-for="Input.Captcha"></span>
     </div>
     <button type="submit">Register</button>
