@@ -50,7 +50,7 @@ public class DetailsModel : PageModel
     public IActionResult OnPost(int id)
     {
         // TODO: Add selected course to cart
-        return RedirectToPage("/Cart/Index");
+        return RedirectToPage("/Cart");
     }
 
     public async Task<IActionResult> OnPostOrderBlockAsync(int blockId)
