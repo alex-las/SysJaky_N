@@ -17,7 +17,8 @@ public class AltchaService : IAltchaService
         _solutions[id] = a + b;
         var expires = DateTimeOffset.UtcNow.AddMinutes(5).ToUnixTimeSeconds();
         var salt = $"{Guid.NewGuid()}?expires={expires}";
-        return new AltchaChallenge { Id = id, Question = $"{a} + {b}", Salt = salt };
+        const string algorithm = "SHA-256";
+        return new AltchaChallenge { Id = id, Question = $"{a} + {b}", Salt = salt, Algorithm = algorithm };
     }
 
     public bool Verify(AltchaVerifyPayload payload)
