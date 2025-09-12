@@ -81,7 +81,6 @@
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script type="module" src="~/lib/altcha/altcha.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
 
     @if (!User.Identity.IsAuthenticated)
@@ -118,7 +117,8 @@
                                         <input type="hidden" id="login-captcha" name="Input.Captcha" />
                                     </div>
                                     <div class="mb-3 form-check">
-                                        <input type="checkbox" class="form-check-input" id="rememberMe" name="Input.RememberMe" />
+                                        <input type="hidden" name="Input.RememberMe" value="false" />
+                                        <input type="checkbox" class="form-check-input" id="rememberMe" name="Input.RememberMe" value="true" />
                                         <label class="form-check-label" for="rememberMe">Remember me</label>
                                     </div>
                                     <button type="submit" class="btn btn-primary w-100">Login</button>
@@ -147,6 +147,8 @@
             </div>
         </div>
     }
+
+    <script src="~/lib/altcha/altcha.min.js" defer></script>
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>
