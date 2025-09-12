@@ -113,8 +113,7 @@
                                         <input type="password" class="form-control" id="loginPassword" name="Input.Password" required />
                                     </div>
                                     <div class="mb-3">
-                                        <div class="altcha" data-target="#login-captcha"></div>
-                                        <input type="hidden" id="login-captcha" name="Input.Captcha" />
+                                        <altcha-widget name="altcha" challengeurl="~/altcha/challenge" verifyurl="~/altcha/verify" refetchonexpire></altcha-widget>
                                     </div>
                                     <div class="mb-3 form-check">
                                         <input type="hidden" name="Input.RememberMe" value="false" />
@@ -135,8 +134,7 @@
                                         <input type="password" class="form-control" id="registerPassword" name="Input.Password" required />
                                     </div>
                                     <div class="mb-3">
-                                        <div class="altcha" data-target="#register-captcha"></div>
-                                        <input type="hidden" id="register-captcha" name="Input.Captcha" />
+                                        <altcha-widget name="altcha" challengeurl="~/altcha/challenge" verifyurl="~/altcha/verify" refetchonexpire></altcha-widget>
                                     </div>
                                     <button type="submit" class="btn btn-success w-100">Register</button>
                                 </form>
