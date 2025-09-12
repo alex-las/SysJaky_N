@@ -22,14 +22,22 @@ public class AltchaService : IAltchaService
     {
         var a = RandomNumberGenerator.GetInt32(1, 10);
         var b = RandomNumberGenerator.GetInt32(1, 10);
-        var id = Convert.ToHexString(RandomNumberGenerator.GetBytes(32)).ToLowerInvariant();
+        var challengeId = Convert.ToHexString(RandomNumberGenerator.GetBytes(32)).ToLowerInvariant();
+
         var expiresAt = DateTime.UtcNow.AddMinutes(5);
-        _solutions[id] = (a + b, expiresAt);
+        _solutions[challengeId] = (a + b, expiresAt);
         var expires = new DateTimeOffset(expiresAt).ToUnixTimeSeconds();
         var salt = $"{Guid.NewGuid()}?expires={expires}";
         const string algorithm = "SHA-256";
-        var challenge = new AltchaChallenge { Id = id, Question = $"{a} + {b}", Salt = salt, Algorithm = algorithm };
-        var data = $"{challenge.Id}:{challenge.Question}:{challenge.Salt}:{challenge.Algorithm}";
+        var challenge = new AltchaChallenge
+        {
+            Id = challengeId,
+            Challenge = challengeId,
+            Question = $"{a} + {b}",
+            Salt = salt,
+            Algorithm = algorithm
+        };
+        var data = $"{challenge.Challenge}:{challenge.Salt}:{challenge.Algorithm}";
         using var hmac = new HMACSHA256(Encoding.UTF8.GetBytes(_secretKey));
         challenge.Signature = Convert.ToHexString(hmac.ComputeHash(Encoding.UTF8.GetBytes(data))).ToLowerInvariant();
         return challenge;
