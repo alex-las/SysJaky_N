@@ -1,6 +1,8 @@
 using System.Collections.Concurrent;
 using System.Security.Cryptography;
+using System.Text;
 using System.Text.Json;
+using Microsoft.Extensions.Options;
 using SysJaky_N.Models;
 
 namespace SysJaky_N.Services;
@@ -9,7 +11,12 @@ public class AltchaService : IAltchaService
 {
     private readonly ConcurrentDictionary<string, (int Answer, DateTime Expires)> _solutions = new();
     private readonly Random _random = new();
+    private readonly string _secretKey;
 
+    public AltchaService(IOptions<AltchaOptions> options)
+    {
+        _secretKey = options.Value.SecretKey;
+    }
 
     public AltchaChallenge CreateChallenge()
     {
@@ -21,7 +28,11 @@ public class AltchaService : IAltchaService
         var expires = new DateTimeOffset(expiresAt).ToUnixTimeSeconds();
         var salt = $"{Guid.NewGuid()}?expires={expires}";
         const string algorithm = "SHA-256";
-        return new AltchaChallenge { Id = id, Question = $"{a} + {b}", Salt = salt, Algorithm = algorithm };
+        var challenge = new AltchaChallenge { Id = id, Question = $"{a} + {b}", Salt = salt, Algorithm = algorithm };
+        var data = $"{challenge.Id}:{challenge.Question}:{challenge.Salt}:{challenge.Algorithm}";
+        using var hmac = new HMACSHA256(Encoding.UTF8.GetBytes(_secretKey));
+        challenge.Signature = Convert.ToHexString(hmac.ComputeHash(Encoding.UTF8.GetBytes(data))).ToLowerInvariant();
+        return challenge;
     }
 
     public bool Verify(AltchaVerifyPayload payload)
