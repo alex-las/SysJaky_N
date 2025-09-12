@@ -117,7 +117,7 @@
                                         <altcha-widget name="altcha"
                                                        challengeurl="~/altcha/challenge"
                                                        verifyurl="~/altcha/verify"
-                                                       workerurl="@($"{Request.Scheme}://{Request.Host}{Url.Content("~/lib/altcha/altcha.worker.js")}")">
+                                                       workerurl="@($"{Context.Request.Scheme}://{Context.Request.Host}{Url.Content("~/lib/altcha/altcha.worker.js")}")">
                                         </altcha-widget>
 
                                         <noscript>Prosím povolte JavaScript.</noscript>
@@ -145,7 +145,7 @@
                                         <altcha-widget name="altcha"
                                                        challengeurl="~/altcha/challenge"
                                                        verifyurl="~/altcha/verify"
-                                                       workerurl="@($"{Request.Scheme}://{Request.Host}{Url.Content("~/lib/altcha/altcha.worker.js")}")">
+                                                       workerurl="@($"{Context.Request.Scheme}://{Context.Request.Host}{Url.Content("~/lib/altcha/altcha.worker.js")}")">
                                         </altcha-widget>
 
                                         <noscript>Prosím povolte JavaScript.</noscript>
