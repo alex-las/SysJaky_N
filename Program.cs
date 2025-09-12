@@ -31,6 +31,7 @@ builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession();
 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
 builder.Services.AddRazorPages().AddViewLocalization();
+builder.Services.AddControllers();
 builder.Services.Configure<PaymentGatewayOptions>(builder.Configuration.GetSection("PaymentGateway"));
 builder.Services.AddScoped<PaymentService>();
 builder.Services.AddSingleton<IConverter>(new SynchronizedConverter(new PdfTools()));
@@ -39,6 +40,9 @@ builder.Services.AddScoped<IEmailSender, EmailSender>();
 builder.Services.AddScoped<IAuditService, AuditService>();
 builder.Services.AddScoped<IAltchaService, AltchaService>();
 builder.Services.AddHostedService<CourseReminderService>();
+builder.Services.AddMemoryCache();
+builder.Services.Configure<AltchaOptions>(builder.Configuration.GetSection("Altcha"));
+builder.Services.AddScoped<IAltchaService, AltchaService>();
 
 var app = builder.Build();
 
@@ -75,6 +79,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapRazorPages();
+app.MapControllers();
 app.MapPost("/payment/webhook", async (HttpRequest request, PaymentService paymentService) =>
 {
     await paymentService.HandleWebhookAsync(request);
