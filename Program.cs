@@ -95,6 +95,9 @@ app.UseAuthorization();
 app.UseRateLimiter();
 
 app.MapRazorPages();
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller}/{action=Index}/{id?}");
 app.MapControllers();
 app.MapPost("/payment/webhook", async (HttpRequest request, PaymentService paymentService) =>
 {

@@ -82,6 +82,7 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script type="module" src='@Url.Content("~/lib/altcha/altcha.min.js")'></script>
 
     @if (!User.Identity.IsAuthenticated)
     {
@@ -115,9 +116,9 @@
                                     </div>
                                     <div class="mb-3">
                                         <altcha-widget name="altcha"
-                                                       challengeurl="~/altcha/challenge"
-                                                       verifyurl="~/altcha/verify"
-                                                       workerurl="@($"{Context.Request.Scheme}://{Context.Request.Host}{Url.Content("~/lib/altcha/altcha.worker.js")}")">
+                                                       challengeurl='@Url.Content("~/altcha/challenge")'
+                                                       verifyurl='@Url.Content("~/altcha/verify")'
+                                                       workerurl='@($"{Context.Request.Scheme}://{Context.Request.Host}{Url.Content("~/lib/altcha/altcha.worker.js")}")'>
                                         </altcha-widget>
 
                                         <noscript>Prosím povolte JavaScript.</noscript>
@@ -143,9 +144,9 @@
                                     </div>
                                     <div class="mb-3">
                                         <altcha-widget name="altcha"
-                                                       challengeurl="~/altcha/challenge"
-                                                       verifyurl="~/altcha/verify"
-                                                       workerurl="@($"{Context.Request.Scheme}://{Context.Request.Host}{Url.Content("~/lib/altcha/altcha.worker.js")}")">
+                                                       challengeurl='@Url.Content("~/altcha/challenge")'
+                                                       verifyurl='@Url.Content("~/altcha/verify")'
+                                                       workerurl='@($"{Context.Request.Scheme}://{Context.Request.Host}{Url.Content("~/lib/altcha/altcha.worker.js")}")'>
                                         </altcha-widget>
 
                                         <noscript>Prosím povolte JavaScript.</noscript>
@@ -159,9 +160,6 @@
             </div>
         </div>
     }
-
-    <script type="module" src="~/lib/altcha/altcha.min.js"></script>
-
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>
