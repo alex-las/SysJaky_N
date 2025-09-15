@@ -10,6 +10,7 @@ public class AltchaVerifyPayload
     /// </summary>
     public string Challenge { get; set; } = string.Empty;
 
+
     /// <summary>
     /// Required difficulty of the challenge.
     /// </summary>

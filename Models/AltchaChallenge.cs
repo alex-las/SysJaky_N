@@ -10,6 +10,7 @@ public class AltchaChallenge
     /// </summary>
     public string Challenge { get; set; } = string.Empty;
 
+
     /// <summary>
     /// Required difficulty (number of leading zeros) for the hash.
     /// </summary>

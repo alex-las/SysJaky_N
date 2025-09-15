@@ -31,12 +31,14 @@ public class AltchaService : IAltchaService
         var salt = $"{Guid.NewGuid()}?expires={expires}";
         const string algorithm = "SHA-256";
         var data = $"{challenge}:{_difficulty}:{salt}:{algorithm}";
+
         using var hmac = new HMACSHA256(Encoding.UTF8.GetBytes(_secretKey));
         var signature = Convert.ToHexString(hmac.ComputeHash(Encoding.UTF8.GetBytes(data))).ToLowerInvariant();
 
         return new AltchaChallenge
         {
             Challenge = challenge,
+
             Difficulty = _difficulty,
             Salt = salt,
             Algorithm = algorithm,
@@ -60,6 +62,7 @@ public class AltchaService : IAltchaService
 
         // Validate signature
         var data = $"{payload.Challenge}:{payload.Difficulty}:{payload.Salt}:{payload.Algorithm}";
+
         using var hmac = new HMACSHA256(Encoding.UTF8.GetBytes(_secretKey));
         var expected = Convert.ToHexString(hmac.ComputeHash(Encoding.UTF8.GetBytes(data))).ToLowerInvariant();
         if (!CryptographicOperations.FixedTimeEquals(Convert.FromHexString(expected), Convert.FromHexString(payload.Signature)))
@@ -69,6 +72,7 @@ public class AltchaService : IAltchaService
 
         // Verify proof-of-work
         var input = Encoding.UTF8.GetBytes(payload.Challenge + payload.Nonce);
+
         var hash = SHA256.HashData(input);
         var hex = Convert.ToHexString(hash).ToLowerInvariant();
         var prefix = new string('0', payload.Difficulty);
