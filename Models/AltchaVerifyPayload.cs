@@ -34,6 +34,7 @@ public class AltchaVerifyPayload
     /// <summary>
     /// Nonce solving the proof-of-work.
     /// </summary>
-    public int Nonce { get; set; }
+    public long Nonce { get; set; }
+
 }
 

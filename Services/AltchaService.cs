@@ -60,24 +60,30 @@ public class AltchaService : IAltchaService
             return false;
         }
 
-        // Validate signature
-        var data = $"{payload.Challenge}:{payload.Difficulty}:{payload.Salt}:{payload.Algorithm}";
+        try
+        {
+            // Validate signature
+            var data = $"{payload.Challenge}:{payload.Difficulty}:{payload.Salt}:{payload.Algorithm}";
+            using var hmac = new HMACSHA256(Encoding.UTF8.GetBytes(_secretKey));
+            var expected = Convert.ToHexString(hmac.ComputeHash(Encoding.UTF8.GetBytes(data))).ToLowerInvariant();
+            if (!CryptographicOperations.FixedTimeEquals(Convert.FromHexString(expected), Convert.FromHexString(payload.Signature)))
+            {
+                return false;
+            }
 
-        using var hmac = new HMACSHA256(Encoding.UTF8.GetBytes(_secretKey));
-        var expected = Convert.ToHexString(hmac.ComputeHash(Encoding.UTF8.GetBytes(data))).ToLowerInvariant();
-        if (!CryptographicOperations.FixedTimeEquals(Convert.FromHexString(expected), Convert.FromHexString(payload.Signature)))
+            // Verify proof-of-work
+            var input = Encoding.UTF8.GetBytes(payload.Challenge + payload.Nonce);
+            var hash = SHA256.HashData(input);
+            var hex = Convert.ToHexString(hash).ToLowerInvariant();
+            var prefix = new string('0', payload.Difficulty);
+            return hex.StartsWith(prefix);
+        }
+        catch (FormatException)
         {
             return false;
         }
-
-        // Verify proof-of-work
-        var input = Encoding.UTF8.GetBytes(payload.Challenge + payload.Nonce);
-
-        var hash = SHA256.HashData(input);
-        var hex = Convert.ToHexString(hash).ToLowerInvariant();
-        var prefix = new string('0', payload.Difficulty);
-        return hex.StartsWith(prefix);
     }
+
 
     private static long? ExtractExpiry(string salt)
     {
@@ -100,6 +106,10 @@ public class AltchaService : IAltchaService
             return Task.FromResult(model != null && Verify(model));
         }
         catch (JsonException)
+        {
+            return Task.FromResult(false);
+        }
+        catch (FormatException)
         {
             return Task.FromResult(false);
         }
