@@ -6,9 +6,10 @@ namespace SysJaky_N.Models;
 public class AltchaChallenge
 {
     /// <summary>
-    /// Random seed used for the proof-of-work calculation.
+    /// Challenge string consumed by the Altcha widget. Acts as the seed for the proof-of-work calculation.
     /// </summary>
-    public string Seed { get; set; } = string.Empty;
+    public string Challenge { get; set; } = string.Empty;
+
 
     /// <summary>
     /// Required difficulty (number of leading zeros) for the hash.

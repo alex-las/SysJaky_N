@@ -26,17 +26,19 @@ public class AltchaService : IAltchaService
 
     public AltchaChallenge CreateChallenge()
     {
-        var seed = Convert.ToHexString(RandomNumberGenerator.GetBytes(32)).ToLowerInvariant();
+        var challenge = Convert.ToHexString(RandomNumberGenerator.GetBytes(32)).ToLowerInvariant();
         var expires = DateTimeOffset.UtcNow.AddSeconds(_ttlSeconds).ToUnixTimeSeconds();
         var salt = $"{Guid.NewGuid()}?expires={expires}";
         const string algorithm = "SHA-256";
-        var data = $"{seed}:{_difficulty}:{salt}:{algorithm}";
+        var data = $"{challenge}:{_difficulty}:{salt}:{algorithm}";
+
         using var hmac = new HMACSHA256(Encoding.UTF8.GetBytes(_secretKey));
         var signature = Convert.ToHexString(hmac.ComputeHash(Encoding.UTF8.GetBytes(data))).ToLowerInvariant();
 
         return new AltchaChallenge
         {
-            Seed = seed,
+            Challenge = challenge,
+
             Difficulty = _difficulty,
             Salt = salt,
             Algorithm = algorithm,
@@ -59,7 +61,8 @@ public class AltchaService : IAltchaService
         }
 
         // Validate signature
-        var data = $"{payload.Seed}:{payload.Difficulty}:{payload.Salt}:{payload.Algorithm}";
+        var data = $"{payload.Challenge}:{payload.Difficulty}:{payload.Salt}:{payload.Algorithm}";
+
         using var hmac = new HMACSHA256(Encoding.UTF8.GetBytes(_secretKey));
         var expected = Convert.ToHexString(hmac.ComputeHash(Encoding.UTF8.GetBytes(data))).ToLowerInvariant();
         if (!CryptographicOperations.FixedTimeEquals(Convert.FromHexString(expected), Convert.FromHexString(payload.Signature)))
@@ -68,7 +71,8 @@ public class AltchaService : IAltchaService
         }
 
         // Verify proof-of-work
-        var input = Encoding.UTF8.GetBytes(payload.Seed + payload.Nonce);
+        var input = Encoding.UTF8.GetBytes(payload.Challenge + payload.Nonce);
+
         var hash = SHA256.HashData(input);
         var hex = Convert.ToHexString(hash).ToLowerInvariant();
         var prefix = new string('0', payload.Difficulty);

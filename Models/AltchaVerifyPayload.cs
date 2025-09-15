@@ -6,9 +6,10 @@ namespace SysJaky_N.Models;
 public class AltchaVerifyPayload
 {
     /// <summary>
-    /// The seed from the original challenge.
+    /// The original challenge string acting as the proof-of-work seed.
     /// </summary>
-    public string Seed { get; set; } = string.Empty;
+    public string Challenge { get; set; } = string.Empty;
+
 
     /// <summary>
     /// Required difficulty of the challenge.
