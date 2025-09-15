@@ -31,12 +31,14 @@ public class AltchaService : IAltchaService
         var salt = $"{Guid.NewGuid()}?expires={expires}";
         const string algorithm = "SHA-256";
         var data = $"{challenge}:{_difficulty}:{salt}:{algorithm}";
+
         using var hmac = new HMACSHA256(Encoding.UTF8.GetBytes(_secretKey));
         var signature = Convert.ToHexString(hmac.ComputeHash(Encoding.UTF8.GetBytes(data))).ToLowerInvariant();
 
         return new AltchaChallenge
         {
             Challenge = challenge,
+
             Difficulty = _difficulty,
             Salt = salt,
             Algorithm = algorithm,
@@ -81,6 +83,7 @@ public class AltchaService : IAltchaService
             return false;
         }
     }
+
 
     private static long? ExtractExpiry(string salt)
     {

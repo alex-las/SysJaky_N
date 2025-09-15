@@ -10,6 +10,7 @@ public class AltchaVerifyPayload
     /// </summary>
     public string Challenge { get; set; } = string.Empty;
 
+
     /// <summary>
     /// Required difficulty of the challenge.
     /// </summary>
@@ -34,5 +35,6 @@ public class AltchaVerifyPayload
     /// Nonce solving the proof-of-work.
     /// </summary>
     public long Nonce { get; set; }
+
 }
 
