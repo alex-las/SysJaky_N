@@ -47,6 +47,7 @@ public class CourseReminderService : BackgroundService
         using var scope = _scopeFactory.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
         var emailSender = scope.ServiceProvider.GetRequiredService<IEmailSender>();
+        var certificateService = scope.ServiceProvider.GetRequiredService<CertificateService>();
 
         var today = DateTime.UtcNow.Date;
         var courses = await context.Courses
@@ -81,5 +82,7 @@ public class CourseReminderService : BackgroundService
                 await emailSender.SendEmailAsync(email!, subject, message);
             }
         }
+
+        await certificateService.IssueCertificatesForCompletedEnrollmentsAsync(token);
     }
 }

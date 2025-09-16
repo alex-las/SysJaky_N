@@ -13,6 +13,8 @@ public class Enrollment
     public EnrollmentStatus Status { get; set; } = EnrollmentStatus.Pending;
 
     public DateTime? CheckedInAtUtc { get; set; }
+
+    public Certificate? Certificate { get; set; }
 }
 
 public enum EnrollmentStatus

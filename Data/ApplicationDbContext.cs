@@ -33,6 +33,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<WaitlistEntry> WaitlistEntries { get; set; } = default!;
     public DbSet<PaymentId> PaymentIds { get; set; } = default!;
     public DbSet<PriceSchedule> PriceSchedules { get; set; } = default!;
+    public DbSet<Certificate> Certificates { get; set; } = default!;
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -127,5 +128,19 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 
         builder.Entity<PriceSchedule>()
             .HasIndex(p => new { p.CourseId, p.FromUtc, p.ToUtc });
+
+        builder.Entity<Certificate>()
+            .HasIndex(c => c.Number)
+            .IsUnique();
+
+        builder.Entity<Certificate>()
+            .HasIndex(c => c.Hash)
+            .IsUnique();
+
+        builder.Entity<Certificate>()
+            .HasOne(c => c.IssuedToEnrollment)
+            .WithOne(e => e.Certificate)
+            .HasForeignKey<Certificate>(c => c.IssuedToEnrollmentId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }
