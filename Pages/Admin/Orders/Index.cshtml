@@ -23,7 +23,7 @@
             <td>@order.Id</td>
             <td>@order.CreatedAt.ToString("g")</td>
             <td>@order.Status</td>
-            <td>@order.TotalPrice</td>
+            <td>@order.Total</td>
             <td>
                 <a asp-page="/Orders/Details" asp-route-id="@order.Id">Details</a> |
                 <a asp-page="/Orders/Edit" asp-route-id="@order.Id">Change Status</a>

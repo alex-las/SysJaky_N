@@ -45,14 +45,14 @@
                 <td>@order.Id</td>
                 <td>@order.CreatedAt</td>
                 <td>@order.Status</td>
-                <td>@order.TotalPrice</td>
+                <td>@order.Total</td>
                 <td>
                     <a asp-page="/Orders/Details" asp-route-id="@order.Id">Detail</a>
                     @if (order.Status == OrderStatus.Paid)
                     {
                         <a asp-page="/Orders/Details" asp-page-handler="DownloadInvoice" asp-route-id="@order.Id">Invoice</a>
                     }
-                    else if (order.Status == OrderStatus.Created)
+                    else if (order.Status == OrderStatus.Pending)
                     {
                         <a asp-page="/Orders/Details" asp-page-handler="DownloadQr" asp-route-id="@order.Id">QR</a>
                     }

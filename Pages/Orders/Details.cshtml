@@ -20,7 +20,8 @@
         <tr>
             <th>Course</th>
             <th>Quantity</th>
-            <th>Price</th>
+            <th>Unit price (excl. VAT)</th>
+            <th>VAT</th>
             <th>Total</th>
         </tr>
     </thead>
@@ -30,20 +31,23 @@
         <tr>
             <td>@item.Course?.Title</td>
             <td>@item.Quantity</td>
-            <td>@item.Course?.Price</td>
-            <td>@((item.Course?.Price ?? 0) * item.Quantity)</td>
+            <td>@item.UnitPriceExclVat</td>
+            <td>@item.Vat</td>
+            <td>@item.Total</td>
         </tr>
     }
     </tbody>
 </table>
-<p>Total: @Model.Order.TotalPrice</p>
+<p>Subtotal (excl. VAT): @Model.Order.PriceExclVat</p>
+<p>VAT: @Model.Order.Vat</p>
+<p>Total: @Model.Order.Total</p>
 
 @if (!string.IsNullOrEmpty(Model.QrCodeImage))
 {
     <img src="@Model.QrCodeImage" alt="QR code" />
 }
 
-@if (Model.PaymentEnabled && Model.Order.Status != OrderStatus.Paid)
+@if (Model.PaymentEnabled && Model.Order.Status == OrderStatus.Pending)
 {
     <form method="post" asp-page-handler="Pay">
         <button type="submit" class="btn btn-primary">Zaplatit online</button>

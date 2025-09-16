@@ -18,6 +18,8 @@ public class CartModel : PageModel
     private readonly IEmailSender _emailSender;
     private readonly IAuditService _auditService;
 
+    private const decimal VatRate = 0.21m;
+
     public CartModel(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IEmailSender emailSender, IAuditService auditService)
     {
         _context = context;
@@ -43,11 +45,25 @@ public class CartModel : PageModel
     public async Task<IActionResult> OnPostCheckoutAsync()
     {
         var cart = HttpContext.Session.GetObject<List<CartItem>>("Cart") ?? new List<CartItem>();
-        if (!cart.Any()) return RedirectToPage();
+        if (!cart.Any())
+        {
+            await LoadCartAsync();
+            await ApplyStoredDiscountAsync();
+            if (string.IsNullOrEmpty(ErrorMessage))
+            {
+                ErrorMessage = "Your cart is empty.";
+            }
+            return Page();
+        }
 
         var user = await _userManager.GetUserAsync(User);
-        if (user == null) return Challenge();
-        var userId = user.Id;
+        if (user == null)
+            return Challenge();
+
+        var subtotal = await CalculateTotalAsync(cart);
+        DiscountCode? discount = null;
+        var discountId = HttpContext.Session.GetInt32("DiscountCodeId");
+        if (discountId.HasValue)
 
         var ids = cart.Select(c => c.CourseId).ToList();
         var courses = await _context.Courses.Where(c => ids.Contains(c.Id)).ToListAsync();
@@ -60,6 +76,43 @@ public class CartModel : PageModel
             voucher = await _context.Vouchers.FindAsync(voucherId.Value);
             if (voucher == null || !IsVoucherValidForCart(voucher, cartLines))
             {
+                var discountAmount = CalculateDiscount(subtotal, discount);
+                subtotal -= discountAmount;
+            }
+            else
+            {
+                discount = null;
+            }
+        }
+
+        var total = Math.Round(Math.Max(subtotal, 0m), 2, MidpointRounding.AwayFromZero);
+        if (!cart.Any())
+        {
+            await LoadCartAsync();
+            await ApplyStoredDiscountAsync();
+            if (string.IsNullOrEmpty(ErrorMessage))
+            {
+                ErrorMessage = "Your cart is empty.";
+            }
+            return Page();
+        }
+
+        var ids = cart.Select(c => c.CourseId).ToList();
+        var courses = await _context.Courses.Where(c => ids.Contains(c.Id)).ToListAsync();
+
+        var pricing = BuildOrderPricing(cart, courses, total);
+        if (!pricing.Items.Any())
+        {
+            await LoadCartAsync();
+            await ApplyStoredDiscountAsync();
+            if (string.IsNullOrEmpty(ErrorMessage))
+            {
+                ErrorMessage = "Your cart is empty.";
+            }
+            return Page();
+        }
+
+
                 voucher = null;
             }
         }
@@ -70,21 +123,26 @@ public class CartModel : PageModel
         }
         var order = new Order
         {
-            UserId = userId,
-            Status = OrderStatus.Created,
+            UserId = user.Id,
+            Status = OrderStatus.Pending,
             CreatedAt = DateTime.UtcNow,
-            Items = cart.Select(c => new OrderItem { CourseId = c.CourseId, Quantity = c.Quantity }).ToList(),
+            Items = pricing.Items,
+            PriceExclVat = pricing.PriceExclVat,
+            Vat = pricing.Vat,
+            Total = total,
             TotalPrice = total,
             VoucherId = voucher?.Id
         };
+
         _context.Orders.Add(order);
         if (voucher != null)
         {
             voucher.UsedCount += 1;
         }
         await _context.SaveChangesAsync();
-        await _auditService.LogAsync(userId, "OrderCreated", $"Order {order.Id} created");
+        await _auditService.LogAsync(user.Id, "OrderCreated", $"Order {order.Id} created");
         await _emailSender.SendEmailAsync(user.Email!, "Order Created", $"Your order {order.Id} has been created.");
+
         HttpContext.Session.Remove("Cart");
         HttpContext.Session.Remove("VoucherId");
         HttpContext.Session.Remove("Bundles");
@@ -201,15 +259,10 @@ public class CartModel : PageModel
 
     private static decimal ClampPercentage(decimal value)
     {
-        if (value < 0)
-        {
-            return 0;
-        }
-        if (value > 100)
-        {
-            return 100;
-        }
-        return value;
+        AppliedDiscount = discount;
+        DiscountAmount = CalculateDiscount(Total, discount);
+        Total = Math.Round(Total - DiscountAmount, 2, MidpointRounding.AwayFromZero);
+
     }
 
     private static bool IsVoucherCurrentlyValid(Voucher voucher)
@@ -222,12 +275,15 @@ public class CartModel : PageModel
         var now = DateTime.UtcNow;
         if (voucher.ExpiresUtc.HasValue && voucher.ExpiresUtc.Value <= now)
         {
-            return false;
+            return Math.Round(total * discount.Percentage.Value / 100m, 2, MidpointRounding.AwayFromZero);
+
         }
 
         if (voucher.MaxRedemptions.HasValue && voucher.MaxRedemptions.Value > 0 && voucher.UsedCount >= voucher.MaxRedemptions.Value)
         {
-            return false;
+            var amount = Math.Round(discount.Amount.Value, 2, MidpointRounding.AwayFromZero);
+            return Math.Min(amount, total);
+
         }
 
         return true;
@@ -322,7 +378,96 @@ public class CartModel : PageModel
             }
         }
         HttpContext.Session.SetObject("Bundles", bundleIds);
-        return total;
+        return Math.Round(total, 2, MidpointRounding.AwayFromZero);
+    }
+
+    private PricingBreakdown BuildOrderPricing(List<CartItem> cart, List<Course> courses, decimal total)
+    {
+        var breakdown = new PricingBreakdown();
+        if (!cart.Any())
+            return breakdown;
+
+        var courseMap = courses.ToDictionary(c => c.Id);
+        var lines = new List<(CartItem CartItem, Course Course, decimal BaseTotal)>();
+
+        foreach (var cartItem in cart)
+        {
+            if (cartItem.Quantity <= 0)
+                continue;
+            if (!courseMap.TryGetValue(cartItem.CourseId, out var course))
+                continue;
+
+            var baseTotal = course.Price * cartItem.Quantity;
+            lines.Add((cartItem, course, baseTotal));
+        }
+
+        if (!lines.Any())
+            return breakdown;
+
+        var finalTotal = Math.Round(Math.Max(total, 0m), 2, MidpointRounding.AwayFromZero);
+        var baseSum = lines.Sum(l => l.BaseTotal);
+        var factor = baseSum > 0m ? finalTotal / baseSum : 0m;
+        decimal allocatedTotal = 0m;
+
+        for (var i = 0; i < lines.Count; i++)
+        {
+            var line = lines[i];
+            decimal lineTotal;
+
+            if (baseSum == 0m && finalTotal > 0m)
+            {
+                if (i == lines.Count - 1)
+                {
+                    lineTotal = Math.Round(finalTotal - allocatedTotal, 2, MidpointRounding.AwayFromZero);
+                }
+                else
+                {
+                    lineTotal = Math.Round(finalTotal / lines.Count, 2, MidpointRounding.AwayFromZero);
+                }
+            }
+            else if (i == lines.Count - 1)
+            {
+                lineTotal = Math.Round(finalTotal - allocatedTotal, 2, MidpointRounding.AwayFromZero);
+            }
+            else
+            {
+                lineTotal = Math.Round(line.BaseTotal * factor, 2, MidpointRounding.AwayFromZero);
+            }
+
+            allocatedTotal += lineTotal;
+
+            var quantity = line.CartItem.Quantity;
+            decimal unitPriceExcl = 0m;
+            decimal lineVat = 0m;
+
+            if (quantity > 0 && lineTotal > 0m)
+            {
+                var linePriceExcl = Math.Round(lineTotal / (1 + VatRate), 2, MidpointRounding.AwayFromZero);
+                unitPriceExcl = Math.Round(linePriceExcl / quantity, 2, MidpointRounding.AwayFromZero);
+                lineVat = lineTotal - linePriceExcl;
+            }
+
+            breakdown.Items.Add(new OrderItem
+            {
+                CourseId = line.Course.Id,
+                Quantity = quantity,
+                UnitPriceExclVat = unitPriceExcl,
+                Vat = lineVat,
+                Total = lineTotal
+            });
+        }
+
+        breakdown.Vat = Math.Round(breakdown.Items.Sum(i => i.Vat), 2, MidpointRounding.AwayFromZero);
+        breakdown.PriceExclVat = Math.Round(breakdown.Items.Sum(i => i.Total - i.Vat), 2, MidpointRounding.AwayFromZero);
+
+        return breakdown;
+    }
+
+    private sealed class PricingBreakdown
+    {
+        public List<OrderItem> Items { get; } = new();
+        public decimal PriceExclVat { get; set; }
+        public decimal Vat { get; set; }
     }
 
     private sealed record CartLine(int CourseId, Course Course, int Quantity)
