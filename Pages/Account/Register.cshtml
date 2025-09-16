@@ -16,6 +16,11 @@
         <span asp-validation-for="Input.Password"></span>
     </div>
     <div>
+        <label asp-for="Input.ReferralCode"></label>
+        <input asp-for="Input.ReferralCode" />
+        <span asp-validation-for="Input.ReferralCode"></span>
+    </div>
+    <div>
         <altcha-widget name="altcha" challengeurl="@Url.Content("~/altcha/challenge")" verifyurl="@Url.Content("~/altcha/verify")" workerurl="@Url.Content("~/lib/altcha/altcha.worker.js")" refetchonexpire></altcha-widget>
         <noscript>Prosím povolte JavaScript.</noscript>
         <span asp-validation-for="Input.Captcha"></span>

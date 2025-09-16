@@ -8,4 +8,5 @@ public class ApplicationUser : IdentityUser
     public CompanyProfile? CompanyProfile { get; set; }
     public ICollection<Enrollment> Enrollments { get; set; } = new List<Enrollment>();
     public ICollection<WaitlistEntry> WaitlistEntries { get; set; } = new List<WaitlistEntry>();
+    public ICollection<CompanyUser> CompanyMemberships { get; set; } = new List<CompanyUser>();
 }
