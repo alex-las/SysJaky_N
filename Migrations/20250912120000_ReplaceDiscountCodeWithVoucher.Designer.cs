@@ -774,6 +774,8 @@ namespace SysJaky_N.Migrations
                     b.Navigation("CourseTerm");
 
                     b.Navigation("User");
+                });
+
             modelBuilder.Entity("SysJaky_N.Models.CourseTerm", b =>
                 {
                     b.HasOne("SysJaky_N.Models.Course", "Course")

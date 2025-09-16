@@ -710,6 +710,7 @@ namespace SysJaky_N.Migrations
                         .IsUnique();
 
                     b.ToTable("SeatTokens");
+                });
 
             modelBuilder.Entity("SysJaky_N.Models.PaymentId", b =>
                 {
@@ -914,6 +915,8 @@ namespace SysJaky_N.Migrations
                     b.Navigation("CourseTerm");
 
                     b.Navigation("User");
+                });
+
             modelBuilder.Entity("SysJaky_N.Models.CourseTerm", b =>
                 {
                     b.HasOne("SysJaky_N.Models.Course", "Course")
