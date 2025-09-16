@@ -15,6 +15,9 @@ using Microsoft.AspNetCore.HttpOverrides;
 using Serilog;
 using SysJaky_N.Logging;
 using SysJaky_N.Middleware;
+using RazorLight;
+using Microsoft.Extensions.Hosting;
+using System.IO;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
@@ -63,6 +66,15 @@ try
     builder.Services.Configure<PaymentGatewayOptions>(builder.Configuration.GetSection("PaymentGateway"));
     builder.Services.AddScoped<PaymentService>();
     builder.Services.AddSingleton<IConverter>(new SynchronizedConverter(new PdfTools()));
+    builder.Services.AddSingleton<IRazorLightEngine>(sp =>
+    {
+        var environment = sp.GetRequiredService<IHostEnvironment>();
+        var templatesRoot = Path.Combine(environment.ContentRootPath, "EmailTemplates");
+        return new RazorLightEngineBuilder()
+            .UseFileSystemProject(templatesRoot)
+            .UseMemoryCachingProvider()
+            .Build();
+    });
     builder.Services.Configure<SmtpOptions>(builder.Configuration.GetSection("Smtp"));
     builder.Services.AddScoped<IEmailSender, EmailSender>();
     builder.Services.Configure<CourseReviewRequestOptions>(builder.Configuration.GetSection("CourseReviews"));

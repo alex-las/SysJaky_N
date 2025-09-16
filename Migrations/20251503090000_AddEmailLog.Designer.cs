@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SysJaky_N.Data;
 
@@ -10,9 +11,10 @@ using SysJaky_N.Data;
 namespace SysJaky_N.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251503090000_AddEmailLog")]
+    partial class AddEmailLog
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -584,57 +586,6 @@ namespace SysJaky_N.Migrations
                     b.ToTable("Instructors");
                 });
 
-            modelBuilder.Entity("SysJaky_N.Models.Lesson", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<int>("CourseId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ContentUrl")
-                        .IsRequired()
-                        .HasMaxLength(2048)
-                        .HasColumnType("varchar(2048)");
-
-                    b.Property<int>("Order")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CourseId", "Order");
-
-                    b.ToTable("Lessons");
-                });
-
-            modelBuilder.Entity("SysJaky_N.Models.LessonProgress", b =>
-                {
-                    b.Property<int>("LessonId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<DateTime>("LastSeenUtc")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<int>("Progress")
-                        .HasColumnType("int");
-
-                    b.HasKey("LessonId", "UserId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("LessonProgresses");
-                });
-
             modelBuilder.Entity("SysJaky_N.Models.CourseBlock", b =>
                 {
                     b.Property<int>("Id")
@@ -1113,12 +1064,6 @@ namespace SysJaky_N.Migrations
                     {
                         b.Navigation("WaitlistEntries");
                     }
-
-                    navigation = b.Metadata.FindNavigation("LessonProgresses");
-                    if (navigation != null)
-                    {
-                        b.Navigation("LessonProgresses");
-                    }
                 });
 
             modelBuilder.Entity("SysJaky_N.Models.CompanyUser", b =>
@@ -1162,48 +1107,6 @@ namespace SysJaky_N.Migrations
                     b.Navigation("CourseBlock");
 
                     b.Navigation("CourseGroup");
-
-                    var navigation = b.Metadata.FindNavigation("Lessons");
-                    if (navigation != null)
-                    {
-                        b.Navigation("Lessons");
-                    }
-                });
-
-            modelBuilder.Entity("SysJaky_N.Models.Lesson", b =>
-                {
-                    b.HasOne("SysJaky_N.Models.Course", "Course")
-                        .WithMany("Lessons")
-                        .HasForeignKey("CourseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Course");
-
-                    var navigation = b.Metadata.FindNavigation("ProgressRecords");
-                    if (navigation != null)
-                    {
-                        b.Navigation("ProgressRecords");
-                    }
-                });
-
-            modelBuilder.Entity("SysJaky_N.Models.LessonProgress", b =>
-                {
-                    b.HasOne("SysJaky_N.Models.Lesson", "Lesson")
-                        .WithMany("ProgressRecords")
-                        .HasForeignKey("LessonId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("SysJaky_N.Models.ApplicationUser", "User")
-                        .WithMany("LessonProgresses")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Lesson");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("SysJaky_N.Models.CourseTerm", b =>

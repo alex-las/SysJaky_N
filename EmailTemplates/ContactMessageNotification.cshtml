@@ -1,0 +1,16 @@
+@model SysJaky_N.EmailTemplates.Models.ContactMessageEmailModel
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<body style="font-family: Arial, sans-serif; color: #111;">
+    <p>Hello,</p>
+    <p>You have received a new contact message on SysJaky.</p>
+    <p>
+        <strong>Name:</strong> @Model.SenderName<br />
+        <strong>Email:</strong> @Model.SenderEmail
+    </p>
+    <p style="white-space: pre-line;">@Model.Message</p>
+</body>
+</html>

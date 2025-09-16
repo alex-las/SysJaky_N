@@ -1,5 +1,4 @@
 using System.Globalization;
-using System.Text;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -7,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using SysJaky_N.Data;
 using SysJaky_N.Models;
+using SysJaky_N.EmailTemplates.Models;
 
 namespace SysJaky_N.Services;
 
@@ -98,6 +98,7 @@ public class CourseReviewRequestService : BackgroundService
 
             var resolvedCourseTitle = courseTitle!;
             var reviewUri = BuildReviewUri(term.CourseId);
+            var emailModel = new CourseReviewRequestEmailModel(resolvedCourseTitle, reviewUri.ToString());
 
             var enrollments = await context.Enrollments
                 .Include(enrollment => enrollment.User)
@@ -116,19 +117,13 @@ public class CourseReviewRequestService : BackgroundService
                     continue;
                 }
 
-                var subject = $"Ohodnoťte kurz {resolvedCourseTitle}";
-                var bodyBuilder = new StringBuilder();
-                bodyBuilder.AppendLine("Dobrý den,");
-                bodyBuilder.AppendLine();
-                bodyBuilder.AppendLine($"děkujeme za účast na kurzu \"{resolvedCourseTitle}\".");
-                bodyBuilder.AppendLine("Budeme rádi, když nám zanecháte hodnocení prostřednictvím formuláře:");
-                bodyBuilder.AppendLine(reviewUri.ToString());
-                bodyBuilder.AppendLine();
-                bodyBuilder.AppendLine("Děkujeme.");
-
                 try
                 {
-                    await emailSender.SendEmailAsync(email, subject, bodyBuilder.ToString());
+                    await emailSender.SendEmailAsync(
+                        email,
+                        EmailTemplate.CourseReviewRequest,
+                        emailModel,
+                        cancellationToken);
                 }
                 catch (Exception ex)
                 {

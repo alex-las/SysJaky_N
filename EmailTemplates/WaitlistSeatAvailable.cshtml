@@ -1,0 +1,18 @@
+@model SysJaky_N.EmailTemplates.Models.WaitlistSeatAvailableEmailModel
+@using System.Globalization
+@{
+    Layout = null;
+    var expirationLocal = Model.ClaimExpiresAtUtc.ToLocalTime();
+}
+<!DOCTYPE html>
+<html>
+<body style="font-family: Arial, sans-serif; color: #111;">
+    <p>Dobrý den,</p>
+    <p>u kurzu "<strong>@Model.CourseTitle</strong>" se uvolnilo místo.</p>
+    <p>Rezervujte si jej kliknutím na tento odkaz (platný @Model.ValidHours hodin):</p>
+    <p><a href="@Model.ClaimUrl">@Model.ClaimUrl</a></p>
+    <p>Odkaz vyprší @expirationLocal.ToString("f", CultureInfo.CurrentCulture).</p>
+    <p>Po uplynutí platnosti bude místo nabídnuto dalšímu zájemci.</p>
+    <p>Děkujeme.</p>
+</body>
+</html>

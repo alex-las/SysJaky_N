@@ -1,0 +1,13 @@
+@model SysJaky_N.EmailTemplates.Models.WelcomeEmailModel
+@{
+    Layout = null;
+    var greetingName = string.IsNullOrWhiteSpace(Model.Name) ? Model.Email : Model.Name;
+}
+<!DOCTYPE html>
+<html>
+<body style="font-family: Arial, sans-serif; color: #111;">
+    <p>Hello @greetingName!</p>
+    <p>Thank you for registering with SysJaky. We're excited to have you on board.</p>
+    <p>If you have any questions, just reply to this email and we'll be happy to help.</p>
+</body>
+</html>
