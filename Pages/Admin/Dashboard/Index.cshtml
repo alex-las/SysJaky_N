@@ -31,7 +31,7 @@
         <canvas id="topCoursesChart"></canvas>
     </div>
     <div class="col-md-6">
-        <h3>Tržby dle měsíce</h3>
+        <h3>Denní statistiky prodeje</h3>
         <canvas id="revenueChart"></canvas>
     </div>
 </div>
@@ -56,17 +56,87 @@
 
         const revenueLabels = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.RevenueLabels));
         const revenueData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.RevenueValues));
+        const orderCounts = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.OrderCounts));
+        const averageOrderValues = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.AverageOrderValues));
 
         new Chart(document.getElementById('revenueChart'), {
-            type: 'line',
+            type: 'bar',
             data: {
                 labels: revenueLabels,
-                datasets: [{
-                    label: 'Tržby',
-                    data: revenueData,
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    fill: false
-                }]
+                datasets: [
+                    {
+                        type: 'bar',
+                        label: 'Počet objednávek',
+                        data: orderCounts,
+                        backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1,
+                        yAxisID: 'yOrders'
+                    },
+                    {
+                        type: 'line',
+                        label: 'Tržby',
+                        data: revenueData,
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        fill: true,
+                        tension: 0.3,
+                        yAxisID: 'yRevenue'
+                    },
+                    {
+                        type: 'line',
+                        label: 'Průměrná hodnota objednávky',
+                        data: averageOrderValues,
+                        borderColor: 'rgba(255, 159, 64, 1)',
+                        backgroundColor: 'rgba(255, 159, 64, 0.2)',
+                        tension: 0.3,
+                        borderDash: [5, 5],
+                        yAxisID: 'yAverage'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                interaction: {
+                    mode: 'index',
+                    intersect: false
+                },
+                stacked: false,
+                scales: {
+                    yOrders: {
+                        type: 'linear',
+                        position: 'left',
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Objednávky'
+                        }
+                    },
+                    yRevenue: {
+                        type: 'linear',
+                        position: 'right',
+                        beginAtZero: true,
+                        grid: {
+                            drawOnChartArea: false
+                        },
+                        title: {
+                            display: true,
+                            text: 'Tržby'
+                        }
+                    },
+                    yAverage: {
+                        type: 'linear',
+                        position: 'right',
+                        beginAtZero: true,
+                        grid: {
+                            drawOnChartArea: false
+                        },
+                        title: {
+                            display: true,
+                            text: 'Průměrná hodnota'
+                        }
+                    }
+                }
             }
         });
     </script>
