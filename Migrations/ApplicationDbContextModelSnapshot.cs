@@ -680,6 +680,37 @@ namespace SysJaky_N.Migrations
                     b.ToTable("OrderItems");
                 });
 
+            modelBuilder.Entity("SysJaky_N.Models.SeatToken", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int>("OrderItemId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("RedeemedAtUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("RedeemedByUserId")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("varchar(64)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderItemId");
+
+                    b.HasIndex("RedeemedByUserId");
+
+                    b.HasIndex("Token")
+                        .IsUnique();
+
+                    b.ToTable("SeatTokens");
+
             modelBuilder.Entity("SysJaky_N.Models.PaymentId", b =>
                 {
                     b.Property<string>("Id")
@@ -936,6 +967,26 @@ namespace SysJaky_N.Migrations
                     b.Navigation("Course");
 
                     b.Navigation("Order");
+
+                    b.Navigation("SeatTokens");
+                });
+
+            modelBuilder.Entity("SysJaky_N.Models.SeatToken", b =>
+                {
+                    b.HasOne("SysJaky_N.Models.OrderItem", "OrderItem")
+                        .WithMany("SeatTokens")
+                        .HasForeignKey("OrderItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SysJaky_N.Models.ApplicationUser", "RedeemedByUser")
+                        .WithMany()
+                        .HasForeignKey("RedeemedByUserId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("OrderItem");
+
+                    b.Navigation("RedeemedByUser");
                 });
 
             modelBuilder.Entity("SysJaky_N.Models.WishlistItem", b =>
