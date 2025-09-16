@@ -710,6 +710,19 @@ namespace SysJaky_N.Migrations
                         .IsUnique();
 
                     b.ToTable("SeatTokens");
+
+            modelBuilder.Entity("SysJaky_N.Models.PaymentId", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<DateTime>("ProcessedUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PaymentIds");
                 });
 
             modelBuilder.Entity("SysJaky_N.Models.WishlistItem", b =>
@@ -725,6 +738,41 @@ namespace SysJaky_N.Migrations
                     b.HasIndex("CourseId");
 
                     b.ToTable("WishlistItems");
+                });
+
+            modelBuilder.Entity("SysJaky_N.Models.WaitlistEntry", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int>("CourseTermId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<bool>("ReservationConsumed")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<DateTime?>("ReservationExpiresAtUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<Guid?>("ReservationToken")
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CourseTermId", "CreatedAtUtc");
+
+                    b.HasIndex("UserId", "CourseTermId")
+                        .IsUnique();
+
+                    b.ToTable("WaitlistEntries");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -787,6 +835,8 @@ namespace SysJaky_N.Migrations
                     b.Navigation("CompanyProfile");
 
                     b.Navigation("Enrollments");
+
+                    b.Navigation("WaitlistEntries");
                 });
 
             modelBuilder.Entity("SysJaky_N.Models.CompanyProfile", b =>
@@ -822,6 +872,10 @@ namespace SysJaky_N.Migrations
                         .IsRequired();
 
                     b.Navigation("Course");
+
+                    b.Navigation("Enrollments");
+
+                    b.Navigation("WaitlistEntries");
                 });
 
             modelBuilder.Entity("SysJaky_N.Models.CourseReview", b =>
@@ -950,6 +1004,25 @@ namespace SysJaky_N.Migrations
                         .IsRequired();
 
                     b.Navigation("Course");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("SysJaky_N.Models.WaitlistEntry", b =>
+                {
+                    b.HasOne("SysJaky_N.Models.CourseTerm", "CourseTerm")
+                        .WithMany("WaitlistEntries")
+                        .HasForeignKey("CourseTermId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SysJaky_N.Models.ApplicationUser", "User")
+                        .WithMany("WaitlistEntries")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CourseTerm");
 
                     b.Navigation("User");
                 });

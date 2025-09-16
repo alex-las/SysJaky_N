@@ -144,10 +144,24 @@ public class PaymentService
             var stripeEvent = EventUtility.ConstructEvent(json, request.Headers["Stripe-Signature"], _options.WebhookSecret);
             if (stripeEvent.Type == Events.CheckoutSessionCompleted)
             {
+                var alreadyProcessed = await _context.PaymentIds.AnyAsync(p => p.Id == stripeEvent.Id);
+                if (alreadyProcessed)
+                {
+                    return;
+                }
+
+                _context.PaymentIds.Add(new PaymentId
+                {
+                    Id = stripeEvent.Id,
+                    ProcessedUtc = DateTime.UtcNow
+                });
+
                 if (stripeEvent.Data.Object is Session session)
                 {
                     await HandleSuccessAsync(session.Id);
                 }
+
+                await _context.SaveChangesAsync();
             }
         }
         catch (Exception ex)
