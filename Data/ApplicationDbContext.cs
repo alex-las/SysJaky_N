@@ -28,6 +28,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<LogEntry> LogEntries { get; set; } = default!;
     public DbSet<SalesStat> SalesStats { get; set; } = default!;
     public DbSet<WaitlistEntry> WaitlistEntries { get; set; } = default!;
+    public DbSet<PaymentId> PaymentIds { get; set; } = default!;
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -69,6 +70,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .OnDelete(DeleteBehavior.Cascade);
         builder.Entity<LogEntry>().HasIndex(e => e.Timestamp);
         builder.Entity<SalesStat>().HasKey(s => s.Date);
+
         builder.Entity<WaitlistEntry>()
             .HasIndex(w => new { w.UserId, w.CourseTermId })
             .IsUnique();
@@ -84,5 +86,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .WithMany(t => t.WaitlistEntries)
             .HasForeignKey(w => w.CourseTermId)
             .OnDelete(DeleteBehavior.Cascade);
+        builder.Entity<PaymentId>().HasKey(p => p.Id);
     }
 }
