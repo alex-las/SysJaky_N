@@ -1283,8 +1283,18 @@ namespace SysJaky_N.Migrations
                     b.Navigation("CourseTerm");
 
                     b.Navigation("User");
-                    b.Navigation("Attendance");
-                    b.Navigation("Certificate");
+
+                    var navigation = b.Metadata.FindNavigation("Attendance");
+                    if (navigation != null)
+                    {
+                        b.Navigation("Attendance");
+                    }
+
+                    navigation = b.Metadata.FindNavigation("Certificate");
+                    if (navigation != null)
+                    {
+                        b.Navigation("Certificate");
+                    }
                 });
 
             modelBuilder.Entity("SysJaky_N.Models.Attendance", b =>
