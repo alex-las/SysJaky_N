@@ -27,6 +27,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Enrollment> Enrollments { get; set; } = default!;
     public DbSet<LogEntry> LogEntries { get; set; } = default!;
     public DbSet<SalesStat> SalesStats { get; set; } = default!;
+    public DbSet<PaymentId> PaymentIds { get; set; } = default!;
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -68,5 +69,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .OnDelete(DeleteBehavior.Cascade);
         builder.Entity<LogEntry>().HasIndex(e => e.Timestamp);
         builder.Entity<SalesStat>().HasKey(s => s.Date);
+        builder.Entity<PaymentId>().HasKey(p => p.Id);
     }
 }
