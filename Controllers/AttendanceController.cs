@@ -77,10 +77,10 @@ public class AttendanceController : ControllerBase
     {
         if (TryParseEnrollmentId(code, out var enrollmentId))
         {
-            var enrollment = await LoadEnrollmentAsync(enrollmentId, cancellationToken);
-            if (enrollment != null)
+            var foundEnrollment = await LoadEnrollmentAsync(enrollmentId, cancellationToken);
+            if (foundEnrollment != null)
             {
-                return (enrollment, null);
+                return (foundEnrollment, null);
             }
 
             return (null, "Enrollment was not found.");
@@ -116,14 +116,14 @@ public class AttendanceController : ControllerBase
                 .ToList();
         }
 
-        var enrollment = enrollments
+        var selectedEnrollment = enrollments
             .OrderBy(e => e.Attendance == null ? 0 : 1)
             .ThenBy(e => e.CourseTerm?.StartUtc)
             .FirstOrDefault();
 
-        return enrollment == null
+        return selectedEnrollment == null
             ? (null, "Enrollment was not found for the provided code.")
-            : (enrollment, null);
+            : (selectedEnrollment, null);
     }
 
     private async Task<Enrollment?> LoadEnrollmentAsync(int enrollmentId, CancellationToken cancellationToken)
