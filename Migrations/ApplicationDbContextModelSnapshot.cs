@@ -1373,7 +1373,11 @@ namespace SysJaky_N.Migrations
 
                     b.Navigation("Order");
 
-                    b.Navigation("SeatTokens");
+                    var navigation = b.Metadata.FindNavigation("SeatTokens");
+                    if (navigation != null)
+                    {
+                        b.Navigation("SeatTokens");
+                    }
                 });
 
             modelBuilder.Entity("SysJaky_N.Models.SeatToken", b =>
