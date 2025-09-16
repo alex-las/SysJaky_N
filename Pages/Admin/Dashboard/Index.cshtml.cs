@@ -49,15 +49,18 @@ public class IndexModel : PageModel
             .GroupBy(o => new { o.CreatedAt.Year, o.CreatedAt.Month })
             .Select(g => new
             {
-                Period = new DateTime(g.Key.Year, g.Key.Month, 1),
+                g.Key.Year,
+                g.Key.Month,
                 Total = g.Sum(o => o.TotalPrice)
             })
-            .OrderBy(g => g.Period)
+            .OrderBy(g => g.Year)
+            .ThenBy(g => g.Month)
             .ToListAsync();
 
         foreach (var item in revenue)
         {
-            RevenueLabels.Add(item.Period.ToString("yyyy-MM"));
+            var period = new DateTime(item.Year, item.Month, 1);
+            RevenueLabels.Add(period.ToString("yyyy-MM"));
             RevenueValues.Add(item.Total);
         }
     }
