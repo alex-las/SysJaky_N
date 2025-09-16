@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using SysJaky_N.Data;
-using SysJaky_N.Models;
+using InstructorModel = SysJaky_N.Models.Instructor;
 
 namespace SysJaky_N.Pages.Admin.Instructors;
 
@@ -19,7 +19,7 @@ public class CreateModel : PageModel
     }
 
     [BindProperty]
-    public Instructor Instructor { get; set; } = new();
+    public InstructorModel Instructor { get; set; } = new();
 
     public void OnGet()
     {
