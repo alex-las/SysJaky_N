@@ -13,6 +13,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 
     public DbSet<Course> Courses { get; set; } = default!;
     public DbSet<CourseGroup> CourseGroups { get; set; } = default!;
+    public DbSet<CourseTerm> CourseTerms { get; set; } = default!;
     public DbSet<Order> Orders { get; set; } = default!;
     public DbSet<OrderItem> OrderItems { get; set; } = default!;
     public DbSet<DiscountCode> DiscountCodes { get; set; } = default!;
@@ -27,6 +28,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
+        builder.Entity<Course>().HasIndex(c => c.IsActive);
+        builder.Entity<CourseTerm>().HasIndex(ct => new { ct.CourseId, ct.StartUtc });
         builder.Entity<WishlistItem>().HasKey(w => new { w.UserId, w.CourseId });
         builder.Entity<CompanyProfile>().HasIndex(c => c.ReferenceCode).IsUnique();
         builder.Entity<CompanyProfile>()
