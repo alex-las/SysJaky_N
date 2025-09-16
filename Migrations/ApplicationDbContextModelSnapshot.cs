@@ -305,6 +305,30 @@ namespace SysJaky_N.Migrations
                     b.ToTable("LogEntries");
                 });
 
+            modelBuilder.Entity("SysJaky_N.Models.Company", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("varchar(200)");
+
+                    b.Property<string>("ReferralCode")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("varchar(64)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ReferralCode")
+                        .IsUnique();
+
+                    b.ToTable("Companies");
+                });
+
             modelBuilder.Entity("SysJaky_N.Models.CompanyProfile", b =>
                 {
                     b.Property<int>("Id")
@@ -330,6 +354,32 @@ namespace SysJaky_N.Migrations
                         .IsUnique();
 
                     b.ToTable("CompanyProfiles");
+                });
+
+            modelBuilder.Entity("SysJaky_N.Models.CompanyUser", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Role")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId", "UserId")
+                        .IsUnique();
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("CompanyUsers");
                 });
 
             modelBuilder.Entity("SysJaky_N.Models.ContactMessage", b =>
@@ -860,7 +910,13 @@ namespace SysJaky_N.Migrations
 
                     b.Navigation("CompanyProfile");
 
-                    var navigation = b.Metadata.FindNavigation("Enrollments");
+                    var navigation = b.Metadata.FindNavigation("CompanyMemberships");
+                    if (navigation != null)
+                    {
+                        b.Navigation("CompanyMemberships");
+                    }
+
+                    navigation = b.Metadata.FindNavigation("Enrollments");
                     if (navigation != null)
                     {
                         b.Navigation("Enrollments");
@@ -871,6 +927,25 @@ namespace SysJaky_N.Migrations
                     {
                         b.Navigation("WaitlistEntries");
                     }
+                });
+
+            modelBuilder.Entity("SysJaky_N.Models.CompanyUser", b =>
+                {
+                    b.HasOne("SysJaky_N.Models.Company", "Company")
+                        .WithMany("Users")
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SysJaky_N.Models.ApplicationUser", "User")
+                        .WithMany("CompanyMemberships")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Company");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("SysJaky_N.Models.CompanyProfile", b =>
@@ -1080,6 +1155,11 @@ namespace SysJaky_N.Migrations
                     b.Navigation("CourseTerm");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("SysJaky_N.Models.Company", b =>
+                {
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("SysJaky_N.Models.CompanyProfile", b =>
