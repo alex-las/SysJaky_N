@@ -680,6 +680,20 @@ namespace SysJaky_N.Migrations
                     b.ToTable("OrderItems");
                 });
 
+            modelBuilder.Entity("SysJaky_N.Models.PaymentId", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<DateTime>("ProcessedUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PaymentIds");
+                });
+
             modelBuilder.Entity("SysJaky_N.Models.WishlistItem", b =>
                 {
                     b.Property<string>("UserId")
