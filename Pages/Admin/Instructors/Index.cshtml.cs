@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using SysJaky_N.Data;
-using SysJaky_N.Models;
+using InstructorModel = SysJaky_N.Models.Instructor;
 
 namespace SysJaky_N.Pages.Admin.Instructors;
 
@@ -20,7 +20,7 @@ public class IndexModel : PageModel
         _context = context;
     }
 
-    public IList<Instructor> Instructors { get; set; } = new List<Instructor>();
+    public IList<InstructorModel> Instructors { get; set; } = new List<InstructorModel>();
 
     [BindProperty(SupportsGet = true)]
     public string? Search { get; set; }
