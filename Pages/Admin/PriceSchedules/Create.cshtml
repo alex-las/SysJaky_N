@@ -1,0 +1,39 @@
+@page
+@model SysJaky_N.Pages.Admin.PriceSchedules.CreateModel
+@{
+    ViewData["Title"] = "Create Price Schedule";
+}
+
+<h1>Create Price Schedule</h1>
+
+<form method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="mb-3">
+        <label asp-for="PriceSchedule.CourseId" class="form-label"></label>
+        <select asp-for="PriceSchedule.CourseId" class="form-select" asp-items="Model.Courses"></select>
+        <span asp-validation-for="PriceSchedule.CourseId" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="PriceSchedule.FromUtc" class="form-label"></label>
+        <input asp-for="PriceSchedule.FromUtc" class="form-control" />
+        <span asp-validation-for="PriceSchedule.FromUtc" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="PriceSchedule.ToUtc" class="form-label"></label>
+        <input asp-for="PriceSchedule.ToUtc" class="form-control" />
+        <span asp-validation-for="PriceSchedule.ToUtc" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="PriceSchedule.NewPriceExcl" class="form-label"></label>
+        <input asp-for="PriceSchedule.NewPriceExcl" class="form-control" />
+        <span asp-validation-for="PriceSchedule.NewPriceExcl" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create</button>
+    <a asp-page="Index" class="btn btn-secondary">Cancel</a>
+</form>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}

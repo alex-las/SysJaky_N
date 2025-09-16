@@ -726,6 +726,31 @@ namespace SysJaky_N.Migrations
                     b.ToTable("PaymentIds");
                 });
 
+            modelBuilder.Entity("SysJaky_N.Models.PriceSchedule", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int>("CourseId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("FromUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<decimal>("NewPriceExcl")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.Property<DateTime>("ToUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CourseId", "FromUtc", "ToUtc");
+
+                    b.ToTable("PriceSchedules");
+                });
+
             modelBuilder.Entity("SysJaky_N.Models.WishlistItem", b =>
                 {
                     b.Property<string>("UserId")
@@ -893,6 +918,17 @@ namespace SysJaky_N.Migrations
                     {
                         b.Navigation("WaitlistEntries");
                     }
+                });
+
+            modelBuilder.Entity("SysJaky_N.Models.PriceSchedule", b =>
+                {
+                    b.HasOne("SysJaky_N.Models.Course", "Course")
+                        .WithMany()
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Course");
                 });
 
             modelBuilder.Entity("SysJaky_N.Models.CourseReview", b =>
