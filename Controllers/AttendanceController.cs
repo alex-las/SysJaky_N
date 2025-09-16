@@ -32,8 +32,8 @@ public class AttendanceController : ControllerBase
         }
 
         var code = request.Code.Trim();
-        var (enrollment, error) = await FindEnrollmentAsync(code, cancellationToken);
-        if (enrollment == null)
+        var (foundEnrollment, error) = await FindEnrollmentAsync(code, cancellationToken);
+        if (foundEnrollment == null)
         {
             var message = error ?? "Enrollment was not found for the provided code.";
             _logger.LogWarning("Attendance check-in failed. Code: {Code}. Reason: {Reason}", code, message);
@@ -41,14 +41,14 @@ public class AttendanceController : ControllerBase
         }
 
         var attendance = await _context.Attendances
-            .FirstOrDefaultAsync(a => a.EnrollmentId == enrollment.Id, cancellationToken);
+            .FirstOrDefaultAsync(a => a.EnrollmentId == foundEnrollment.Id, cancellationToken);
 
         var created = false;
         if (attendance == null)
         {
             attendance = new Attendance
             {
-                EnrollmentId = enrollment.Id,
+                EnrollmentId = foundEnrollment.Id,
                 CheckedInAtUtc = DateTime.UtcNow
             };
             _context.Attendances.Add(attendance);
@@ -62,11 +62,11 @@ public class AttendanceController : ControllerBase
             checkedInAtUtc = attendance.CheckedInAtUtc,
             enrollment = new
             {
-                enrollment.Id,
-                participant = enrollment.User?.Email ?? enrollment.UserId,
-                course = enrollment.CourseTerm?.Course?.Title ?? $"Course {enrollment.CourseTerm?.CourseId}",
-                courseTermStartUtc = enrollment.CourseTerm?.StartUtc,
-                courseTermEndUtc = enrollment.CourseTerm?.EndUtc
+                id = foundEnrollment.Id,
+                participant = foundEnrollment.User?.Email ?? foundEnrollment.UserId,
+                course = foundEnrollment.CourseTerm?.Course?.Title ?? $"Course {foundEnrollment.CourseTerm?.CourseId}",
+                courseTermStartUtc = foundEnrollment.CourseTerm?.StartUtc,
+                courseTermEndUtc = foundEnrollment.CourseTerm?.EndUtc
             }
         };
 
