@@ -25,6 +25,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<WishlistItem> WishlistItems { get; set; } = default!;
     public DbSet<CompanyProfile> CompanyProfiles { get; set; } = default!;
     public DbSet<Enrollment> Enrollments { get; set; } = default!;
+    public DbSet<LogEntry> LogEntries { get; set; } = default!;
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -64,5 +65,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .WithMany(t => t.Enrollments)
             .HasForeignKey(e => e.CourseTermId)
             .OnDelete(DeleteBehavior.Cascade);
+        builder.Entity<LogEntry>().HasIndex(e => e.Timestamp);
     }
 }
