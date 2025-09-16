@@ -33,6 +33,8 @@ public class ManageModel : PageModel
     public string? StatusMessage { get; set; }
 
     public List<Order> Orders { get; set; } = new();
+    public List<Enrollment> Enrollments { get; private set; } = new();
+    public string CalendarFeedUrl { get; private set; } = string.Empty;
 
     public class InputModel
     {
@@ -219,6 +221,22 @@ public class ManageModel : PageModel
             .Where(o => o.UserId == user.Id)
             .OrderByDescending(o => o.CreatedAt)
             .ToListAsync();
+
+        var enrollments = await _context.Enrollments
+            .AsNoTracking()
+            .Where(e => e.UserId == user.Id && e.Status == EnrollmentStatus.Confirmed)
+            .Include(e => e.CourseTerm)
+                .ThenInclude(term => term.Course)
+            .ToListAsync();
+
+        Enrollments = enrollments
+            .Where(e => e.CourseTerm != null && e.CourseTerm.Course != null)
+            .OrderBy(e => e.CourseTerm?.StartUtc ?? DateTime.MaxValue)
+            .ToList();
+
+        var host = Request.Host.HasValue ? Request.Host.Value : "localhost";
+        var pathBase = Request.PathBase.HasValue ? Request.PathBase.Value : string.Empty;
+        CalendarFeedUrl = $"{Request.Scheme}://{host}{pathBase}/Account/Calendar/MyCourses.ics";
 
         if (resetRedeemInput)
         {

@@ -38,6 +38,50 @@
     </form>
 </section>
 
+<section>
+    <h2>Moje kurzy</h2>
+    <p>
+        <strong>iCal feed:</strong>
+        <a href="@Model.CalendarFeedUrl">@Model.CalendarFeedUrl</a>
+    </p>
+
+    @if (Model.Enrollments.Any())
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Kurz</th>
+                    <th>Zahájení</th>
+                    <th>Ukončení</th>
+                    <th>Kalendář</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var enrollment in Model.Enrollments)
+            {
+                var term = enrollment.CourseTerm;
+                var course = term?.Course;
+                if (term == null || course == null)
+                {
+                    continue;
+                }
+
+                <tr>
+                    <td>@course.Title</td>
+                    <td>@term.StartUtc.ToLocalTime().ToString("g")</td>
+                    <td>@term.EndUtc.ToLocalTime().ToString("g")</td>
+                    <td><a href="/CourseTerms/ICS/@term.Id">Stáhnout .ics</a></td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>Momentálně nemáte žádné přihlášené termíny.</p>
+    }
+</section>
+
   @if (Model.Company != null)
   {
       <p>Firma: @Model.Company.Name</p>
