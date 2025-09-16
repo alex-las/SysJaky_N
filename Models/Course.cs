@@ -36,6 +36,8 @@ public class Course
     public int? CourseBlockId { get; set; }
 
     public virtual CourseBlock? CourseBlock { get; set; }
+
+    public ICollection<Lesson> Lessons { get; set; } = new List<Lesson>();
 }
 
 public enum CourseType

@@ -34,6 +34,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<PaymentId> PaymentIds { get; set; } = default!;
     public DbSet<PriceSchedule> PriceSchedules { get; set; } = default!;
     public DbSet<Instructor> Instructors { get; set; } = default!;
+    public DbSet<Lesson> Lessons { get; set; } = default!;
+    public DbSet<LessonProgress> LessonProgresses { get; set; } = default!;
 
     public DbSet<Certificate> Certificates { get; set; } = default!;
     public DbSet<Attendance> Attendances { get; set; } = default!;
@@ -161,5 +163,29 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         builder.Entity<Attendance>()
             .HasIndex(a => a.EnrollmentId)
             .IsUnique();
+
+        builder.Entity<Lesson>()
+            .HasOne(l => l.Course)
+            .WithMany(c => c.Lessons)
+            .HasForeignKey(l => l.CourseId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<Lesson>()
+            .HasIndex(l => new { l.CourseId, l.Order });
+
+        builder.Entity<LessonProgress>()
+            .HasKey(lp => new { lp.LessonId, lp.UserId });
+
+        builder.Entity<LessonProgress>()
+            .HasOne(lp => lp.Lesson)
+            .WithMany(l => l.ProgressRecords)
+            .HasForeignKey(lp => lp.LessonId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<LessonProgress>()
+            .HasOne(lp => lp.User)
+            .WithMany(u => u.LessonProgresses)
+            .HasForeignKey(lp => lp.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }
