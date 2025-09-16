@@ -883,7 +883,7 @@ namespace SysJaky_N.Migrations
                     b.ToTable("Orders");
                 });
 
-            modelBuilder.Entity(typeof(SysJaky_N.Models.OrderItem), b =>
+            modelBuilder.Entity("SysJaky_N.Models.OrderItem", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1355,7 +1355,7 @@ namespace SysJaky_N.Migrations
                     b.Navigation("AppliesToCourse");
                 });
 
-            modelBuilder.Entity(typeof(SysJaky_N.Models.OrderItem), b =>
+            modelBuilder.Entity("SysJaky_N.Models.OrderItem", b =>
                 {
                     b.HasOne("SysJaky_N.Models.Course", "Course")
                         .WithMany()
