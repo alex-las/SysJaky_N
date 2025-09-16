@@ -8,7 +8,6 @@ using DinkToPdf;
 using DinkToPdf.Contracts;
 using System.Text;
 using Microsoft.AspNetCore.Localization;
-using System.Globalization;
 using Microsoft.AspNetCore.RateLimiting;
 using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.Http;
@@ -22,53 +21,6 @@ Log.Logger = new LoggerConfiguration()
     .CreateBootstrapLogger();
 
 try
-// Add services to the container.
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
-    ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 36))));
-
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
-    .AddEntityFrameworkStores<ApplicationDbContext>()
-    .AddDefaultTokenProviders();
-
-builder.Services.ConfigureApplicationCookie(options =>
-{
-    options.LoginPath = "/Account/Login";
-    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-    options.Cookie.SameSite = SameSiteMode.None;
-});
-
-builder.Services.AddDistributedMemoryCache();
-builder.Services.AddSession();
-builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
-builder.Services.AddRazorPages().AddViewLocalization();
-builder.Services.AddControllers();
-builder.Services.Configure<PaymentGatewayOptions>(builder.Configuration.GetSection("PaymentGateway"));
-builder.Services.AddScoped<PaymentService>();
-builder.Services.AddSingleton<IConverter>(new SynchronizedConverter(new PdfTools()));
-builder.Services.Configure<SmtpOptions>(builder.Configuration.GetSection("Smtp"));
-builder.Services.AddScoped<IEmailSender, EmailSender>();
-builder.Services.AddScoped<IAuditService, AuditService>();
-builder.Services.AddScoped<CartService>();
-builder.Services.AddHostedService<CourseReminderService>();
-builder.Services.AddHostedService<SalesStatsService>();
-builder.Services.Configure<WaitlistOptions>(builder.Configuration.GetSection("Waitlist"));
-builder.Services.AddSingleton<WaitlistTokenService>();
-builder.Services.AddHostedService<WaitlistNotificationService>();
-builder.Services.AddMemoryCache();
-builder.Services.Configure<AltchaOptions>(builder.Configuration.GetSection("Altcha"));
-builder.Services.AddSingleton<IAltchaService, AltchaService>();
-
-builder.Services.Configure<ForwardedHeadersOptions>(opts =>
-{
-    opts.ForwardedHeaders =
-        ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
-    opts.KnownNetworks.Clear();
-    opts.KnownProxies.Clear();
-});
-
-builder.Services.AddRateLimiter(options =>
 {
     var builder = WebApplication.CreateBuilder(args);
 
@@ -114,7 +66,9 @@ builder.Services.AddRateLimiter(options =>
     builder.Services.Configure<SmtpOptions>(builder.Configuration.GetSection("Smtp"));
     builder.Services.AddScoped<IEmailSender, EmailSender>();
     builder.Services.AddScoped<IAuditService, AuditService>();
+    builder.Services.AddScoped<CartService>();
     builder.Services.AddHostedService<CourseReminderService>();
+    builder.Services.AddHostedService<SalesStatsService>();
     builder.Services.Configure<WaitlistOptions>(builder.Configuration.GetSection("Waitlist"));
     builder.Services.AddSingleton<WaitlistTokenService>();
     builder.Services.AddHostedService<WaitlistNotificationService>();
@@ -165,7 +119,8 @@ builder.Services.AddRateLimiter(options =>
     {
         options.EnrichDiagnosticContext = (diagnosticContext, httpContext) =>
         {
-            if (httpContext.Items.TryGetValue(CorrelationIdMiddleware.HeaderName, out var correlation) && correlation is string correlationId)
+            if (httpContext.Items.TryGetValue(CorrelationIdMiddleware.HeaderName, out var correlation) &&
+                correlation is string correlationId)
             {
                 diagnosticContext.Set("CorrelationId", correlationId);
             }
