@@ -45,6 +45,7 @@ builder.Services.Configure<SmtpOptions>(builder.Configuration.GetSection("Smtp")
 builder.Services.AddScoped<IEmailSender, EmailSender>();
 builder.Services.AddScoped<IAuditService, AuditService>();
 builder.Services.AddHostedService<CourseReminderService>();
+builder.Services.AddHostedService<SalesStatsService>();
 builder.Services.AddMemoryCache();
 builder.Services.Configure<AltchaOptions>(builder.Configuration.GetSection("Altcha"));
 builder.Services.AddSingleton<IAltchaService, AltchaService>();

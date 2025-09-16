@@ -21,6 +21,8 @@ public class IndexModel : PageModel
     public List<int> TopCourseValues { get; set; } = new();
     public List<string> RevenueLabels { get; set; } = new();
     public List<decimal> RevenueValues { get; set; } = new();
+    public List<int> OrderCounts { get; set; } = new();
+    public List<decimal> AverageOrderValues { get; set; } = new();
 
     public async Task OnGetAsync()
     {
@@ -45,23 +47,16 @@ public class IndexModel : PageModel
             TopCourseValues.Add(item.Quantity);
         }
 
-        var revenue = await _context.Orders
-            .GroupBy(o => new { o.CreatedAt.Year, o.CreatedAt.Month })
-            .Select(g => new
-            {
-                g.Key.Year,
-                g.Key.Month,
-                Total = g.Sum(o => o.Total)
-            })
-            .OrderBy(g => g.Year)
-            .ThenBy(g => g.Month)
+        var dailyStats = await _context.SalesStats
+            .OrderBy(s => s.Date)
             .ToListAsync();
 
-        foreach (var item in revenue)
+        foreach (var stat in dailyStats)
         {
-            var period = new DateTime(item.Year, item.Month, 1);
-            RevenueLabels.Add(period.ToString("yyyy-MM"));
-            RevenueValues.Add(item.Total);
+            RevenueLabels.Add(stat.Date.ToString("yyyy-MM-dd"));
+            RevenueValues.Add(stat.Revenue);
+            OrderCounts.Add(stat.OrderCount);
+            AverageOrderValues.Add(stat.AverageOrderValue);
         }
     }
 }
