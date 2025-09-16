@@ -43,7 +43,7 @@ public class DetailsModel : PageModel
         Course = course;
         CourseBlock = course.CourseBlock;
         Reviews = await _context.CourseReviews
-            .Where(r => r.CourseId == id)
+            .Where(r => r.CourseId == id && r.IsPublic)
             .Include(r => r.User)
             .OrderByDescending(r => r.CreatedAt)
             .ToListAsync();
@@ -117,7 +117,7 @@ public class DetailsModel : PageModel
         if (!ModelState.IsValid)
         {
             Reviews = await _context.CourseReviews
-                .Where(r => r.CourseId == id)
+                .Where(r => r.CourseId == id && r.IsPublic)
                 .Include(r => r.User)
                 .OrderByDescending(r => r.CreatedAt)
                 .ToListAsync();

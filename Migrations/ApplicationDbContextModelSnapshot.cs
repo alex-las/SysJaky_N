@@ -479,6 +479,9 @@ namespace SysJaky_N.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("tinyint(1)");
 
+                    b.Property<DateTime?>("ReviewRequestSentAtUtc")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<int>("SeatsTaken")
                         .HasColumnType("int");
 
@@ -546,6 +549,9 @@ namespace SysJaky_N.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)");
+
+                    b.Property<bool>("IsPublic")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<int>("Rating")
                         .HasColumnType("int");

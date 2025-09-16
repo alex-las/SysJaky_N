@@ -65,12 +65,14 @@ try
     builder.Services.AddSingleton<IConverter>(new SynchronizedConverter(new PdfTools()));
     builder.Services.Configure<SmtpOptions>(builder.Configuration.GetSection("Smtp"));
     builder.Services.AddScoped<IEmailSender, EmailSender>();
+    builder.Services.Configure<CourseReviewRequestOptions>(builder.Configuration.GetSection("CourseReviews"));
     builder.Services.AddScoped<IAuditService, AuditService>();
     builder.Services.AddScoped<CartService>();
     builder.Services.Configure<CertificateOptions>(builder.Configuration.GetSection("Certificates"));
     builder.Services.AddScoped<CertificateService>();
     builder.Services.AddHostedService<CourseReminderService>();
     builder.Services.AddHostedService<SalesStatsService>();
+    builder.Services.AddHostedService<CourseReviewRequestService>();
     builder.Services.Configure<WaitlistOptions>(builder.Configuration.GetSection("Waitlist"));
     builder.Services.AddSingleton<WaitlistTokenService>();
     builder.Services.AddHostedService<WaitlistNotificationService>();

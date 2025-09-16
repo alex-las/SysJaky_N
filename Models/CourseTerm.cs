@@ -14,6 +14,8 @@ public class CourseTerm
     public int SeatsTaken { get; set; }
     public bool IsActive { get; set; } = true;
 
+    public DateTime? ReviewRequestSentAtUtc { get; set; }
+
     public ICollection<Enrollment> Enrollments { get; set; } = new List<Enrollment>();
     public ICollection<WaitlistEntry> WaitlistEntries { get; set; } = new List<WaitlistEntry>();
 }
