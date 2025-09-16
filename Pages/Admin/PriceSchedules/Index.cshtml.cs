@@ -22,6 +22,7 @@ public class IndexModel : PageModel
     public async Task OnGetAsync()
     {
         PriceSchedules = await _context.PriceSchedules
+            .AsNoTracking()
             .Include(p => p.Course)
             .OrderBy(p => p.CourseId)
             .ThenBy(p => p.FromUtc)

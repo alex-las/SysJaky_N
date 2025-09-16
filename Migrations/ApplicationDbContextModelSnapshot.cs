@@ -423,6 +423,9 @@ namespace SysJaky_N.Migrations
                     b.Property<int>("CourseId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("InstructorId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("EndUtc")
                         .HasColumnType("datetime(6)");
 
@@ -439,7 +442,39 @@ namespace SysJaky_N.Migrations
 
                     b.HasIndex("CourseId", "StartUtc");
 
+                    b.HasIndex("InstructorId");
+
                     b.ToTable("CourseTerms");
+                });
+
+            modelBuilder.Entity("SysJaky_N.Models.Instructor", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("Bio")
+                        .HasMaxLength(4000)
+                        .HasColumnType("varchar(4000)");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(200)
+                        .HasColumnType("varchar(200)");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("varchar(200)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FullName");
+
+                    b.ToTable("Instructors");
                 });
 
             modelBuilder.Entity("SysJaky_N.Models.CourseBlock", b =>
@@ -905,7 +940,14 @@ namespace SysJaky_N.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("SysJaky_N.Models.Instructor", "Instructor")
+                        .WithMany("CourseTerms")
+                        .HasForeignKey("InstructorId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.Navigation("Course");
+
+                    b.Navigation("Instructor");
 
                     var navigation = b.Metadata.FindNavigation("Enrollments");
                     if (navigation != null)
@@ -1095,6 +1137,11 @@ namespace SysJaky_N.Migrations
             modelBuilder.Entity("SysJaky_N.Models.CourseGroup", b =>
                 {
                     b.Navigation("Courses");
+                });
+
+            modelBuilder.Entity("SysJaky_N.Models.Instructor", b =>
+                {
+                    b.Navigation("CourseTerms");
                 });
 
             modelBuilder.Entity("SysJaky_N.Models.CourseTerm", b =>

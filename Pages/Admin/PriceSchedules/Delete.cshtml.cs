@@ -1,3 +1,4 @@
+using System;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -30,6 +31,9 @@ public class DeleteModel : PageModel
         {
             return NotFound();
         }
+
+        schedule.FromUtc = DateTime.SpecifyKind(schedule.FromUtc, DateTimeKind.Utc).ToLocalTime();
+        schedule.ToUtc = DateTime.SpecifyKind(schedule.ToUtc, DateTimeKind.Utc).ToLocalTime();
 
         PriceSchedule = schedule;
         return Page();

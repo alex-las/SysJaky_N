@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -35,6 +36,16 @@ public class EditModel : PageModel
             return NotFound();
         }
 
+        if (schedule.FromUtc != default)
+        {
+            schedule.FromUtc = DateTime.SpecifyKind(schedule.FromUtc, DateTimeKind.Utc).ToLocalTime();
+        }
+
+        if (schedule.ToUtc != default)
+        {
+            schedule.ToUtc = DateTime.SpecifyKind(schedule.ToUtc, DateTimeKind.Utc).ToLocalTime();
+        }
+
         PriceSchedule = schedule;
         await LoadCoursesAsync();
         return Page();
@@ -44,7 +55,10 @@ public class EditModel : PageModel
     {
         await LoadCoursesAsync();
 
-        if (PriceSchedule.ToUtc <= PriceSchedule.FromUtc)
+        var fromUtc = DateTime.SpecifyKind(PriceSchedule.FromUtc, DateTimeKind.Local).ToUniversalTime();
+        var toUtc = DateTime.SpecifyKind(PriceSchedule.ToUtc, DateTimeKind.Local).ToUniversalTime();
+
+        if (toUtc <= fromUtc)
         {
             ModelState.AddModelError("PriceSchedule.ToUtc", "End time must be after start time.");
         }
@@ -61,8 +75,8 @@ public class EditModel : PageModel
         }
 
         schedule.CourseId = PriceSchedule.CourseId;
-        schedule.FromUtc = PriceSchedule.FromUtc;
-        schedule.ToUtc = PriceSchedule.ToUtc;
+        schedule.FromUtc = fromUtc;
+        schedule.ToUtc = toUtc;
         schedule.NewPriceExcl = PriceSchedule.NewPriceExcl;
 
         await _context.SaveChangesAsync();
@@ -72,6 +86,7 @@ public class EditModel : PageModel
     private async Task LoadCoursesAsync()
     {
         Courses = await _context.Courses
+            .AsNoTracking()
             .OrderBy(c => c.Title)
             .Select(c => new SelectListItem(c.Title, c.Id.ToString(), c.Id == PriceSchedule.CourseId))
             .ToListAsync();
