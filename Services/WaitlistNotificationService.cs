@@ -14,7 +14,6 @@ public class WaitlistNotificationService : BackgroundService
 {
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly WaitlistTokenService _tokenService;
-    private readonly IEmailSender _emailSender;
     private readonly ILogger<WaitlistNotificationService> _logger;
     private readonly Uri _baseUri;
     private readonly string _claimPath;
@@ -25,13 +24,11 @@ public class WaitlistNotificationService : BackgroundService
     public WaitlistNotificationService(
         IServiceScopeFactory scopeFactory,
         WaitlistTokenService tokenService,
-        IEmailSender emailSender,
         IOptions<WaitlistOptions> options,
         ILogger<WaitlistNotificationService> logger)
     {
         _scopeFactory = scopeFactory;
         _tokenService = tokenService;
-        _emailSender = emailSender;
         _logger = logger;
 
         var opts = options.Value ?? new WaitlistOptions();
@@ -78,7 +75,9 @@ public class WaitlistNotificationService : BackgroundService
     private async Task ProcessAsync(CancellationToken stoppingToken)
     {
         using var scope = _scopeFactory.CreateScope();
-        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        var serviceProvider = scope.ServiceProvider;
+        var context = serviceProvider.GetRequiredService<ApplicationDbContext>();
+        var emailSender = serviceProvider.GetRequiredService<IEmailSender>();
         var now = DateTime.UtcNow;
 
         var terms = await context.CourseTerms
@@ -153,7 +152,7 @@ public class WaitlistNotificationService : BackgroundService
 
                 try
                 {
-                    await _emailSender.SendEmailAsync(email, subject, bodyBuilder.ToString());
+                    await emailSender.SendEmailAsync(email, subject, bodyBuilder.ToString());
                     entry.ReservationToken = reservationId;
                     entry.ReservationExpiresAtUtc = expiration;
                     entry.ReservationConsumed = false;
