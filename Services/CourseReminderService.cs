@@ -4,6 +4,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using SysJaky_N.Data;
 using SysJaky_N.Models;
+using SysJaky_N.EmailTemplates.Models;
 
 namespace SysJaky_N.Services;
 
@@ -67,19 +68,15 @@ public class CourseReminderService : BackgroundService
                 .Where(e => !string.IsNullOrWhiteSpace(e))
                 .Distinct();
 
-            var subject = $"Reminder: {course.Title}";
-            var message = course.ReminderMessage ?? $"The course {course.Title} is coming on {course.Date:d}.";
-
-            message += course.Type switch
-            {
-                CourseType.Online => " This course is online.",
-                CourseType.InPerson => " This course is in person.",
-                _ => " This course can be taken online or in person."
-            };
+            var model = new CourseReminderEmailModel(course.Title, course.Date, course.Type, course.ReminderMessage);
 
             foreach (var email in recipients)
             {
-                await emailSender.SendEmailAsync(email!, subject, message);
+                await emailSender.SendEmailAsync(
+                    email!,
+                    EmailTemplate.CourseReminder,
+                    model,
+                    token);
             }
         }
 

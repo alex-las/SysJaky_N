@@ -1,0 +1,14 @@
+@model SysJaky_N.EmailTemplates.Models.CourseReviewRequestEmailModel
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<body style="font-family: Arial, sans-serif; color: #111;">
+    <p>Dobrý den,</p>
+    <p>Děkujeme za účast na kurzu "<strong>@Model.CourseTitle</strong>".</p>
+    <p>Budeme rádi, když nám zanecháte hodnocení prostřednictvím následujícího formuláře:</p>
+    <p><a href="@Model.ReviewUrl">Otevřít formulář hodnocení</a></p>
+    <p>Děkujeme.</p>
+</body>
+</html>

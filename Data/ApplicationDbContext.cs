@@ -37,6 +37,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 
     public DbSet<Certificate> Certificates { get; set; } = default!;
     public DbSet<Attendance> Attendances { get; set; } = default!;
+    public DbSet<EmailLog> EmailLogs { get; set; } = default!;
 
 
     protected override void OnModelCreating(ModelBuilder builder)
@@ -161,5 +162,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         builder.Entity<Attendance>()
             .HasIndex(a => a.EnrollmentId)
             .IsUnique();
+
+        builder.Entity<EmailLog>()
+            .HasIndex(e => e.SentUtc);
     }
 }

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using SysJaky_N.Data;
 using SysJaky_N.Models;
 using SysJaky_N.Services;
+using SysJaky_N.EmailTemplates.Models;
 
 namespace SysJaky_N.Pages;
 
@@ -63,8 +64,10 @@ public class ContactModel : PageModel
         var adminEmail = _configuration["SeedAdmin:Email"];
         if (!string.IsNullOrEmpty(adminEmail))
         {
-            var body = $"From: {Input.Name} <{Input.Email}>\n\n{Input.Message}";
-            await _emailSender.SendEmailAsync(adminEmail, "New contact message", body);
+            await _emailSender.SendEmailAsync(
+                adminEmail,
+                EmailTemplate.ContactMessageNotification,
+                new ContactMessageEmailModel(Input.Name, Input.Email, Input.Message));
         }
 
         TempData["Success"] = "Message sent.";

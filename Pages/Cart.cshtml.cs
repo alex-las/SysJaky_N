@@ -7,6 +7,7 @@ using SysJaky_N.Data;
 using SysJaky_N.Extensions;
 using SysJaky_N.Models;
 using SysJaky_N.Services;
+using SysJaky_N.EmailTemplates.Models;
 
 namespace SysJaky_N.Pages;
 
@@ -128,7 +129,10 @@ public class CartModel : PageModel
 
         await _context.SaveChangesAsync();
         await _auditService.LogAsync(user.Id, "OrderCreated", $"Order {order.Id} created");
-        await _emailSender.SendEmailAsync(user.Email!, "Order Created", $"Your order {order.Id} has been created.");
+        await _emailSender.SendEmailAsync(
+            user.Email!,
+            EmailTemplate.OrderCreated,
+            new OrderCreatedEmailModel(order.Id, order.Total, order.CreatedAt, user.Email));
 
         _cartService.Clear(HttpContext.Session);
         HttpContext.Session.Remove("VoucherId");

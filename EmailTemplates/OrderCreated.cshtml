@@ -1,0 +1,18 @@
+@model SysJaky_N.EmailTemplates.Models.OrderCreatedEmailModel
+@using System.Globalization
+@{
+    Layout = null;
+    var greeting = string.IsNullOrWhiteSpace(Model.RecipientName)
+        ? "Hello,"
+        : $"Hello {Model.RecipientName},";
+    var createdLocal = Model.CreatedAtUtc.ToLocalTime();
+}
+<!DOCTYPE html>
+<html>
+<body style="font-family: Arial, sans-serif; color: #111;">
+    <p>@greeting</p>
+    <p>Your order <strong>@Model.OrderId</strong> has been created on @createdLocal.ToString("f", CultureInfo.CurrentCulture).</p>
+    <p>Total amount: @Model.Total.ToString("F2", CultureInfo.CurrentCulture).</p>
+    <p>Thank you for your purchase.</p>
+</body>
+</html>

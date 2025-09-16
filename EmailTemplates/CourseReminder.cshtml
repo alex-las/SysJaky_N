@@ -1,0 +1,28 @@
+@model SysJaky_N.EmailTemplates.Models.CourseReminderEmailModel
+@using System;
+@using System.Globalization
+@{
+    Layout = null;
+    var courseDateDisplay = Model.CourseDate.TimeOfDay == TimeSpan.Zero
+        ? Model.CourseDate.ToString("d", CultureInfo.CurrentCulture)
+        : Model.CourseDate.ToString("f", CultureInfo.CurrentCulture);
+    var typeMessage = Model.CourseType switch
+    {
+        SysJaky_N.Models.CourseType.Online => "This course takes place online.",
+        SysJaky_N.Models.CourseType.InPerson => "This course is held in person.",
+        _ => "This course can be attended either online or in person."
+    };
+}
+<!DOCTYPE html>
+<html>
+<body style="font-family: Arial, sans-serif; color: #111;">
+    <p>Dobrý den,</p>
+    <p>Připomínáme, že kurz "<strong>@Model.CourseTitle</strong>" se koná @courseDateDisplay.</p>
+    <p>@typeMessage</p>
+    @if (!string.IsNullOrWhiteSpace(Model.CustomMessage))
+    {
+        <p style="white-space: pre-line;">@Model.CustomMessage</p>
+    }
+    <p>Těšíme se na vás.</p>
+</body>
+</html>

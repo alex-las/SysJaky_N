@@ -7,6 +7,7 @@ using SysJaky_N.Attributes;
 using SysJaky_N.Services;
 using SysJaky_N.Data;
 using System.ComponentModel.DataAnnotations;
+using SysJaky_N.EmailTemplates.Models;
 
 namespace SysJaky_N.Pages.Account;
 
@@ -89,7 +90,10 @@ public class RegisterModel : PageModel
             }
 
             await _signInManager.SignInAsync(user, isPersistent: false);
-            await _emailSender.SendEmailAsync(user.Email!, "Welcome", "Thank you for registering.");
+            await _emailSender.SendEmailAsync(
+                user.Email!,
+                EmailTemplate.Welcome,
+                new WelcomeEmailModel(user.Email!, user.Email));
             return RedirectToPage("/Index");
         }
 

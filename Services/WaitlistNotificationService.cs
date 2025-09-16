@@ -1,5 +1,5 @@
+using System;
 using System.Net;
-using System.Text;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using SysJaky_N.Data;
 using SysJaky_N.Models;
+using SysJaky_N.EmailTemplates.Models;
 
 namespace SysJaky_N.Services;
 
@@ -138,21 +139,19 @@ public class WaitlistNotificationService : BackgroundService
                 var token = _tokenService.CreateToken(entry.Id, reservationId, _tokenLifetime);
                 var claimUri = new Uri(_baseUri, $"{_claimPath}?token={WebUtility.UrlEncode(token)}");
 
-                var subject = $"Uvolněné místo: {courseTitle}";
-                var bodyBuilder = new StringBuilder();
-                bodyBuilder.AppendLine("Dobrý den,");
-                bodyBuilder.AppendLine();
-                bodyBuilder.AppendLine($"u kurzu \"{courseTitle}\" se uvolnilo místo.");
-                bodyBuilder.AppendLine("Rezervujte si jej kliknutím na tento odkaz (platný 24 hodin):");
-                bodyBuilder.AppendLine(claimUri.ToString());
-                bodyBuilder.AppendLine();
-                bodyBuilder.AppendLine("Po uplynutí platnosti odkazu bude místo nabídnuto dalšímu zájemci.");
-                bodyBuilder.AppendLine();
-                bodyBuilder.AppendLine("Děkujeme.");
+                var model = new WaitlistSeatAvailableEmailModel(
+                    courseTitle,
+                    claimUri.ToString(),
+                    expiration,
+                    (int)Math.Round(_tokenLifetime.TotalHours));
 
                 try
                 {
-                    await emailSender.SendEmailAsync(email, subject, bodyBuilder.ToString());
+                    await emailSender.SendEmailAsync(
+                        email,
+                        EmailTemplate.WaitlistSeatAvailable,
+                        model,
+                        stoppingToken);
                     entry.ReservationToken = reservationId;
                     entry.ReservationExpiresAtUtc = expiration;
                     entry.ReservationConsumed = false;
