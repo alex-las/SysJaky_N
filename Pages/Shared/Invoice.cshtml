@@ -29,25 +29,27 @@
             <tr>
                 <th>Course</th>
                 <th>Quantity</th>
-                <th>Price</th>
+                <th>Unit price (excl. VAT)</th>
+                <th>VAT</th>
                 <th>Total</th>
             </tr>
         </thead>
         <tbody>
         @foreach (var item in Model.Items)
         {
-            var price = item.Course?.Price ?? 0;
             <tr>
                 <td>@item.Course?.Title</td>
                 <td>@item.Quantity</td>
-                <td>@price</td>
-                <td>@(price * item.Quantity)</td>
+                <td>@item.UnitPriceExclVat</td>
+                <td>@item.Vat</td>
+                <td>@item.Total</td>
             </tr>
         }
         </tbody>
     </table>
-
-    <h3>Total: @Model.TotalPrice</h3>
+    <h3>Subtotal (excl. VAT): @Model.PriceExclVat</h3>
+    <h3>VAT: @Model.Vat</h3>
+    <h3>Total: @Model.Total</h3>
 </body>
 </html>
 

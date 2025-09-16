@@ -25,7 +25,7 @@ public class IndexModel : PageModel
     public async Task OnGetAsync()
     {
         OrderCount = await _context.Orders.CountAsync();
-        TotalRevenue = await _context.Orders.SumAsync(o => o.TotalPrice);
+        TotalRevenue = await _context.Orders.SumAsync(o => o.Total);
 
         var topCourses = await _context.OrderItems
             .Include(oi => oi.Course)
@@ -51,7 +51,7 @@ public class IndexModel : PageModel
             {
                 g.Key.Year,
                 g.Key.Month,
-                Total = g.Sum(o => o.TotalPrice)
+                Total = g.Sum(o => o.Total)
             })
             .OrderBy(g => g.Year)
             .ThenBy(g => g.Month)

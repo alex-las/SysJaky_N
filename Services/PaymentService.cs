@@ -50,7 +50,7 @@ public class PaymentService
                     PriceData = new SessionLineItemPriceDataOptions
                     {
                         Currency = "czk",
-                        UnitAmountDecimal = order.TotalPrice * 100m,
+                        UnitAmountDecimal = order.Total * 100m,
                         ProductData = new SessionLineItemPriceDataProductDataOptions
                         {
                             Name = $"Order {order.Id}"

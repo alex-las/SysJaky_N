@@ -567,10 +567,19 @@ namespace SysJaky_N.Migrations
                     b.Property<string>("PaymentConfirmation")
                         .HasColumnType("longtext");
 
+                    b.Property<decimal>("PriceExclVat")
+                        .HasColumnType("decimal(65,30)");
+
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
+                    b.Property<decimal>("Total")
+                        .HasColumnType("decimal(65,30)");
+
                     b.Property<decimal>("TotalPrice")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.Property<decimal>("Vat")
                         .HasColumnType("decimal(65,30)");
 
                     b.Property<string>("UserId")
@@ -599,6 +608,15 @@ namespace SysJaky_N.Migrations
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
+
+                    b.Property<decimal>("Total")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.Property<decimal>("UnitPriceExclVat")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.Property<decimal>("Vat")
+                        .HasColumnType("decimal(65,30)");
 
                     b.HasKey("Id");
 

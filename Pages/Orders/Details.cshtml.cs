@@ -69,7 +69,7 @@ public class DetailsModel : PageModel
         var iban = _configuration["Payment:Iban"] ?? string.Empty;
         var vsPrefix = _configuration["Payment:VsPrefix"] ?? string.Empty;
         var vs = $"{vsPrefix}{order.Id}";
-        var amount = order.TotalPrice.ToString("0.00", CultureInfo.InvariantCulture);
+        var amount = order.Total.ToString("0.00", CultureInfo.InvariantCulture);
         var payload = $"SPD*1.0*ACC:{iban}*AM:{amount}*CC:CZK*X-VS:{vs}";
 
         var generator = new QRCodeGenerator();
@@ -137,7 +137,7 @@ public class DetailsModel : PageModel
         var iban = _configuration["Payment:Iban"] ?? string.Empty;
         var vsPrefix = _configuration["Payment:VsPrefix"] ?? string.Empty;
         var vs = $"{vsPrefix}{order.Id}";
-        var amount = order.TotalPrice.ToString("0.00", CultureInfo.InvariantCulture);
+        var amount = order.Total.ToString("0.00", CultureInfo.InvariantCulture);
         var payload = $"SPD*1.0*ACC:{iban}*AM:{amount}*CC:CZK*X-VS:{vs}";
 
         var generator = new QRCodeGenerator();

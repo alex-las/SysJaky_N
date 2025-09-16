@@ -11,7 +11,16 @@ public class Order
 
     public List<OrderItem> Items { get; set; } = new();
 
-    public OrderStatus Status { get; set; } = OrderStatus.Created;
+    public OrderStatus Status { get; set; } = OrderStatus.Pending;
+
+    [DataType(DataType.Currency)]
+    public decimal PriceExclVat { get; set; }
+
+    [DataType(DataType.Currency)]
+    public decimal Vat { get; set; }
+
+    [DataType(DataType.Currency)]
+    public decimal Total { get; set; }
 
     [DataType(DataType.Currency)]
     public decimal TotalPrice { get; set; }
@@ -38,11 +47,21 @@ public class OrderItem
     public Course? Course { get; set; }
 
     public int Quantity { get; set; }
+
+    [DataType(DataType.Currency)]
+    public decimal UnitPriceExclVat { get; set; }
+
+    [DataType(DataType.Currency)]
+    public decimal Vat { get; set; }
+
+    [DataType(DataType.Currency)]
+    public decimal Total { get; set; }
 }
 
 public enum OrderStatus
 {
-    Created,
+    Pending,
     Paid,
-    Cancelled
+    Cancelled,
+    Refunded
 }
