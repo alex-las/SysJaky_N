@@ -46,10 +46,14 @@ public class DetailsModel : PageModel
 
     public async Task<IActionResult> OnGetAsync(int id, string? session_id)
     {
-        var order = await _context.Orders
+        var orderQuery = _context.Orders
+            .AsNoTracking()
             .Include(o => o.Items)
-            .ThenInclude(i => i.Course)
-            .FirstOrDefaultAsync(o => o.Id == id);
+                .ThenInclude(i => i.Course)
+            .Include(o => o.Items)
+                .ThenInclude(i => i.SeatTokens);
+
+        var order = await orderQuery.FirstOrDefaultAsync(o => o.Id == id);
         if (order == null)
             return NotFound();
 
@@ -60,7 +64,7 @@ public class DetailsModel : PageModel
         if (!string.IsNullOrEmpty(session_id))
         {
             await _paymentService.HandleSuccessAsync(session_id);
-            await _context.Entry(order).ReloadAsync();
+            order = await orderQuery.FirstOrDefaultAsync(o => o.Id == id) ?? order;
         }
 
         Order = order;

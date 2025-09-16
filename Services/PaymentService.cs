@@ -5,6 +5,8 @@ using Stripe;
 using Stripe.Checkout;
 using SysJaky_N.Data;
 using SysJaky_N.Models;
+using System.Collections.Generic;
+using System.Security.Cryptography;
 
 namespace SysJaky_N.Services;
 
@@ -88,6 +90,7 @@ public class PaymentService
 
         var order = await _context.Orders
             .Include(o => o.Items)
+                .ThenInclude(i => i.SeatTokens)
             .FirstOrDefaultAsync(o => o.Id == orderId);
 
         if (order == null)
@@ -96,9 +99,16 @@ public class PaymentService
         var paymentConfirmation = session.PaymentIntentId ?? session.Id;
         if (order.Status == OrderStatus.Paid && !string.IsNullOrEmpty(order.PaymentConfirmation))
         {
+            var updatedConfirmation = false;
             if (!string.Equals(order.PaymentConfirmation, paymentConfirmation, StringComparison.Ordinal))
             {
                 order.PaymentConfirmation = paymentConfirmation;
+                updatedConfirmation = true;
+            }
+
+            var tokensCreated = EnsureSeatTokensCreated(order);
+            if (updatedConfirmation || tokensCreated)
+            {
                 await _context.SaveChangesAsync();
             }
             return;
@@ -110,68 +120,7 @@ public class PaymentService
             order.Status = OrderStatus.Paid;
             order.PaymentConfirmation = paymentConfirmation;
 
-            if (!string.IsNullOrEmpty(order.UserId) && order.Items.Count > 0)
-            {
-                var courseIds = order.Items.Select(i => i.CourseId).Distinct().ToList();
-
-                var terms = await _context.CourseTerms
-                    .Where(term => courseIds.Contains(term.CourseId) && term.IsActive)
-                    .OrderBy(term => term.StartUtc)
-                    .ToListAsync();
-
-                var termLookup = terms
-                    .GroupBy(term => term.CourseId)
-                    .ToDictionary(group => group.Key, group => group.ToList());
-
-                foreach (var item in order.Items)
-                {
-                    if (item.Quantity <= 0)
-                        continue;
-
-                    if (!termLookup.TryGetValue(item.CourseId, out var courseTerms) || courseTerms.Count == 0)
-                    {
-                        _logger.LogWarning(
-                            "No active course terms available for course {CourseId} when processing order {OrderId}.",
-                            item.CourseId,
-                            order.Id);
-                        continue;
-                    }
-
-                    var seatsNeeded = item.Quantity;
-                    foreach (var term in courseTerms)
-                    {
-                        var availableSeats = term.Capacity - term.SeatsTaken;
-                        if (availableSeats <= 0)
-                            continue;
-
-                        var seatsToAllocate = Math.Min(seatsNeeded, availableSeats);
-                        term.SeatsTaken += seatsToAllocate;
-
-                        for (var i = 0; i < seatsToAllocate; i++)
-                        {
-                            _context.Enrollments.Add(new Enrollment
-                            {
-                                UserId = order.UserId!,
-                                CourseTermId = term.Id,
-                                Status = EnrollmentStatus.Confirmed
-                            });
-                        }
-
-                        seatsNeeded -= seatsToAllocate;
-                        if (seatsNeeded <= 0)
-                            break;
-                    }
-
-                    if (seatsNeeded > 0)
-                    {
-                        _logger.LogWarning(
-                            "Could not allocate {RemainingSeats} seats for course {CourseId} in order {OrderId} due to limited capacity.",
-                            seatsNeeded,
-                            item.CourseId,
-                            order.Id);
-                    }
-                }
-            }
+            EnsureSeatTokensCreated(order);
 
             await _context.SaveChangesAsync();
             await transaction.CommitAsync();
@@ -207,6 +156,51 @@ public class PaymentService
                 "Error handling payment webhook. Signature: {Signature}, Payload: {Payload}",
                 request.Headers["Stripe-Signature"], json);
         }
+    }
+
+    private bool EnsureSeatTokensCreated(Order order)
+    {
+        var tokensCreated = false;
+        var existingTokens = new HashSet<string>(
+            order.Items
+                .SelectMany(item => item.SeatTokens)
+                .Select(token => token.Token),
+            StringComparer.Ordinal);
+
+        foreach (var item in order.Items)
+        {
+            if (item.Quantity <= 0)
+                continue;
+
+            var missingTokens = item.Quantity - item.SeatTokens.Count;
+            for (var i = 0; i < missingTokens; i++)
+            {
+                string tokenValue;
+                do
+                {
+                    tokenValue = GenerateSeatTokenValue();
+                } while (!existingTokens.Add(tokenValue));
+
+                var seatToken = new SeatToken
+                {
+                    OrderItemId = item.Id,
+                    Token = tokenValue
+                };
+
+                item.SeatTokens.Add(seatToken);
+                _context.SeatTokens.Add(seatToken);
+                tokensCreated = true;
+            }
+        }
+
+        return tokensCreated;
+    }
+
+    private static string GenerateSeatTokenValue()
+    {
+        Span<byte> buffer = stackalloc byte[9];
+        RandomNumberGenerator.Fill(buffer);
+        return Convert.ToHexString(buffer);
     }
 }
 

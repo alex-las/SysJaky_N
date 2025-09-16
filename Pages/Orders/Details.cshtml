@@ -42,6 +42,48 @@
 <p>VAT: @Model.Order.Vat</p>
 <p>Total: @Model.Order.Total</p>
 
+@{
+    var hasSeatTokens = false;
+    foreach (var item in Model.Order.Items)
+    {
+        if (item.SeatTokens.Count > 0)
+        {
+            hasSeatTokens = true;
+            break;
+        }
+    }
+}
+
+@if (Model.Order.Status == OrderStatus.Paid && hasSeatTokens)
+{
+    <h2>Seat tokens</h2>
+    @foreach (var item in Model.Order.Items)
+    {
+        if (item.SeatTokens.Count == 0)
+        {
+            continue;
+        }
+
+        <h3>@(item.Course?.Title ?? $"Course {item.CourseId}")</h3>
+        <ul>
+            @foreach (var token in item.SeatTokens)
+            {
+                <li>
+                    <code>@token.Token</code>
+                    @if (token.RedeemedAtUtc.HasValue)
+                    {
+                        <span>- redeemed @token.RedeemedAtUtc.Value.ToLocalTime().ToString("g")</span>
+                    }
+                    else
+                    {
+                        <span>- available</span>
+                    }
+                </li>
+            }
+        </ul>
+    }
+}
+
 @if (!string.IsNullOrEmpty(Model.QrCodeImage))
 {
     <img src="@Model.QrCodeImage" alt="QR code" />

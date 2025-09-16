@@ -56,6 +56,8 @@ public class OrderItem
 
     [DataType(DataType.Currency)]
     public decimal Total { get; set; }
+
+    public ICollection<SeatToken> SeatTokens { get; set; } = new List<SeatToken>();
 }
 
 public enum OrderStatus

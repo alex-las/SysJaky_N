@@ -3,6 +3,11 @@
 
 <h1>Profile</h1>
 
+@if (!string.IsNullOrEmpty(Model.StatusMessage))
+{
+    <div class="alert alert-info">@Model.StatusMessage</div>
+}
+
 <form method="post">
     <div asp-validation-summary="All"></div>
     <div>
@@ -19,6 +24,19 @@
       </div>
       <button type="submit">Save</button>
   </form>
+
+<section>
+    <h2>Redeem seat token</h2>
+    <form method="post" asp-page-handler="RedeemToken">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div>
+            <label asp-for="RedeemTokenInput.Token"></label>
+            <input asp-for="RedeemTokenInput.Token" />
+            <span asp-validation-for="RedeemTokenInput.Token" class="text-danger"></span>
+        </div>
+        <button type="submit">Redeem</button>
+    </form>
+</section>
 
   @if (Model.Company != null)
   {

@@ -25,6 +25,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<WishlistItem> WishlistItems { get; set; } = default!;
     public DbSet<CompanyProfile> CompanyProfiles { get; set; } = default!;
     public DbSet<Enrollment> Enrollments { get; set; } = default!;
+    public DbSet<SeatToken> SeatTokens { get; set; } = default!;
     public DbSet<LogEntry> LogEntries { get; set; } = default!;
     public DbSet<SalesStat> SalesStats { get; set; } = default!;
 
@@ -66,6 +67,19 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .WithMany(t => t.Enrollments)
             .HasForeignKey(e => e.CourseTermId)
             .OnDelete(DeleteBehavior.Cascade);
+        builder.Entity<SeatToken>()
+            .HasIndex(t => t.Token)
+            .IsUnique();
+        builder.Entity<SeatToken>()
+            .HasOne(t => t.OrderItem)
+            .WithMany(i => i.SeatTokens)
+            .HasForeignKey(t => t.OrderItemId)
+            .OnDelete(DeleteBehavior.Cascade);
+        builder.Entity<SeatToken>()
+            .HasOne(t => t.RedeemedByUser)
+            .WithMany()
+            .HasForeignKey(t => t.RedeemedByUserId)
+            .OnDelete(DeleteBehavior.SetNull);
         builder.Entity<LogEntry>().HasIndex(e => e.Timestamp);
         builder.Entity<SalesStat>().HasKey(s => s.Date);
     }
