@@ -474,6 +474,28 @@ namespace SysJaky_N.Migrations
                     b.ToTable("CourseReviews");
                 });
 
+            modelBuilder.Entity("SysJaky_N.Models.CourseTerm", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int>("CourseId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("EndsAtUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime>("StartsAtUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CourseId");
+
+                    b.ToTable("CourseTerms");
+                });
+
             modelBuilder.Entity("SysJaky_N.Models.DiscountCode", b =>
                 {
                     b.Property<int>("Id")
@@ -497,6 +519,34 @@ namespace SysJaky_N.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("DiscountCodes");
+                });
+
+            modelBuilder.Entity("SysJaky_N.Models.Enrollment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("CheckedInAtUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("CourseTermId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CourseTermId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Enrollments");
                 });
 
             modelBuilder.Entity("SysJaky_N.Models.Order", b =>
@@ -632,6 +682,8 @@ namespace SysJaky_N.Migrations
                         .HasForeignKey("CompanyProfileId");
 
                     b.Navigation("CompanyProfile");
+
+                    b.Navigation("Enrollments");
                 });
 
             modelBuilder.Entity("SysJaky_N.Models.CompanyProfile", b =>
@@ -658,6 +710,17 @@ namespace SysJaky_N.Migrations
                     b.Navigation("CourseGroup");
                 });
 
+            modelBuilder.Entity("SysJaky_N.Models.CourseTerm", b =>
+                {
+                    b.HasOne("SysJaky_N.Models.Course", "Course")
+                        .WithMany()
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Course");
+                });
+
             modelBuilder.Entity("SysJaky_N.Models.CourseReview", b =>
                 {
                     b.HasOne("SysJaky_N.Models.Course", "Course")
@@ -677,6 +740,23 @@ namespace SysJaky_N.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("SysJaky_N.Models.Enrollment", b =>
+                {
+                    b.HasOne("SysJaky_N.Models.CourseTerm", "CourseTerm")
+                        .WithMany("Enrollments")
+                        .HasForeignKey("CourseTermId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SysJaky_N.Models.ApplicationUser", "User")
+                        .WithMany("Enrollments")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CourseTerm");
+
+                    b.Navigation("User");
             modelBuilder.Entity("SysJaky_N.Models.CourseTerm", b =>
                 {
                     b.HasOne("SysJaky_N.Models.Course", "Course")
@@ -754,6 +834,11 @@ namespace SysJaky_N.Migrations
             modelBuilder.Entity("SysJaky_N.Models.CourseGroup", b =>
                 {
                     b.Navigation("Courses");
+                });
+
+            modelBuilder.Entity("SysJaky_N.Models.CourseTerm", b =>
+                {
+                    b.Navigation("Enrollments");
                 });
 
             modelBuilder.Entity("SysJaky_N.Models.Order", b =>
