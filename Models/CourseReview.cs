@@ -21,6 +21,8 @@ public class CourseReview
     [StringLength(1000)]
     public string? Comment { get; set; }
 
+    public bool IsPublic { get; set; }
+
     [DataType(DataType.DateTime)]
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 }

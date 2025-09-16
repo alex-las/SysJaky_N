@@ -32,9 +32,12 @@ public class CourseTerm
     [Display(Name = "Active")]
     public bool IsActive { get; set; } = true;
 
+    public DateTime? ReviewRequestSentAtUtc { get; set; }
+
     [Display(Name = "Instructor")]
     public int? InstructorId { get; set; }
     public Instructor? Instructor { get; set; }
+
 
     public ICollection<Enrollment> Enrollments { get; set; } = new List<Enrollment>();
     public ICollection<WaitlistEntry> WaitlistEntries { get; set; } = new List<WaitlistEntry>();
