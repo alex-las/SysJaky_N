@@ -1012,7 +1012,11 @@ namespace SysJaky_N.Migrations
                     b.Navigation("CourseTerm");
 
                     b.Navigation("User");
-                    b.Navigation("Certificate");
+                    var navigation = b.Metadata.FindNavigation("Certificate");
+                    if (navigation != null)
+                    {
+                        b.Navigation("Certificate");
+                    }
                 });
 
             modelBuilder.Entity("SysJaky_N.Models.Certificate", b =>
