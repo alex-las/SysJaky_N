@@ -1,0 +1,234 @@
+@page
+@model SysJaky_N.Pages.Instructor.AttendanceModel
+@{
+    ViewData["Title"] = "Attendance check-in";
+}
+
+<h1 class="mb-4">Attendance check-in</h1>
+<p class="text-muted">Scan a QR code or enter a code manually to mark a participant as present.</p>
+
+<div class="row g-4">
+    <div class="col-lg-6">
+        <div class="card h-100">
+            <div class="card-header">
+                Scan QR code
+            </div>
+            <div class="card-body">
+                <div id="qr-reader" class="border rounded position-relative" style="min-height: 320px;">
+                    <div id="qr-reader-placeholder" class="position-absolute top-50 start-50 translate-middle text-muted">Camera initialising…</div>
+                </div>
+                <div id="qr-reader-error" class="alert alert-warning mt-3 d-none" role="alert"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="card h-100">
+            <div class="card-header">
+                Manual entry
+            </div>
+            <div class="card-body">
+                <form id="manual-form" class="mb-3" autocomplete="off">
+                    <label for="manualCode" class="form-label">Enrollment code</label>
+                    <input type="text" id="manualCode" class="form-control" autocomplete="off" />
+                    <div class="form-text">Enter the numeric enrollment ID or a code containing it (for example, <code>enrollment=123</code>).</div>
+                    <button type="submit" class="btn btn-primary mt-3">Check in</button>
+                </form>
+                <div id="result" class="alert d-none" role="alert"></div>
+                <div id="details" class="card d-none">
+                    <div class="card-body">
+                        <dl class="row mb-0">
+                            <dt class="col-sm-4">Enrollment ID</dt>
+                            <dd class="col-sm-8" id="detail-enrollment-id"></dd>
+                            <dt class="col-sm-4">Participant</dt>
+                            <dd class="col-sm-8" id="detail-participant"></dd>
+                            <dt class="col-sm-4">Course</dt>
+                            <dd class="col-sm-8" id="detail-course"></dd>
+                            <dt class="col-sm-4">Term start</dt>
+                            <dd class="col-sm-8" id="detail-term-start"></dd>
+                            <dt class="col-sm-4">Term end</dt>
+                            <dd class="col-sm-8" id="detail-term-end"></dd>
+                            <dt class="col-sm-4">Checked in at</dt>
+                            <dd class="col-sm-8" id="detail-checked-in"></dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://unpkg.com/html5-qrcode@2.3.10/html5-qrcode.min.js"></script>
+    <script>
+        (() => {
+            const resultBox = document.getElementById('result');
+            const detailsCard = document.getElementById('details');
+            const enrollmentIdEl = document.getElementById('detail-enrollment-id');
+            const participantEl = document.getElementById('detail-participant');
+            const courseEl = document.getElementById('detail-course');
+            const termStartEl = document.getElementById('detail-term-start');
+            const termEndEl = document.getElementById('detail-term-end');
+            const checkedInEl = document.getElementById('detail-checked-in');
+            const manualForm = document.getElementById('manual-form');
+            const manualInput = document.getElementById('manualCode');
+            const qrError = document.getElementById('qr-reader-error');
+            const placeholder = document.getElementById('qr-reader-placeholder');
+
+            const resetDetails = () => {
+                detailsCard.classList.add('d-none');
+                enrollmentIdEl.textContent = '';
+                participantEl.textContent = '';
+                courseEl.textContent = '';
+                termStartEl.textContent = '';
+                termEndEl.textContent = '';
+                checkedInEl.textContent = '';
+            };
+
+            const showResult = (type, message, details) => {
+                resultBox.className = '';
+                resultBox.classList.add('alert', type);
+                resultBox.textContent = message;
+                resultBox.classList.remove('d-none');
+
+                if (details) {
+                    detailsCard.classList.remove('d-none');
+                    enrollmentIdEl.textContent = details.enrollmentId ?? '';
+                    participantEl.textContent = details.participant ?? '';
+                    courseEl.textContent = details.course ?? '';
+                    termStartEl.textContent = details.termStart ?? '';
+                    termEndEl.textContent = details.termEnd ?? '';
+                    checkedInEl.textContent = details.checkedIn ?? '';
+                } else {
+                    resetDetails();
+                }
+            };
+
+            const formatDateTime = value => {
+                if (!value) {
+                    return '—';
+                }
+
+                const date = new Date(value);
+                if (Number.isNaN(date.getTime())) {
+                    return value;
+                }
+
+                return date.toLocaleString();
+            };
+
+            const processResponse = payload => {
+                const { status, checkedInAtUtc, enrollment } = payload ?? {};
+                const messages = {
+                    'checked-in': 'Attendance recorded.',
+                    'already-checked-in': 'This enrollment was already checked in.'
+                };
+                const message = messages[status] ?? 'Attendance recorded.';
+
+                showResult('alert-success', message, {
+                    enrollmentId: enrollment?.id,
+                    participant: enrollment?.participant,
+                    course: enrollment?.course,
+                    termStart: formatDateTime(enrollment?.courseTermStartUtc),
+                    termEnd: formatDateTime(enrollment?.courseTermEndUtc),
+                    checkedIn: formatDateTime(checkedInAtUtc)
+                });
+            };
+
+            const handleErrorResponse = async response => {
+                let message = 'Attendance could not be recorded.';
+                try {
+                    const data = await response.json();
+                    if (data?.message) {
+                        message = data.message;
+                    }
+                } catch (err) {
+                    console.warn('Unable to parse error response.', err);
+                }
+
+                showResult('alert-danger', message);
+            };
+
+            const submitCode = async code => {
+                if (!code) {
+                    showResult('alert-warning', 'Please provide a code to check in.');
+                    return;
+                }
+
+                try {
+                    const response = await fetch('/api/attendance/check-in', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        credentials: 'same-origin',
+                        body: JSON.stringify({ code })
+                    });
+
+                    if (response.ok) {
+                        const payload = await response.json();
+                        processResponse(payload);
+                    } else {
+                        await handleErrorResponse(response);
+                    }
+                } catch (err) {
+                    console.error('Check-in request failed.', err);
+                    showResult('alert-danger', 'An unexpected error occurred while recording attendance.');
+                }
+            };
+
+            manualForm.addEventListener('submit', event => {
+                event.preventDefault();
+                submitCode(manualInput.value.trim());
+            });
+
+            if (window.Html5Qrcode) {
+                const html5QrCode = new Html5Qrcode('qr-reader');
+                let lastScanned = '';
+
+                const onScanSuccess = decodedText => {
+                    if (!decodedText) {
+                        return;
+                    }
+
+                    if (decodedText === lastScanned) {
+                        return;
+                    }
+
+                    lastScanned = decodedText;
+                    manualInput.value = decodedText;
+                    submitCode(decodedText);
+
+                    setTimeout(() => {
+                        lastScanned = '';
+                    }, 3000);
+                };
+
+                html5QrCode
+                    .start({ facingMode: 'environment' }, { fps: 10, qrbox: 250 }, onScanSuccess, () => { })
+                    .then(() => {
+                        if (placeholder) {
+                            placeholder.classList.add('d-none');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Unable to start QR scanner.', error);
+                        if (placeholder) {
+                            placeholder.textContent = 'Unable to access the camera.';
+                        }
+                        if (qrError) {
+                            qrError.textContent = (error && error.message) ? error.message : 'Camera initialisation failed.';
+                            qrError.classList.remove('d-none');
+                        }
+                    });
+            } else {
+                if (placeholder) {
+                    placeholder.textContent = 'QR scanning library is unavailable.';
+                }
+                if (qrError) {
+                    qrError.textContent = 'QR scanning is not supported in this browser.';
+                    qrError.classList.remove('d-none');
+                }
+            }
+        })();
+    </script>
+}
