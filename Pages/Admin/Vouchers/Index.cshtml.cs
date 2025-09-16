@@ -22,6 +22,7 @@ public class IndexModel : PageModel
     public async Task OnGetAsync()
     {
         Vouchers = await _context.Vouchers
+            .AsNoTracking()
             .Include(v => v.AppliesToCourse)
             .OrderBy(v => v.Code)
             .ToListAsync();

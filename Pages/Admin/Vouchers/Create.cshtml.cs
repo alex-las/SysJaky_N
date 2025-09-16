@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -32,10 +33,49 @@ public class CreateModel : PageModel
     public async Task<IActionResult> OnPostAsync()
     {
         await LoadCoursesAsync();
+
+        Voucher.Code = Voucher.Code?.Trim() ?? string.Empty;
+
+        if (string.IsNullOrWhiteSpace(Voucher.Code))
+        {
+            ModelState.AddModelError("Voucher.Code", "Code is required.");
+        }
+        else
+        {
+            Voucher.Code = Voucher.Code.ToUpperInvariant();
+
+            bool codeExists = await _context.Vouchers
+                .AnyAsync(v => v.Code == Voucher.Code);
+            if (codeExists)
+            {
+                ModelState.AddModelError("Voucher.Code", "Voucher code must be unique.");
+            }
+        }
+
+        if (Voucher.Type == VoucherType.Percentage)
+        {
+            if (Voucher.Value <= 0 || Voucher.Value > 100)
+            {
+                ModelState.AddModelError("Voucher.Value", "Percentage vouchers must be between 0 and 100.");
+            }
+        }
+        else if (Voucher.Value <= 0)
+        {
+            ModelState.AddModelError("Voucher.Value", "Amount must be greater than zero.");
+        }
+
+        DateTime? expiresUtc = null;
+        if (Voucher.ExpiresUtc.HasValue)
+        {
+            expiresUtc = DateTime.SpecifyKind(Voucher.ExpiresUtc.Value, DateTimeKind.Local).ToUniversalTime();
+        }
+
         if (!ModelState.IsValid)
         {
             return Page();
         }
+
+        Voucher.ExpiresUtc = expiresUtc;
 
         _context.Vouchers.Add(Voucher);
         await _context.SaveChangesAsync();
@@ -45,6 +85,7 @@ public class CreateModel : PageModel
     private async Task LoadCoursesAsync()
     {
         var courseItems = await _context.Courses
+            .AsNoTracking()
             .OrderBy(c => c.Title)
             .Select(c => new SelectListItem
             {

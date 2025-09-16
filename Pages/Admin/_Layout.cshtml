@@ -10,41 +10,70 @@
     <link rel="stylesheet" href="~/SysJaky_N.styles.css" asp-append-version="true" />
 </head>
 <body>
-    <div class="d-flex">
-        <nav class="flex-column flex-shrink-0 p-3 bg-light" style="width: 250px;">
-            <a class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none" asp-page="/Admin/Dashboard/Index">
-                <span class="fs-4">Admin Panel</span>
-            </a>
-            <hr />
-            <ul class="nav nav-pills flex-column mb-auto">
-                <li class="nav-item">
-                    <a class="nav-link" asp-page="/Admin/Dashboard/Index">Dashboard</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" asp-page="/Admin/Users/Index">Users</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" asp-page="/Admin/Courses/Index">Manage Courses</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" asp-page="/Admin/CourseBlocks/Index">Course Blocks</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" asp-page="/Admin/PriceSchedules/Index">Price Schedules</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" asp-page="/Admin/Orders/Index">Manage Orders</a>
-                </li>
-            </ul>
-            <hr />
-            <a class="nav-link" asp-page="/Index">Back to site</a>
-        </nav>
-        <div class="flex-grow-1 p-3">
-            <main role="main" class="pb-3">
-                @RenderBody()
-            </main>
+@{
+    var page = ViewContext.RouteData.Values["page"]?.ToString() ?? string.Empty;
+    string ActiveClass(string prefix) => page.StartsWith(prefix, System.StringComparison.OrdinalIgnoreCase) ? "active" : string.Empty;
+}
+    <header class="border-bottom bg-light">
+        <div class="container-fluid py-3">
+            <div class="d-flex flex-column flex-lg-row align-items-lg-center gap-3">
+                <a class="d-flex align-items-center gap-2 text-decoration-none text-dark" asp-page="/Admin/Dashboard/Index">
+                    <i class="bi bi-speedometer2 fs-4"></i>
+                    <span class="h4 mb-0">Admin Panel</span>
+                </a>
+                <nav class="flex-grow-1">
+                    <ul class="nav nav-tabs flex-wrap" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link @ActiveClass("/Admin/Dashboard")" asp-page="/Admin/Dashboard/Index">Dashboard</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link @ActiveClass("/Admin/Users")" asp-page="/Admin/Users/Index">Users</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link @ActiveClass("/Admin/Courses")" asp-page="/Admin/Courses/Index">Courses</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link @ActiveClass("/Admin/CourseTerms")" asp-page="/Admin/CourseTerms/Index">Course Terms</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link @ActiveClass("/Admin/Instructors")" asp-page="/Admin/Instructors/Index">Instructors</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link @ActiveClass("/Admin/CourseBlocks")" asp-page="/Admin/CourseBlocks/Index">Course Blocks</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link @ActiveClass("/Admin/PriceSchedules")" asp-page="/Admin/PriceSchedules/Index">Price Schedules</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link @ActiveClass("/Admin/Vouchers")" asp-page="/Admin/Vouchers/Index">Vouchers</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link @ActiveClass("/Admin/Orders")" asp-page="/Admin/Orders/Index">Orders</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link @ActiveClass("/Admin/Companies")" asp-page="/Admin/Companies/Index">Companies</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link @ActiveClass("/Admin/CourseReviews")" asp-page="/Admin/CourseReviews/Index">Course Reviews</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link @ActiveClass("/Admin/Articles")" asp-page="/Admin/Articles/Index">Articles</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link @ActiveClass("/Admin/AuditLogs")" asp-page="/Admin/AuditLogs/Index">Audit Logs</a>
+                        </li>
+                    </ul>
+                </nav>
+                <div class="ms-lg-3">
+                    <a class="btn btn-outline-primary" asp-page="/Index">Back to site</a>
+                </div>
+            </div>
         </div>
-    </div>
+    </header>
+
+    <main role="main" class="container-fluid py-4">
+        @RenderBody()
+    </main>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
@@ -52,4 +81,3 @@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
-

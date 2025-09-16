@@ -1,0 +1,88 @@
+@page
+@model SysJaky_N.Pages.Admin.CourseTerms.IndexModel
+@{
+    ViewData["Title"] = "Course Terms";
+}
+
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+    <h1 class="mb-0">Course Terms</h1>
+    <a class="btn btn-primary" asp-page="Create">Create term</a>
+</div>
+
+<form method="get" class="row g-3 align-items-end mb-4">
+    <div class="col-md-4">
+        <label asp-for="CourseId" class="form-label">Course</label>
+        <select asp-for="CourseId" class="form-select" asp-items="Model.CourseOptions">
+            <option value="">All courses</option>
+        </select>
+    </div>
+    <div class="col-md-3">
+        <div class="form-check mt-md-4">
+            <input class="form-check-input" asp-for="OnlyActive" />
+            <label class="form-check-label" asp-for="OnlyActive">Active only</label>
+        </div>
+    </div>
+    <div class="col-auto">
+        <button type="submit" class="btn btn-primary">Filter</button>
+    </div>
+    <div class="col-auto">
+        <a asp-page="Index" class="btn btn-outline-secondary">Clear</a>
+    </div>
+</form>
+
+@if (Model.Terms.Count == 0)
+{
+    <div class="alert alert-info" role="status">
+        No course terms found.
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-striped align-middle">
+            <thead>
+                <tr>
+                    <th>Course</th>
+                    <th>Instructor</th>
+                    <th>Start</th>
+                    <th>End</th>
+                    <th class="text-center">Capacity</th>
+                    <th class="text-center">Seats taken</th>
+                    <th>Status</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var term in Model.Terms)
+            {
+                var startLocal = DateTime.SpecifyKind(term.StartUtc, DateTimeKind.Utc).ToLocalTime();
+                var endLocal = DateTime.SpecifyKind(term.EndUtc, DateTimeKind.Utc).ToLocalTime();
+                <tr>
+                    <td>@term.Course?.Title</td>
+                    <td>@(term.Instructor?.FullName ?? "Unassigned")</td>
+                    <td>@startLocal.ToString("g")</td>
+                    <td>@endLocal.ToString("g")</td>
+                    <td class="text-center">@term.Capacity</td>
+                    <td class="text-center">@term.SeatsTaken</td>
+                    <td>
+                        @if (term.IsActive)
+                        {
+                            <span class="badge bg-success">Active</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">Inactive</span>
+                        }
+                    </td>
+                    <td class="text-end">
+                        <div class="btn-group btn-group-sm" role="group" aria-label="Actions for @term.Course?.Title term">
+                            <a class="btn btn-outline-secondary" asp-page="Edit" asp-route-id="@term.Id">Edit</a>
+                            <a class="btn btn-outline-danger" asp-page="Delete" asp-route-id="@term.Id">Delete</a>
+                        </div>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+}

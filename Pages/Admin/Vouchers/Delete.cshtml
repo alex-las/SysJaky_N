@@ -14,9 +14,27 @@
         <dt class="col-sm-3">Type</dt>
         <dd class="col-sm-9">@Model.Voucher.Type</dd>
         <dt class="col-sm-3">Value</dt>
-        <dd class="col-sm-9">@Model.Voucher.Value</dd>
+        <dd class="col-sm-9">
+            @if (Model.Voucher.Type == SysJaky_N.Models.VoucherType.Percentage)
+            {
+                @string.Format("{0:0.##}%", Model.Voucher.Value)
+            }
+            else
+            {
+                @Model.Voucher.Value.ToString("C")
+            }
+        </dd>
         <dt class="col-sm-3">Expires</dt>
-        <dd class="col-sm-9">@Model.Voucher.ExpiresUtc?.ToString("g") ?? "Never"</dd>
+        <dd class="col-sm-9">
+            @if (Model.Voucher.ExpiresUtc.HasValue)
+            {
+                @DateTime.SpecifyKind(Model.Voucher.ExpiresUtc.Value, DateTimeKind.Utc).ToLocalTime().ToString("g")
+            }
+            else
+            {
+                @:Never
+            }
+        </dd>
         <dt class="col-sm-3">Max redemptions</dt>
         <dd class="col-sm-9">@(Model.Voucher.MaxRedemptions?.ToString() ?? "Unlimited")</dd>
         <dt class="col-sm-3">Used</dt>
@@ -24,7 +42,7 @@
         <dt class="col-sm-3">Applies to</dt>
         <dd class="col-sm-9">@Model.Voucher.AppliesToCourse?.Title ?? "All courses"</dd>
     </dl>
-    <form method="post">
+    <form method="post" class="d-flex gap-2">
         <input type="hidden" asp-for="Voucher.Id" />
         <button type="submit" class="btn btn-danger">Delete</button>
         <a asp-page="Index" class="btn btn-secondary">Back to List</a>

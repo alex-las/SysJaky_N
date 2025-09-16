@@ -16,12 +16,13 @@
 }
 else
 {
-    <table class="table">
+    <div class="table-responsive">
+        <table class="table table-striped align-middle">
         <thead>
             <tr>
                 <th>Course</th>
-                <th>Valid From (UTC)</th>
-                <th>Valid To (UTC)</th>
+                <th>Valid From</th>
+                <th>Valid To</th>
                 <th>New Price (excl. VAT)</th>
                 <th></th>
             </tr>
@@ -31,9 +32,9 @@ else
         {
             <tr>
                 <td>@schedule.Course?.Title</td>
-                <td>@schedule.FromUtc.ToString("g")</td>
-                <td>@schedule.ToUtc.ToString("g")</td>
-                <td>@schedule.NewPriceExcl</td>
+                <td>@DateTime.SpecifyKind(schedule.FromUtc, DateTimeKind.Utc).ToLocalTime().ToString("g")</td>
+                <td>@DateTime.SpecifyKind(schedule.ToUtc, DateTimeKind.Utc).ToLocalTime().ToString("g")</td>
+                <td>@schedule.NewPriceExcl.ToString("C")</td>
                 <td>
                     <a class="btn btn-sm btn-secondary" asp-page="Edit" asp-route-id="@schedule.Id">Edit</a>
                     <a class="btn btn-sm btn-danger" asp-page="Delete" asp-route-id="@schedule.Id">Delete</a>
@@ -41,5 +42,6 @@ else
             </tr>
         }
         </tbody>
-    </table>
+        </table>
+    </div>
 }

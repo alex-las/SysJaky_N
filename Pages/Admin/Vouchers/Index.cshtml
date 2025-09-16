@@ -1,4 +1,5 @@
 @page
+@using System.Linq
 @model SysJaky_N.Pages.Admin.Vouchers.IndexModel
 @{
     ViewData["Title"] = "Vouchers";
@@ -7,9 +8,17 @@
 <h1>Vouchers</h1>
 
 <p>
-    <a asp-page="Create">Create New</a>
+    <a class="btn btn-primary" asp-page="Create">Create New</a>
 </p>
-<table class="table">
+
+@if (!Model.Vouchers.Any())
+{
+    <div class="alert alert-info" role="status">No vouchers available.</div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-striped align-middle">
     <thead>
         <tr>
             <th>Code</th>
@@ -28,16 +37,36 @@
         <tr>
             <td>@item.Code</td>
             <td>@item.Type</td>
-            <td>@item.Value</td>
-            <td>@item.ExpiresUtc?.ToString("g") ?? "Never"</td>
+            <td>
+                @if (item.Type == SysJaky_N.Models.VoucherType.Percentage)
+                {
+                    @string.Format("{0:0.##}%", item.Value)
+                }
+                else
+                {
+                    @item.Value.ToString("C")
+                }
+            </td>
+            <td>
+                @if (item.ExpiresUtc.HasValue)
+                {
+                    @DateTime.SpecifyKind(item.ExpiresUtc.Value, DateTimeKind.Utc).ToLocalTime().ToString("g")
+                }
+                else
+                {
+                    @:Never
+                }
+            </td>
             <td>@(item.MaxRedemptions?.ToString() ?? "Unlimited")</td>
             <td>@item.UsedCount</td>
             <td>@item.AppliesToCourse?.Title ?? "All courses"</td>
             <td>
-                <a asp-page="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-page="Delete" asp-route-id="@item.Id">Delete</a>
+                <a class="btn btn-sm btn-outline-secondary" asp-page="Edit" asp-route-id="@item.Id">Edit</a>
+                <a class="btn btn-sm btn-outline-danger" asp-page="Delete" asp-route-id="@item.Id">Delete</a>
             </td>
         </tr>
     }
     </tbody>
-</table>
+        </table>
+    </div>
+}

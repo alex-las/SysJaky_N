@@ -13,14 +13,14 @@ public class PriceSchedule
     public Course? Course { get; set; }
 
     [DataType(DataType.DateTime)]
-    [Display(Name = "Valid From (UTC)")]
+    [Display(Name = "Valid From")]
     public DateTime FromUtc { get; set; }
 
     [DataType(DataType.DateTime)]
-    [Display(Name = "Valid To (UTC)")]
+    [Display(Name = "Valid To")]
     public DateTime ToUtc { get; set; }
 
-    [Range(0, double.MaxValue)]
+    [Range(0.01, double.MaxValue, ErrorMessage = "The new price must be greater than zero.")]
     [DataType(DataType.Currency)]
     [Display(Name = "New Price (excl. VAT)")]
     public decimal NewPriceExcl { get; set; }

@@ -12,12 +12,12 @@
     <dl class="row">
         <dt class="col-sm-3">Course</dt>
         <dd class="col-sm-9">@Model.PriceSchedule.Course?.Title</dd>
-        <dt class="col-sm-3">Valid From (UTC)</dt>
-        <dd class="col-sm-9">@Model.PriceSchedule.FromUtc.ToString("g")</dd>
-        <dt class="col-sm-3">Valid To (UTC)</dt>
-        <dd class="col-sm-9">@Model.PriceSchedule.ToUtc.ToString("g")</dd>
+        <dt class="col-sm-3">Valid From</dt>
+        <dd class="col-sm-9">@DateTime.SpecifyKind(Model.PriceSchedule.FromUtc, DateTimeKind.Utc).ToLocalTime().ToString("g")</dd>
+        <dt class="col-sm-3">Valid To</dt>
+        <dd class="col-sm-9">@DateTime.SpecifyKind(Model.PriceSchedule.ToUtc, DateTimeKind.Utc).ToLocalTime().ToString("g")</dd>
         <dt class="col-sm-3">New Price (excl. VAT)</dt>
-        <dd class="col-sm-9">@Model.PriceSchedule.NewPriceExcl</dd>
+        <dd class="col-sm-9">@Model.PriceSchedule.NewPriceExcl.ToString("C")</dd>
     </dl>
 
     <form method="post">
