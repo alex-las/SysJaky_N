@@ -175,6 +175,35 @@ try
         return Results.Ok();
     });
 
+    static string EscapeIcsText(string? value)
+    {
+        if (string.IsNullOrEmpty(value))
+        {
+            return string.Empty;
+        }
+
+        return value
+            .Replace("\\", "\\\\")
+            .Replace("\r\n", "\\n")
+            .Replace("\n", "\\n")
+            .Replace(",", "\\,")
+            .Replace(";", "\\;");
+    }
+
+    static string FormatUtcDateTime(DateTime dateTime)
+    {
+        if (dateTime.Kind == DateTimeKind.Unspecified)
+        {
+            dateTime = DateTime.SpecifyKind(dateTime, DateTimeKind.Utc);
+        }
+        else
+        {
+            dateTime = dateTime.ToUniversalTime();
+        }
+
+        return dateTime.ToString("yyyyMMddTHHmmssZ");
+    }
+
     app.MapGet("/Courses/ICS/{id:int}", async (int id, ApplicationDbContext context) =>
     {
         var course = await context.Courses.FindAsync(id);
@@ -192,10 +221,10 @@ try
         builder.AppendLine($"DTSTAMP:{DateTime.UtcNow:yyyyMMddTHHmmssZ}");
         builder.AppendLine($"DTSTART;VALUE=DATE:{course.Date:yyyyMMdd}");
         builder.AppendLine($"DTEND;VALUE=DATE:{course.Date.AddDays(1):yyyyMMdd}");
-        builder.AppendLine($"SUMMARY:{course.Title}");
+        builder.AppendLine($"SUMMARY:{EscapeIcsText(course.Title)}");
         if (!string.IsNullOrWhiteSpace(course.Description))
         {
-            builder.AppendLine($"DESCRIPTION:{course.Description}");
+            builder.AppendLine($"DESCRIPTION:{EscapeIcsText(course.Description)}");
         }
         builder.AppendLine("END:VEVENT");
         builder.AppendLine("END:VCALENDAR");
@@ -203,6 +232,95 @@ try
         var bytes = Encoding.UTF8.GetBytes(builder.ToString());
         return Results.File(bytes, "text/calendar", $"{course.Title}.ics");
     });
+
+    app.MapGet("/CourseTerms/ICS/{id:int}", async (int id, ApplicationDbContext context) =>
+    {
+        var term = await context.CourseTerms
+            .AsNoTracking()
+            .Include(t => t.Course)
+            .FirstOrDefaultAsync(t => t.Id == id);
+
+        if (term?.Course == null)
+        {
+            return Results.NotFound();
+        }
+
+        var builder = new StringBuilder();
+        builder.AppendLine("BEGIN:VCALENDAR");
+        builder.AppendLine("VERSION:2.0");
+        builder.AppendLine("PRODID:-//SysJaky_N//EN");
+        builder.AppendLine("BEGIN:VEVENT");
+        builder.AppendLine($"UID:course-term-{term.Id}@sysjaky_n");
+        builder.AppendLine($"DTSTAMP:{DateTime.UtcNow:yyyyMMddTHHmmssZ}");
+        builder.AppendLine($"DTSTART:{FormatUtcDateTime(term.StartUtc)}");
+        builder.AppendLine($"DTEND:{FormatUtcDateTime(term.EndUtc)}");
+        builder.AppendLine($"SUMMARY:{EscapeIcsText(term.Course.Title)}");
+        if (!string.IsNullOrWhiteSpace(term.Course.Description))
+        {
+            builder.AppendLine($"DESCRIPTION:{EscapeIcsText(term.Course.Description)}");
+        }
+        builder.AppendLine("END:VEVENT");
+        builder.AppendLine("END:VCALENDAR");
+
+        var fileName = $"{term.Course.Title}-{term.StartUtc:yyyyMMddHHmm}.ics";
+        var bytes = Encoding.UTF8.GetBytes(builder.ToString());
+        return Results.File(bytes, "text/calendar", fileName);
+    });
+
+    app.MapGet("/Account/Calendar/MyCourses.ics", async (
+        HttpContext httpContext,
+        UserManager<ApplicationUser> userManager,
+        ApplicationDbContext context) =>
+    {
+        var user = await userManager.GetUserAsync(httpContext.User);
+        if (user == null)
+        {
+            return Results.Unauthorized();
+        }
+
+        var enrollments = await context.Enrollments
+            .AsNoTracking()
+            .Where(e => e.UserId == user.Id && e.Status == EnrollmentStatus.Confirmed)
+            .Include(e => e.CourseTerm)
+                .ThenInclude(term => term.Course)
+            .ToListAsync();
+
+        var now = DateTime.UtcNow;
+
+        var builder = new StringBuilder();
+        builder.AppendLine("BEGIN:VCALENDAR");
+        builder.AppendLine("VERSION:2.0");
+        builder.AppendLine("PRODID:-//SysJaky_N//EN");
+        builder.AppendLine("CALSCALE:GREGORIAN");
+        builder.AppendLine("X-WR-CALNAME:Moje kurzy");
+
+        foreach (var enrollment in enrollments)
+        {
+            var term = enrollment.CourseTerm;
+            var course = term?.Course;
+            if (term == null || course == null)
+            {
+                continue;
+            }
+
+            builder.AppendLine("BEGIN:VEVENT");
+            builder.AppendLine($"UID:course-term-{term.Id}-user-{user.Id}@sysjaky_n");
+            builder.AppendLine($"DTSTAMP:{now:yyyyMMddTHHmmssZ}");
+            builder.AppendLine($"DTSTART:{FormatUtcDateTime(term.StartUtc)}");
+            builder.AppendLine($"DTEND:{FormatUtcDateTime(term.EndUtc)}");
+            builder.AppendLine($"SUMMARY:{EscapeIcsText(course.Title)}");
+            if (!string.IsNullOrWhiteSpace(course.Description))
+            {
+                builder.AppendLine($"DESCRIPTION:{EscapeIcsText(course.Description)}");
+            }
+            builder.AppendLine("END:VEVENT");
+        }
+
+        builder.AppendLine("END:VCALENDAR");
+
+        var bytes = Encoding.UTF8.GetBytes(builder.ToString());
+        return Results.File(bytes, "text/calendar", "moje-kurzy.ics");
+    }).RequireAuthorization();
 
     app.Run();
 }

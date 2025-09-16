@@ -35,6 +35,64 @@
     </form>
 }
 
+<section class="mt-4">
+    <h2>Lekce</h2>
+    @if (Model.Lessons.Any())
+    {
+        <div class="list-group">
+            @foreach (var lesson in Model.Lessons)
+            {
+                Model.ProgressByLessonId.TryGetValue(lesson.Id, out var progressInfo);
+                var completion = progressInfo?.Progress ?? 0;
+                <div class="list-group-item">
+                    <div class="d-flex flex-column gap-2">
+                        <div class="d-flex justify-content-between flex-wrap gap-3">
+                            <div>
+                                <div class="fw-semibold">Lekce pořadí: @lesson.Order</div>
+                                <div class="text-muted">Typ: @lesson.Type</div>
+                                @if (!string.IsNullOrWhiteSpace(lesson.ContentUrl))
+                                {
+                                    <a class="link-primary" href="@lesson.ContentUrl" target="_blank" rel="noopener">Otevřít obsah</a>
+                                }
+                            </div>
+                            <div class="text-end">
+                                <div class="fw-semibold">@completion&nbsp;% dokončeno</div>
+                                @if (progressInfo is not null)
+                                {
+                                    <div class="text-muted small">Naposledy @(progressInfo.LastSeenUtc.ToLocalTime().ToString("g"))</div>
+                                }
+                            </div>
+                        </div>
+                        @if (User.Identity?.IsAuthenticated ?? false)
+                        {
+                            <form method="post" asp-page-handler="UpdateProgress" asp-route-id="@Model.Course.Id" class="d-flex flex-column flex-sm-row align-items-sm-center gap-2">
+                                <input type="hidden" name="lessonId" value="@lesson.Id" />
+                                <div class="input-group input-group-sm" style="max-width: 220px;">
+                                    <span class="input-group-text">Progres</span>
+                                    <input type="number" class="form-control" name="progress" min="0" max="100" value="@completion" aria-label="Procento dokončení lekce pořadí @lesson.Order" />
+                                    <span class="input-group-text">%</span>
+                                </div>
+                                <div class="d-flex gap-2 flex-wrap">
+                                    <button type="submit" class="btn btn-sm btn-primary">Uložit</button>
+                                    <button type="submit" class="btn btn-sm btn-outline-success" onclick="this.form.querySelector('[name=progress]').value = 100;">Dokončeno</button>
+                                </div>
+                            </form>
+                        }
+                        else
+                        {
+                            <p class="text-muted small mb-0">Přihlaste se pro sledování postupu.</p>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <p class="text-muted">Pro tento kurz zatím nejsou dostupné lekce.</p>
+    }
+</section>
+
 @if (Model.Reviews.Any())
 {
     <h2>Reviews</h2>
