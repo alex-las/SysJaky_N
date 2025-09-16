@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Stripe;
@@ -78,19 +79,108 @@ public class PaymentService
 
         var service = new SessionService();
         var session = await service.GetAsync(sessionId);
-        if (session.PaymentStatus == "paid")
+        if (!string.Equals(session.PaymentStatus, "paid", StringComparison.OrdinalIgnoreCase))
+            return;
+
+        var orderIdStr = session.Metadata.GetValueOrDefault("orderId");
+        if (!int.TryParse(orderIdStr, out var orderId))
+            return;
+
+        var order = await _context.Orders
+            .Include(o => o.Items)
+            .FirstOrDefaultAsync(o => o.Id == orderId);
+
+        if (order == null)
+            return;
+
+        var paymentConfirmation = session.PaymentIntentId ?? session.Id;
+        if (order.Status == OrderStatus.Paid && !string.IsNullOrEmpty(order.PaymentConfirmation))
         {
-            var orderIdStr = session.Metadata.GetValueOrDefault("orderId");
-            if (int.TryParse(orderIdStr, out var orderId))
+            if (!string.Equals(order.PaymentConfirmation, paymentConfirmation, StringComparison.Ordinal))
             {
-                var order = await _context.Orders.FindAsync(orderId);
-                if (order != null)
+                order.PaymentConfirmation = paymentConfirmation;
+                await _context.SaveChangesAsync();
+            }
+            return;
+        }
+
+        await using var transaction = await _context.Database.BeginTransactionAsync();
+        try
+        {
+            order.Status = OrderStatus.Paid;
+            order.PaymentConfirmation = paymentConfirmation;
+
+            if (!string.IsNullOrEmpty(order.UserId) && order.Items.Count > 0)
+            {
+                var courseIds = order.Items.Select(i => i.CourseId).Distinct().ToList();
+
+                var terms = await _context.CourseTerms
+                    .Where(term => courseIds.Contains(term.CourseId) && term.IsActive)
+                    .OrderBy(term => term.StartUtc)
+                    .ToListAsync();
+
+                var termLookup = terms
+                    .GroupBy(term => term.CourseId)
+                    .ToDictionary(group => group.Key, group => group.ToList());
+
+                foreach (var item in order.Items)
                 {
-                    order.Status = OrderStatus.Paid;
-                    order.PaymentConfirmation = session.PaymentIntentId ?? session.Id;
-                    await _context.SaveChangesAsync();
+                    if (item.Quantity <= 0)
+                        continue;
+
+                    if (!termLookup.TryGetValue(item.CourseId, out var courseTerms) || courseTerms.Count == 0)
+                    {
+                        _logger.LogWarning(
+                            "No active course terms available for course {CourseId} when processing order {OrderId}.",
+                            item.CourseId,
+                            order.Id);
+                        continue;
+                    }
+
+                    var seatsNeeded = item.Quantity;
+                    foreach (var term in courseTerms)
+                    {
+                        var availableSeats = term.Capacity - term.SeatsTaken;
+                        if (availableSeats <= 0)
+                            continue;
+
+                        var seatsToAllocate = Math.Min(seatsNeeded, availableSeats);
+                        term.SeatsTaken += seatsToAllocate;
+
+                        for (var i = 0; i < seatsToAllocate; i++)
+                        {
+                            _context.Enrollments.Add(new Enrollment
+                            {
+                                UserId = order.UserId!,
+                                CourseTermId = term.Id,
+                                Status = EnrollmentStatus.Confirmed
+                            });
+                        }
+
+                        seatsNeeded -= seatsToAllocate;
+                        if (seatsNeeded <= 0)
+                            break;
+                    }
+
+                    if (seatsNeeded > 0)
+                    {
+                        _logger.LogWarning(
+                            "Could not allocate {RemainingSeats} seats for course {CourseId} in order {OrderId} due to limited capacity.",
+                            seatsNeeded,
+                            item.CourseId,
+                            order.Id);
+                    }
                 }
             }
+
+            await _context.SaveChangesAsync();
+            await transaction.CommitAsync();
+        }
+        catch (Exception ex)
+        {
+            await transaction.RollbackAsync();
+            _logger.LogError(ex, "Error processing payment success for order {OrderId}.", orderId);
+            throw;
         }
     }
 
