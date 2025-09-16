@@ -1,3 +1,4 @@
+using System;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -29,6 +30,11 @@ public class DeleteModel : PageModel
         {
             return NotFound();
         }
+        if (voucher.ExpiresUtc.HasValue)
+        {
+            voucher.ExpiresUtc = DateTime.SpecifyKind(voucher.ExpiresUtc.Value, DateTimeKind.Utc).ToLocalTime();
+        }
+
         Voucher = voucher;
         return Page();
     }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -26,10 +27,18 @@ public class EditModel : PageModel
 
     public async Task<IActionResult> OnGetAsync(int id)
     {
-        var voucher = await _context.Vouchers.FindAsync(id);
+        var voucher = await _context.Vouchers
+            .AsNoTracking()
+            .FirstOrDefaultAsync(v => v.Id == id);
+
         if (voucher == null)
         {
             return NotFound();
+        }
+
+        if (voucher.ExpiresUtc.HasValue)
+        {
+            voucher.ExpiresUtc = DateTime.SpecifyKind(voucher.ExpiresUtc.Value, DateTimeKind.Utc).ToLocalTime();
         }
 
         Voucher = voucher;
@@ -39,42 +48,77 @@ public class EditModel : PageModel
 
     public async Task<IActionResult> OnPostAsync()
     {
-        if (!ModelState.IsValid)
-        {
-            await LoadCoursesAsync();
-            return Page();
-        }
+        await LoadCoursesAsync();
 
-        var existing = await _context.Vouchers.AsNoTracking().FirstOrDefaultAsync(v => v.Id == Voucher.Id);
-        if (existing == null)
+        var voucherToUpdate = await _context.Vouchers
+            .FirstOrDefaultAsync(v => v.Id == Voucher.Id);
+
+        if (voucherToUpdate == null)
         {
             return NotFound();
         }
 
-        Voucher.UsedCount = existing.UsedCount;
-        _context.Attach(Voucher).State = EntityState.Modified;
-        _context.Entry(Voucher).Property(v => v.UsedCount).IsModified = false;
+        Voucher.Code = Voucher.Code?.Trim() ?? string.Empty;
 
-        try
+        if (string.IsNullOrWhiteSpace(Voucher.Code))
         {
-            await _context.SaveChangesAsync();
+            ModelState.AddModelError("Voucher.Code", "Code is required.");
         }
-        catch (DbUpdateConcurrencyException)
+        else
         {
-            if (!await _context.Vouchers.AnyAsync(v => v.Id == Voucher.Id))
+            Voucher.Code = Voucher.Code.ToUpperInvariant();
+            bool exists = await _context.Vouchers
+                .AnyAsync(v => v.Id != Voucher.Id && v.Code == Voucher.Code);
+            if (exists)
             {
-                return NotFound();
+                ModelState.AddModelError("Voucher.Code", "Voucher code must be unique.");
             }
-
-            throw;
         }
 
+        if (Voucher.Type == VoucherType.Percentage)
+        {
+            if (Voucher.Value <= 0 || Voucher.Value > 100)
+            {
+                ModelState.AddModelError("Voucher.Value", "Percentage vouchers must be between 0 and 100.");
+            }
+        }
+        else if (Voucher.Value <= 0)
+        {
+            ModelState.AddModelError("Voucher.Value", "Amount must be greater than zero.");
+        }
+
+        if (Voucher.MaxRedemptions.HasValue && Voucher.MaxRedemptions.Value < voucherToUpdate.UsedCount)
+        {
+            ModelState.AddModelError("Voucher.MaxRedemptions", "Max redemptions cannot be lower than the used count.");
+        }
+
+        DateTime? expiresUtc = null;
+        if (Voucher.ExpiresUtc.HasValue)
+        {
+            expiresUtc = DateTime.SpecifyKind(Voucher.ExpiresUtc.Value, DateTimeKind.Local).ToUniversalTime();
+        }
+
+        if (!ModelState.IsValid)
+        {
+            Voucher.UsedCount = voucherToUpdate.UsedCount;
+            return Page();
+        }
+
+        voucherToUpdate.Code = Voucher.Code;
+        voucherToUpdate.Type = Voucher.Type;
+        voucherToUpdate.Value = Voucher.Value;
+        voucherToUpdate.ExpiresUtc = expiresUtc;
+        voucherToUpdate.MaxRedemptions = Voucher.MaxRedemptions;
+        voucherToUpdate.AppliesToCourseId = Voucher.AppliesToCourseId;
+
+        await _context.SaveChangesAsync();
         return RedirectToPage("Index");
     }
 
     private async Task LoadCoursesAsync()
     {
         var courseItems = await _context.Courses
+            .AsNoTracking()
             .OrderBy(c => c.Title)
             .Select(c => new SelectListItem
             {

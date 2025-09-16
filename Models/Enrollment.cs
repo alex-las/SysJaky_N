@@ -12,7 +12,7 @@ public class Enrollment
 
     public EnrollmentStatus Status { get; set; } = EnrollmentStatus.Pending;
 
-    public DateTime? CheckedInAtUtc { get; set; }
+    public Attendance? Attendance { get; set; }
 
     public Certificate? Certificate { get; set; }
 }

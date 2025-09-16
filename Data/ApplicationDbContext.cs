@@ -33,7 +33,11 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<WaitlistEntry> WaitlistEntries { get; set; } = default!;
     public DbSet<PaymentId> PaymentIds { get; set; } = default!;
     public DbSet<PriceSchedule> PriceSchedules { get; set; } = default!;
+    public DbSet<Instructor> Instructors { get; set; } = default!;
+
     public DbSet<Certificate> Certificates { get; set; } = default!;
+    public DbSet<Attendance> Attendances { get; set; } = default!;
+
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -77,6 +81,11 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .WithMany()
             .HasForeignKey(t => t.CourseId)
             .OnDelete(DeleteBehavior.Cascade);
+        builder.Entity<CourseTerm>()
+            .HasOne(t => t.Instructor)
+            .WithMany(i => i.CourseTerms)
+            .HasForeignKey(t => t.InstructorId)
+            .OnDelete(DeleteBehavior.SetNull);
         builder.Entity<Enrollment>()
             .HasOne(e => e.User)
             .WithMany(u => u.Enrollments)
@@ -142,5 +151,15 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .WithOne(e => e.Certificate)
             .HasForeignKey<Certificate>(c => c.IssuedToEnrollmentId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<Attendance>()
+            .HasOne(a => a.Enrollment)
+            .WithOne(e => e.Attendance)
+            .HasForeignKey<Attendance>(a => a.EnrollmentId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<Attendance>()
+            .HasIndex(a => a.EnrollmentId)
+            .IsUnique();
     }
 }

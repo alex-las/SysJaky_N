@@ -54,7 +54,8 @@ public class CertificateService
             .Include(e => e.User)
             .Include(e => e.CourseTerm)
                 .ThenInclude(t => t.Course)
-            .Where(e => e.CheckedInAtUtc != null)
+            .Include(e => e.Attendance)
+            .Where(e => e.Attendance != null)
             .Where(e => e.Certificate == null)
             .ToListAsync(cancellationToken);
 
@@ -83,6 +84,7 @@ public class CertificateService
             .Include(e => e.User)
             .Include(e => e.CourseTerm)
                 .ThenInclude(t => t.Course)
+            .Include(e => e.Attendance)
             .FirstOrDefaultAsync(e => e.Id == enrollmentId, cancellationToken);
 
         if (enrollment == null)
@@ -95,7 +97,7 @@ public class CertificateService
             return enrollment.Certificate;
         }
 
-        if (enrollment.CheckedInAtUtc == null)
+        if (enrollment.Attendance?.CheckedInAtUtc == null)
         {
             throw new InvalidOperationException("Enrollment has not been marked as completed.");
         }
@@ -187,9 +189,11 @@ public class CertificateService
         while (true)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            Span<byte> buffer = stackalloc byte[8];
+
+            var buffer = new byte[8];
             RandomNumberGenerator.Fill(buffer);
             var candidate = Convert.ToHexString(buffer);
+
             var exists = await _context.Certificates.AnyAsync(c => c.Number == candidate, cancellationToken);
             if (!exists)
             {
@@ -257,7 +261,8 @@ public class CertificateService
         var courseTitle = enrollment.CourseTerm?.Course?.Title ?? $"Kurz {enrollment.CourseTerm?.CourseId}";
         var start = enrollment.CourseTerm?.StartUtc.ToLocalTime();
         var end = enrollment.CourseTerm?.EndUtc.ToLocalTime();
-        var completion = enrollment.CheckedInAtUtc?.ToLocalTime();
+        var completionUtc = enrollment.Attendance?.CheckedInAtUtc;
+        var completion = completionUtc?.ToLocalTime();
 
         var termInfo = start.HasValue && end.HasValue && end.Value != start.Value
             ? $"{start.Value.ToString("d. MMMM yyyy H:mm", culture)} – {end.Value.ToString("d. MMMM yyyy H:mm", culture)}"
