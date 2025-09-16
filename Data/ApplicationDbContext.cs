@@ -36,6 +36,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Instructor> Instructors { get; set; } = default!;
 
     public DbSet<Certificate> Certificates { get; set; } = default!;
+    public DbSet<Attendance> Attendances { get; set; } = default!;
 
 
     protected override void OnModelCreating(ModelBuilder builder)
@@ -150,5 +151,15 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .WithOne(e => e.Certificate)
             .HasForeignKey<Certificate>(c => c.IssuedToEnrollmentId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<Attendance>()
+            .HasOne(a => a.Enrollment)
+            .WithOne(e => e.Attendance)
+            .HasForeignKey<Attendance>(a => a.EnrollmentId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<Attendance>()
+            .HasIndex(a => a.EnrollmentId)
+            .IsUnique();
     }
 }

@@ -39,6 +39,8 @@ public class VerifyController : ControllerBase
             .Include(c => c.IssuedToEnrollment)
                 .ThenInclude(e => e.CourseTerm)
                     .ThenInclude(t => t.Course)
+            .Include(c => c.IssuedToEnrollment)
+                .ThenInclude(e => e.Attendance)
             .FirstOrDefaultAsync(c => c.Number == normalizedNumber && c.Hash == normalizedHash);
 
         if (certificate == null)
@@ -57,7 +59,7 @@ public class VerifyController : ControllerBase
                 certificate.VerifyUrl,
                 certificate.PdfPath,
                 issuedTo = enrollment?.User?.Email ?? enrollment?.UserId ?? string.Empty,
-                completedAtUtc = enrollment?.CheckedInAtUtc,
+                completedAtUtc = enrollment?.Attendance?.CheckedInAtUtc,
                 course = enrollment?.CourseTerm?.Course?.Title ?? $"Course {enrollment?.CourseTerm?.CourseId}",
                 courseTermStartUtc = enrollment?.CourseTerm?.StartUtc,
                 courseTermEndUtc = enrollment?.CourseTerm?.EndUtc
