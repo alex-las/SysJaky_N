@@ -187,9 +187,11 @@ public class CertificateService
         while (true)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            Span<byte> buffer = stackalloc byte[8];
+
+            var buffer = new byte[8];
             RandomNumberGenerator.Fill(buffer);
             var candidate = Convert.ToHexString(buffer);
+
             var exists = await _context.Certificates.AnyAsync(c => c.Number == candidate, cancellationToken);
             if (!exists)
             {
