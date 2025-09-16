@@ -9,8 +9,12 @@ html {
 }
 
 :root {
-  --primary: #002b5c;
-  --accent: #ffda6a;
+  --primary: #1E88B8;
+  --accent: #F3C04D;
+  --secondary: #5C6B77;
+  --text: #2D3A45;
+  --box-bg: #F7F7F9;
+  --box-border: #E7E9EE;
 }
 
 .visually-hidden-focusable:not(:focus):not(:focus-within) {
@@ -40,7 +44,7 @@ html {
 .btn-link.nav-link:focus,
 .form-control:focus,
 .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+  box-shadow: 0 0 0 0.1rem #fff, 0 0 0 0.25rem rgba(30, 136, 184, 0.4);
 }
 
 html {
@@ -51,8 +55,8 @@ html {
 body {
   margin-bottom: 60px;
   font-family: 'Roboto', sans-serif;
-  background-color: var(--accent);
-  color: var(--primary);
+  background-color: var(--box-bg);
+  color: var(--text);
 }
 
 a {
@@ -61,7 +65,7 @@ a {
 
 a:hover,
 a:focus {
-  color: var(--primary);
+  color: var(--secondary);
   background-color: var(--accent);
 }
 
@@ -85,14 +89,53 @@ button:focus-visible {
 }
 
 .btn-primary {
-  color: var(--accent);
+  color: #fff;
   background-color: var(--primary);
   border-color: var(--primary);
 }
 
 .btn-primary:hover,
 .btn-primary:focus {
-  color: var(--primary);
+  color: var(--text);
   background-color: var(--accent);
   border-color: var(--accent);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--primary);
+}
+
+.card,
+.modal-content {
+  background-color: var(--box-bg);
+  border-color: var(--box-border);
+  color: var(--text);
+}
+
+.form-control,
+.form-select {
+  border-color: var(--box-border);
+  color: var(--text);
+  background-color: #fff;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 0.25rem rgba(30, 136, 184, 0.25);
+}
+
+footer.footer {
+  background-color: var(--box-bg);
+  border-top: 1px solid var(--box-border);
+  color: var(--secondary);
+}
+
+footer.footer a {
+  color: var(--primary);
 }

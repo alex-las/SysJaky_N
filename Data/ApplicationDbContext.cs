@@ -16,7 +16,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<CourseTerm> CourseTerms { get; set; } = default!;
     public DbSet<Order> Orders { get; set; } = default!;
     public DbSet<OrderItem> OrderItems { get; set; } = default!;
-    public DbSet<DiscountCode> DiscountCodes { get; set; } = default!;
+    public DbSet<Voucher> Vouchers { get; set; } = default!;
     public DbSet<Article> Articles { get; set; } = default!;
     public DbSet<CourseReview> CourseReviews { get; set; } = default!;
     public DbSet<AuditLog> AuditLogs { get; set; } = default!;
@@ -41,6 +41,14 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .HasOne(c => c.Manager)
             .WithMany()
             .HasForeignKey(c => c.ManagerId);
+        builder.Entity<Voucher>()
+            .HasIndex(v => v.Code)
+            .IsUnique();
+        builder.Entity<Voucher>()
+            .HasOne(v => v.AppliesToCourse)
+            .WithMany()
+            .HasForeignKey(v => v.AppliesToCourseId)
+            .OnDelete(DeleteBehavior.SetNull);
         builder.Entity<CourseTerm>()
             .HasOne(t => t.Course)
             .WithMany()

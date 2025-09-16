@@ -1,10 +1,11 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 using SysJaky_N.Data;
 using SysJaky_N.Models;
 
-namespace SysJaky_N.Pages.Admin.DiscountCodes;
+namespace SysJaky_N.Pages.Admin.Vouchers;
 
 [Authorize(Roles = "Admin")]
 public class DeleteModel : PageModel
@@ -17,25 +18,27 @@ public class DeleteModel : PageModel
     }
 
     [BindProperty]
-    public DiscountCode DiscountCode { get; set; } = default!;
+    public Voucher Voucher { get; set; } = default!;
 
     public async Task<IActionResult> OnGetAsync(int id)
     {
-        var discount = await _context.DiscountCodes.FindAsync(id);
-        if (discount == null)
+        var voucher = await _context.Vouchers
+            .Include(v => v.AppliesToCourse)
+            .FirstOrDefaultAsync(v => v.Id == id);
+        if (voucher == null)
         {
             return NotFound();
         }
-        DiscountCode = discount;
+        Voucher = voucher;
         return Page();
     }
 
     public async Task<IActionResult> OnPostAsync()
     {
-        var discount = await _context.DiscountCodes.FindAsync(DiscountCode.Id);
-        if (discount != null)
+        var voucher = await _context.Vouchers.FindAsync(Voucher.Id);
+        if (voucher != null)
         {
-            _context.DiscountCodes.Remove(discount);
+            _context.Vouchers.Remove(voucher);
             await _context.SaveChangesAsync();
         }
         return RedirectToPage("Index");

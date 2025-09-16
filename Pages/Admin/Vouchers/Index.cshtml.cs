@@ -1,10 +1,11 @@
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using SysJaky_N.Data;
 using SysJaky_N.Models;
 
-namespace SysJaky_N.Pages.Admin.DiscountCodes;
+namespace SysJaky_N.Pages.Admin.Vouchers;
 
 [Authorize(Roles = "Admin")]
 public class IndexModel : PageModel
@@ -16,10 +17,13 @@ public class IndexModel : PageModel
         _context = context;
     }
 
-    public IList<DiscountCode> DiscountCodes { get; set; } = new List<DiscountCode>();
+    public IList<Voucher> Vouchers { get; set; } = new List<Voucher>();
 
     public async Task OnGetAsync()
     {
-        DiscountCodes = await _context.DiscountCodes.OrderBy(d => d.Code).ToListAsync();
+        Vouchers = await _context.Vouchers
+            .Include(v => v.AppliesToCourse)
+            .OrderBy(v => v.Code)
+            .ToListAsync();
     }
 }

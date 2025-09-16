@@ -1,0 +1,47 @@
+@page
+@using SysJaky_N.Models
+@model SysJaky_N.Pages.Admin.Vouchers.CreateModel
+@{
+    ViewData["Title"] = "Create Voucher";
+}
+
+<h1>Create Voucher</h1>
+
+<form method="post">
+    <div class="form-group">
+        <label asp-for="Voucher.Code"></label>
+        <input asp-for="Voucher.Code" class="form-control" />
+        <span asp-validation-for="Voucher.Code" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Voucher.Type"></label>
+        <select asp-for="Voucher.Type" class="form-control" asp-items="Html.GetEnumSelectList<VoucherType>()"></select>
+        <span asp-validation-for="Voucher.Type" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Voucher.Value"></label>
+        <input asp-for="Voucher.Value" class="form-control" />
+        <span asp-validation-for="Voucher.Value" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Voucher.ExpiresUtc"></label>
+        <input asp-for="Voucher.ExpiresUtc" class="form-control" />
+        <span asp-validation-for="Voucher.ExpiresUtc" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Voucher.MaxRedemptions"></label>
+        <input asp-for="Voucher.MaxRedemptions" class="form-control" />
+        <span asp-validation-for="Voucher.MaxRedemptions" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Voucher.AppliesToCourseId"></label>
+        <select asp-for="Voucher.AppliesToCourseId" class="form-control" asp-items="Model.Courses"></select>
+        <span asp-validation-for="Voucher.AppliesToCourseId" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Create</button>
+    <a asp-page="Index" class="btn btn-secondary">Back to List</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -25,8 +25,8 @@ public class Order
     [DataType(DataType.Currency)]
     public decimal TotalPrice { get; set; }
 
-    public int? DiscountCodeId { get; set; }
-    public DiscountCode? DiscountCode { get; set; }
+    public int? VoucherId { get; set; }
+    public Voucher? Voucher { get; set; }
 
     public string? PaymentConfirmation { get; set; }
 
