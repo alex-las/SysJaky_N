@@ -1,0 +1,43 @@
+@page
+@model SysJaky_N.Pages.Admin.Vouchers.IndexModel
+@{
+    ViewData["Title"] = "Vouchers";
+}
+
+<h1>Vouchers</h1>
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Code</th>
+            <th>Type</th>
+            <th>Value</th>
+            <th>Expires</th>
+            <th>Max Redemptions</th>
+            <th>Used</th>
+            <th>Applies To</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model.Vouchers)
+    {
+        <tr>
+            <td>@item.Code</td>
+            <td>@item.Type</td>
+            <td>@item.Value</td>
+            <td>@item.ExpiresUtc?.ToString("g") ?? "Never"</td>
+            <td>@(item.MaxRedemptions?.ToString() ?? "Unlimited")</td>
+            <td>@item.UsedCount</td>
+            <td>@item.AppliesToCourse?.Title ?? "All courses"</td>
+            <td>
+                <a asp-page="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-page="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
