@@ -835,9 +835,17 @@ namespace SysJaky_N.Migrations
 
                     b.Navigation("CompanyProfile");
 
-                    b.Navigation("Enrollments");
+                    var navigation = b.Metadata.FindNavigation("Enrollments");
+                    if (navigation != null)
+                    {
+                        b.Navigation("Enrollments");
+                    }
 
-                    b.Navigation("WaitlistEntries");
+                    navigation = b.Metadata.FindNavigation("WaitlistEntries");
+                    if (navigation != null)
+                    {
+                        b.Navigation("WaitlistEntries");
+                    }
                 });
 
             modelBuilder.Entity("SysJaky_N.Models.CompanyProfile", b =>
@@ -874,9 +882,17 @@ namespace SysJaky_N.Migrations
 
                     b.Navigation("Course");
 
-                    b.Navigation("Enrollments");
+                    var navigation = b.Metadata.FindNavigation("Enrollments");
+                    if (navigation != null)
+                    {
+                        b.Navigation("Enrollments");
+                    }
 
-                    b.Navigation("WaitlistEntries");
+                    navigation = b.Metadata.FindNavigation("WaitlistEntries");
+                    if (navigation != null)
+                    {
+                        b.Navigation("WaitlistEntries");
+                    }
                 });
 
             modelBuilder.Entity("SysJaky_N.Models.CourseReview", b =>
@@ -1047,7 +1063,17 @@ namespace SysJaky_N.Migrations
 
             modelBuilder.Entity("SysJaky_N.Models.CourseTerm", b =>
                 {
-                    b.Navigation("Enrollments");
+                    var navigation = b.Metadata.FindNavigation("Enrollments");
+                    if (navigation != null)
+                    {
+                        b.Navigation("Enrollments");
+                    }
+
+                    navigation = b.Metadata.FindNavigation("WaitlistEntries");
+                    if (navigation != null)
+                    {
+                        b.Navigation("WaitlistEntries");
+                    }
                 });
 
             modelBuilder.Entity("SysJaky_N.Models.Order", b =>
