@@ -30,6 +30,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<SalesStat> SalesStats { get; set; } = default!;
     public DbSet<WaitlistEntry> WaitlistEntries { get; set; } = default!;
     public DbSet<PaymentId> PaymentIds { get; set; } = default!;
+    public DbSet<PriceSchedule> PriceSchedules { get; set; } = default!;
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -101,5 +102,14 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .HasForeignKey(w => w.CourseTermId)
             .OnDelete(DeleteBehavior.Cascade);
         builder.Entity<PaymentId>().HasKey(p => p.Id);
+
+        builder.Entity<PriceSchedule>()
+            .HasOne(p => p.Course)
+            .WithMany()
+            .HasForeignKey(p => p.CourseId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<PriceSchedule>()
+            .HasIndex(p => new { p.CourseId, p.FromUtc, p.ToUtc });
     }
 }

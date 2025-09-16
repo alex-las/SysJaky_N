@@ -70,10 +70,10 @@ public class CartModel : PageModel
             return Challenge();
         }
 
-        var subtotal = await CalculateTotalAsync(cart);
         var ids = cart.Select(c => c.CourseId).ToList();
-        var courses = await _context.Courses.Where(c => ids.Contains(c.Id)).ToListAsync();
-        var cartLines = BuildCartLines(cart, courses);
+        var pricingContext = await BuildCoursePricingContextAsync(ids);
+        var subtotal = await CalculateTotalAsync(cart, pricingContext);
+        var cartLines = BuildCartLines(cart, pricingContext);
 
         Voucher? voucher = null;
         var voucherId = HttpContext.Session.GetInt32("VoucherId");
@@ -94,7 +94,7 @@ public class CartModel : PageModel
             total = Math.Round(Math.Max(total - discount, 0m), 2, MidpointRounding.AwayFromZero);
         }
 
-        var pricing = BuildOrderPricing(cart, courses, total);
+        var pricing = BuildOrderPricing(cart, pricingContext, total);
         if (!pricing.Items.Any())
         {
             await LoadCartAsync();
@@ -172,8 +172,8 @@ public class CartModel : PageModel
     {
         var cart = _cartService.GetItems(HttpContext.Session).ToList();
         var ids = cart.Select(c => c.CourseId).ToList();
-        var courses = await _context.Courses.Where(c => ids.Contains(c.Id)).ToListAsync();
-        var cartLines = BuildCartLines(cart, courses);
+        var pricingContext = await BuildCoursePricingContextAsync(ids);
+        var cartLines = BuildCartLines(cart, pricingContext);
 
         Items = cartLines.Select(line => new CartItemView
         {
@@ -182,9 +182,21 @@ public class CartModel : PageModel
         }).ToList();
 
         var bundleIds = HttpContext.Session.GetObject<List<int>>("Bundles") ?? new List<int>();
-        var blocks = await _context.CourseBlocks.Include(b => b.Modules).ToListAsync();
+        var blocks = await _context.CourseBlocks
+            .AsNoTracking()
+            .Include(b => b.Modules)
+            .ToListAsync();
+
         foreach (var block in blocks)
         {
+            foreach (var module in block.Modules)
+            {
+                if (pricingContext.CourseMap.TryGetValue(module.Id, out var moduleCourse))
+                {
+                    module.Price = moduleCourse.Price;
+                }
+            }
+
             var moduleIds = block.Modules.Select(m => m.Id).ToList();
             if (moduleIds.All(id => cart.Any(ci => ci.CourseId == id)))
             {
@@ -205,7 +217,7 @@ public class CartModel : PageModel
 
         HttpContext.Session.SetObject("Bundles", bundleIds);
 
-        Total = await CalculateTotalAsync(cart);
+        Total = await CalculateTotalAsync(cart, pricingContext);
     }
 
     private async Task ApplyStoredVoucherAsync()
@@ -324,22 +336,43 @@ public class CartModel : PageModel
     private static List<CartLine> BuildCartLines(IEnumerable<CartItemView> items) =>
         items.Select(item => new CartLine(item.Course.Id, item.Course, item.Quantity)).ToList();
 
-    private static List<CartLine> BuildCartLines(IEnumerable<CartItem> cart, IEnumerable<Course> courses) =>
-        cart
-            .Join(courses, ci => ci.CourseId, course => course.Id, (ci, course) => new CartLine(course.Id, course, ci.Quantity))
-            .ToList();
-
-    private async Task<decimal> CalculateTotalAsync(List<CartItem> cart)
+    private static List<CartLine> BuildCartLines(IEnumerable<CartItem> cart, CoursePricingContext context)
     {
-        var ids = cart.Select(c => c.CourseId).ToList();
-        var courses = await _context.Courses.Where(c => ids.Contains(c.Id)).ToListAsync();
+        var lines = new List<CartLine>();
+        foreach (var item in cart)
+        {
+            if (item.Quantity <= 0)
+            {
+                continue;
+            }
 
+            if (!context.CourseMap.TryGetValue(item.CourseId, out var course))
+            {
+                continue;
+            }
+
+            lines.Add(new CartLine(course.Id, course, item.Quantity));
+        }
+
+        return lines;
+    }
+
+    private async Task<decimal> CalculateTotalAsync(List<CartItem> cart, CoursePricingContext? pricingContext = null)
+    {
+        var context = pricingContext;
+        if (context == null)
+        {
+            var ids = cart.Select(c => c.CourseId).ToList();
+            context = await BuildCoursePricingContextAsync(ids);
+        }
+
+        var courseMap = context.CourseMap;
         decimal total = 0m;
         var removed = false;
+
         foreach (var ci in cart.ToList())
         {
-            var course = courses.FirstOrDefault(c => c.Id == ci.CourseId);
-            if (course != null)
+            if (courseMap.TryGetValue(ci.CourseId, out var course))
             {
                 total += ci.Quantity * course.Price;
             }
@@ -357,26 +390,51 @@ public class CartModel : PageModel
         }
 
         var bundleIds = HttpContext.Session.GetObject<List<int>>("Bundles") ?? new List<int>();
-        var blocks = await _context.CourseBlocks.Include(b => b.Modules).Where(b => bundleIds.Contains(b.Id)).ToListAsync();
-        foreach (var block in blocks.ToList())
+        if (bundleIds.Count > 0)
         {
-            var moduleIds = block.Modules.Select(m => m.Id).ToList();
-            if (moduleIds.All(id => cart.Any(ci => ci.CourseId == id)))
+            var blocks = await _context.CourseBlocks
+                .AsNoTracking()
+                .Include(b => b.Modules)
+                .Where(b => bundleIds.Contains(b.Id))
+                .ToListAsync();
+
+            foreach (var block in blocks.ToList())
             {
-                var moduleSum = block.Modules.Sum(m => m.Price);
-                total -= moduleSum;
-                total += block.Price;
-            }
-            else
-            {
-                bundleIds.Remove(block.Id);
+                var moduleIds = block.Modules.Select(m => m.Id).ToList();
+                if (moduleIds.All(id => cart.Any(ci => ci.CourseId == id)))
+                {
+                    decimal moduleSum = 0m;
+                    foreach (var moduleId in moduleIds)
+                    {
+                        if (courseMap.TryGetValue(moduleId, out var moduleCourse))
+                        {
+                            moduleSum += moduleCourse.Price;
+                        }
+                        else
+                        {
+                            var module = block.Modules.FirstOrDefault(m => m.Id == moduleId);
+                            if (module != null)
+                            {
+                                moduleSum += module.Price;
+                            }
+                        }
+                    }
+
+                    total -= moduleSum;
+                    total += block.Price;
+                }
+                else
+                {
+                    bundleIds.Remove(block.Id);
+                }
             }
         }
+
         HttpContext.Session.SetObject("Bundles", bundleIds);
         return Math.Round(total, 2, MidpointRounding.AwayFromZero);
     }
 
-    private PricingBreakdown BuildOrderPricing(List<CartItem> cart, List<Course> courses, decimal total)
+    private PricingBreakdown BuildOrderPricing(List<CartItem> cart, CoursePricingContext context, decimal total)
     {
         var breakdown = new PricingBreakdown();
         if (!cart.Any())
@@ -384,7 +442,7 @@ public class CartModel : PageModel
             return breakdown;
         }
 
-        var courseMap = courses.ToDictionary(c => c.Id);
+        var courseMap = context.CourseMap;
         var lines = new List<(CartItem CartItem, Course Course, decimal BaseTotal)>();
 
         foreach (var cartItem in cart)
@@ -460,6 +518,121 @@ public class CartModel : PageModel
         breakdown.PriceExclVat = Math.Round(breakdown.Items.Sum(i => i.Total - i.Vat), 2, MidpointRounding.AwayFromZero);
 
         return breakdown;
+    }
+
+    private async Task<CoursePricingContext> BuildCoursePricingContextAsync(IReadOnlyCollection<int> courseIds)
+    {
+        var idList = courseIds.Distinct().ToList();
+        if (idList.Count == 0)
+        {
+            return new CoursePricingContext(new List<Course>(), new Dictionary<int, decimal>());
+        }
+
+        var courses = await _context.Courses
+            .AsNoTracking()
+            .Where(c => idList.Contains(c.Id))
+            .ToListAsync();
+
+        var priceMap = await GetEffectivePriceMapAsync(courses);
+        foreach (var course in courses)
+        {
+            if (priceMap.TryGetValue(course.Id, out var price))
+            {
+                course.Price = price;
+            }
+        }
+
+        return new CoursePricingContext(courses, priceMap);
+    }
+
+    private async Task<Dictionary<int, decimal>> GetEffectivePriceMapAsync(IReadOnlyCollection<Course> courses)
+    {
+        var result = new Dictionary<int, decimal>();
+        if (courses.Count == 0)
+        {
+            return result;
+        }
+
+        var courseList = courses.ToList();
+        var courseIds = courseList.Select(c => c.Id).ToList();
+
+        var termStarts = await _context.CourseTerms
+            .AsNoTracking()
+            .Where(term => courseIds.Contains(term.CourseId) && term.IsActive)
+            .Select(term => new { term.CourseId, term.StartUtc })
+            .ToListAsync();
+
+        var earliestTermMap = termStarts
+            .GroupBy(term => term.CourseId)
+            .ToDictionary(group => group.Key, group => group.Min(t => t.StartUtc));
+
+        var schedules = await _context.PriceSchedules
+            .AsNoTracking()
+            .Where(schedule => courseIds.Contains(schedule.CourseId))
+            .ToListAsync();
+
+        var nowUtc = DateTime.UtcNow;
+
+        foreach (var course in courseList)
+        {
+            var referenceTime = GetReferenceTimeForCourse(course, earliestTermMap, nowUtc);
+            var schedule = schedules
+                .Where(s => s.CourseId == course.Id && s.FromUtc <= referenceTime && s.ToUtc >= referenceTime)
+                .OrderByDescending(s => s.FromUtc)
+                .FirstOrDefault();
+
+            decimal price;
+            if (schedule != null)
+            {
+                price = Math.Round(schedule.NewPriceExcl * (1 + VatRate), 2, MidpointRounding.AwayFromZero);
+            }
+            else
+            {
+                price = course.Price;
+            }
+
+            result[course.Id] = price;
+        }
+
+        return result;
+    }
+
+    private static DateTime GetReferenceTimeForCourse(
+        Course course,
+        IReadOnlyDictionary<int, DateTime> earliestTermMap,
+        DateTime defaultValue)
+    {
+        if (earliestTermMap.TryGetValue(course.Id, out var startUtc))
+        {
+            return startUtc;
+        }
+
+        var courseDate = course.Date;
+        if (courseDate != default)
+        {
+            if (courseDate.Kind == DateTimeKind.Unspecified)
+            {
+                return DateTime.SpecifyKind(courseDate, DateTimeKind.Utc);
+            }
+
+            return courseDate.ToUniversalTime();
+        }
+
+        return defaultValue;
+    }
+
+    private sealed class CoursePricingContext
+    {
+        public CoursePricingContext(List<Course> courses, Dictionary<int, decimal> priceMap)
+        {
+            Courses = courses;
+            PriceMap = priceMap;
+            CourseMap = courses.ToDictionary(c => c.Id);
+        }
+
+        public List<Course> Courses { get; }
+        public Dictionary<int, Course> CourseMap { get; }
+        public Dictionary<int, decimal> PriceMap { get; }
     }
 
     private sealed class PricingBreakdown

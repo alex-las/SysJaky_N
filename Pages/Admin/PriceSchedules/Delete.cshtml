@@ -1,0 +1,28 @@
+@page "{id:int}"
+@model SysJaky_N.Pages.Admin.PriceSchedules.DeleteModel
+@{
+    ViewData["Title"] = "Delete Price Schedule";
+}
+
+<h1>Delete Price Schedule</h1>
+
+<h3>Are you sure you want to delete this price schedule?</h3>
+
+<div>
+    <dl class="row">
+        <dt class="col-sm-3">Course</dt>
+        <dd class="col-sm-9">@Model.PriceSchedule.Course?.Title</dd>
+        <dt class="col-sm-3">Valid From (UTC)</dt>
+        <dd class="col-sm-9">@Model.PriceSchedule.FromUtc.ToString("g")</dd>
+        <dt class="col-sm-3">Valid To (UTC)</dt>
+        <dd class="col-sm-9">@Model.PriceSchedule.ToUtc.ToString("g")</dd>
+        <dt class="col-sm-3">New Price (excl. VAT)</dt>
+        <dd class="col-sm-9">@Model.PriceSchedule.NewPriceExcl</dd>
+    </dl>
+
+    <form method="post">
+        <input type="hidden" asp-for="PriceSchedule.Id" />
+        <button type="submit" class="btn btn-danger">Delete</button>
+        <a asp-page="Index" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>

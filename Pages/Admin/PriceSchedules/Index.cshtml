@@ -1,0 +1,45 @@
+@page
+@model SysJaky_N.Pages.Admin.PriceSchedules.IndexModel
+@{
+    ViewData["Title"] = "Price Schedules";
+}
+
+<h1>Price Schedules</h1>
+
+<p>
+    <a class="btn btn-primary" asp-page="Create">Create New</a>
+</p>
+
+@if (Model.PriceSchedules.Count == 0)
+{
+    <p>No price schedules found.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Course</th>
+                <th>Valid From (UTC)</th>
+                <th>Valid To (UTC)</th>
+                <th>New Price (excl. VAT)</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var schedule in Model.PriceSchedules)
+        {
+            <tr>
+                <td>@schedule.Course?.Title</td>
+                <td>@schedule.FromUtc.ToString("g")</td>
+                <td>@schedule.ToUtc.ToString("g")</td>
+                <td>@schedule.NewPriceExcl</td>
+                <td>
+                    <a class="btn btn-sm btn-secondary" asp-page="Edit" asp-route-id="@schedule.Id">Edit</a>
+                    <a class="btn btn-sm btn-danger" asp-page="Delete" asp-route-id="@schedule.Id">Delete</a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
