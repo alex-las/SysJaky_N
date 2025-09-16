@@ -6,6 +6,11 @@
 
 <h1>Cart</h1>
 
+@if (TempData["CartError"] is string cartError && !string.IsNullOrWhiteSpace(cartError))
+{
+    <div class="alert alert-danger" role="alert">@cartError</div>
+}
+
 @if (Model.Items.Count == 0)
 {
     <p>Your cart is empty.</p>
