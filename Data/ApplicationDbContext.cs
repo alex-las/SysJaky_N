@@ -24,6 +24,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<CourseBlock> CourseBlocks { get; set; } = default!;
     public DbSet<WishlistItem> WishlistItems { get; set; } = default!;
     public DbSet<CompanyProfile> CompanyProfiles { get; set; } = default!;
+    public DbSet<Company> Companies { get; set; } = default!;
+    public DbSet<CompanyUser> CompanyUsers { get; set; } = default!;
     public DbSet<Enrollment> Enrollments { get; set; } = default!;
     public DbSet<SeatToken> SeatTokens { get; set; } = default!;
     public DbSet<LogEntry> LogEntries { get; set; } = default!;
@@ -32,6 +34,9 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<PaymentId> PaymentIds { get; set; } = default!;
     public DbSet<PriceSchedule> PriceSchedules { get; set; } = default!;
     public DbSet<Instructor> Instructors { get; set; } = default!;
+
+    public DbSet<Certificate> Certificates { get; set; } = default!;
+
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -48,6 +53,20 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .HasOne(c => c.Manager)
             .WithMany()
             .HasForeignKey(c => c.ManagerId);
+        builder.Entity<Company>().HasIndex(c => c.ReferralCode).IsUnique();
+        builder.Entity<Company>()
+            .HasMany(c => c.Users)
+            .WithOne(u => u.Company)
+            .HasForeignKey(u => u.CompanyId)
+            .OnDelete(DeleteBehavior.Cascade);
+        builder.Entity<CompanyUser>()
+            .HasIndex(cu => new { cu.CompanyId, cu.UserId })
+            .IsUnique();
+        builder.Entity<CompanyUser>()
+            .HasOne(cu => cu.User)
+            .WithMany(u => u.CompanyMemberships)
+            .HasForeignKey(cu => cu.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
         builder.Entity<Voucher>()
             .HasIndex(v => v.Code)
             .IsUnique();
@@ -117,5 +136,19 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 
         builder.Entity<PriceSchedule>()
             .HasIndex(p => new { p.CourseId, p.FromUtc, p.ToUtc });
+
+        builder.Entity<Certificate>()
+            .HasIndex(c => c.Number)
+            .IsUnique();
+
+        builder.Entity<Certificate>()
+            .HasIndex(c => c.Hash)
+            .IsUnique();
+
+        builder.Entity<Certificate>()
+            .HasOne(c => c.IssuedToEnrollment)
+            .WithOne(e => e.Certificate)
+            .HasForeignKey<Certificate>(c => c.IssuedToEnrollmentId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

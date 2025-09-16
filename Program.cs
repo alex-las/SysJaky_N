@@ -67,6 +67,8 @@ try
     builder.Services.AddScoped<IEmailSender, EmailSender>();
     builder.Services.AddScoped<IAuditService, AuditService>();
     builder.Services.AddScoped<CartService>();
+    builder.Services.Configure<CertificateOptions>(builder.Configuration.GetSection("Certificates"));
+    builder.Services.AddScoped<CertificateService>();
     builder.Services.AddHostedService<CourseReminderService>();
     builder.Services.AddHostedService<SalesStatsService>();
     builder.Services.Configure<WaitlistOptions>(builder.Configuration.GetSection("Waitlist"));
