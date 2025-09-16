@@ -44,6 +44,7 @@ builder.Services.AddSingleton<IConverter>(new SynchronizedConverter(new PdfTools
 builder.Services.Configure<SmtpOptions>(builder.Configuration.GetSection("Smtp"));
 builder.Services.AddScoped<IEmailSender, EmailSender>();
 builder.Services.AddScoped<IAuditService, AuditService>();
+builder.Services.AddScoped<CartService>();
 builder.Services.AddHostedService<CourseReminderService>();
 builder.Services.AddHostedService<SalesStatsService>();
 builder.Services.AddMemoryCache();

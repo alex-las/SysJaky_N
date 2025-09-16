@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using SysJaky_N.Data;
 using SysJaky_N.Extensions;
+using SysJaky_N.Services;
 using SysJaky_N.Models;
 
 namespace SysJaky_N.Pages.Courses;
@@ -13,11 +14,13 @@ public class DetailsModel : PageModel
 {
     private readonly ApplicationDbContext _context;
     private readonly UserManager<ApplicationUser> _userManager;
+    private readonly CartService _cartService;
 
-    public DetailsModel(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+    public DetailsModel(ApplicationDbContext context, UserManager<ApplicationUser> userManager, CartService cartService)
     {
         _context = context;
         _userManager = userManager;
+        _cartService = cartService;
     }
 
     public Course Course { get; set; } = null!;
@@ -47,9 +50,15 @@ public class DetailsModel : PageModel
         return Page();
     }
 
-    public IActionResult OnPost(int id)
+    public async Task<IActionResult> OnPostAsync(int id)
     {
-        // TODO: Add selected course to cart
+        var result = await _cartService.AddToCartAsync(HttpContext.Session, id);
+        if (!result.Success)
+        {
+            TempData["CartError"] = result.ErrorMessage;
+            return RedirectToPage(new { id });
+        }
+
         return RedirectToPage("/Cart");
     }
 
@@ -59,20 +68,17 @@ public class DetailsModel : PageModel
             .Include(b => b.Modules)
             .FirstOrDefaultAsync(b => b.Id == blockId);
         if (block == null) return NotFound();
-        var cart = HttpContext.Session.GetObject<List<CartItem>>("Cart") ?? new List<CartItem>();
+        var snapshot = _cartService.GetItems(HttpContext.Session);
         foreach (var module in block.Modules)
         {
-            var existing = cart.FirstOrDefault(ci => ci.CourseId == module.Id);
-            if (existing != null)
+            var addResult = await _cartService.AddToCartAsync(HttpContext.Session, module.Id);
+            if (!addResult.Success)
             {
-                existing.Quantity += 1;
-            }
-            else
-            {
-                cart.Add(new CartItem { CourseId = module.Id, Quantity = 1 });
+                _cartService.SetItems(HttpContext.Session, snapshot);
+                TempData["CartError"] = addResult.ErrorMessage;
+                return RedirectToPage("/Cart");
             }
         }
-        HttpContext.Session.SetObject("Cart", cart);
         var bundles = HttpContext.Session.GetObject<List<int>>("Bundles") ?? new List<int>();
         if (!bundles.Contains(block.Id))
         {

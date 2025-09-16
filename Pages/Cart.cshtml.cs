@@ -17,15 +17,17 @@ public class CartModel : PageModel
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly IEmailSender _emailSender;
     private readonly IAuditService _auditService;
+    private readonly CartService _cartService;
 
     private const decimal VatRate = 0.21m;
 
-    public CartModel(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IEmailSender emailSender, IAuditService auditService)
+    public CartModel(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IEmailSender emailSender, IAuditService auditService, CartService cartService)
     {
         _context = context;
         _userManager = userManager;
         _emailSender = emailSender;
         _auditService = auditService;
+        _cartService = cartService;
     }
 
     public List<CartItemView> Items { get; set; } = new();
@@ -44,7 +46,7 @@ public class CartModel : PageModel
 
     public async Task<IActionResult> OnPostCheckoutAsync()
     {
-        var cart = HttpContext.Session.GetObject<List<CartItem>>("Cart") ?? new List<CartItem>();
+        var cart = _cartService.GetItems(HttpContext.Session).ToList();
         if (!cart.Any())
         {
             await LoadCartAsync();
@@ -143,7 +145,7 @@ public class CartModel : PageModel
         await _auditService.LogAsync(user.Id, "OrderCreated", $"Order {order.Id} created");
         await _emailSender.SendEmailAsync(user.Email!, "Order Created", $"Your order {order.Id} has been created.");
 
-        HttpContext.Session.Remove("Cart");
+        _cartService.Clear(HttpContext.Session);
         HttpContext.Session.Remove("VoucherId");
         HttpContext.Session.Remove("Bundles");
         return RedirectToPage("/Orders/Index");
@@ -168,7 +170,7 @@ public class CartModel : PageModel
 
     private async Task LoadCartAsync()
     {
-        var cart = HttpContext.Session.GetObject<List<CartItem>>("Cart") ?? new List<CartItem>();
+        var cart = _cartService.GetItems(HttpContext.Session).ToList();
         var ids = cart.Select(c => c.CourseId).ToList();
         var courses = await _context.Courses.Where(c => ids.Contains(c.Id)).ToListAsync();
         var cartLines = BuildCartLines(cart, courses);
@@ -357,7 +359,7 @@ public class CartModel : PageModel
 
         if (removed)
         {
-            HttpContext.Session.SetObject("Cart", cart);
+            _cartService.SetItems(HttpContext.Session, cart);
             ErrorMessage = "Some items were removed from your cart because they are no longer available.";
         }
 
