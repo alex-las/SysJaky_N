@@ -8,6 +8,7 @@ using SysJaky_N.Extensions;
 using SysJaky_N.Models;
 using SysJaky_N.Services;
 using SysJaky_N.EmailTemplates.Models;
+using EmailTemplate = SysJaky_N.Services.EmailTemplate;
 
 namespace SysJaky_N.Pages;
 
@@ -570,7 +571,7 @@ public class CartModel : PageModel
             .GroupBy(term => term.CourseId)
             .ToDictionary(group => group.Key, group => group.Min(t => t.StartUtc));
 
-        var schedules = await _context.PriceSchedules
+        var schedules = await _context.Set<PriceSchedule>()
             .AsNoTracking()
             .Where(schedule => courseIds.Contains(schedule.CourseId))
             .ToListAsync();
