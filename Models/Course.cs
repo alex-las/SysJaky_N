@@ -27,6 +27,8 @@ public class Course
 
     public CourseType Type { get; set; } = CourseType.Online;
 
+    public bool IsActive { get; set; } = true;
+
     public int? CourseGroupId { get; set; }
 
     public virtual CourseGroup? CourseGroup { get; set; }

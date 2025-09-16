@@ -340,6 +340,9 @@ namespace SysJaky_N.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("varchar(1000)");
 
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(65,30)");
 
@@ -364,7 +367,40 @@ namespace SysJaky_N.Migrations
 
                     b.HasIndex("CourseGroupId");
 
+                    b.HasIndex("IsActive");
+
                     b.ToTable("Courses");
+                });
+
+            modelBuilder.Entity("SysJaky_N.Models.CourseTerm", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int>("Capacity")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CourseId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("EndUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<int>("SeatsTaken")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("StartUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CourseId", "StartUtc");
+
+                    b.ToTable("CourseTerms");
                 });
 
             modelBuilder.Entity("SysJaky_N.Models.CourseBlock", b =>
@@ -721,6 +757,15 @@ namespace SysJaky_N.Migrations
                     b.Navigation("CourseTerm");
 
                     b.Navigation("User");
+            modelBuilder.Entity("SysJaky_N.Models.CourseTerm", b =>
+                {
+                    b.HasOne("SysJaky_N.Models.Course", "Course")
+                        .WithMany()
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Course");
                 });
 
             modelBuilder.Entity("SysJaky_N.Models.Order", b =>

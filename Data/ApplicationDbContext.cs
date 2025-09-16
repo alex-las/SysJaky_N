@@ -29,6 +29,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
+        builder.Entity<Course>().HasIndex(c => c.IsActive);
+        builder.Entity<CourseTerm>().HasIndex(ct => new { ct.CourseId, ct.StartUtc });
         builder.Entity<WishlistItem>().HasKey(w => new { w.UserId, w.CourseId });
         builder.Entity<CompanyProfile>().HasIndex(c => c.ReferenceCode).IsUnique();
         builder.Entity<CompanyProfile>()
