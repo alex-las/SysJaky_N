@@ -6,6 +6,11 @@
 
 <h1>Courses</h1>
 
+@if (TempData["CartError"] is string cartError && !string.IsNullOrWhiteSpace(cartError))
+{
+    <div class="alert alert-danger" role="alert">@cartError</div>
+}
+
 <form method="get" class="mb-3">
     <input type="text" asp-for="SearchString" placeholder="Search..." class="form-control" style="width:auto;display:inline-block" aria-label="Search courses" />
     <select asp-for="CourseGroupId" asp-items="Model.CourseGroups" class="form-control" style="width:auto;display:inline-block" aria-label="Filter by group">

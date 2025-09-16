@@ -3,6 +3,11 @@
 
 <h1>@Model.Course.Title</h1>
 
+@if (TempData["CartError"] is string cartError && !string.IsNullOrWhiteSpace(cartError))
+{
+    <div class="alert alert-danger" role="alert">@cartError</div>
+}
+
 <p>@Model.Course.Description</p>
 <p>Price: @Model.Course.Price.ToString("C")</p>
 <p>Date: @Model.Course.Date.ToShortDateString()</p>

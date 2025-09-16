@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SysJaky_N.Data;
-using SysJaky_N.Extensions;
+using SysJaky_N.Services;
 using SysJaky_N.Models;
 
 namespace SysJaky_N.Pages.Courses;
@@ -11,10 +11,12 @@ namespace SysJaky_N.Pages.Courses;
 public class IndexModel : PageModel
 {
     private readonly ApplicationDbContext _context;
+    private readonly CartService _cartService;
 
-    public IndexModel(ApplicationDbContext context)
+    public IndexModel(ApplicationDbContext context, CartService cartService)
     {
         _context = context;
+        _cartService = cartService;
     }
 
     public IList<Course> Courses { get; set; } = new List<Course>();
@@ -58,19 +60,13 @@ public class IndexModel : PageModel
         Courses = await query.Skip((PageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
     }
 
-    public IActionResult OnPostAddToCart(int courseId)
+    public async Task<IActionResult> OnPostAddToCartAsync(int courseId)
     {
-        var cart = HttpContext.Session.GetObject<List<CartItem>>("Cart") ?? new List<CartItem>();
-        var item = cart.FirstOrDefault(c => c.CourseId == courseId);
-        if (item == null)
+        var result = await _cartService.AddToCartAsync(HttpContext.Session, courseId);
+        if (!result.Success)
         {
-            cart.Add(new CartItem { CourseId = courseId, Quantity = 1 });
+            TempData["CartError"] = result.ErrorMessage;
         }
-        else
-        {
-            item.Quantity++;
-        }
-        HttpContext.Session.SetObject("Cart", cart);
         return RedirectToPage();
     }
 }
