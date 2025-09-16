@@ -115,12 +115,13 @@
                                         <input type="password" class="form-control" id="loginPassword" name="Input.Password" required />
                                     </div>
                                     <div class="mb-3">
-                                        <altcha-widget name="altcha"
-                                                       challengeurl='@Url.Content("~/altcha/challenge")'
+                                        <altcha-widget id="altcha-login" name="altcha"
+                                                       challengeurl='@Url.Content("~/altcha/challenge?d=2")'
                                                        verifyurl='@Url.Content("~/altcha/verify")'
-                                                       workerurl='@Url.Content("~/lib/altcha/altcha.worker.js")'>
+                                                       workers="1"
+                                                       maxnumber="500000"
+                                                       workerurl='@($"{Context.Request.Scheme}://{Context.Request.Host}{Url.Content("~/lib/altcha/altcha.worker.js")}?v=5")'>
                                         </altcha-widget>
-
                                         <noscript>Prosím povolte JavaScript.</noscript>
                                     </div>
                                     <div class="mb-3 form-check">
@@ -143,11 +144,12 @@
                                         <input type="password" class="form-control" id="registerPassword" name="Input.Password" required />
                                     </div>
                                     <div class="mb-3">
-                                        <altcha-widget name="altcha"
-                                                       challengeurl='@Url.Content("~/altcha/challenge")'
-                                                       verifyurl='@Url.Content("~/altcha/verify")'
-                                                       workerurl='@Url.Content("~/lib/altcha/altcha.worker.js")'>
-                                        </altcha-widget>
+                                        <!-- REGISTER (lazy) -->
+                                        <div class="mb-3">
+                                            <div id="altcha-register-holder"></div>
+                                            <noscript>Prosím povolte JavaScript.</noscript>
+                                        </div>
+
 
                                         <noscript>Prosím povolte JavaScript.</noscript>
                                     </div>
@@ -162,5 +164,57 @@
     }
 
     @await RenderSectionAsync("Scripts", required: false)
+
+    <script type="module">
+        const absWorkerUrl = new URL('@Url.Content("~/lib/altcha/altcha.worker.js")', window.location.origin).href;
+
+        function fixWorkerUrls(root=document) {
+          root.querySelectorAll('altcha-widget').forEach(w => {
+            try { new URL(w.getAttribute('workerurl') ?? ''); }
+            catch { w.setAttribute('workerurl', absWorkerUrl); }
+          });
+        }
+        fixWorkerUrls();
+
+        // lazy create for Register tab
+        const regTabBtn = document.querySelector('#register-tab');
+        const regHost = document.querySelector('#altcha-register-holder');
+
+        function ensureRegisterAltcha() {
+        const el = document.createElement('altcha-widget');
+        el.id = 'altcha-register';
+        el.setAttribute('name','altcha');
+        el.setAttribute('challengeurl','@Url.Content("~/altcha/challenge?d=2")');
+        el.setAttribute('verifyurl','@Url.Content("~/altcha/verify")');
+        el.setAttribute('workers','1');
+        el.setAttribute('maxnumber','500000');
+        el.setAttribute('workerurl', absWorkerUrl);
+        regHost.appendChild(el);
+        }
+
+        document.addEventListener('shown.bs.tab', (e) => {
+          if (e.target?.id === 'register-tab') ensureRegisterAltcha();
+        });
+
+        // vyčištění po zavření modalu
+        const authModal = document.getElementById('authModal');
+        if (authModal) {
+          authModal.addEventListener('hidden.bs.modal', () => {
+            authModal.querySelectorAll('altcha-widget').forEach(x => x.remove());
+            // vrať zpět jen login widget
+            const loginPane = authModal.querySelector('#login-tab-pane .mb-3');
+            if (loginPane) {
+              const w = document.createElement('altcha-widget');
+              w.setAttribute('id','altcha-login');
+              w.setAttribute('name','altcha');
+              w.setAttribute('challengeurl','@Url.Content("~/altcha/challenge?d=2")');
+              w.setAttribute('verifyurl','@Url.Content("~/altcha/verify")');
+              w.setAttribute('workerurl', absWorkerUrl);
+              loginPane.prepend(w);
+            }
+          });
+        }
+    </script>
+
 </body>
 </html>

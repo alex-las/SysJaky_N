@@ -30,5 +30,8 @@ public class AltchaChallenge
     /// HMAC signature of the challenge parameters.
     /// </summary>
     public string Signature { get; set; } = string.Empty;
+
+    public string Seed => Challenge;
+
 }
 
