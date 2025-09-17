@@ -19,6 +19,9 @@ public class Course
     [DataType(DataType.Date)]
     public DateTime Date { get; set; }
 
+    [StringLength(2048)]
+    public string? CoverImageUrl { get; set; }
+
     [Range(0, int.MaxValue)]
     public int ReminderDays { get; set; }
 

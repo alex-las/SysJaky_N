@@ -6,7 +6,7 @@
 
 <h1>Edit Course</h1>
 
-<form method="post">
+<form method="post" enctype="multipart/form-data">
     <input type="hidden" asp-for="Course.Id" />
     <div class="form-group">
         <label asp-for="Course.Title"></label>
@@ -34,6 +34,17 @@
         <label asp-for="Course.Date"></label>
         <input asp-for="Course.Date" class="form-control" />
         <span asp-validation-for="Course.Date" class="text-danger"></span>
+    </div>
+    @if (!string.IsNullOrEmpty(Model.Course.CoverImageUrl))
+    {
+        <div class="mb-3">
+            <img src="@Model.Course.CoverImageUrl" alt="Cover for @Model.Course.Title" class="img-fluid rounded" style="max-width: 240px;" />
+        </div>
+    }
+    <div class="form-group">
+        <label asp-for="CoverImage"></label>
+        <input asp-for="CoverImage" type="file" class="form-control" accept="image/jpeg" />
+        <span asp-validation-for="CoverImage" class="text-danger"></span>
     </div>
     <button type="submit" class="btn btn-primary">Save</button>
     <a asp-page="Index" class="btn btn-secondary">Back to List</a>
