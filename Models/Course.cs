@@ -28,6 +28,13 @@ public class Course
     [DataType(DataType.Date)]
     public DateTime Date { get; set; }
 
+    public CourseLevel Level { get; set; } = CourseLevel.Beginner;
+
+    public CourseMode Mode { get; set; } = CourseMode.SelfPaced;
+
+    [Range(0, int.MaxValue)]
+    public int Duration { get; set; }
+
     [Range(0, int.MaxValue)]
     public int ReminderDays { get; set; }
 
@@ -47,6 +54,8 @@ public class Course
     public virtual CourseBlock? CourseBlock { get; set; }
 
     public ICollection<Lesson> Lessons { get; set; } = new List<Lesson>();
+
+    public ICollection<CourseTag> CourseTags { get; set; } = new List<CourseTag>();
 }
 
 public enum CourseType
@@ -54,4 +63,18 @@ public enum CourseType
     Online,
     InPerson,
     Hybrid
+}
+
+public enum CourseLevel
+{
+    Beginner,
+    Intermediate,
+    Advanced
+}
+
+public enum CourseMode
+{
+    SelfPaced,
+    InstructorLed,
+    Blended
 }
