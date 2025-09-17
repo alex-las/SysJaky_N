@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/SysJaky_N.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/lib/altcha/altcha.min.css" />
+    @await RenderSectionAsync("Head", required: false)
 </head>
 <body>
     <a class="visually-hidden-focusable" href="#main-content">Přeskočit na obsah</a>

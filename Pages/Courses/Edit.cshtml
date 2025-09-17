@@ -19,6 +19,21 @@
         <span asp-validation-for="Course.Description" class="text-danger"></span>
     </div>
     <div class="form-group">
+        <label asp-for="Course.MetaTitle"></label>
+        <input asp-for="Course.MetaTitle" class="form-control" />
+        <span asp-validation-for="Course.MetaTitle" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Course.MetaDescription"></label>
+        <textarea asp-for="Course.MetaDescription" class="form-control"></textarea>
+        <span asp-validation-for="Course.MetaDescription" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Course.OpenGraphImage"></label>
+        <input asp-for="Course.OpenGraphImage" class="form-control" />
+        <span asp-validation-for="Course.OpenGraphImage" class="text-danger"></span>
+    </div>
+    <div class="form-group">
         <label asp-for="Course.CourseGroupId"></label>
         <select asp-for="Course.CourseGroupId" asp-items="Model.CourseGroups" class="form-control">
             <option value="">-- Select Group --</option>
