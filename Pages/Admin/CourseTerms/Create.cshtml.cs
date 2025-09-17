@@ -12,7 +12,7 @@ using SysJaky_N.Models;
 
 namespace SysJaky_N.Pages.Admin.CourseTerms;
 
-[Authorize(Roles = "Admin")]
+[Authorize(Policy = AuthorizationPolicies.AdminOnly)]
 public class CreateModel : PageModel
 {
     private readonly ApplicationDbContext _context;

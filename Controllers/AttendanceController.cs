@@ -9,7 +9,7 @@ namespace SysJaky_N.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize(Roles = "Admin,Instructor")]
+[Authorize(Policy = AuthorizationPolicies.AdminOrInstructor)]
 public class AttendanceController : ControllerBase
 {
     private readonly ApplicationDbContext _context;

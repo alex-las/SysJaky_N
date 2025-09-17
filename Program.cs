@@ -51,6 +51,20 @@ try
         .AddEntityFrameworkStores<ApplicationDbContext>()
         .AddDefaultTokenProviders();
 
+    builder.Services.AddAuthorization(options =>
+    {
+        options.AddPolicy(AuthorizationPolicies.AdminOnly,
+            policy => policy.RequireRole(ApplicationRoles.Admin));
+        options.AddPolicy(AuthorizationPolicies.AdminOrInstructor,
+            policy => policy.RequireRole(ApplicationRoles.Admin, ApplicationRoles.Instructor));
+        options.AddPolicy(AuthorizationPolicies.EditorOnly,
+            policy => policy.RequireRole(ApplicationRoles.Editor));
+        options.AddPolicy(AuthorizationPolicies.CompanyManagerOnly,
+            policy => policy.RequireRole(ApplicationRoles.CompanyManager));
+        options.AddPolicy(AuthorizationPolicies.StudentCustomer,
+            policy => policy.RequireRole(ApplicationRoles.StudentCustomer));
+    });
+
     builder.Services.ConfigureApplicationCookie(options =>
     {
         options.LoginPath = "/Account/Login";

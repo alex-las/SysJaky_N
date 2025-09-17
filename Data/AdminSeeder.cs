@@ -23,21 +23,33 @@ public class AdminSeeder
 
         var email = configuration["SeedAdmin:Email"];
         var password = configuration["SeedAdmin:Password"];
-        var role = configuration["SeedAdmin:Role"];
+        var configuredRole = configuration["SeedAdmin:Role"];
 
-        if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password) || string.IsNullOrWhiteSpace(role))
+        foreach (var roleName in ApplicationRoles.All)
+        {
+            if (!await roleManager.RoleExistsAsync(roleName))
+            {
+                await roleManager.CreateAsync(new IdentityRole(roleName));
+            }
+        }
+
+        if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
         {
             return;
+        }
+
+        var adminRole = string.IsNullOrWhiteSpace(configuredRole)
+            ? ApplicationRoles.Admin
+            : configuredRole.Trim();
+
+        if (!await roleManager.RoleExistsAsync(adminRole))
+        {
+            await roleManager.CreateAsync(new IdentityRole(adminRole));
         }
 
         if (await userManager.FindByEmailAsync(email) != null)
         {
             return;
-        }
-
-        if (!await roleManager.RoleExistsAsync(role))
-        {
-            await roleManager.CreateAsync(new IdentityRole(role));
         }
 
         var user = new ApplicationUser
@@ -49,7 +61,7 @@ public class AdminSeeder
         var result = await userManager.CreateAsync(user, password);
         if (result.Succeeded)
         {
-            await userManager.AddToRoleAsync(user, role);
+            await userManager.AddToRoleAsync(user, adminRole);
         }
     }
 }

@@ -9,7 +9,7 @@ using System.Security.Claims;
 
 namespace SysJaky_N.Pages.Courses;
 
-[Authorize(Roles = "Admin")]
+[Authorize(Policy = AuthorizationPolicies.AdminOnly)]
 public class CreateModel : PageModel
 {
     private readonly ApplicationDbContext _context;

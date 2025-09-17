@@ -5,7 +5,7 @@ using SysJaky_N.Data;
 
 namespace SysJaky_N.Pages.Admin.Dashboard;
 
-[Authorize(Roles = "Admin")]
+[Authorize(Policy = AuthorizationPolicies.AdminOnly)]
 public class IndexModel : PageModel
 {
     private readonly ApplicationDbContext _context;
