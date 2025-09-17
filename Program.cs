@@ -18,6 +18,7 @@ using SysJaky_N.Middleware;
 using RazorLight;
 using Microsoft.Extensions.Hosting;
 using System.IO;
+using System.Security.Claims;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
@@ -26,6 +27,11 @@ Log.Logger = new LoggerConfiguration()
 try
 {
     var builder = WebApplication.CreateBuilder(args);
+
+    if (builder.Environment.IsDevelopment())
+    {
+        builder.Configuration.AddUserSecrets<Program>(optional: true);
+    }
 
     builder.Host.UseSerilog((context, services, configuration) =>
     {
@@ -42,8 +48,12 @@ try
     });
 
     // Add services to the container.
-    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
-        ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+    if (string.IsNullOrWhiteSpace(connectionString))
+    {
+        throw new InvalidOperationException(
+            "Connection string 'DefaultConnection' not found. Configure it using secrets or KeyVault.");
+    }
     builder.Services.AddDbContext<ApplicationDbContext>(options =>
         options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 36))));
 
@@ -112,6 +122,35 @@ try
                     QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
                     QueueLimit = 0
                 }));
+
+        options.AddPolicy("Login", context =>
+            RateLimitPartition.GetFixedWindowLimiter(
+                context.Connection.RemoteIpAddress?.ToString() ?? "anon",
+                _ => new FixedWindowRateLimiterOptions
+                {
+                    PermitLimit = 5,
+                    Window = TimeSpan.FromMinutes(1),
+                    QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                    QueueLimit = 0
+                }));
+
+        options.AddPolicy("Checkout", context =>
+        {
+            var userId = context.User?.FindFirstValue(ClaimTypes.NameIdentifier);
+            var partitionKey = !string.IsNullOrWhiteSpace(userId)
+                ? $"user:{userId}"
+                : context.Connection.RemoteIpAddress?.ToString() ?? "anon";
+
+            return RateLimitPartition.GetFixedWindowLimiter(
+                partitionKey,
+                _ => new FixedWindowRateLimiterOptions
+                {
+                    PermitLimit = 3,
+                    Window = TimeSpan.FromMinutes(1),
+                    QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                    QueueLimit = 0
+                });
+        });
     });
 
     var app = builder.Build();
@@ -149,6 +188,7 @@ try
     }
 
     app.UseHttpsRedirection();
+    app.UseMiddleware<ContentSecurityPolicyMiddleware>();
     app.UseStaticFiles();
 
     app.UseRouting();
