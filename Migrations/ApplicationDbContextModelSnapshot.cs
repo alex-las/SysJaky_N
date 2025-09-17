@@ -457,16 +457,16 @@ namespace SysJaky_N.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("varchar(1000)");
 
-                    b.Property<string>("MetaTitle")
-                        .HasMaxLength(150)
-                        .HasColumnType("varchar(150)");
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("MetaDescription")
                         .HasMaxLength(300)
                         .HasColumnType("varchar(300)");
 
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("tinyint(1)");
+                    b.Property<string>("MetaTitle")
+                        .HasMaxLength(150)
+                        .HasColumnType("varchar(150)");
 
                     b.Property<string>("OpenGraphImage")
                         .HasMaxLength(2048)
