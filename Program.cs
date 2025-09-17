@@ -103,6 +103,8 @@ try
     builder.Services.AddHostedService<CourseReminderService>();
     builder.Services.AddHostedService<SalesStatsService>();
     builder.Services.AddHostedService<CourseReviewRequestService>();
+    builder.Services.Configure<DataRetentionOptions>(builder.Configuration.GetSection("DataRetention"));
+    builder.Services.AddHostedService<DataRetentionService>();
     builder.Services.Configure<WaitlistOptions>(builder.Configuration.GetSection("Waitlist"));
     builder.Services.AddSingleton<WaitlistTokenService>();
     builder.Services.AddHostedService<WaitlistNotificationService>();

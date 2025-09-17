@@ -22,8 +22,25 @@
           <label asp-for="Input.ReferenceCode"></label>
           <input asp-for="Input.ReferenceCode" />
       </div>
+      <div>
+          <input asp-for="Input.MarketingEmailsEnabled" type="checkbox" />
+          <label asp-for="Input.MarketingEmailsEnabled"></label>
+          <span asp-validation-for="Input.MarketingEmailsEnabled"></span>
+      </div>
       <button type="submit">Save</button>
   </form>
+
+<section>
+    <h2>Ochrana osobních údajů</h2>
+    @if (Model.PersonalDataProcessingConsent)
+    {
+        <p>Souhlas se zpracováním osobních údajů byl udělen @Model.PersonalDataConsentUpdatedAtUtc?.ToLocalTime().ToString("g").</p>
+    }
+    else
+    {
+        <p>Souhlas se zpracováním osobních údajů nebyl zaznamenán.</p>
+    }
+</section>
 
 <section>
     <h2>Redeem seat token</h2>
@@ -128,6 +145,14 @@ else
 {
     <p>No orders found.</p>
 }
+
+<section>
+    <h2>Smazání účtu</h2>
+    <p>Pokud již nechcete využívat naše služby, můžete svůj účet trvale smazat. Tato akce je nevratná.</p>
+    <form method="post" asp-page-handler="DeleteAccount" onsubmit="return confirm('Opravdu chcete smazat svůj účet? Tuto akci nelze vrátit zpět.');">
+        <button type="submit" class="btn btn-danger">Smazat účet</button>
+    </form>
+</section>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
