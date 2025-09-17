@@ -1,0 +1,21 @@
+@model SysJaky_N.EmailTemplates.Models.CourseTermCreatedEmailModel
+@using System.Globalization
+@{
+    Layout = null;
+    var startLocal = Model.StartUtc.ToLocalTime();
+    var endLocal = Model.EndUtc.ToLocalTime();
+}
+<!DOCTYPE html>
+<html>
+<body style="font-family: Arial, sans-serif; color: #111;">
+    <p>Dobrý den,</p>
+    <p>u kurzu "<strong>@Model.CourseTitle</strong>" byl přidán nový termín.</p>
+    <p>
+        Začíná @startLocal.ToString("f", CultureInfo.CurrentCulture)
+        a končí @endLocal.ToString("f", CultureInfo.CurrentCulture).
+    </p>
+    <p>Více informací najdete na stránce termínu:</p>
+    <p><a href="@Model.DetailUrl">@Model.DetailUrl</a></p>
+    <p>Těšíme se na vás.</p>
+</body>
+</html>
