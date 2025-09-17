@@ -28,6 +28,7 @@ public enum EmailTemplate
     Welcome,
     OrderCreated,
     ContactMessageNotification,
+    CourseTermCreated,
     WaitlistSeatAvailable,
     CourseReminder,
     CourseReviewRequest
@@ -61,6 +62,14 @@ public class EmailSender : IEmailSender
                 "ContactMessageNotification.cshtml",
                 typeof(ContactMessageEmailModel),
                 _ => "New contact message"),
+            [EmailTemplate.CourseTermCreated] = new(
+                "CourseTermCreated.cshtml",
+                typeof(CourseTermCreatedEmailModel),
+                model =>
+                {
+                    var data = (CourseTermCreatedEmailModel)model;
+                    return $"Nový termín: {data.CourseTitle}";
+                }),
             [EmailTemplate.WaitlistSeatAvailable] = new(
                 "WaitlistSeatAvailable.cshtml",
                 typeof(WaitlistSeatAvailableEmailModel),
