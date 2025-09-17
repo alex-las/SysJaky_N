@@ -1,5 +1,32 @@
 @page "{id:int}"
 @model SysJaky_N.Pages.Courses.DetailsModel
+@{
+    var metaTitle = string.IsNullOrWhiteSpace(Model.Course.MetaTitle)
+        ? Model.Course.Title
+        : Model.Course.MetaTitle.Trim();
+    var metaDescriptionRaw = !string.IsNullOrWhiteSpace(Model.Course.MetaDescription)
+        ? Model.Course.MetaDescription
+        : Model.Course.Description;
+    var metaDescription = metaDescriptionRaw?.ReplaceLineEndings(" ").Trim();
+    var hasMetaDescription = !string.IsNullOrWhiteSpace(metaDescription);
+    var ogImage = Model.Course.OpenGraphImage;
+    var resolvedTitle = string.IsNullOrWhiteSpace(metaTitle) ? Model.Course.Title : metaTitle;
+    ViewData["Title"] = resolvedTitle;
+}
+
+@section Head {
+    <meta property="og:title" content="@resolvedTitle" />
+    <meta property="og:type" content="website" />
+    @if (hasMetaDescription)
+    {
+        <meta name="description" content="@metaDescription" />
+        <meta property="og:description" content="@metaDescription" />
+    }
+    @if (!string.IsNullOrWhiteSpace(ogImage))
+    {
+        <meta property="og:image" content="@ogImage" />
+    }
+}
 
 <h1>@Model.Course.Title</h1>
 

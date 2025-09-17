@@ -9,6 +9,20 @@
     <a class="btn btn-primary" asp-page="Create">Create term</a>
 </div>
 
+@if (!string.IsNullOrEmpty(Model.StatusMessage))
+{
+    <div class="alert alert-success" role="status">
+        @Model.StatusMessage
+    </div>
+}
+
+@if (!string.IsNullOrEmpty(Model.ErrorMessage))
+{
+    <div class="alert alert-danger" role="alert">
+        @Model.ErrorMessage
+    </div>
+}
+
 <form method="get" class="row g-3 align-items-end mb-4">
     <div class="col-md-4">
         <label asp-for="CourseId" class="form-label">Course</label>
@@ -27,6 +41,21 @@
     </div>
     <div class="col-auto">
         <a asp-page="Index" class="btn btn-outline-secondary">Clear</a>
+    </div>
+</form>
+
+<form method="post" asp-page-handler="Import" enctype="multipart/form-data" class="row g-3 align-items-end mb-4">
+    <div class="col-md-5 col-lg-4">
+        <label asp-for="ImportFile" class="form-label">Import terms from Excel</label>
+        <input asp-for="ImportFile" class="form-control" type="file" accept=".xlsx" />
+        <div class="form-text">Required columns: CourseId, StartUtc, EndUtc, Capacity. Optional columns: Id, IsActive, InstructorId.</div>
+        <span asp-validation-for="ImportFile" class="text-danger"></span>
+    </div>
+    <div class="col-auto">
+        <button type="submit" class="btn btn-outline-primary">Import XLSX</button>
+    </div>
+    <div class="col-12">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     </div>
 </form>
 
@@ -75,9 +104,14 @@ else
                         }
                     </td>
                     <td class="text-end">
-                        <div class="btn-group btn-group-sm" role="group" aria-label="Actions for @term.Course?.Title term">
-                            <a class="btn btn-outline-secondary" asp-page="Edit" asp-route-id="@term.Id">Edit</a>
-                            <a class="btn btn-outline-danger" asp-page="Delete" asp-route-id="@term.Id">Delete</a>
+                        <div class="d-flex flex-wrap justify-content-end gap-2">
+                            <div class="btn-group btn-group-sm" role="group" aria-label="Actions for @term.Course?.Title term">
+                                <a class="btn btn-outline-secondary" asp-page="Edit" asp-route-id="@term.Id">Edit</a>
+                                <a class="btn btn-outline-danger" asp-page="Delete" asp-route-id="@term.Id">Delete</a>
+                            </div>
+                            <form method="post" asp-page-handler="ExportEnrollments" asp-route-id="@term.Id" class="d-inline">
+                                <button type="submit" class="btn btn-sm btn-outline-primary">Export XLSX</button>
+                            </form>
                         </div>
                     </td>
                 </tr>
@@ -85,4 +119,8 @@ else
             </tbody>
         </table>
     </div>
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
 }

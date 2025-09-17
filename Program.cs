@@ -18,6 +18,7 @@ using SysJaky_N.Middleware;
 using RazorLight;
 using Microsoft.Extensions.Hosting;
 using System.IO;
+using OfficeOpenXml;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
@@ -25,6 +26,8 @@ Log.Logger = new LoggerConfiguration()
 
 try
 {
+    ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
     var builder = WebApplication.CreateBuilder(args);
 
     builder.Host.UseSerilog((context, services, configuration) =>

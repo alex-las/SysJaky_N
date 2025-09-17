@@ -19,6 +19,21 @@
         <span asp-validation-for="Course.Description" class="text-danger"></span>
     </div>
     <div class="form-group">
+        <label asp-for="Course.MetaTitle"></label>
+        <input asp-for="Course.MetaTitle" class="form-control" />
+        <span asp-validation-for="Course.MetaTitle" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Course.MetaDescription"></label>
+        <textarea asp-for="Course.MetaDescription" class="form-control"></textarea>
+        <span asp-validation-for="Course.MetaDescription" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Course.OpenGraphImage"></label>
+        <input asp-for="Course.OpenGraphImage" class="form-control" />
+        <span asp-validation-for="Course.OpenGraphImage" class="text-danger"></span>
+    </div>
+    <div class="form-group">
         <label asp-for="Course.CourseGroupId"></label>
         <select asp-for="Course.CourseGroupId" asp-items="Model.CourseGroups" class="form-control">
             <option value="">-- Select Group --</option>
@@ -45,6 +60,21 @@
         <label asp-for="CoverImage"></label>
         <input asp-for="CoverImage" type="file" class="form-control" accept="image/jpeg" />
         <span asp-validation-for="CoverImage" class="text-danger"></span>
+
+    <div class="form-group">
+        <label asp-for="Course.Level"></label>
+        <select asp-for="Course.Level" class="form-select" asp-items="Html.GetEnumSelectList<SysJaky_N.Models.CourseLevel>()"></select>
+        <span asp-validation-for="Course.Level" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Course.Mode"></label>
+        <select asp-for="Course.Mode" class="form-select" asp-items="Html.GetEnumSelectList<SysJaky_N.Models.CourseMode>()"></select>
+        <span asp-validation-for="Course.Mode" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Course.Duration"></label>
+        <input asp-for="Course.Duration" class="form-control" min="0" />
+        <span asp-validation-for="Course.Duration" class="text-danger"></span>
     </div>
     <button type="submit" class="btn btn-primary">Save</button>
     <a asp-page="Index" class="btn btn-secondary">Back to List</a>
