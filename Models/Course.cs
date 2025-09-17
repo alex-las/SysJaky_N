@@ -13,6 +13,15 @@ public class Course
     [StringLength(1000)]
     public string? Description { get; set; }
 
+    [StringLength(150)]
+    public string? MetaTitle { get; set; }
+
+    [StringLength(300)]
+    public string? MetaDescription { get; set; }
+
+    [StringLength(2048)]
+    public string? OpenGraphImage { get; set; }
+
     [Range(0, double.MaxValue)]
     public decimal Price { get; set; }
 
