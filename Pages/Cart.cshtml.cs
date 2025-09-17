@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using SysJaky_N.Data;
 using SysJaky_N.Extensions;
@@ -51,6 +52,7 @@ public class CartModel : PageModel
         await ApplyStoredVoucherAsync();
     }
 
+    [EnableRateLimiting("Checkout")]
     public async Task<IActionResult> OnPostCheckoutAsync()
     {
         var cart = _cartService.GetItems(HttpContext.Session).ToList();

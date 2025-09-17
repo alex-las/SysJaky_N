@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.RateLimiting;
 using SysJaky_N.Models;
 using SysJaky_N.Attributes;
 using SysJaky_N.Services;
@@ -42,6 +43,7 @@ public class LoginModel : PageModel
     {
     }
 
+    [EnableRateLimiting("Login")]
     [AltchaValidate]
     public async Task<IActionResult> OnPostAsync()
     {
