@@ -1,3 +1,4 @@
+using System;
 using Microsoft.AspNetCore.Identity;
 
 namespace SysJaky_N.Models;
@@ -10,4 +11,10 @@ public class ApplicationUser : IdentityUser
     public ICollection<WaitlistEntry> WaitlistEntries { get; set; } = new List<WaitlistEntry>();
     public ICollection<CompanyUser> CompanyMemberships { get; set; } = new List<CompanyUser>();
     public ICollection<LessonProgress> LessonProgresses { get; set; } = new List<LessonProgress>();
+
+    public bool PersonalDataProcessingConsent { get; set; }
+    public DateTime? PersonalDataProcessingConsentUpdatedAtUtc { get; set; }
+
+    public bool MarketingEmailsEnabled { get; set; } = true;
+    public DateTime? MarketingConsentUpdatedAtUtc { get; set; }
 }
