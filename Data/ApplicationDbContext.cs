@@ -40,6 +40,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Certificate> Certificates { get; set; } = default!;
     public DbSet<Attendance> Attendances { get; set; } = default!;
     public DbSet<EmailLog> EmailLogs { get; set; } = default!;
+    public DbSet<Tag> Tags { get; set; } = default!;
+    public DbSet<CourseTag> CourseTags { get; set; } = default!;
 
 
     protected override void OnModelCreating(ModelBuilder builder)
@@ -190,6 +192,25 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .HasOne(lp => lp.User)
             .WithMany(u => u.LessonProgresses)
             .HasForeignKey(lp => lp.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<Tag>()
+            .HasIndex(t => t.Name)
+            .IsUnique();
+
+        builder.Entity<CourseTag>()
+            .HasKey(ct => new { ct.CourseId, ct.TagId });
+
+        builder.Entity<CourseTag>()
+            .HasOne(ct => ct.Course)
+            .WithMany(c => c.CourseTags)
+            .HasForeignKey(ct => ct.CourseId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<CourseTag>()
+            .HasOne(ct => ct.Tag)
+            .WithMany(t => t.CourseTags)
+            .HasForeignKey(ct => ct.TagId)
             .OnDelete(DeleteBehavior.Cascade);
     }
 }
