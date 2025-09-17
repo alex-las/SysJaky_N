@@ -10,7 +10,7 @@ using System.Linq;
 
 namespace SysJaky_N.Pages.Admin.Users;
 
-[Authorize(Roles = "Admin")]
+[Authorize(Policy = AuthorizationPolicies.AdminOnly)]
 public class EditModel : PageModel
 {
     private readonly UserManager<ApplicationUser> _userManager;

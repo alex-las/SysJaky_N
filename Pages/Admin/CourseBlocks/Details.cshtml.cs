@@ -7,7 +7,7 @@ using SysJaky_N.Models;
 
 namespace SysJaky_N.Pages.Admin.CourseBlocks;
 
-[Authorize(Roles = "Admin")]
+[Authorize(Policy = AuthorizationPolicies.AdminOnly)]
 public class DetailsModel : PageModel
 {
     private readonly ApplicationDbContext _context;

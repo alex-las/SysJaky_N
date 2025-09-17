@@ -1,20 +1,24 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.IO;
 using Microsoft.EntityFrameworkCore;
 using SysJaky_N.Data;
 using SysJaky_N.Models;
+using SysJaky_N.Services;
 
 namespace SysJaky_N.Pages.Courses;
 
-[Authorize(Roles = "Admin")]
+[Authorize(Policy = AuthorizationPolicies.AdminOnly)]
 public class DeleteModel : PageModel
 {
     private readonly ApplicationDbContext _context;
+    private readonly ICourseMediaStorage _courseMediaStorage;
 
-    public DeleteModel(ApplicationDbContext context)
+    public DeleteModel(ApplicationDbContext context, ICourseMediaStorage courseMediaStorage)
     {
         _context = context;
+        _courseMediaStorage = courseMediaStorage;
     }
 
     [BindProperty]
@@ -41,6 +45,15 @@ public class DeleteModel : PageModel
 
         _context.Courses.Remove(course);
         await _context.SaveChangesAsync();
+
+        try
+        {
+            await _courseMediaStorage.DeleteCoverImageAsync(course.Id, HttpContext.RequestAborted);
+        }
+        catch (IOException)
+        {
+            // Ignore file system errors when removing the cover image; the database record has already been deleted.
+        }
         return RedirectToPage("Index");
     }
 }

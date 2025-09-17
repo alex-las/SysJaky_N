@@ -12,11 +12,44 @@
 }
 
 <form method="get" class="mb-3">
-    <input type="text" asp-for="SearchString" placeholder="Search..." class="form-control" style="width:auto;display:inline-block" aria-label="Search courses" />
-    <select asp-for="CourseGroupId" asp-items="Model.CourseGroups" class="form-control" style="width:auto;display:inline-block" aria-label="Filter by group">
-        <option value="">All Groups</option>
-    </select>
-    <button type="submit" class="btn btn-primary">Filter</button>
+    <div class="row g-2">
+        <div class="col-sm-6 col-lg-3">
+            <input type="text" asp-for="SearchString" placeholder="Search..." class="form-control" aria-label="Search courses" />
+        </div>
+        <div class="col-sm-6 col-lg-3">
+            <select asp-for="CourseGroupId" asp-items="Model.CourseGroups" class="form-select" aria-label="Filter by group">
+                <option value="">All Groups</option>
+            </select>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+            <select asp-for="Level" asp-items="Model.LevelOptions" class="form-select" aria-label="Filter by level">
+                <option value="">All Levels</option>
+            </select>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+            <select asp-for="Mode" asp-items="Model.ModeOptions" class="form-select" aria-label="Filter by mode">
+                <option value="">All Modes</option>
+            </select>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+            <div class="input-group">
+                <span class="input-group-text" id="minDurationLabel">Min duration</span>
+                <input type="number" asp-for="MinDuration" class="form-control" aria-labelledby="minDurationLabel" min="0" />
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+            <div class="input-group">
+                <span class="input-group-text" id="maxDurationLabel">Max duration</span>
+                <input type="number" asp-for="MaxDuration" class="form-control" aria-labelledby="maxDurationLabel" min="0" />
+            </div>
+        </div>
+        <div class="col-12 col-lg-6">
+            <select asp-for="SelectedTagIds" asp-items="Model.TagOptions" class="form-select" multiple size="4" aria-label="Filter by tags"></select>
+        </div>
+        <div class="col-12 text-end">
+            <button type="submit" class="btn btn-primary">Filter</button>
+        </div>
+    </div>
 </form>
 
 @if (User.IsInRole("Admin"))
@@ -31,6 +64,10 @@
         <tr>
             <th>Title</th>
             <th>Group</th>
+            <th>Level</th>
+            <th>Mode</th>
+            <th>Duration (min)</th>
+            <th>Tags</th>
             <th>Price</th>
             <th>Date</th>
             <th></th>
@@ -42,6 +79,15 @@
         <tr>
             <td>@item.Title</td>
             <td>@item.CourseGroup?.Name</td>
+            <td>@item.Level</td>
+            <td>@item.Mode</td>
+            <td>@item.Duration</td>
+            <td>
+                @if (item.CourseTags.Any())
+                {
+                    <span>@string.Join(", ", item.CourseTags.Select(ct => ct.Tag.Name))</span>
+                }
+            </td>
             <td>@item.Price</td>
             <td>@item.Date.ToString("d")</td>
             <td>
@@ -68,10 +114,10 @@
     <nav>
         <ul class="pagination">
             <li class="page-item @(Model.PageNumber <= 1 ? "disabled" : "")">
-                <a class="page-link" asp-route-PageNumber="@(Model.PageNumber - 1)" asp-route-CourseGroupId="@Model.CourseGroupId" asp-route-SearchString="@Model.SearchString">Previous</a>
+                <a class="page-link" asp-route-PageNumber="@(Model.PageNumber - 1)" asp-route-CourseGroupId="@Model.CourseGroupId" asp-route-SearchString="@Model.SearchString" asp-route-Level="@Model.Level" asp-route-Mode="@Model.Mode" asp-route-MinDuration="@Model.MinDuration" asp-route-MaxDuration="@Model.MaxDuration" asp-route-SelectedTagIds="@Model.SelectedTagIds">Previous</a>
             </li>
             <li class="page-item @(Model.PageNumber >= Model.TotalPages ? "disabled" : "")">
-                <a class="page-link" asp-route-PageNumber="@(Model.PageNumber + 1)" asp-route-CourseGroupId="@Model.CourseGroupId" asp-route-SearchString="@Model.SearchString">Next</a>
+                <a class="page-link" asp-route-PageNumber="@(Model.PageNumber + 1)" asp-route-CourseGroupId="@Model.CourseGroupId" asp-route-SearchString="@Model.SearchString" asp-route-Level="@Model.Level" asp-route-Mode="@Model.Mode" asp-route-MinDuration="@Model.MinDuration" asp-route-MaxDuration="@Model.MaxDuration" asp-route-SelectedTagIds="@Model.SelectedTagIds">Next</a>
             </li>
         </ul>
     </nav>

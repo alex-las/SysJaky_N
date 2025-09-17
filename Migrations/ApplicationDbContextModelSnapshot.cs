@@ -169,6 +169,12 @@ namespace SysJaky_N.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("tinyint(1)");
 
+                    b.Property<DateTime?>("MarketingConsentUpdatedAtUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<bool>("MarketingEmailsEnabled")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("tinyint(1)");
 
@@ -191,6 +197,12 @@ namespace SysJaky_N.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("PersonalDataProcessingConsent")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<DateTime?>("PersonalDataProcessingConsentUpdatedAtUtc")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("longtext");
@@ -476,6 +488,10 @@ namespace SysJaky_N.Migrations
                     b.Property<int?>("CourseGroupId")
                         .HasColumnType("int");
 
+                    b.Property<string>("CoverImageUrl")
+                        .HasMaxLength(2048)
+                        .HasColumnType("varchar(2048)");
+
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime(6)");
 
@@ -483,8 +499,20 @@ namespace SysJaky_N.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("varchar(1000)");
 
+                    b.Property<string>("MetaTitle")
+                        .HasMaxLength(150)
+                        .HasColumnType("varchar(150)");
+
+                    b.Property<string>("MetaDescription")
+                        .HasMaxLength(300)
+                        .HasColumnType("varchar(300)");
+
                     b.Property<bool>("IsActive")
                         .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("OpenGraphImage")
+                        .HasMaxLength(2048)
+                        .HasColumnType("varchar(2048)");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(65,30)");

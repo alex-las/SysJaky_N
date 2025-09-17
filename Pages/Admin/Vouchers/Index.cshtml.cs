@@ -7,7 +7,7 @@ using SysJaky_N.Models;
 
 namespace SysJaky_N.Pages.Admin.Vouchers;
 
-[Authorize(Roles = "Admin")]
+[Authorize(Policy = AuthorizationPolicies.AdminOnly)]
 public class IndexModel : PageModel
 {
     private readonly ApplicationDbContext _context;

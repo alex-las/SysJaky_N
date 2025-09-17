@@ -19,6 +19,7 @@ using RazorLight;
 using Microsoft.Extensions.Hosting;
 using System.IO;
 using System.Security.Claims;
+using OfficeOpenXml;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
@@ -26,6 +27,8 @@ Log.Logger = new LoggerConfiguration()
 
 try
 {
+    ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
     var builder = WebApplication.CreateBuilder(args);
 
     if (builder.Environment.IsDevelopment())
@@ -61,6 +64,20 @@ try
         .AddEntityFrameworkStores<ApplicationDbContext>()
         .AddDefaultTokenProviders();
 
+    builder.Services.AddAuthorization(options =>
+    {
+        options.AddPolicy(AuthorizationPolicies.AdminOnly,
+            policy => policy.RequireRole(ApplicationRoles.Admin));
+        options.AddPolicy(AuthorizationPolicies.AdminOrInstructor,
+            policy => policy.RequireRole(ApplicationRoles.Admin, ApplicationRoles.Instructor));
+        options.AddPolicy(AuthorizationPolicies.EditorOnly,
+            policy => policy.RequireRole(ApplicationRoles.Editor));
+        options.AddPolicy(AuthorizationPolicies.CompanyManagerOnly,
+            policy => policy.RequireRole(ApplicationRoles.CompanyManager));
+        options.AddPolicy(AuthorizationPolicies.StudentCustomer,
+            policy => policy.RequireRole(ApplicationRoles.StudentCustomer));
+    });
+
     builder.Services.ConfigureApplicationCookie(options =>
     {
         options.LoginPath = "/Account/Login";
@@ -89,12 +106,15 @@ try
     builder.Services.AddScoped<IEmailSender, EmailSender>();
     builder.Services.Configure<CourseReviewRequestOptions>(builder.Configuration.GetSection("CourseReviews"));
     builder.Services.AddScoped<IAuditService, AuditService>();
+    builder.Services.AddScoped<ICourseMediaStorage, LocalCourseMediaStorage>();
     builder.Services.AddScoped<CartService>();
     builder.Services.Configure<CertificateOptions>(builder.Configuration.GetSection("Certificates"));
     builder.Services.AddScoped<CertificateService>();
     builder.Services.AddHostedService<CourseReminderService>();
     builder.Services.AddHostedService<SalesStatsService>();
     builder.Services.AddHostedService<CourseReviewRequestService>();
+    builder.Services.Configure<DataRetentionOptions>(builder.Configuration.GetSection("DataRetention"));
+    builder.Services.AddHostedService<DataRetentionService>();
     builder.Services.Configure<WaitlistOptions>(builder.Configuration.GetSection("Waitlist"));
     builder.Services.AddSingleton<WaitlistTokenService>();
     builder.Services.AddHostedService<WaitlistNotificationService>();

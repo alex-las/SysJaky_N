@@ -10,7 +10,7 @@ using InstructorModel = SysJaky_N.Models.Instructor;
 
 namespace SysJaky_N.Pages.Admin.Instructors;
 
-[Authorize(Roles = "Admin")]
+[Authorize(Policy = AuthorizationPolicies.AdminOnly)]
 public class IndexModel : PageModel
 {
     private readonly ApplicationDbContext _context;

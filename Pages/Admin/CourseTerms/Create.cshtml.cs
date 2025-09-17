@@ -7,19 +7,26 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using SysJaky_N.Data;
+using SysJaky_N.EmailTemplates.Models;
 using SysJaky_N.Models;
+using SysJaky_N.Services;
 
 namespace SysJaky_N.Pages.Admin.CourseTerms;
 
-[Authorize(Roles = "Admin")]
+[Authorize(Policy = AuthorizationPolicies.AdminOnly)]
 public class CreateModel : PageModel
 {
     private readonly ApplicationDbContext _context;
+    private readonly IEmailSender _emailSender;
+    private readonly ILogger<CreateModel> _logger;
 
-    public CreateModel(ApplicationDbContext context)
+    public CreateModel(ApplicationDbContext context, IEmailSender emailSender, ILogger<CreateModel> logger)
     {
         _context = context;
+        _emailSender = emailSender;
+        _logger = logger;
         Input.StartUtc = DateTime.UtcNow.ToLocalTime();
         Input.EndUtc = Input.StartUtc.AddHours(1);
     }
@@ -54,6 +61,16 @@ public class CreateModel : PageModel
             return Page();
         }
 
+        var course = await _context.Courses
+            .AsNoTracking()
+            .FirstOrDefaultAsync(c => c.Id == Input.CourseId);
+
+        if (course == null)
+        {
+            ModelState.AddModelError("Input.CourseId", "Selected course was not found.");
+            return Page();
+        }
+
         var term = new CourseTerm
         {
             CourseId = Input.CourseId,
@@ -68,7 +85,81 @@ public class CreateModel : PageModel
         _context.CourseTerms.Add(term);
         await _context.SaveChangesAsync();
 
+        await NotifyWishlistUsersAsync(term, course);
+
         return RedirectToPage("Index");
+    }
+
+    private async Task NotifyWishlistUsersAsync(CourseTerm term, Course course)
+    {
+        var wishlistedUsers = await _context.WishlistItems
+            .AsNoTracking()
+            .Where(w => w.CourseId == course.Id)
+            .Select(w => w.User)
+            .OfType<ApplicationUser>()
+            .Where(user => !string.IsNullOrWhiteSpace(user.Email))
+            .ToListAsync();
+
+        if (wishlistedUsers.Count == 0)
+        {
+            _logger.LogInformation(
+                "Žádní uživatelé ve wishlistu pro kurz {CourseId}, oznámení nebudou odeslána.",
+                course.Id);
+            return;
+        }
+
+        var host = Request.Host.HasValue ? Request.Host.Value : null;
+        var detailUrl = Url.Page(
+            "/CourseTerms/Details",
+            pageHandler: null,
+            values: new { id = term.Id },
+            protocol: Request.Scheme,
+            host: host);
+
+        if (string.IsNullOrWhiteSpace(detailUrl))
+        {
+            detailUrl = $"/CourseTerms/Details/{term.Id}";
+            _logger.LogWarning(
+                "Nepodařilo se vygenerovat absolutní odkaz na termín {TermId}. Používám relativní cestu {Url}.",
+                term.Id,
+                detailUrl);
+        }
+
+        var courseTitle = string.IsNullOrWhiteSpace(course.Title) ? $"Kurz {course.Id}" : course.Title;
+
+        _logger.LogInformation(
+            "Odesílám oznámení o novém termínu {TermId} ({CourseTitle}) {RecipientCount} uživatelům.",
+            term.Id,
+            courseTitle,
+            wishlistedUsers.Count);
+
+        foreach (var user in wishlistedUsers)
+        {
+            var email = user.Email;
+            if (string.IsNullOrWhiteSpace(email))
+            {
+                continue;
+            }
+
+            var model = new CourseTermCreatedEmailModel(
+                courseTitle,
+                term.StartUtc,
+                term.EndUtc,
+                detailUrl);
+
+            try
+            {
+                await _emailSender.SendEmailAsync(email, EmailTemplate.CourseTermCreated, model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(
+                    ex,
+                    "Odeslání oznámení o termínu {TermId} uživateli {Email} selhalo.",
+                    term.Id,
+                    email);
+            }
+        }
     }
 
     private async Task LoadSelectListsAsync()

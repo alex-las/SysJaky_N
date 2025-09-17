@@ -6,7 +6,7 @@ using SysJaky_N.Models;
 
 namespace SysJaky_N.Pages.Admin.Users;
 
-[Authorize(Roles = "Admin")]
+[Authorize(Policy = AuthorizationPolicies.AdminOnly)]
 public class DeleteModel : PageModel
 {
     private readonly UserManager<ApplicationUser> _userManager;
