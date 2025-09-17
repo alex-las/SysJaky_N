@@ -28,12 +28,16 @@ public class Course
     [DataType(DataType.Date)]
     public DateTime Date { get; set; }
 
+    [StringLength(2048)]
+    public string? CoverImageUrl { get; set; }
+
     public CourseLevel Level { get; set; } = CourseLevel.Beginner;
 
     public CourseMode Mode { get; set; } = CourseMode.SelfPaced;
 
     [Range(0, int.MaxValue)]
     public int Duration { get; set; }
+
 
     [Range(0, int.MaxValue)]
     public int ReminderDays { get; set; }

@@ -476,6 +476,10 @@ namespace SysJaky_N.Migrations
                     b.Property<int?>("CourseGroupId")
                         .HasColumnType("int");
 
+                    b.Property<string>("CoverImageUrl")
+                        .HasMaxLength(2048)
+                        .HasColumnType("varchar(2048)");
+
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime(6)");
 

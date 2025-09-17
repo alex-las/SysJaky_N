@@ -30,6 +30,13 @@
 
 <h1>@Model.Course.Title</h1>
 
+@if (!string.IsNullOrEmpty(Model.Course.CoverImageUrl))
+{
+    <figure class="mb-4">
+        <img src="@Model.Course.CoverImageUrl" alt="Obálka kurzu @Model.Course.Title" class="img-fluid rounded" />
+    </figure>
+}
+
 @if (TempData["CartError"] is string cartError && !string.IsNullOrWhiteSpace(cartError))
 {
     <div class="alert alert-danger" role="alert">@cartError</div>
