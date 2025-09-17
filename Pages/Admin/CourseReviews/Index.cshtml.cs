@@ -7,7 +7,7 @@ using SysJaky_N.Models;
 
 namespace SysJaky_N.Pages.Admin.CourseReviews;
 
-[Authorize(Roles = "Admin")]
+[Authorize(Policy = AuthorizationPolicies.AdminOnly)]
 public class IndexModel : PageModel
 {
     private readonly ApplicationDbContext _context;

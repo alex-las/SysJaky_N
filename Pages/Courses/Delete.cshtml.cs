@@ -9,7 +9,7 @@ using SysJaky_N.Services;
 
 namespace SysJaky_N.Pages.Courses;
 
-[Authorize(Roles = "Admin")]
+[Authorize(Policy = AuthorizationPolicies.AdminOnly)]
 public class DeleteModel : PageModel
 {
     private readonly ApplicationDbContext _context;

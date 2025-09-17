@@ -12,7 +12,7 @@ using System;
 
 namespace SysJaky_N.Pages.Admin.Users;
 
-[Authorize(Roles = "Admin")]
+[Authorize(Policy = AuthorizationPolicies.AdminOnly)]
 public class IndexModel : PageModel
 {
     private readonly ApplicationDbContext _context;

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace SysJaky_N.Pages.Instructor;
 
-[Authorize(Roles = "Admin,Instructor")]
+[Authorize(Policy = AuthorizationPolicies.AdminOrInstructor)]
 public class AttendanceModel : PageModel
 {
     public void OnGet()
