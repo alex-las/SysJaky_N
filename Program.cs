@@ -109,6 +109,7 @@ try
     builder.Services.AddSingleton<WaitlistTokenService>();
     builder.Services.AddHostedService<WaitlistNotificationService>();
     builder.Services.AddMemoryCache();
+    builder.Services.AddSingleton<ICacheService, CacheService>();
     builder.Services.Configure<AltchaOptions>(builder.Configuration.GetSection("Altcha"));
     builder.Services.AddSingleton<IAltchaService, AltchaService>();
 

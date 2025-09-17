@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SysJaky_N.Data;
 using SysJaky_N.Models;
+using SysJaky_N.Services;
 
 namespace SysJaky_N.Pages.Admin.CourseTerms;
 
@@ -16,10 +17,12 @@ namespace SysJaky_N.Pages.Admin.CourseTerms;
 public class EditModel : PageModel
 {
     private readonly ApplicationDbContext _context;
+    private readonly ICacheService _cacheService;
 
-    public EditModel(ApplicationDbContext context)
+    public EditModel(ApplicationDbContext context, ICacheService cacheService)
     {
         _context = context;
+        _cacheService = cacheService;
     }
 
     [BindProperty]
@@ -90,6 +93,8 @@ public class EditModel : PageModel
             return Page();
         }
 
+        var previousCourseId = term.CourseId;
+
         term.CourseId = Input.CourseId;
         term.StartUtc = startUtc;
         term.EndUtc = endUtc;
@@ -98,6 +103,12 @@ public class EditModel : PageModel
         term.InstructorId = Input.InstructorId;
 
         await _context.SaveChangesAsync();
+        _cacheService.InvalidateCourseList();
+        _cacheService.InvalidateCourseDetail(term.CourseId);
+        if (previousCourseId != term.CourseId)
+        {
+            _cacheService.InvalidateCourseDetail(previousCourseId);
+        }
         return RedirectToPage("Index");
     }
 

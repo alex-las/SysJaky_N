@@ -14,11 +14,13 @@ public class DeleteModel : PageModel
 {
     private readonly ApplicationDbContext _context;
     private readonly ICourseMediaStorage _courseMediaStorage;
+    private readonly ICacheService _cacheService;
 
-    public DeleteModel(ApplicationDbContext context, ICourseMediaStorage courseMediaStorage)
+    public DeleteModel(ApplicationDbContext context, ICourseMediaStorage courseMediaStorage, ICacheService cacheService)
     {
         _context = context;
         _courseMediaStorage = courseMediaStorage;
+        _cacheService = cacheService;
     }
 
     [BindProperty]
@@ -45,6 +47,9 @@ public class DeleteModel : PageModel
 
         _context.Courses.Remove(course);
         await _context.SaveChangesAsync();
+
+        _cacheService.InvalidateCourseList();
+        _cacheService.InvalidateCourseDetail(course.Id);
 
         try
         {

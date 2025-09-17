@@ -19,12 +19,18 @@ public class CreateModel : PageModel
     private readonly ApplicationDbContext _context;
     private readonly IAuditService _auditService;
     private readonly ICourseMediaStorage _courseMediaStorage;
+    private readonly ICacheService _cacheService;
 
-    public CreateModel(ApplicationDbContext context, IAuditService auditService, ICourseMediaStorage courseMediaStorage)
+    public CreateModel(
+        ApplicationDbContext context,
+        IAuditService auditService,
+        ICourseMediaStorage courseMediaStorage,
+        ICacheService cacheService)
     {
         _context = context;
         _auditService = auditService;
         _courseMediaStorage = courseMediaStorage;
+        _cacheService = cacheService;
     }
 
     [BindProperty]
@@ -77,6 +83,9 @@ public class CreateModel : PageModel
             }
 
             await transaction.CommitAsync();
+
+            _cacheService.InvalidateCourseList();
+            _cacheService.InvalidateCourseDetail(Course.Id);
         }
         catch (Exception ex) when (ex is IOException or InvalidOperationException)
         {

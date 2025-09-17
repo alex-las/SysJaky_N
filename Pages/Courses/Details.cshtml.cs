@@ -15,12 +15,18 @@ public class DetailsModel : PageModel
     private readonly ApplicationDbContext _context;
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly CartService _cartService;
+    private readonly ICacheService _cacheService;
 
-    public DetailsModel(ApplicationDbContext context, UserManager<ApplicationUser> userManager, CartService cartService)
+    public DetailsModel(
+        ApplicationDbContext context,
+        UserManager<ApplicationUser> userManager,
+        CartService cartService,
+        ICacheService cacheService)
     {
         _context = context;
         _userManager = userManager;
         _cartService = cartService;
+        _cacheService = cacheService;
     }
 
     public Course Course { get; set; } = null!;
@@ -34,14 +40,11 @@ public class DetailsModel : PageModel
 
     public async Task<IActionResult> OnGetAsync(int id)
     {
-        Course? course = await _context.Courses
-            .FirstOrDefaultAsync(c => c.Id == id);
-        if (course == null)
+        if (!await LoadCourseDataAsync(id))
         {
             return NotFound();
         }
-        Course = course;
-        await LoadPageDataAsync(id);
+
         return Page();
     }
 
@@ -111,7 +114,11 @@ public class DetailsModel : PageModel
         Course = course;
         if (!ModelState.IsValid)
         {
-            await LoadPageDataAsync(id);
+            if (!await LoadCourseDataAsync(id))
+            {
+                return NotFound();
+            }
+
             return Page();
         }
 
@@ -164,43 +171,84 @@ public class DetailsModel : PageModel
         return RedirectToPage(new { id });
     }
 
-    private async Task LoadPageDataAsync(int courseId)
+    private async Task<bool> LoadCourseDataAsync(int courseId)
     {
-        if (Course.CourseBlockId.HasValue)
+        var cacheEntry = await _cacheService.GetCourseDetailAsync(courseId, async () =>
         {
-            CourseBlock = await _context.CourseBlocks
-                .Include(b => b.Modules)
-                .FirstOrDefaultAsync(b => b.Id == Course.CourseBlockId.Value);
-        }
-        else
-        {
-            CourseBlock = null;
-        }
+            var course = await _context.Courses
+                .AsNoTracking()
+                .Include(c => c.CourseGroup)
+                .Include(c => c.CourseTags)
+                    .ThenInclude(ct => ct.Tag)
+                .FirstOrDefaultAsync(c => c.Id == courseId);
 
-        Reviews = await _context.CourseReviews
-            .Where(r => r.CourseId == courseId && r.IsPublic)
-            .Include(r => r.User)
-            .OrderByDescending(r => r.CreatedAt)
-            .ToListAsync();
+            if (course == null)
+            {
+                return null;
+            }
 
-        Lessons = await _context.Lessons
-            .Where(l => l.CourseId == courseId)
-            .OrderBy(l => l.Order)
-            .ThenBy(l => l.Id)
-            .ToListAsync();
+            CourseBlock? courseBlock = null;
+            if (course.CourseBlockId.HasValue)
+            {
+                courseBlock = await _context.CourseBlocks
+                    .AsNoTracking()
+                    .Include(b => b.Modules)
+                    .FirstOrDefaultAsync(b => b.Id == course.CourseBlockId.Value);
+            }
 
-        ProgressByLessonId = new Dictionary<int, LessonProgress>();
-
-        var userId = _userManager.GetUserId(User);
-        if (!string.IsNullOrEmpty(userId) && Lessons.Any())
-        {
-            var lessonIds = Lessons.Select(l => l.Id).ToList();
-            var progressEntries = await _context.LessonProgresses
-                .Where(lp => lp.UserId == userId && lessonIds.Contains(lp.LessonId))
+            var reviews = await _context.CourseReviews
+                .AsNoTracking()
+                .Where(r => r.CourseId == courseId && r.IsPublic)
+                .Include(r => r.User)
+                .OrderByDescending(r => r.CreatedAt)
                 .ToListAsync();
 
-            ProgressByLessonId = progressEntries.ToDictionary(lp => lp.LessonId);
+            var lessons = await _context.Lessons
+                .AsNoTracking()
+                .Where(l => l.CourseId == courseId)
+                .OrderBy(l => l.Order)
+                .ThenBy(l => l.Id)
+                .ToListAsync();
+
+            return new CourseDetailCacheEntry(course, courseBlock, reviews, lessons);
+        });
+
+        if (cacheEntry == null)
+        {
+            return false;
         }
+
+        Course = cacheEntry.Course;
+        CourseBlock = cacheEntry.CourseBlock;
+        Reviews = cacheEntry.Reviews.ToList();
+        Lessons = cacheEntry.Lessons.ToList();
+
+        await LoadLessonProgressAsync();
+        return true;
+    }
+
+    private async Task LoadLessonProgressAsync()
+    {
+        ProgressByLessonId = new Dictionary<int, LessonProgress>();
+
+        if (Lessons.Count == 0)
+        {
+            return;
+        }
+
+        var userId = _userManager.GetUserId(User);
+        if (string.IsNullOrEmpty(userId))
+        {
+            return;
+        }
+
+        var lessonIds = Lessons.Select(l => l.Id).ToList();
+        var progressEntries = await _context.LessonProgresses
+            .AsNoTracking()
+            .Where(lp => lp.UserId == userId && lessonIds.Contains(lp.LessonId))
+            .ToListAsync();
+
+        ProgressByLessonId = progressEntries.ToDictionary(lp => lp.LessonId);
     }
 }
 
