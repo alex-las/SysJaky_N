@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
+using System.Threading;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog.Core;
 using Serilog.Events;
@@ -13,6 +14,7 @@ namespace SysJaky_N.Logging;
 public class EfCoreLogSink : ILogEventSink
 {
     private readonly IServiceScopeFactory _scopeFactory;
+    private static readonly AsyncLocal<bool> _isLogging = new();
 
     public EfCoreLogSink(IServiceScopeFactory scopeFactory)
     {
@@ -21,8 +23,15 @@ public class EfCoreLogSink : ILogEventSink
 
     public void Emit(LogEvent logEvent)
     {
+        if (ShouldSkipLogging())
+        {
+            return;
+        }
+
         try
         {
+            _isLogging.Value = true;
+
             using var scope = _scopeFactory.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
@@ -43,6 +52,10 @@ public class EfCoreLogSink : ILogEventSink
         catch
         {
             // Ignore logging failures so they do not affect the main request pipeline.
+        }
+        finally
+        {
+            _isLogging.Value = false;
         }
     }
 
@@ -73,6 +86,25 @@ public class EfCoreLogSink : ILogEventSink
         }
 
         return value.ToString();
+    }
+
+    private static bool ShouldSkipLogging()
+    {
+        if (_isLogging.Value)
+        {
+            return true;
+        }
+
+        var disableLogsValue = Environment.GetEnvironmentVariable("DISABLE_DB_LOGS");
+        if (string.IsNullOrWhiteSpace(disableLogsValue))
+        {
+            return false;
+        }
+
+        return disableLogsValue.Equals("1", StringComparison.OrdinalIgnoreCase)
+            || disableLogsValue.Equals("true", StringComparison.OrdinalIgnoreCase)
+            || disableLogsValue.Equals("yes", StringComparison.OrdinalIgnoreCase)
+            || disableLogsValue.Equals("on", StringComparison.OrdinalIgnoreCase);
     }
 }
 
