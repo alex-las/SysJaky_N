@@ -14,11 +14,13 @@ public class CreateModel : PageModel
 {
     private readonly ApplicationDbContext _context;
     private readonly IAuditService _auditService;
+    private readonly ICacheService _cacheService;
 
-    public CreateModel(ApplicationDbContext context, IAuditService auditService)
+    public CreateModel(ApplicationDbContext context, IAuditService auditService, ICacheService cacheService)
     {
         _context = context;
         _auditService = auditService;
+        _cacheService = cacheService;
     }
 
     [BindProperty]
@@ -41,6 +43,8 @@ public class CreateModel : PageModel
 
         _context.Courses.Add(Course);
         await _context.SaveChangesAsync();
+        _cacheService.RemoveCourseList();
+        _cacheService.RemoveCourseDetail(Course.Id);
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         await _auditService.LogAsync(userId, "CourseCreated", $"Course {Course.Id} created");
         return RedirectToPage("Index");

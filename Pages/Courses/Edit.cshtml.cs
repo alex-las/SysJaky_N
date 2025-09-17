@@ -15,11 +15,13 @@ public class EditModel : PageModel
 {
     private readonly ApplicationDbContext _context;
     private readonly IAuditService _auditService;
+    private readonly ICacheService _cacheService;
 
-    public EditModel(ApplicationDbContext context, IAuditService auditService)
+    public EditModel(ApplicationDbContext context, IAuditService auditService, ICacheService cacheService)
     {
         _context = context;
         _auditService = auditService;
+        _cacheService = cacheService;
     }
 
     [BindProperty]
@@ -52,6 +54,8 @@ public class EditModel : PageModel
         try
         {
             await _context.SaveChangesAsync();
+            _cacheService.RemoveCourseList();
+            _cacheService.RemoveCourseDetail(Course.Id);
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             await _auditService.LogAsync(userId, "CourseEdited", $"Course {Course.Id} edited");
         }

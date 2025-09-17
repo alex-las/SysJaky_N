@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SysJaky_N.Data;
 using SysJaky_N.Models;
+using SysJaky_N.Services;
 
 namespace SysJaky_N.Pages.Admin.CourseTerms;
 
@@ -16,10 +17,12 @@ namespace SysJaky_N.Pages.Admin.CourseTerms;
 public class CreateModel : PageModel
 {
     private readonly ApplicationDbContext _context;
+    private readonly ICacheService _cacheService;
 
-    public CreateModel(ApplicationDbContext context)
+    public CreateModel(ApplicationDbContext context, ICacheService cacheService)
     {
         _context = context;
+        _cacheService = cacheService;
         Input.StartUtc = DateTime.UtcNow.ToLocalTime();
         Input.EndUtc = Input.StartUtc.AddHours(1);
     }
@@ -67,6 +70,7 @@ public class CreateModel : PageModel
 
         _context.CourseTerms.Add(term);
         await _context.SaveChangesAsync();
+        _cacheService.RemoveCourseDetail(Input.CourseId);
 
         return RedirectToPage("Index");
     }

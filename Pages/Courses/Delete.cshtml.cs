@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using SysJaky_N.Data;
 using SysJaky_N.Models;
+using SysJaky_N.Services;
 
 namespace SysJaky_N.Pages.Courses;
 
@@ -11,10 +12,12 @@ namespace SysJaky_N.Pages.Courses;
 public class DeleteModel : PageModel
 {
     private readonly ApplicationDbContext _context;
+    private readonly ICacheService _cacheService;
 
-    public DeleteModel(ApplicationDbContext context)
+    public DeleteModel(ApplicationDbContext context, ICacheService cacheService)
     {
         _context = context;
+        _cacheService = cacheService;
     }
 
     [BindProperty]
@@ -41,6 +44,8 @@ public class DeleteModel : PageModel
 
         _context.Courses.Remove(course);
         await _context.SaveChangesAsync();
+        _cacheService.RemoveCourseList();
+        _cacheService.RemoveCourseDetail(id);
         return RedirectToPage("Index");
     }
 }

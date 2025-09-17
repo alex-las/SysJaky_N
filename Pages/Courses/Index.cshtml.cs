@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using SysJaky_N.Data;
 using SysJaky_N.Services;
 using SysJaky_N.Models;
@@ -12,11 +11,13 @@ public class IndexModel : PageModel
 {
     private readonly ApplicationDbContext _context;
     private readonly CartService _cartService;
+    private readonly ICacheService _cacheService;
 
-    public IndexModel(ApplicationDbContext context, CartService cartService)
+    public IndexModel(ApplicationDbContext context, CartService cartService, ICacheService cacheService)
     {
         _context = context;
         _cartService = cartService;
+        _cacheService = cacheService;
     }
 
     public IList<Course> Courses { get; set; } = new List<Course>();
@@ -38,26 +39,32 @@ public class IndexModel : PageModel
     {
         const int pageSize = 10;
         CourseGroups = new SelectList(_context.CourseGroups, "Id", "Name");
-        var query = _context.Courses
-            .Include(c => c.CourseGroup)
-            .AsQueryable();
+
+        var courses = await _cacheService.GetCoursesAsync();
+        var filtered = courses.AsEnumerable();
 
         if (CourseGroupId.HasValue)
         {
-            query = query.Where(c => c.CourseGroupId == CourseGroupId);
+            filtered = filtered.Where(c => c.CourseGroupId == CourseGroupId);
         }
 
         if (!string.IsNullOrWhiteSpace(SearchString))
         {
-            var pattern = $"%{SearchString.Trim()}%";
-            query = query.Where(c => EF.Functions.Like(c.Title, pattern));
+            var term = SearchString.Trim();
+            filtered = filtered.Where(c =>
+                c.Title?.Contains(term, StringComparison.InvariantCultureIgnoreCase) ?? false);
         }
 
-        query = query.OrderBy(c => c.Date);
+        var ordered = filtered
+            .OrderBy(c => c.Date)
+            .ThenBy(c => c.Id)
+            .ToList();
 
-        var count = await query.CountAsync();
-        TotalPages = (int)Math.Ceiling(count / (double)pageSize);
-        Courses = await query.Skip((PageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
+        TotalPages = (int)Math.Ceiling(ordered.Count / (double)pageSize);
+        Courses = ordered
+            .Skip((PageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToList();
     }
 
     public async Task<IActionResult> OnPostAddToCartAsync(int courseId)

@@ -15,12 +15,18 @@ public class DetailsModel : PageModel
     private readonly ApplicationDbContext _context;
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly CartService _cartService;
+    private readonly ICacheService _cacheService;
 
-    public DetailsModel(ApplicationDbContext context, UserManager<ApplicationUser> userManager, CartService cartService)
+    public DetailsModel(
+        ApplicationDbContext context,
+        UserManager<ApplicationUser> userManager,
+        CartService cartService,
+        ICacheService cacheService)
     {
         _context = context;
         _userManager = userManager;
         _cartService = cartService;
+        _cacheService = cacheService;
     }
 
     public Course Course { get; set; } = null!;
@@ -34,8 +40,7 @@ public class DetailsModel : PageModel
 
     public async Task<IActionResult> OnGetAsync(int id)
     {
-        Course? course = await _context.Courses
-            .FirstOrDefaultAsync(c => c.Id == id);
+        Course? course = await _cacheService.GetCourseAsync(id);
         if (course == null)
         {
             return NotFound();
@@ -103,7 +108,7 @@ public class DetailsModel : PageModel
     [Authorize]
     public async Task<IActionResult> OnPostReviewAsync(int id)
     {
-        Course? course = await _context.Courses.FindAsync(id);
+        Course? course = await _cacheService.GetCourseAsync(id);
         if (course == null)
         {
             return NotFound();
