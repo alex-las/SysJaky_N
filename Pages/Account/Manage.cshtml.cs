@@ -1,4 +1,3 @@
-using System;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -36,8 +35,6 @@ public class ManageModel : PageModel
     public List<Order> Orders { get; set; } = new();
     public List<Enrollment> Enrollments { get; private set; } = new();
     public string CalendarFeedUrl { get; private set; } = string.Empty;
-    public bool PersonalDataProcessingConsent { get; private set; }
-    public DateTime? PersonalDataConsentUpdatedAtUtc { get; private set; }
 
     public class InputModel
     {
@@ -48,9 +45,6 @@ public class ManageModel : PageModel
         public string? PhoneNumber { get; set; }
 
         public string? ReferenceCode { get; set; }
-
-        [Display(Name = "Chci dostávat marketingová sdělení e-mailem")]
-        public bool MarketingEmailsEnabled { get; set; }
     }
 
     public class RedeemTokenInputModel
@@ -92,13 +86,6 @@ public class ManageModel : PageModel
         user.UserName = Input.Email;
         user.PhoneNumber = Input.PhoneNumber;
 
-        var marketingChanged = user.MarketingEmailsEnabled != Input.MarketingEmailsEnabled;
-        user.MarketingEmailsEnabled = Input.MarketingEmailsEnabled;
-        if (marketingChanged)
-        {
-            user.MarketingConsentUpdatedAtUtc = DateTime.UtcNow;
-        }
-
         if (!string.IsNullOrWhiteSpace(Input.ReferenceCode))
         {
             var company = await _context.CompanyProfiles.FirstOrDefaultAsync(c => c.ReferenceCode == Input.ReferenceCode);
@@ -108,20 +95,8 @@ public class ManageModel : PageModel
             }
         }
 
-        var updateResult = await _userManager.UpdateAsync(user);
-        if (!updateResult.Succeeded)
-        {
-            foreach (var error in updateResult.Errors)
-            {
-                ModelState.AddModelError(string.Empty, error.Description);
-            }
-
-            await LoadPageDataAsync(user, resetInput: false, resetRedeemInput: true);
-            return Page();
-        }
+        await _userManager.UpdateAsync(user);
         await _signInManager.RefreshSignInAsync(user);
-
-        StatusMessage = "Změny byly uloženy.";
 
         return RedirectToPage();
     }
@@ -228,30 +203,6 @@ public class ManageModel : PageModel
         return RedirectToPage();
     }
 
-    public async Task<IActionResult> OnPostDeleteAccountAsync()
-    {
-        var user = await _userManager.GetUserAsync(User);
-        if (user == null)
-        {
-            return NotFound();
-        }
-
-        var result = await _userManager.DeleteAsync(user);
-        if (!result.Succeeded)
-        {
-            foreach (var error in result.Errors)
-            {
-                ModelState.AddModelError(string.Empty, error.Description);
-            }
-
-            await LoadPageDataAsync(user, resetInput: true, resetRedeemInput: true);
-            return Page();
-        }
-
-        await _signInManager.SignOutAsync();
-        return RedirectToPage("/Index");
-    }
-
     private async Task LoadPageDataAsync(ApplicationUser user, bool resetInput, bool resetRedeemInput)
     {
         Company = await _context.CompanyProfiles.FirstOrDefaultAsync(c => c.Id == user.CompanyProfileId);
@@ -262,13 +213,9 @@ public class ManageModel : PageModel
             {
                 Email = user.Email,
                 PhoneNumber = user.PhoneNumber,
-                ReferenceCode = Company?.ReferenceCode,
-                MarketingEmailsEnabled = user.MarketingEmailsEnabled
+                ReferenceCode = Company?.ReferenceCode
             };
         }
-
-        PersonalDataProcessingConsent = user.PersonalDataProcessingConsent;
-        PersonalDataConsentUpdatedAtUtc = user.PersonalDataProcessingConsentUpdatedAtUtc;
 
         Orders = await _context.Orders
             .Where(o => o.UserId == user.Id)

@@ -1,5 +1,3 @@
-using System;
-using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -66,11 +64,9 @@ public class CourseReminderService : BackgroundService
                 .ToListAsync(token);
 
             var recipients = orders
-                .Where(o => o.User is { MarketingEmailsEnabled: true })
-                .Select(o => o.User)
-                .Where(user => user != null && !string.IsNullOrWhiteSpace(user.Email))
-                .Select(user => user!.Email!)
-                .Distinct(StringComparer.OrdinalIgnoreCase);
+                .Select(o => o.User?.Email)
+                .Where(e => !string.IsNullOrWhiteSpace(e))
+                .Distinct();
 
             var model = new CourseReminderEmailModel(course.Title, course.Date, course.Type, course.ReminderMessage);
 

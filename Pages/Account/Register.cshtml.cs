@@ -1,4 +1,3 @@
-using System;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -45,13 +44,6 @@ public class RegisterModel : PageModel
 
         [Display(Name = "Referral code")]
         public string? ReferralCode { get; set; }
-
-        [Display(Name = "Souhlasím se zpracováním osobních údajů")]
-        [Range(typeof(bool), "true", "true", ErrorMessage = "Pro registraci je nutné udělit souhlas se zpracováním osobních údajů.")]
-        public bool AcceptsDataProcessing { get; set; }
-
-        [Display(Name = "Chci dostávat marketingová sdělení e-mailem")]
-        public bool MarketingEmailsEnabled { get; set; } = true;
     }
 
     public void OnGet()
@@ -81,23 +73,7 @@ public class RegisterModel : PageModel
             Input.ReferralCode = referralCode;
         }
 
-        if (!Input.AcceptsDataProcessing)
-        {
-            ModelState.AddModelError(nameof(Input.AcceptsDataProcessing), "Pro registraci je nutné souhlasit se zpracováním osobních údajů.");
-            return Page();
-        }
-
-        var now = DateTime.UtcNow;
-
-        var user = new ApplicationUser
-        {
-            UserName = Input.Email,
-            Email = Input.Email,
-            PersonalDataProcessingConsent = true,
-            PersonalDataProcessingConsentUpdatedAtUtc = now,
-            MarketingEmailsEnabled = Input.MarketingEmailsEnabled,
-            MarketingConsentUpdatedAtUtc = now
-        };
+        var user = new ApplicationUser { UserName = Input.Email, Email = Input.Email };
         var result = await _userManager.CreateAsync(user, Input.Password);
         if (result.Succeeded)
         {

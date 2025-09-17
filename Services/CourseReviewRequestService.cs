@@ -107,11 +107,6 @@ public class CourseReviewRequestService : BackgroundService
 
             foreach (var enrollment in enrollments)
             {
-                if (enrollment.User?.MarketingEmailsEnabled != true)
-                {
-                    continue;
-                }
-
                 var email = enrollment.User?.Email;
                 if (string.IsNullOrWhiteSpace(email))
                 {

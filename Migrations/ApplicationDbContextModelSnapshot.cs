@@ -169,12 +169,6 @@ namespace SysJaky_N.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<DateTime?>("MarketingConsentUpdatedAtUtc")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<bool>("MarketingEmailsEnabled")
-                        .HasColumnType("tinyint(1)");
-
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("tinyint(1)");
 
@@ -197,12 +191,6 @@ namespace SysJaky_N.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("tinyint(1)");
-
-                    b.Property<bool>("PersonalDataProcessingConsent")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<DateTime?>("PersonalDataProcessingConsentUpdatedAtUtc")
-                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("longtext");
