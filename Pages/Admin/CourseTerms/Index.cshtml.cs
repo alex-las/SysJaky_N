@@ -14,6 +14,7 @@ using Microsoft.EntityFrameworkCore;
 using OfficeOpenXml;
 using SysJaky_N.Data;
 using SysJaky_N.Models;
+using SysJaky_N.Services;
 
 namespace SysJaky_N.Pages.Admin.CourseTerms;
 
@@ -21,10 +22,12 @@ namespace SysJaky_N.Pages.Admin.CourseTerms;
 public class IndexModel : PageModel
 {
     private readonly ApplicationDbContext _context;
+    private readonly ICacheService _cacheService;
 
-    public IndexModel(ApplicationDbContext context)
+    public IndexModel(ApplicationDbContext context, ICacheService cacheService)
     {
         _context = context;
+        _cacheService = cacheService;
     }
 
     public IList<CourseTerm> Terms { get; private set; } = new List<CourseTerm>();
@@ -345,10 +348,12 @@ public class IndexModel : PageModel
 
         var created = 0;
         var updated = 0;
+        var affectedCourseIds = new HashSet<int>();
 
         foreach (var row in parsedRows)
         {
             CourseTerm term;
+            int? previousCourseId = null;
             if (row.Id.HasValue)
             {
                 term = termsToUpdate[row.Id.Value];
@@ -358,6 +363,7 @@ public class IndexModel : PageModel
                     continue;
                 }
 
+                previousCourseId = term.CourseId;
                 updated++;
             }
             else
@@ -381,6 +387,12 @@ public class IndexModel : PageModel
             }
 
             term.InstructorId = row.InstructorId;
+
+            affectedCourseIds.Add(term.CourseId);
+            if (previousCourseId.HasValue && previousCourseId.Value != term.CourseId)
+            {
+                affectedCourseIds.Add(previousCourseId.Value);
+            }
         }
 
         if (!ModelState.IsValid)
@@ -391,6 +403,12 @@ public class IndexModel : PageModel
         }
 
         await _context.SaveChangesAsync();
+
+        _cacheService.InvalidateCourseList();
+        foreach (var courseId in affectedCourseIds)
+        {
+            _cacheService.InvalidateCourseDetail(courseId);
+        }
 
         StatusMessage = $"Imported {created} new term(s) and updated {updated} existing term(s).";
         return RedirectToPage(new { CourseId, OnlyActive });

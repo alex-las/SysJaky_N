@@ -19,12 +19,18 @@ public class EditModel : PageModel
     private readonly ApplicationDbContext _context;
     private readonly IAuditService _auditService;
     private readonly ICourseMediaStorage _courseMediaStorage;
+    private readonly ICacheService _cacheService;
 
-    public EditModel(ApplicationDbContext context, IAuditService auditService, ICourseMediaStorage courseMediaStorage)
+    public EditModel(
+        ApplicationDbContext context,
+        IAuditService auditService,
+        ICourseMediaStorage courseMediaStorage,
+        ICacheService cacheService)
     {
         _context = context;
         _auditService = auditService;
         _courseMediaStorage = courseMediaStorage;
+        _cacheService = cacheService;
     }
 
     [BindProperty]
@@ -101,6 +107,8 @@ public class EditModel : PageModel
             }
 
             await _context.SaveChangesAsync();
+            _cacheService.InvalidateCourseList();
+            _cacheService.InvalidateCourseDetail(courseToUpdate.Id);
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             await _auditService.LogAsync(userId, "CourseEdited", $"Course {Course.Id} edited");
         }

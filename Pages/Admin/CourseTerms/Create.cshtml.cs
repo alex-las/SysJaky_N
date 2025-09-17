@@ -21,12 +21,18 @@ public class CreateModel : PageModel
     private readonly ApplicationDbContext _context;
     private readonly IEmailSender _emailSender;
     private readonly ILogger<CreateModel> _logger;
+    private readonly ICacheService _cacheService;
 
-    public CreateModel(ApplicationDbContext context, IEmailSender emailSender, ILogger<CreateModel> logger)
+    public CreateModel(
+        ApplicationDbContext context,
+        IEmailSender emailSender,
+        ILogger<CreateModel> logger,
+        ICacheService cacheService)
     {
         _context = context;
         _emailSender = emailSender;
         _logger = logger;
+        _cacheService = cacheService;
         Input.StartUtc = DateTime.UtcNow.ToLocalTime();
         Input.EndUtc = Input.StartUtc.AddHours(1);
     }
@@ -84,6 +90,9 @@ public class CreateModel : PageModel
 
         _context.CourseTerms.Add(term);
         await _context.SaveChangesAsync();
+
+        _cacheService.InvalidateCourseList();
+        _cacheService.InvalidateCourseDetail(term.CourseId);
 
         await NotifyWishlistUsersAsync(term, course);
 
