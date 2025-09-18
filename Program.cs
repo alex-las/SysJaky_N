@@ -13,6 +13,7 @@ using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
 using Serilog;
+using Serilog.Events;
 using SysJaky_N.Logging;
 using SysJaky_N.Middleware;
 using RazorLight;
@@ -20,6 +21,7 @@ using Microsoft.Extensions.Hosting;
 using System.IO;
 using System.Security.Claims;
 using OfficeOpenXml;
+using Microsoft.Extensions.Logging.Abstractions; // kvùli NullLoggerFactory
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
@@ -36,30 +38,52 @@ try
         builder.Configuration.AddUserSecrets<Program>(optional: true);
     }
 
-    builder.Host.UseSerilog((context, services, configuration) =>
-    {
-        configuration
-            .ReadFrom.Configuration(context.Configuration)
-            .ReadFrom.Services(services)
-            .Enrich.FromLogContext()
-            .WriteTo.File(
-                path: "Logs/application-.log",
-                rollingInterval: RollingInterval.Day,
-                retainedFileCountLimit: 14,
-                shared: true)
-            .WriteTo.Sink(new EfCoreLogSink(services.GetRequiredService<IServiceScopeFactory>()));
-    });
-
-    // Add services to the container.
+    // --- Connection string ---
     var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
     if (string.IsNullOrWhiteSpace(connectionString))
     {
         throw new InvalidOperationException(
             "Connection string 'DefaultConnection' not found. Configure it using secrets or KeyVault.");
     }
+
+    // --- Hlavní app DB context ---
     builder.Services.AddDbContext<ApplicationDbContext>(options =>
         options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 36))));
 
+    // --- Tichý LoggingDbContext pro DB sink (žádné EF logy) ---
+    builder.Services.AddPooledDbContextFactory<LoggingDbContext>(opt =>
+    {
+        opt.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 36)));
+        opt.UseLoggerFactory(NullLoggerFactory.Instance); // vypne EF logování z tohoto contextu
+        opt.EnableDetailedErrors(false).EnableSensitiveDataLogging(false);
+    });
+
+    // --- Serilog s možností vypnout DB sink pøes DISABLE_DB_LOGS=1 ---
+    builder.Host.UseSerilog((context, services, configuration) =>
+    {
+        var disableDbSink = Environment.GetEnvironmentVariable("DISABLE_DB_LOGS") == "1";
+
+        configuration
+            .ReadFrom.Configuration(context.Configuration)
+            .ReadFrom.Services(services)
+            .MinimumLevel.Information()
+            .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+            .MinimumLevel.Override("Microsoft.EntityFrameworkCore", LogEventLevel.Warning)
+            .Enrich.FromLogContext()
+            .WriteTo.Console()
+            .WriteTo.File(
+                path: "Logs/application-.log",
+                rollingInterval: RollingInterval.Day,
+                retainedFileCountLimit: 14,
+                shared: true)
+            // DB sink jen pokud není zakázaný env promìnnou
+            .WriteTo.Conditional(_ => !disableDbSink,
+                wt => wt.Sink(new EfCoreLogSink(
+                    services.GetRequiredService<IDbContextFactory<LoggingDbContext>>()
+                )));
+    });
+
+    // Add services to the container.
     builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
         .AddEntityFrameworkStores<ApplicationDbContext>()
         .AddDefaultTokenProviders();
@@ -115,7 +139,6 @@ try
     builder.Services.AddHostedService<CourseReviewRequestService>();
     builder.Services.Configure<WaitlistOptions>(builder.Configuration.GetSection("Waitlist"));
     builder.Services.AddSingleton<WaitlistTokenService>();
-    builder.Services.AddHostedService<WaitlistNotificationService>();
     builder.Services.AddMemoryCache();
     builder.Services.AddSingleton<ICacheService, CacheService>();
     builder.Services.Configure<AltchaOptions>(builder.Configuration.GetSection("Altcha"));
@@ -174,6 +197,7 @@ try
 
     var app = builder.Build();
 
+    // DB migrate + seed (bez rekurze – sink používá tichý LoggingDbContext)
     using (var scope = app.Services.CreateScope())
     {
         var services = scope.ServiceProvider;

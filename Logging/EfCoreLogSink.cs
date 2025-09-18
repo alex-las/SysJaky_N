@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Threading;
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.EntityFrameworkCore;
 using Serilog.Core;
 using Serilog.Events;
 using SysJaky_N.Data;
@@ -11,29 +11,23 @@ using SysJaky_N.Models;
 
 namespace SysJaky_N.Logging;
 
-public class EfCoreLogSink : ILogEventSink
+internal sealed class EfCoreLogSink : ILogEventSink
 {
     private readonly IServiceScopeFactory _scopeFactory;
-    private static readonly AsyncLocal<bool> _isLogging = new();
 
-    public EfCoreLogSink(IServiceScopeFactory scopeFactory)
-    {
-        _scopeFactory = scopeFactory;
-    }
+    private readonly IDbContextFactory<LoggingDbContext> _ctxFactory;
+
+    internal EfCoreLogSink(IDbContextFactory<LoggingDbContext> ctxFactory)
+        => _ctxFactory = ctxFactory;
 
     public void Emit(LogEvent logEvent)
     {
-        if (ShouldSkipLogging())
-        {
-            return;
-        }
-
         try
         {
-            _isLogging.Value = true;
-
             using var scope = _scopeFactory.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+            using var ctx = _ctxFactory.CreateDbContext();
 
             var entry = new LogEntry
             {
@@ -43,15 +37,19 @@ public class EfCoreLogSink : ILogEventSink
                 Exception = logEvent.Exception?.ToString(),
                 Properties = SerializeProperties(logEvent.Properties),
                 CorrelationId = ExtractScalarValue(logEvent.Properties, "CorrelationId"),
-                SourceContext = ExtractScalarValue(logEvent.Properties, "SourceContext")
+                SourceContext = src
             };
 
-            context.LogEntries.Add(entry);
-            context.SaveChanges();
+            ctx.LogEntries.Add(entry);
+            ctx.SaveChanges();
         }
         catch
         {
-            // Ignore logging failures so they do not affect the main request pipeline.
+            // Schltnout – logování nesmí nikdy shodit appku
+        }
+        finally
+        {
+            _isWriting.Value = false;
         }
         finally
         {
@@ -61,31 +59,15 @@ public class EfCoreLogSink : ILogEventSink
 
     private static string? SerializeProperties(IReadOnlyDictionary<string, LogEventPropertyValue> properties)
     {
-        if (properties.Count == 0)
-        {
-            return null;
-        }
-
-        var serialized = properties.ToDictionary(
-            p => p.Key,
-            p => p.Value.ToString());
-
-        return JsonSerializer.Serialize(serialized);
+        if (properties.Count == 0) return null;
+        var dict = properties.ToDictionary(p => p.Key, p => p.Value.ToString());
+        return JsonSerializer.Serialize(dict);
     }
 
     private static string? ExtractScalarValue(IReadOnlyDictionary<string, LogEventPropertyValue> properties, string key)
     {
-        if (!properties.TryGetValue(key, out var value))
-        {
-            return null;
-        }
-
-        if (value is ScalarValue scalar)
-        {
-            return scalar.Value?.ToString();
-        }
-
-        return value.ToString();
+        if (!properties.TryGetValue(key, out var value)) return null;
+        return value is ScalarValue s ? s.Value?.ToString() : value.ToString();
     }
 
     private static bool ShouldSkipLogging()
@@ -107,4 +89,3 @@ public class EfCoreLogSink : ILogEventSink
             || disableLogsValue.Equals("on", StringComparison.OrdinalIgnoreCase);
     }
 }
-
