@@ -1,9 +1,11 @@
 @page "{id:int}"
+@using Microsoft.AspNetCore.Mvc.Localization
 @model SysJaky_N.Pages.CourseTerms.DetailsModel
 @using System.Globalization
+@inject IViewLocalizer Localizer
 
 @{
-    ViewData["Title"] = "Detail termínu";
+    ViewData["Title"] = Localizer["Title"];
     var startLocal = Model.Term.StartUtc.ToLocalTime();
     var endLocal = Model.Term.EndUtc.ToLocalTime();
     var seatsAvailable = Model.Term.Capacity - Model.Term.SeatsTaken;
@@ -14,23 +16,23 @@
 <h1>@Model.CourseTitle</h1>
 
 <section class="mb-4">
-    <h2 class="h4">Detail termínu</h2>
+    <h2 class="h4">@Localizer["Heading"]</h2>
     <dl class="row">
-        <dt class="col-sm-3">Začátek</dt>
+        <dt class="col-sm-3">@Localizer["Start"]</dt>
         <dd class="col-sm-9">@startLocal.ToString("f", CultureInfo.CurrentCulture)</dd>
-        <dt class="col-sm-3">Konec</dt>
+        <dt class="col-sm-3">@Localizer["End"]</dt>
         <dd class="col-sm-9">@endLocal.ToString("f", CultureInfo.CurrentCulture)</dd>
-        <dt class="col-sm-3">Kapacita</dt>
+        <dt class="col-sm-3">@Localizer["Capacity"]</dt>
         <dd class="col-sm-9">@Model.Term.Capacity</dd>
-        <dt class="col-sm-3">Obsazeno</dt>
+        <dt class="col-sm-3">@Localizer["Taken"]</dt>
         <dd class="col-sm-9">@Model.Term.SeatsTaken</dd>
-        <dt class="col-sm-3">Volná místa</dt>
+        <dt class="col-sm-3">@Localizer["Available"]</dt>
         <dd class="col-sm-9">@Math.Max(0, seatsAvailable)</dd>
-        <dt class="col-sm-3">Stav</dt>
-        <dd class="col-sm-9">@(Model.Term.IsActive ? "Aktivní" : "Neaktivní")</dd>
+        <dt class="col-sm-3">@Localizer["Status"]</dt>
+        <dd class="col-sm-9">@(Model.Term.IsActive ? Localizer["StatusActive"] : Localizer["StatusInactive"])</dd>
         @if (instructor != null)
         {
-            <dt class="col-sm-3">Lektor</dt>
+            <dt class="col-sm-3">@Localizer["Instructor"]</dt>
             <dd class="col-sm-9">@instructor.FullName</dd>
         }
     </dl>
@@ -39,12 +41,12 @@
 @if (!string.IsNullOrWhiteSpace(course?.Description))
 {
     <section class="mb-4">
-        <h2 class="h4">O kurzu</h2>
+        <h2 class="h4">@Localizer["AboutCourse"]</h2>
         <p>@course.Description</p>
     </section>
 }
 
 <section class="d-flex flex-column flex-sm-row gap-2">
-    <a class="btn btn-primary" href="/Courses/Details/@Model.Term.CourseId">Detail kurzu</a>
-    <a class="btn btn-outline-secondary" href="/CourseTerms/ICS/@Model.Term.Id">Přidat do kalendáře</a>
+    <a class="btn btn-primary" href="/Courses/Details/@Model.Term.CourseId">@Localizer["CourseDetailCta"]</a>
+    <a class="btn btn-outline-secondary" href="/CourseTerms/ICS/@Model.Term.Id">@Localizer["AddToCalendar"]</a>
 </section>

@@ -39,4 +39,10 @@
   <data name="Next" xml:space="preserve">
     <value>Next</value>
   </data>
+  <data name="CompareBarCountFormat" xml:space="preserve">
+    <value>{0} selected</value>
+  </data>
+  <data name="CompareBarCta" xml:space="preserve">
+    <value>Compare</value>
+  </data>
 </root>
