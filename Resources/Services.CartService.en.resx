@@ -12,13 +12,16 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Empty" xml:space="preserve">
-    <value>Your cart is empty.</value>
+  <data name="QuantityGreaterThanZero" xml:space="preserve">
+    <value>Quantity must be greater than zero.</value>
   </data>
-  <data name="InvalidVoucher" xml:space="preserve">
-    <value>Invalid voucher code.</value>
+  <data name="CourseUnavailable" xml:space="preserve">
+    <value>Selected course is no longer available.</value>
   </data>
-  <data name="RemovedUnavailableItems" xml:space="preserve">
-    <value>Some items were removed from your cart because they are no longer available.</value>
+  <data name="OnlySeatsRemain" xml:space="preserve">
+    <value>Only {0} seats remain for this course.</value>
+  </data>
+  <data name="CourseFullyBooked" xml:space="preserve">
+    <value>This course is fully booked.</value>
   </data>
 </root>

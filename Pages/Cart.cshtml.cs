@@ -397,7 +397,7 @@ public class CartModel : PageModel
         if (removed)
         {
             _cartService.SetItems(HttpContext.Session, cart);
-            ErrorMessage = "Some items were removed from your cart because they are no longer available.";
+            ErrorMessage = _localizer["RemovedUnavailableItems"].Value;
         }
 
         var bundleIds = HttpContext.Session.GetObject<List<int>>("Bundles") ?? new List<int>();
