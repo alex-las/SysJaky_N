@@ -1,7 +1,7 @@
 @page
 @model SysJaky_N.Pages.Account.ManageModel
 
-<h1>Profile</h1>
+<h1>Přehled &amp; profil</h1>
 
 @if (!string.IsNullOrEmpty(Model.StatusMessage))
 {
@@ -25,7 +25,45 @@
       <button type="submit">Save</button>
   </form>
 
-<section>
+<section id="upcoming-courses">
+    <h2>Nadcházející kurzy</h2>
+
+    @if (Model.UpcomingItems.Any())
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Datum</th>
+                    <th>Název</th>
+                    <th>Stav</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var item in Model.UpcomingItems)
+            {
+                <tr>
+                    <td>@item.Course?.Date.ToString("d")</td>
+                    <td>@item.Course?.Title</td>
+                    <td>@item.Order?.Status</td>
+                    <td>
+                        @if (item.Order?.Status == OrderStatus.Paid)
+                        {
+                            <a class="btn btn-outline-secondary btn-sm" asp-page="/Orders/Details" asp-page-handler="DownloadInvoice" asp-route-id="@item.Order.Id">Stáhnout fakturu</a>
+                        }
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>Nemáte žádné nadcházející kurzy.</p>
+    }
+</section>
+
+<section id="redeem-token">
     <h2>Redeem seat token</h2>
     <form method="post" asp-page-handler="RedeemToken">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -38,7 +76,7 @@
     </form>
 </section>
 
-<section>
+<section id="enrollments">
     <h2>Moje kurzy</h2>
     <p>
         <strong>iCal feed:</strong>
@@ -88,6 +126,48 @@
   {
       <p>Firma: @Model.Company.Name</p>
   }
+
+<section id="wishlist">
+    <h2>Wishlist</h2>
+
+    @if (Model.WishlistItems.Any())
+    {
+        <ul>
+        @foreach (var item in Model.WishlistItems)
+        {
+            <li>@item.Course?.Title</li>
+        }
+        </ul>
+    }
+    else
+    {
+        <p>Wishlist je prázdný.</p>
+    }
+</section>
+
+@if (Model.CompanyWishlistItems.Any())
+{
+    <section id="company-wishlist">
+        <h2>Wishlist uživatelů firmy</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Uživatel</th>
+                    <th>Kurz</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var item in Model.CompanyWishlistItems)
+            {
+                <tr>
+                    <td>@item.User?.Email</td>
+                    <td>@item.Course?.Title</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </section>
+}
 
 @if (Model.Orders.Any())
 {

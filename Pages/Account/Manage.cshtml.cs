@@ -34,6 +34,9 @@ public class ManageModel : PageModel
 
     public List<Order> Orders { get; set; } = new();
     public List<Enrollment> Enrollments { get; private set; } = new();
+    public List<OrderItem> UpcomingItems { get; private set; } = new();
+    public List<WishlistItem> WishlistItems { get; private set; } = new();
+    public List<WishlistItem> CompanyWishlistItems { get; private set; } = new();
     public string CalendarFeedUrl { get; private set; } = string.Empty;
 
     public class InputModel
@@ -233,6 +236,30 @@ public class ManageModel : PageModel
             .Where(e => e.CourseTerm != null && e.CourseTerm.Course != null)
             .OrderBy(e => e.CourseTerm?.StartUtc ?? DateTime.MaxValue)
             .ToList();
+
+        UpcomingItems = await _context.OrderItems
+            .Include(oi => oi.Order)
+            .Include(oi => oi.Course)
+            .Where(oi => oi.Order != null
+                && oi.Order.UserId == user.Id
+                && oi.Course != null
+                && oi.Course.Date >= DateTime.Today)
+            .OrderBy(oi => oi.Course != null ? oi.Course.Date : DateTime.MaxValue)
+            .ToListAsync();
+
+        WishlistItems = await _context.WishlistItems
+            .Include(w => w.Course)
+            .Where(w => w.UserId == user.Id)
+            .OrderBy(w => w.Course != null ? w.Course.Title : string.Empty)
+            .ToListAsync();
+
+        CompanyWishlistItems = await _context.WishlistItems
+            .Include(w => w.Course)
+            .Include(w => w.User)
+            .Where(w => w.User.CompanyProfile != null && w.User.CompanyProfile.ManagerId == user.Id)
+            .OrderBy(w => w.User != null ? w.User.Email : string.Empty)
+            .ThenBy(w => w.Course != null ? w.Course.Title : string.Empty)
+            .ToListAsync();
 
         var host = Request.Host.HasValue ? Request.Host.Value : "localhost";
         var pathBase = Request.PathBase.HasValue ? Request.PathBase.Value : string.Empty;
