@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SysJaky_N.Data;
 using SysJaky_N.Models;
@@ -162,7 +163,22 @@ try
     builder.Services.AddHostedService<CourseReminderService>();
     builder.Services.AddHostedService<SalesStatsService>();
     builder.Services.AddHostedService<CourseReviewRequestService>();
-    builder.Services.Configure<WaitlistOptions>(builder.Configuration.GetSection("Waitlist"));
+    builder.Services.AddHostedService<WaitlistNotificationService>();
+    var waitlistSection = builder.Configuration.GetSection("Waitlist");
+    if (!waitlistSection.Exists())
+    {
+        throw new InvalidOperationException(
+            "Konfigurace 'Waitlist' nebyla nalezena. Nastavte Waitlist:PublicBaseUrl a Waitlist:ClaimPath v appsettings nebo uschovaných tajemstvích.");
+    }
+
+    var waitlistOptions = waitlistSection.Get<WaitlistOptions>();
+    if (waitlistOptions is null || string.IsNullOrWhiteSpace(waitlistOptions.PublicBaseUrl))
+    {
+        throw new InvalidOperationException(
+            "Konfigurace čekací listiny musí obsahovat platnou hodnotu Waitlist:PublicBaseUrl.");
+    }
+
+    builder.Services.Configure<WaitlistOptions>(waitlistSection);
     builder.Services.AddSingleton<WaitlistTokenService>();
     builder.Services.AddMemoryCache();
     builder.Services.AddSingleton<ICacheService, CacheService>();

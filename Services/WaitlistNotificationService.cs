@@ -43,10 +43,17 @@ public class WaitlistNotificationService : BackgroundService
         _claimPath = NormalizePath(opts.ClaimPath);
         var intervalSeconds = opts.PollIntervalSeconds > 0 ? opts.PollIntervalSeconds : 60;
         _pollInterval = TimeSpan.FromSeconds(intervalSeconds);
+
+        _logger.LogInformation(
+            "Služba waitlistu nakonfigurována. BaseUrl={BaseUrl}, ClaimPath={ClaimPath}, Interval={IntervalSeconds}s",
+            _baseUri,
+            _claimPath,
+            intervalSeconds);
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
+        _logger.LogInformation("Spouštím službu waitlistu pro sledování termínů.");
         while (!stoppingToken.IsCancellationRequested)
         {
             try
@@ -94,6 +101,8 @@ public class WaitlistNotificationService : BackgroundService
             })
             .ToListAsync(stoppingToken);
 
+        _logger.LogDebug("Zpracovávám {TermCount} aktivních termínů.", terms.Count);
+
         foreach (var term in terms)
         {
             _lastKnownSeats.TryGetValue(term.Id, out var lastSeats);
@@ -126,6 +135,7 @@ public class WaitlistNotificationService : BackgroundService
             var expiration = now.Add(_tokenLifetime);
             var updated = false;
             var courseTitle = string.IsNullOrWhiteSpace(term.CourseTitle) ? $"Termín #{term.Id}" : term.CourseTitle;
+            var notificationsSent = 0;
 
             foreach (var entry in candidates)
             {
@@ -156,6 +166,12 @@ public class WaitlistNotificationService : BackgroundService
                     entry.ReservationExpiresAtUtc = expiration;
                     entry.ReservationConsumed = false;
                     updated = true;
+                    notificationsSent++;
+                    _logger.LogInformation(
+                        "Odeslán e-mail s upozorněním na uvolněné místo pro kurz {CourseTitle} (termín {TermId}) uživateli {Email}.",
+                        courseTitle,
+                        term.Id,
+                        email);
                 }
                 catch (Exception ex)
                 {
@@ -166,6 +182,11 @@ public class WaitlistNotificationService : BackgroundService
             if (updated)
             {
                 await context.SaveChangesAsync(stoppingToken);
+                _logger.LogInformation(
+                    "Aktualizovány záznamy čekací listiny pro termín {TermId}. Rozesláno {Count} upozornění, expirace {ExpirationUtc}.",
+                    term.Id,
+                    notificationsSent,
+                    expiration);
             }
         }
     }
