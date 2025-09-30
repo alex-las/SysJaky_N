@@ -28,12 +28,12 @@
     }
 }
 
-<h1>@Model.Course.Title</h1>
+<h1 class="mb-3">@Model.Course.Title</h1>
 
 @if (!string.IsNullOrEmpty(Model.Course.CoverImageUrl))
 {
     <figure class="mb-4">
-        <img src="@Model.Course.CoverImageUrl" alt="Obálka kurzu @Model.Course.Title" class="img-fluid rounded" />
+        <img src="@Model.Course.CoverImageUrl" alt="Obrázek kurzu @Model.Course.Title" class="img-fluid rounded" loading="lazy" decoding="async" />
     </figure>
 }
 
@@ -42,125 +42,165 @@
     <div class="alert alert-danger" role="alert">@cartError</div>
 }
 
-<p>@Model.Course.Description</p>
-<p>Price: @Model.Course.Price.ToString("C")</p>
-<p>Date: @Model.Course.Date.ToShortDateString()</p>
-<p><a href="/Courses/ICS/@Model.Course.Id">Přidat do kalendáře</a></p>
+<div class="row g-4">
+    <div class="col-lg-8">
+        @if (!string.IsNullOrWhiteSpace(Model.Course.Description))
+        {
+            <section class="mb-4">
+                <h2 class="h5">O kurzu</h2>
+                <p>@Model.Course.Description</p>
+            </section>
+        }
 
-@if (Model.CourseBlock != null)
-{
-    <h2>Part of block: @Model.CourseBlock.Title</h2>
-    <p>@Model.CourseBlock.Description</p>
-    <p>Block price: @Model.CourseBlock.Price</p>
-    <form method="post" asp-page-handler="OrderBlock">
-        <input type="hidden" name="blockId" value="@Model.CourseBlock.Id" />
-        <button type="submit" class="btn btn-secondary">Order entire block</button>
-    </form>
-}
+        <section class="mb-4">
+            <h2 class="h5">Detaily</h2>
+            <ul class="list-unstyled small">
+                <li><i class="bi bi-calendar2"></i> Termín: @Model.Course.Date.ToString("d")</li>
+                <li><i class="bi bi-clock"></i> Délka: @Model.Course.Duration min</li>
+                <li><i class="bi bi-bar-chart"></i> Úroveň: @Model.Course.Level</li>
+                <li><i class="bi bi-laptop"></i> Forma: @Model.Course.Mode</li>
+            </ul>
+        </section>
 
-<form method="post">
-    <button type="submit" class="btn btn-primary" aria-label="Add @Model.Course.Title to cart">Add to cart</button>
-</form>
+        @if (Model.CourseBlock != null)
+        {
+            <section class="mb-4">
+                <h2 class="h5">Součást vzdělávacího bloku</h2>
+                <p class="mb-2">@Model.CourseBlock.Description</p>
+                <dl class="row small mb-3">
+                    <dt class="col-sm-4">Název bloku</dt>
+                    <dd class="col-sm-8">@Model.CourseBlock.Title</dd>
+                    <dt class="col-sm-4">Cena bloku</dt>
+                    <dd class="col-sm-8">@Model.CourseBlock.Price.ToString("C")</dd>
+                </dl>
+                <form method="post" asp-page-handler="OrderBlock" class="d-inline">
+                    <input type="hidden" name="blockId" value="@Model.CourseBlock.Id" />
+                    <button type="submit" class="btn btn-outline-primary btn-sm">Objednat celý blok</button>
+                </form>
+            </section>
+        }
 
-@if (User.Identity?.IsAuthenticated ?? false)
-{
-    <form method="post" asp-page-handler="AddToWishlist">
-        <button type="submit" class="btn btn-outline-secondary">Přidat do wishlistu</button>
-    </form>
-}
-
-<section class="mt-4">
-    <h2>Lekce</h2>
-    @if (Model.Lessons.Any())
-    {
-        <div class="list-group">
-            @foreach (var lesson in Model.Lessons)
+        <section class="mt-4">
+            <h2 class="h5">Lekce</h2>
+            @if (Model.Lessons.Any())
             {
-                Model.ProgressByLessonId.TryGetValue(lesson.Id, out var progressInfo);
-                var completion = progressInfo?.Progress ?? 0;
-                <div class="list-group-item">
-                    <div class="d-flex flex-column gap-2">
-                        <div class="d-flex justify-content-between flex-wrap gap-3">
-                            <div>
-                                <div class="fw-semibold">Lekce pořadí: @lesson.Order</div>
-                                <div class="text-muted">Typ: @lesson.Type</div>
-                                @if (!string.IsNullOrWhiteSpace(lesson.ContentUrl))
+                <div class="list-group">
+                    @foreach (var lesson in Model.Lessons)
+                    {
+                        Model.ProgressByLessonId.TryGetValue(lesson.Id, out var progressInfo);
+                        var completion = progressInfo?.Progress ?? 0;
+                        <div class="list-group-item">
+                            <div class="d-flex flex-column gap-2">
+                                <div class="d-flex justify-content-between flex-wrap gap-3">
+                                    <div>
+                                        <div class="fw-semibold">Lekce pořadí: @lesson.Order</div>
+                                        <div class="text-muted">Typ: @lesson.Type</div>
+                                        @if (!string.IsNullOrWhiteSpace(lesson.ContentUrl))
+                                        {
+                                            <a class="link-primary" href="@lesson.ContentUrl" target="_blank" rel="noopener">Otevřít obsah</a>
+                                        }
+                                    </div>
+                                    <div class="text-end">
+                                        <div class="fw-semibold">@completion&nbsp;% dokončeno</div>
+                                        @if (progressInfo is not null)
+                                        {
+                                            <div class="text-muted small">Naposledy @(progressInfo.LastSeenUtc.ToLocalTime().ToString("g"))</div>
+                                        }
+                                    </div>
+                                </div>
+                                @if (User.Identity?.IsAuthenticated ?? false)
                                 {
-                                    <a class="link-primary" href="@lesson.ContentUrl" target="_blank" rel="noopener">Otevřít obsah</a>
+                                    <form method="post" asp-page-handler="UpdateProgress" asp-route-id="@Model.Course.Id" class="d-flex flex-column flex-sm-row align-items-sm-center gap-2">
+                                        <input type="hidden" name="lessonId" value="@lesson.Id" />
+                                        <div class="input-group input-group-sm" style="max-width: 220px;">
+                                            <span class="input-group-text">Progres</span>
+                                            <input type="number" class="form-control" name="progress" min="0" max="100" value="@completion" aria-label="Procento dokončení lekce pořadí @lesson.Order" />
+                                            <span class="input-group-text">%</span>
+                                        </div>
+                                        <div class="d-flex gap-2 flex-wrap">
+                                            <button type="submit" class="btn btn-sm btn-primary">Uložit</button>
+                                            <button type="submit" class="btn btn-sm btn-outline-success" onclick="this.form.querySelector('[name=progress]').value = 100;">Dokončeno</button>
+                                        </div>
+                                    </form>
                                 }
-                            </div>
-                            <div class="text-end">
-                                <div class="fw-semibold">@completion&nbsp;% dokončeno</div>
-                                @if (progressInfo is not null)
+                                else
                                 {
-                                    <div class="text-muted small">Naposledy @(progressInfo.LastSeenUtc.ToLocalTime().ToString("g"))</div>
+                                    <p class="text-muted small mb-0">Přihlaste se pro sledování postupu.</p>
                                 }
                             </div>
                         </div>
-                        @if (User.Identity?.IsAuthenticated ?? false)
-                        {
-                            <form method="post" asp-page-handler="UpdateProgress" asp-route-id="@Model.Course.Id" class="d-flex flex-column flex-sm-row align-items-sm-center gap-2">
-                                <input type="hidden" name="lessonId" value="@lesson.Id" />
-                                <div class="input-group input-group-sm" style="max-width: 220px;">
-                                    <span class="input-group-text">Progres</span>
-                                    <input type="number" class="form-control" name="progress" min="0" max="100" value="@completion" aria-label="Procento dokončení lekce pořadí @lesson.Order" />
-                                    <span class="input-group-text">%</span>
-                                </div>
-                                <div class="d-flex gap-2 flex-wrap">
-                                    <button type="submit" class="btn btn-sm btn-primary">Uložit</button>
-                                    <button type="submit" class="btn btn-sm btn-outline-success" onclick="this.form.querySelector('[name=progress]').value = 100;">Dokončeno</button>
-                                </div>
-                            </form>
-                        }
-                        else
-                        {
-                            <p class="text-muted small mb-0">Přihlaste se pro sledování postupu.</p>
-                        }
-                    </div>
+                    }
                 </div>
             }
+            else
+            {
+                <p class="text-muted">Pro tento kurz zatím nejsou dostupné lekce.</p>
+            }
+        </section>
+    </div>
+    <div class="col-lg-4">
+        <div class="p-3 border rounded-3">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <strong>Cena</strong>
+                <div class="fs-5 fw-bold">@Model.Course.Price.ToString("C")</div>
+            </div>
+            <div class="d-grid gap-2">
+                <form method="post">
+                    <button type="submit" class="btn btn-primary">Přihlásit se</button>
+                </form>
+                <a class="btn btn-secondary" href="/Courses/ICS/@Model.Course.Id">Přidat do kalendáře</a>
+                <a class="btn btn-outline-secondary" asp-page="/Contact">Firemní poptávka</a>
+            </div>
         </div>
-    }
-    else
-    {
-        <p class="text-muted">Pro tento kurz zatím nejsou dostupné lekce.</p>
-    }
-</section>
+
+        @if (User.Identity?.IsAuthenticated ?? false)
+        {
+            <form method="post" asp-page-handler="AddToWishlist" class="mt-3">
+                <button type="submit" class="btn btn-outline-secondary w-100">Přidat do wishlistu</button>
+            </form>
+        }
+    </div>
+</div>
 
 @if (Model.Reviews.Any())
 {
-    <h2>Reviews</h2>
-    <ul>
-        @foreach (var review in Model.Reviews)
-        {
-            <li>
-                <strong>@review.Rating/5</strong> @review.User?.UserName on @review.CreatedAt.ToShortDateString()
-                <div>@review.Comment</div>
-            </li>
-        }
-    </ul>
+    <section class="mt-5">
+        <h2 class="h5">Hodnocení</h2>
+        <ul class="list-unstyled">
+            @foreach (var review in Model.Reviews)
+            {
+                <li class="mb-3">
+                    <div class="fw-semibold">@review.Rating/5 &ndash; @review.User?.UserName</div>
+                    <div class="text-muted small mb-1">@review.CreatedAt.ToShortDateString()</div>
+                    <div>@review.Comment</div>
+                </li>
+            }
+        </ul>
+    </section>
 }
 
 @if (User.Identity?.IsAuthenticated ?? false)
 {
-    <h3>Add Review</h3>
-    <form method="post" asp-page-handler="Review">
-        <div class="mb-3">
-            <label asp-for="NewReview.Rating" class="form-label"></label>
-            <input asp-for="NewReview.Rating" class="form-control" min="1" max="5" />
-            <span asp-validation-for="NewReview.Rating" class="text-danger"></span>
-        </div>
-        <div class="mb-3">
-            <label asp-for="NewReview.Comment" class="form-label"></label>
-            <textarea asp-for="NewReview.Comment" class="form-control"></textarea>
-            <span asp-validation-for="NewReview.Comment" class="text-danger"></span>
-        </div>
-        <button type="submit" class="btn btn-success">Submit</button>
-    </form>
+    <section class="mt-4">
+        <h3 class="h5">Přidat hodnocení</h3>
+        <form method="post" asp-page-handler="Review">
+            <div class="mb-3">
+                <label asp-for="NewReview.Rating" class="form-label"></label>
+                <input asp-for="NewReview.Rating" class="form-control" min="1" max="5" />
+                <span asp-validation-for="NewReview.Rating" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="NewReview.Comment" class="form-label"></label>
+                <textarea asp-for="NewReview.Comment" class="form-control"></textarea>
+                <span asp-validation-for="NewReview.Comment" class="text-danger"></span>
+            </div>
+            <button type="submit" class="btn btn-success">Odeslat hodnocení</button>
+        </form>
+    </section>
 }
 else
 {
-    <p><a asp-page="/Account/Login">Log in</a> to add a review.</p>
+    <p class="mt-4"><a asp-page="/Account/Login">Přihlaste se</a> pro přidání hodnocení.</p>
 }
 
 @section Scripts {
