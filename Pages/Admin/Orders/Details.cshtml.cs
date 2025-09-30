@@ -3,12 +3,14 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Configuration;
+using SysJaky_N.Authorization;
 using SysJaky_N.Data;
+using SysJaky_N.Pages.Orders;
 using SysJaky_N.Services;
 
-namespace SysJaky_N.Pages.Orders;
+namespace SysJaky_N.Pages.Admin.Orders;
 
-[Authorize]
+[Authorize(Policy = AuthorizationPolicies.AdminOnly)]
 public class DetailsModel : OrderDetailsPageModel
 {
     public DetailsModel(
@@ -21,4 +23,7 @@ public class DetailsModel : OrderDetailsPageModel
         : base(context, configuration, paymentService, converter, viewEngine, tempDataProvider)
     {
     }
+
+    protected override bool RequireOrderOwnership => false;
+    protected override string PaymentReturnPagePath => "/Admin/Orders/Details";
 }

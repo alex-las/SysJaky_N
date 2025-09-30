@@ -25,8 +25,8 @@
             <td>@order.Status</td>
             <td>@order.Total</td>
             <td>
-                <a asp-page="/Orders/Details" asp-route-id="@order.Id">Details</a> |
-                <a asp-page="/Orders/Edit" asp-route-id="@order.Id">Change Status</a>
+                <a asp-page="Details" asp-route-id="@order.Id">Details</a> |
+                <a asp-page="Edit" asp-route-id="@order.Id">Change Status</a>
             </td>
         </tr>
     }
