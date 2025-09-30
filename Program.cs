@@ -5,10 +5,10 @@ using Microsoft.Extensions.DependencyInjection;
 using SysJaky_N.Data;
 using SysJaky_N.Models;
 using SysJaky_N.Services;
+using SysJaky_N.Services.Calendar;
 using System.Linq;
 using DinkToPdf;
 using DinkToPdf.Contracts;
-using System.Text;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.RateLimiting;
 using System.Threading.RateLimiting;
@@ -182,6 +182,7 @@ try
     builder.Services.AddSingleton<WaitlistTokenService>();
     builder.Services.AddMemoryCache();
     builder.Services.AddSingleton<ICacheService, CacheService>();
+    builder.Services.AddSingleton<IIcsCalendarBuilderFactory, IcsCalendarBuilderFactory>();
     builder.Services.Configure<AltchaOptions>(builder.Configuration.GetSection("Altcha"));
     builder.Services.AddSingleton<IAltchaService, AltchaService>();
 
@@ -302,36 +303,10 @@ try
         return Results.Ok();
     });
 
-    static string EscapeIcsText(string? value)
-    {
-        if (string.IsNullOrEmpty(value))
-        {
-            return string.Empty;
-        }
-
-        return value
-            .Replace("\\", "\\\\")
-            .Replace("\r\n", "\\n")
-            .Replace("\n", "\\n")
-            .Replace(",", "\\,")
-            .Replace(";", "\\;");
-    }
-
-    static string FormatUtcDateTime(DateTime dateTime)
-    {
-        if (dateTime.Kind == DateTimeKind.Unspecified)
-        {
-            dateTime = DateTime.SpecifyKind(dateTime, DateTimeKind.Utc);
-        }
-        else
-        {
-            dateTime = dateTime.ToUniversalTime();
-        }
-
-        return dateTime.ToString("yyyyMMddTHHmmssZ");
-    }
-
-    app.MapGet("/Courses/ICS/{id:int}", async (int id, ApplicationDbContext context) =>
+    app.MapGet("/Courses/ICS/{id:int}", async (
+        int id,
+        ApplicationDbContext context,
+        IIcsCalendarBuilderFactory icsCalendarBuilderFactory) =>
     {
         var course = await context.Courses.FindAsync(id);
         if (course == null)
@@ -339,28 +314,21 @@ try
             return Results.NotFound();
         }
 
-        var builder = new StringBuilder();
-        builder.AppendLine("BEGIN:VCALENDAR");
-        builder.AppendLine("VERSION:2.0");
-        builder.AppendLine("PRODID:-//SysJaky_N//EN");
-        builder.AppendLine("BEGIN:VEVENT");
-        builder.AppendLine($"UID:{course.Id}@sysjaky_n");
-        builder.AppendLine($"DTSTAMP:{DateTime.UtcNow:yyyyMMddTHHmmssZ}");
-        builder.AppendLine($"DTSTART;VALUE=DATE:{course.Date:yyyyMMdd}");
-        builder.AppendLine($"DTEND;VALUE=DATE:{course.Date.AddDays(1):yyyyMMdd}");
-        builder.AppendLine($"SUMMARY:{EscapeIcsText(course.Title)}");
-        if (!string.IsNullOrWhiteSpace(course.Description))
+        var calendarBuilder = icsCalendarBuilderFactory.Create();
+        calendarBuilder.AddEvent(new IcsCalendarEvent($"{course.Id}@sysjaky_n", course.Title, course.Date, course.Date.AddDays(1))
         {
-            builder.AppendLine($"DESCRIPTION:{EscapeIcsText(course.Description)}");
-        }
-        builder.AppendLine("END:VEVENT");
-        builder.AppendLine("END:VCALENDAR");
+            Description = course.Description,
+            Timestamp = DateTime.UtcNow,
+            IsAllDay = true
+        });
 
-        var bytes = Encoding.UTF8.GetBytes(builder.ToString());
-        return Results.File(bytes, "text/calendar", $"{course.Title}.ics");
+        return calendarBuilder.BuildFile($"{course.Title}.ics");
     });
 
-    app.MapGet("/CourseTerms/ICS/{id:int}", async (int id, ApplicationDbContext context) =>
+    app.MapGet("/CourseTerms/ICS/{id:int}", async (
+        int id,
+        ApplicationDbContext context,
+        IIcsCalendarBuilderFactory icsCalendarBuilderFactory) =>
     {
         var term = await context.CourseTerms
             .AsNoTracking()
@@ -372,32 +340,22 @@ try
             return Results.NotFound();
         }
 
-        var builder = new StringBuilder();
-        builder.AppendLine("BEGIN:VCALENDAR");
-        builder.AppendLine("VERSION:2.0");
-        builder.AppendLine("PRODID:-//SysJaky_N//EN");
-        builder.AppendLine("BEGIN:VEVENT");
-        builder.AppendLine($"UID:course-term-{term.Id}@sysjaky_n");
-        builder.AppendLine($"DTSTAMP:{DateTime.UtcNow:yyyyMMddTHHmmssZ}");
-        builder.AppendLine($"DTSTART:{FormatUtcDateTime(term.StartUtc)}");
-        builder.AppendLine($"DTEND:{FormatUtcDateTime(term.EndUtc)}");
-        builder.AppendLine($"SUMMARY:{EscapeIcsText(term.Course.Title)}");
-        if (!string.IsNullOrWhiteSpace(term.Course.Description))
+        var calendarBuilder = icsCalendarBuilderFactory.Create();
+        calendarBuilder.AddEvent(new IcsCalendarEvent($"course-term-{term.Id}@sysjaky_n", term.Course.Title, term.StartUtc, term.EndUtc)
         {
-            builder.AppendLine($"DESCRIPTION:{EscapeIcsText(term.Course.Description)}");
-        }
-        builder.AppendLine("END:VEVENT");
-        builder.AppendLine("END:VCALENDAR");
+            Description = term.Course.Description,
+            Timestamp = DateTime.UtcNow
+        });
 
         var fileName = $"{term.Course.Title}-{term.StartUtc:yyyyMMddHHmm}.ics";
-        var bytes = Encoding.UTF8.GetBytes(builder.ToString());
-        return Results.File(bytes, "text/calendar", fileName);
+        return calendarBuilder.BuildFile(fileName);
     });
 
     app.MapGet("/Account/Calendar/MyCourses.ics", async (
         HttpContext httpContext,
         UserManager<ApplicationUser> userManager,
-        ApplicationDbContext context) =>
+        ApplicationDbContext context,
+        IIcsCalendarBuilderFactory icsCalendarBuilderFactory) =>
     {
         var user = await userManager.GetUserAsync(httpContext.User);
         if (user == null)
@@ -414,12 +372,7 @@ try
 
         var now = DateTime.UtcNow;
 
-        var builder = new StringBuilder();
-        builder.AppendLine("BEGIN:VCALENDAR");
-        builder.AppendLine("VERSION:2.0");
-        builder.AppendLine("PRODID:-//SysJaky_N//EN");
-        builder.AppendLine("CALSCALE:GREGORIAN");
-        builder.AppendLine("X-WR-CALNAME:Moje kurzy");
+        var calendarBuilder = icsCalendarBuilderFactory.Create("Moje kurzy", includeGregorianCalendar: true);
 
         foreach (var enrollment in enrollments)
         {
@@ -430,23 +383,14 @@ try
                 continue;
             }
 
-            builder.AppendLine("BEGIN:VEVENT");
-            builder.AppendLine($"UID:course-term-{term.Id}-user-{user.Id}@sysjaky_n");
-            builder.AppendLine($"DTSTAMP:{now:yyyyMMddTHHmmssZ}");
-            builder.AppendLine($"DTSTART:{FormatUtcDateTime(term.StartUtc)}");
-            builder.AppendLine($"DTEND:{FormatUtcDateTime(term.EndUtc)}");
-            builder.AppendLine($"SUMMARY:{EscapeIcsText(course.Title)}");
-            if (!string.IsNullOrWhiteSpace(course.Description))
+            calendarBuilder.AddEvent(new IcsCalendarEvent($"course-term-{term.Id}-user-{user.Id}@sysjaky_n", course.Title, term.StartUtc, term.EndUtc)
             {
-                builder.AppendLine($"DESCRIPTION:{EscapeIcsText(course.Description)}");
-            }
-            builder.AppendLine("END:VEVENT");
+                Description = course.Description,
+                Timestamp = now
+            });
         }
 
-        builder.AppendLine("END:VCALENDAR");
-
-        var bytes = Encoding.UTF8.GetBytes(builder.ToString());
-        return Results.File(bytes, "text/calendar", "moje-kurzy.ics");
+        return calendarBuilder.BuildFile("moje-kurzy.ics");
     }).RequireAuthorization();
 
     app.Run();
