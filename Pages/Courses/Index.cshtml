@@ -6,6 +6,11 @@
 
 <h1 class="mb-3">Kurzy a školení</h1>
 
+<ul class="nav nav-pills mb-3">
+    <li class="nav-item"><a class="nav-link active" asp-page="/Courses/Index">Seznam</a></li>
+    <li class="nav-item"><a class="nav-link" asp-page="/Courses/Calendar">Kalendář</a></li>
+</ul>
+
 @if (TempData["CartError"] is string cartError && !string.IsNullOrWhiteSpace(cartError))
 {
     <div class="alert alert-danger" role="alert">@cartError</div>
