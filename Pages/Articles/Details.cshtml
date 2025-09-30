@@ -2,7 +2,7 @@
 @model SysJaky_N.Pages.Articles.DetailsModel
 @inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
 @{
-    ViewData["Title"] = Model.Article?.Title ?? Localizer["Title"];
+    ViewData["Title"] = Model.Article?.Title ?? Localizer["Title"].Value;
 }
 
 @if (Model.Article is not null)
