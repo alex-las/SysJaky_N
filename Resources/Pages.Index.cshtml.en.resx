@@ -18,8 +18,26 @@
   <data name="HeroDescription" xml:space="preserve">
     <value>Professional courses and training for your company.</value>
   </data>
+  <data name="HeroHeadingAccent" xml:space="preserve">
+    <value>match your goals</value>
+  </data>
+  <data name="HeroHeadingPrefix" xml:space="preserve">
+    <value>Find training that will</value>
+  </data>
+  <data name="HeroSearchPlaceholder" xml:space="preserve">
+    <value>Search for a course, tool, or skill…</value>
+  </data>
+  <data name="HeroSubheading" xml:space="preserve">
+    <value>Pick your role and goal — we will narrow the list for you. Or just start searching.</value>
+  </data>
+  <data name="HeroSubmit" xml:space="preserve">
+    <value>Suggest courses</value>
+  </data>
   <data name="HowItWorksTitle" xml:space="preserve">
     <value>How it works</value>
+  </data>
+  <data name="PersonaAriaLabel" xml:space="preserve">
+    <value>I am</value>
   </data>
   <data name="StepSelectTitle" xml:space="preserve">
     <value>Select a course</value>
@@ -38,5 +56,62 @@
   </data>
   <data name="StepPayDescription" xml:space="preserve">
     <value>Secure online payment reserves your spot.</value>
+  </data>
+  <data name="CalendarButton" xml:space="preserve">
+    <value>Course calendar</value>
+  </data>
+  <data name="ChipBeginner" xml:space="preserve">
+    <value>Beginner</value>
+  </data>
+  <data name="ChipCertificate" xml:space="preserve">
+    <value>With certificate</value>
+  </data>
+  <data name="ChipOnline" xml:space="preserve">
+    <value>Online</value>
+  </data>
+  <data name="ChipPrague" xml:space="preserve">
+    <value>Prague</value>
+  </data>
+  <data name="ChipRetraining" xml:space="preserve">
+    <value>Retraining</value>
+  </data>
+  <data name="GoalAriaLabel" xml:space="preserve">
+    <value>I want to</value>
+  </data>
+  <data name="NewsHeading" xml:space="preserve">
+    <value>News</value>
+  </data>
+  <data name="RecommendedEmpty" xml:space="preserve">
+    <value>Select “I am… / I want to…” above or use the search field.</value>
+  </data>
+  <data name="RecommendedForYou" xml:space="preserve">
+    <value>Recommended for you</value>
+  </data>
+  <data name="RecommendedViewAll" xml:space="preserve">
+    <value>View all</value>
+  </data>
+  <data name="StartingSoon" xml:space="preserve">
+    <value>Starting soon</value>
+  </data>
+  <data name="TrustCertificate" xml:space="preserve">
+    <value>Certificates included with selected courses</value>
+  </data>
+  <data name="TrustGraduates" xml:space="preserve">
+    <value>{0} graduates</value>
+  </data>
+  <data name="TrustGuarantee" xml:space="preserve">
+    <value>Satisfaction guarantee / easy cancellation</value>
+  </data>
+  <data name="TrustRating" xml:space="preserve">
+    <value>Rating {0}</value>
+  </data>
+  <data name="WhyChooseDescription" xml:space="preserve">
+    <value>Our courses are crafted by experts and delivered in a practical format that helps you learn quickly and effectively.</value>
+  </data>
+  <data name="WhyChooseHeading" xml:space="preserve">
+    <value>Why choose our platform?</value>
+  </data>
+  <data name="Title" xml:space="preserve">
+    <value>Home</value>
   </data>
 </root>

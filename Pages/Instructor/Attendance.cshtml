@@ -1,21 +1,23 @@
 @page
 @model SysJaky_N.Pages.Instructor.AttendanceModel
+@using System.Text.Json
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
 @{
-    ViewData["Title"] = "Attendance check-in";
+    ViewData["Title"] = Localizer["Title"];
 }
 
-<h1 class="mb-4">Attendance check-in</h1>
-<p class="text-muted">Scan a QR code or enter a code manually to mark a participant as present.</p>
+<h1 class="mb-4">@Localizer["Heading"]</h1>
+<p class="text-muted">@Localizer["Intro"]</p>
 
 <div class="row g-4">
     <div class="col-lg-6">
         <div class="card h-100">
             <div class="card-header">
-                Scan QR code
+                @Localizer["ScanQr"]
             </div>
             <div class="card-body">
                 <div id="qr-reader" class="border rounded position-relative" style="min-height: 320px;">
-                    <div id="qr-reader-placeholder" class="position-absolute top-50 start-50 translate-middle text-muted">Camera initialising…</div>
+                    <div id="qr-reader-placeholder" class="position-absolute top-50 start-50 translate-middle text-muted">@Localizer["PlaceholderCameraInitialising"]</div>
                 </div>
                 <div id="qr-reader-error" class="alert alert-warning mt-3 d-none" role="alert"></div>
             </div>
@@ -24,30 +26,30 @@
     <div class="col-lg-6">
         <div class="card h-100">
             <div class="card-header">
-                Manual entry
+                @Localizer["ManualEntry"]
             </div>
             <div class="card-body">
                 <form id="manual-form" class="mb-3" autocomplete="off">
-                    <label for="manualCode" class="form-label">Enrollment code</label>
+                    <label for="manualCode" class="form-label">@Localizer["ManualCodeLabel"]</label>
                     <input type="text" id="manualCode" class="form-control" autocomplete="off" />
-                    <div class="form-text">Enter the numeric enrollment ID or a code containing it (for example, <code>enrollment=123</code>).</div>
-                    <button type="submit" class="btn btn-primary mt-3">Check in</button>
+                    <div class="form-text">@Html.Raw(Localizer["ManualHelper", "<code>enrollment=123</code>"].Value)</div>
+                    <button type="submit" class="btn btn-primary mt-3">@Localizer["ManualSubmit"]</button>
                 </form>
                 <div id="result" class="alert d-none" role="alert"></div>
                 <div id="details" class="card d-none">
                     <div class="card-body">
                         <dl class="row mb-0">
-                            <dt class="col-sm-4">Enrollment ID</dt>
+                            <dt class="col-sm-4">@Localizer["DetailEnrollmentId"]</dt>
                             <dd class="col-sm-8" id="detail-enrollment-id"></dd>
-                            <dt class="col-sm-4">Participant</dt>
+                            <dt class="col-sm-4">@Localizer["DetailParticipant"]</dt>
                             <dd class="col-sm-8" id="detail-participant"></dd>
-                            <dt class="col-sm-4">Course</dt>
+                            <dt class="col-sm-4">@Localizer["DetailCourse"]</dt>
                             <dd class="col-sm-8" id="detail-course"></dd>
-                            <dt class="col-sm-4">Term start</dt>
+                            <dt class="col-sm-4">@Localizer["DetailTermStart"]</dt>
                             <dd class="col-sm-8" id="detail-term-start"></dd>
-                            <dt class="col-sm-4">Term end</dt>
+                            <dt class="col-sm-4">@Localizer["DetailTermEnd"]</dt>
                             <dd class="col-sm-8" id="detail-term-end"></dd>
-                            <dt class="col-sm-4">Checked in at</dt>
+                            <dt class="col-sm-4">@Localizer["DetailCheckedIn"]</dt>
                             <dd class="col-sm-8" id="detail-checked-in"></dd>
                         </dl>
                     </div>
@@ -82,6 +84,19 @@
                 termStartEl.textContent = '';
                 termEndEl.textContent = '';
                 checkedInEl.textContent = '';
+            };
+
+            const resources = {
+                messageCheckedIn: @Html.Raw(JsonSerializer.Serialize(Localizer["MessageCheckedIn"].Value)),
+                messageAlreadyCheckedIn: @Html.Raw(JsonSerializer.Serialize(Localizer["MessageAlreadyCheckedIn"].Value)),
+                messageAttendanceFailed: @Html.Raw(JsonSerializer.Serialize(Localizer["MessageAttendanceFailed"].Value)),
+                messageMissingCode: @Html.Raw(JsonSerializer.Serialize(Localizer["MessageMissingCode"].Value)),
+                messageUnexpected: @Html.Raw(JsonSerializer.Serialize(Localizer["MessageUnexpected"].Value)),
+                logParseError: @Html.Raw(JsonSerializer.Serialize(Localizer["LogParseError"].Value)),
+                errorCameraAccess: @Html.Raw(JsonSerializer.Serialize(Localizer["ErrorCameraAccess"].Value)),
+                errorCameraInit: @Html.Raw(JsonSerializer.Serialize(Localizer["ErrorCameraInit"].Value)),
+                errorQrUnavailable: @Html.Raw(JsonSerializer.Serialize(Localizer["ErrorQrUnavailable"].Value)),
+                errorQrUnsupported: @Html.Raw(JsonSerializer.Serialize(Localizer["ErrorQrUnsupported"].Value))
             };
 
             const showResult = (type, message, details) => {
@@ -119,10 +134,10 @@
             const processResponse = payload => {
                 const { status, checkedInAtUtc, enrollment } = payload ?? {};
                 const messages = {
-                    'checked-in': 'Attendance recorded.',
-                    'already-checked-in': 'This enrollment was already checked in.'
+                    'checked-in': resources.messageCheckedIn,
+                    'already-checked-in': resources.messageAlreadyCheckedIn
                 };
-                const message = messages[status] ?? 'Attendance recorded.';
+                const message = messages[status] ?? resources.messageCheckedIn;
 
                 showResult('alert-success', message, {
                     enrollmentId: enrollment?.id,
@@ -135,14 +150,14 @@
             };
 
             const handleErrorResponse = async response => {
-                let message = 'Attendance could not be recorded.';
+                let message = resources.messageAttendanceFailed;
                 try {
                     const data = await response.json();
                     if (data?.message) {
                         message = data.message;
                     }
                 } catch (err) {
-                    console.warn('Unable to parse error response.', err);
+                    console.warn(resources.logParseError, err);
                 }
 
                 showResult('alert-danger', message);
@@ -150,7 +165,7 @@
 
             const submitCode = async code => {
                 if (!code) {
-                    showResult('alert-warning', 'Please provide a code to check in.');
+                    showResult('alert-warning', resources.messageMissingCode);
                     return;
                 }
 
@@ -172,7 +187,7 @@
                     }
                 } catch (err) {
                     console.error('Check-in request failed.', err);
-                    showResult('alert-danger', 'An unexpected error occurred while recording attendance.');
+                    showResult('alert-danger', resources.messageUnexpected);
                 }
             };
 
@@ -213,19 +228,19 @@
                     .catch(error => {
                         console.error('Unable to start QR scanner.', error);
                         if (placeholder) {
-                            placeholder.textContent = 'Unable to access the camera.';
+                            placeholder.textContent = resources.errorCameraAccess;
                         }
                         if (qrError) {
-                            qrError.textContent = (error && error.message) ? error.message : 'Camera initialisation failed.';
+                            qrError.textContent = (error && error.message) ? error.message : resources.errorCameraInit;
                             qrError.classList.remove('d-none');
                         }
                     });
             } else {
                 if (placeholder) {
-                    placeholder.textContent = 'QR scanning library is unavailable.';
+                    placeholder.textContent = resources.errorQrUnavailable;
                 }
                 if (qrError) {
-                    qrError.textContent = 'QR scanning is not supported in this browser.';
+                    qrError.textContent = resources.errorQrUnsupported;
                     qrError.classList.remove('d-none');
                 }
             }

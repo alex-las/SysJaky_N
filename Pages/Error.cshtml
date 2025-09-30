@@ -1,24 +1,24 @@
 ﻿@page
 @model ErrorModel
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
 @{
-    ViewData["Title"] = "Došlo k chybě";
+    ViewData["Title"] = Localizer["Title"];
 }
 
 <section class="error-page">
-    <h1 class="text-danger">Omlouváme se, něco se pokazilo.</h1>
+    <h1 class="text-danger">@Localizer["Heading"]</h1>
     <p>
-        Zkuste prosím akci zopakovat o něco později. Pokud problém přetrvává, kontaktujte naši podporu
-        a uveďte uvedené korelační ID, aby bylo možné požadavek rychle dohledat.
+        @Localizer["Description"]
     </p>
 
     @if (Model.ShowRequestId)
     {
         <p>
-            <strong>Korelační ID:</strong> <code>@Model.RequestId</code>
+            <strong>@Localizer["CorrelationIdLabel"]</strong> <code>@Model.RequestId</code>
         </p>
     }
 
     <p>
-        Děkujeme za pochopení.
+        @Localizer["SignOff"]
     </p>
 </section>

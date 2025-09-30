@@ -1,11 +1,20 @@
 @page "{id:int}"
 @model SysJaky_N.Pages.Articles.DetailsModel
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
 @{
-    ViewData["Title"] = Model.Article?.Title;
+    ViewData["Title"] = Model.Article?.Title ?? Localizer["Title"];
 }
 
-<h1>@Model.Article?.Title</h1>
+@if (Model.Article is not null)
+{
+    <h1>@Model.Article.Title</h1>
 
-<p>@Model.Article?.Content</p>
+    <p>@Model.Article.Content</p>
 
-<p><small>@Model.Article?.CreatedAt.ToString("g")</small></p>
+    <p><small>@Localizer["PublishedOn", Model.Article.CreatedAt.ToString("g")]</small></p>
+}
+else
+{
+    <h1>@Localizer["Title"]</h1>
+    <p>@Localizer["NotFound"]</p>
+}
