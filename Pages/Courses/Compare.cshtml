@@ -1,14 +1,16 @@
 @page
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 @model SysJaky_N.Pages.Courses.CompareModel
 @{
-    ViewData["Title"] = "Porovnání kurzů";
+    ViewData["Title"] = Localizer["Title"];
 }
 
-<h1 class="h4 mb-3">Porovnání kurzů</h1>
+<h1 class="h4 mb-3">@Localizer["Title"]</h1>
 
 @if (Model.Courses.Count == 0)
 {
-    <div class="alert alert-info">Vyberte alespoň dva kurzy k porovnání.</div>
+    <div class="alert alert-info">@Localizer["EmptySelection"]</div>
 }
 else
 {
@@ -16,11 +18,11 @@ else
         <table class="table align-middle">
             <thead>
                 <tr>
-                    <th scope="col">Název</th>
-                    <th scope="col">Délka</th>
-                    <th scope="col">Úroveň</th>
-                    <th scope="col">Forma</th>
-                    <th scope="col">Cena</th>
+                    <th scope="col">@Localizer["ColumnName"]</th>
+                    <th scope="col">@Localizer["ColumnDuration"]</th>
+                    <th scope="col">@Localizer["ColumnLevel"]</th>
+                    <th scope="col">@Localizer["ColumnMode"]</th>
+                    <th scope="col">@Localizer["ColumnPrice"]</th>
                 </tr>
             </thead>
             <tbody>
@@ -28,7 +30,7 @@ else
                 {
                     <tr>
                         <td>@course.Title</td>
-                        <td>@course.Duration min</td>
+                        <td>@Localizer["DurationWithUnit", course.Duration]</td>
                         <td>@course.Level</td>
                         <td>@course.Mode</td>
                         <td>@course.Price.ToString("C")</td>

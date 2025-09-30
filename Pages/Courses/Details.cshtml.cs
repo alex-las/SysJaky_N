@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using SysJaky_N.Data;
 using SysJaky_N.Extensions;
 using SysJaky_N.Services;
@@ -16,17 +17,20 @@ public class DetailsModel : PageModel
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly CartService _cartService;
     private readonly ICacheService _cacheService;
+    private readonly IStringLocalizer<DetailsModel> _localizer;
 
     public DetailsModel(
         ApplicationDbContext context,
         UserManager<ApplicationUser> userManager,
         CartService cartService,
-        ICacheService cacheService)
+        ICacheService cacheService,
+        IStringLocalizer<DetailsModel> localizer)
     {
         _context = context;
         _userManager = userManager;
         _cartService = cartService;
         _cacheService = cacheService;
+        _localizer = localizer;
     }
 
     public Course Course { get; set; } = null!;
@@ -286,19 +290,19 @@ public class DetailsModel : PageModel
         return course.Type == CourseType.Online || course.Mode == CourseMode.SelfPaced;
     }
 
-    private static string ResolveLocation(Course? course)
+    private string ResolveLocation(Course? course)
     {
         if (course == null)
         {
-            return "Bude upřesněno";
+            return _localizer["LocationTbd"];
         }
 
         return course.Type switch
         {
-            CourseType.Online => "Online",
-            CourseType.Hybrid => "Hybridní (kombinace)",
-            CourseType.InPerson => "Prezenčně",
-            _ => "Bude upřesněno"
+            CourseType.Online => _localizer["LocationOnline"],
+            CourseType.Hybrid => _localizer["LocationHybrid"],
+            CourseType.InPerson => _localizer["LocationInPerson"],
+            _ => _localizer["LocationTbd"]
         };
     }
 }

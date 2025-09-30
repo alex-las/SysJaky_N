@@ -1,18 +1,23 @@
 @page
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 @model SysJaky_N.Pages.Courses.CalendarModel
+@{
+    ViewData["Title"] = Localizer["Title"];
+}
 
-<h1>Kalendář kurzů</h1>
+<h1>@Localizer["Title"]</h1>
 
 <table class="table table-bordered">
     <thead>
         <tr>
-            <th>Po</th>
-            <th>Út</th>
-            <th>St</th>
-            <th>Čt</th>
-            <th>Pá</th>
-            <th>So</th>
-            <th>Ne</th>
+            <th>@Localizer["Monday"]</th>
+            <th>@Localizer["Tuesday"]</th>
+            <th>@Localizer["Wednesday"]</th>
+            <th>@Localizer["Thursday"]</th>
+            <th>@Localizer["Friday"]</th>
+            <th>@Localizer["Saturday"]</th>
+            <th>@Localizer["Sunday"]</th>
         </tr>
     </thead>
     <tbody>
