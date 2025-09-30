@@ -139,6 +139,7 @@ try
     });
     builder.Services.Configure<PaymentGatewayOptions>(builder.Configuration.GetSection("PaymentGateway"));
     builder.Services.AddScoped<PaymentService>();
+    builder.Services.AddSingleton<ICourseSearchOptionProvider, CourseSearchOptionProvider>();
     builder.Services.AddSingleton<IConverter>(new SynchronizedConverter(new PdfTools()));
     builder.Services.AddSingleton<IRazorLightEngine>(sp =>
     {
