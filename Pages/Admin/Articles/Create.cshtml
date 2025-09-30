@@ -7,18 +7,8 @@
 <h1>Create Article</h1>
 
 <form method="post">
-    <div class="form-group">
-        <label asp-for="Article.Title"></label>
-        <input asp-for="Article.Title" class="form-control" />
-        <span asp-validation-for="Article.Title" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="Article.Content"></label>
-        <textarea asp-for="Article.Content" class="form-control"></textarea>
-        <span asp-validation-for="Article.Content" class="text-danger"></span>
-    </div>
-    <button type="submit" class="btn btn-primary">Create</button>
-    <a asp-page="Index" class="btn btn-secondary">Back to list</a>
+    <partial name="_ArticleForm" for="Article" />
+    <partial name="_FormActions" model="new SysJaky_N.Pages.Admin.Shared.FormActionsModel { SubmitText = \"Create\", CancelText = \"Back to list\" }" />
 </form>
 
 @section Scripts {

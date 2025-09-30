@@ -9,34 +9,10 @@
 <form method="post" class="mt-4">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-    <div class="mb-3">
-        <label asp-for="Instructor.FullName" class="form-label"></label>
-        <input asp-for="Instructor.FullName" class="form-control" />
-        <span asp-validation-for="Instructor.FullName" class="text-danger"></span>
-    </div>
+    <partial name="_InstructorForm" for="Instructor" />
 
-    <div class="row g-3">
-        <div class="col-md-6">
-            <label asp-for="Instructor.Email" class="form-label"></label>
-            <input asp-for="Instructor.Email" class="form-control" />
-            <span asp-validation-for="Instructor.Email" class="text-danger"></span>
-        </div>
-        <div class="col-md-6">
-            <label asp-for="Instructor.PhoneNumber" class="form-label"></label>
-            <input asp-for="Instructor.PhoneNumber" class="form-control" />
-            <span asp-validation-for="Instructor.PhoneNumber" class="text-danger"></span>
-        </div>
-    </div>
-
-    <div class="mb-3 mt-3">
-        <label asp-for="Instructor.Bio" class="form-label"></label>
-        <textarea asp-for="Instructor.Bio" class="form-control" rows="5"></textarea>
-        <span asp-validation-for="Instructor.Bio" class="text-danger"></span>
-    </div>
-
-    <div class="d-flex gap-2">
-        <button type="submit" class="btn btn-primary">Create</button>
-        <a asp-page="Index" class="btn btn-secondary">Cancel</a>
+    <div class="mt-4">
+        <partial name="_FormActions" model="new SysJaky_N.Pages.Admin.Shared.FormActionsModel { SubmitText = \"Create\", CancelText = \"Cancel\" }" />
     </div>
 </form>
 

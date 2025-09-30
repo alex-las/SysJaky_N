@@ -9,47 +9,10 @@
 <form method="post" class="mt-4">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-    <div class="mb-3">
-        <label asp-for="Input.CourseId" class="form-label"></label>
-        <select asp-for="Input.CourseId" class="form-select" asp-items="Model.CourseOptions"></select>
-        <span asp-validation-for="Input.CourseId" class="text-danger"></span>
-    </div>
+    <partial name="_CourseTermForm" model="new SysJaky_N.Pages.Admin.CourseTerms.CourseTermFormModel(Model.Input, Model.CourseOptions, Model.InstructorOptions)" />
 
-    <div class="row g-3">
-        <div class="col-md-6">
-            <label asp-for="Input.StartUtc" class="form-label"></label>
-            <input asp-for="Input.StartUtc" type="datetime-local" class="form-control" />
-            <span asp-validation-for="Input.StartUtc" class="text-danger"></span>
-        </div>
-        <div class="col-md-6">
-            <label asp-for="Input.EndUtc" class="form-label"></label>
-            <input asp-for="Input.EndUtc" type="datetime-local" class="form-control" />
-            <span asp-validation-for="Input.EndUtc" class="text-danger"></span>
-        </div>
-    </div>
-
-    <div class="row g-3 mt-1">
-        <div class="col-md-4">
-            <label asp-for="Input.Capacity" class="form-label"></label>
-            <input asp-for="Input.Capacity" class="form-control" type="number" min="1" />
-            <span asp-validation-for="Input.Capacity" class="text-danger"></span>
-        </div>
-        <div class="col-md-4">
-            <label asp-for="Input.InstructorId" class="form-label"></label>
-            <select asp-for="Input.InstructorId" class="form-select" asp-items="Model.InstructorOptions"></select>
-            <span asp-validation-for="Input.InstructorId" class="text-danger"></span>
-        </div>
-        <div class="col-md-4 d-flex align-items-center">
-            <div class="form-check mt-3">
-                <input class="form-check-input" asp-for="Input.IsActive" />
-                <label class="form-check-label" asp-for="Input.IsActive"></label>
-            </div>
-        </div>
-    </div>
-
-    <div class="mt-4 d-flex gap-2">
-        <button type="submit" class="btn btn-primary">Create</button>
-        <a asp-page="Index" class="btn btn-secondary">Cancel</a>
+    <div class="mt-4">
+        <partial name="_FormActions" model="new SysJaky_N.Pages.Admin.Shared.FormActionsModel { SubmitText = \"Create\", CancelText = \"Cancel\" }" />
     </div>
 </form>
 
