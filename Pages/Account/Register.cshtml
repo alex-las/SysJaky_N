@@ -1,32 +1,34 @@
 @page
 @model SysJaky_N.Pages.Account.RegisterModel
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
 
-<h1>Register</h1>
+@{
+    ViewData["Title"] = Localizer["RegisterTitle"];
+    var registerFormOptions = new RegisterFormOptions
+    {
+        Input = Model.Input,
+        FormId = "account-register-form",
+        FormCssClass = "card card-body p-4 auth-form",
+        HeadingLocalizationKey = "RegisterTitle",
+        HeadingTagName = "h1",
+        ValidationSummaryCssClass = "text-danger",
+        EmailInputId = "account-register-email",
+        PasswordInputId = "account-register-password",
+        ConfirmPasswordInputId = "account-register-confirm",
+        ReferralCodeInputId = "account-register-referral",
+        AltchaId = "account-register-altcha",
+        AltchaChallengeUrl = "~/altcha/challenge",
+        AltchaWorkerVersionSuffix = string.Empty,
+        UseAbsoluteWorkerUrl = false,
+        AltchaWorkers = "1",
+        AltchaMaxNumber = "500000",
+        IncludeConfirmPassword = true,
+        IncludeReferralCode = true,
+        EnableRefetchOnExpire = true
+    };
+}
 
-<form method="post">
-    <div asp-validation-summary="All"></div>
-    <div>
-        <label asp-for="Input.Email"></label>
-        <input asp-for="Input.Email" />
-        <span asp-validation-for="Input.Email"></span>
-    </div>
-    <div>
-        <label asp-for="Input.Password"></label>
-        <input asp-for="Input.Password" type="password" />
-        <span asp-validation-for="Input.Password"></span>
-    </div>
-    <div>
-        <label asp-for="Input.ReferralCode"></label>
-        <input asp-for="Input.ReferralCode" />
-        <span asp-validation-for="Input.ReferralCode"></span>
-    </div>
-    <div>
-        <altcha-widget name="altcha" challengeurl="@Url.Content("~/altcha/challenge")" verifyurl="@Url.Content("~/altcha/verify")" workerurl="@Url.Content("~/lib/altcha/altcha.worker.js")" refetchonexpire></altcha-widget>
-        <noscript>Prosím povolte JavaScript.</noscript>
-        <span asp-validation-for="Input.Captcha"></span>
-    </div>
-    <button type="submit">Register</button>
-</form>
+<partial name="~/Pages/Shared/Account/_RegisterForm.cshtml" model="registerFormOptions" />
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

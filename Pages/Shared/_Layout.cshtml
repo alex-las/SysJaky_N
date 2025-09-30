@@ -1,5 +1,7 @@
 @using System.Globalization
 @using SysJaky_N.Authorization
+@using SysJaky_N.Models.ViewModels
+@using SysJaky_N.Pages.Account
 @inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
 @{
     var currentCulture = CultureInfo.CurrentUICulture;
@@ -145,6 +147,42 @@
 
     @if (!User.Identity.IsAuthenticated)
     {
+        var loginFormOptions = new LoginFormOptions
+        {
+            FormId = "login-modal-form",
+            FormCssClass = null,
+            AspPage = "/Account/Login",
+            HeadingLocalizationKey = null,
+            ValidationSummaryCssClass = "text-danger",
+            EmailInputId = "loginEmail",
+            PasswordInputId = "loginPassword",
+            RememberMeInputId = "rememberMe",
+            AltchaId = "altcha-login",
+            UseAbsoluteWorkerUrl = true,
+            AltchaWorkerVersionSuffix = "?v=5",
+            EnableRefetchOnExpire = false,
+            Input = new LoginModel.InputModel()
+        };
+
+        var registerFormOptions = new RegisterFormOptions
+        {
+            FormId = "register-modal-form",
+            FormCssClass = null,
+            AspPage = "/Account/Register",
+            HeadingLocalizationKey = null,
+            ValidationSummaryCssClass = "text-danger",
+            EmailInputId = "registerEmail",
+            PasswordInputId = "registerPassword",
+            ConfirmPasswordInputId = "registerConfirmPassword",
+            AltchaId = "altcha-register",
+            IncludeConfirmPassword = true,
+            IncludeReferralCode = false,
+            UseAbsoluteWorkerUrl = true,
+            AltchaWorkerVersionSuffix = "?v=5",
+            EnableRefetchOnExpire = false,
+            Input = new RegisterModel.InputModel()
+        };
+
         <div class="modal fade" id="authModal" tabindex="-1" aria-labelledby="authModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -163,61 +201,10 @@
                         </ul>
                         <div class="tab-content" id="authTabContent">
                             <div class="tab-pane fade show active" id="login-tab-pane" role="tabpanel" aria-labelledby="login-tab">
-                                <form method="post" asp-page="/Account/Login">
-                                    <div asp-validation-summary="All" class="text-danger"></div>
-                                    <div class="mb-3">
-                                        <label for="loginEmail" class="form-label">@Localizer["EmailLabel"]</label>
-                                        <input type="email" class="form-control" id="loginEmail" name="Input.Email" required />
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="loginPassword" class="form-label">@Localizer["PasswordLabel"]</label>
-                                        <input type="password" class="form-control" id="loginPassword" name="Input.Password" required />
-                                    </div>
-                                    <div class="mb-3">
-                                        <altcha-widget id="altcha-login" name="altcha"
-                                                       challengeurl='@Url.Content("~/altcha/challenge?d=2")'
-                                                       verifyurl='@Url.Content("~/altcha/verify")'
-                                                       workers="1"
-                                                       maxnumber="500000"
-                                                       workerurl='@($"{Context.Request.Scheme}://{Context.Request.Host}{Url.Content("~/lib/altcha/altcha.worker.js")}?v=5")'>
-                                        </altcha-widget>
-                                        <noscript>@Localizer["EnableJavascript"]</noscript>
-                                    </div>
-                                    <div class="mb-3 form-check">
-                                        <input type="hidden" name="Input.RememberMe" value="false" />
-                                        <input type="checkbox" class="form-check-input" id="rememberMe" name="Input.RememberMe" value="true" />
-                                        <label class="form-check-label" for="rememberMe">@Localizer["RememberMe"]</label>
-                                    </div>
-                                    <button type="submit" class="btn btn-primary">@Localizer["LoginTitle"]</button>
-                                </form>
+                                <partial name="~/Pages/Shared/Account/_LoginForm.cshtml" model="loginFormOptions" />
                             </div>
                             <div class="tab-pane fade" id="register-tab-pane" role="tabpanel" aria-labelledby="register-tab">
-                                <form method="post" asp-page="/Account/Register">
-                                    <div asp-validation-summary="All" class="text-danger"></div>
-                                    <div class="mb-3">
-                                        <label for="registerEmail" class="form-label">@Localizer["EmailLabel"]</label>
-                                        <input type="email" class="form-control" id="registerEmail" name="Input.Email" required />
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="registerPassword" class="form-label">@Localizer["PasswordLabel"]</label>
-                                        <input type="password" class="form-control" id="registerPassword" name="Input.Password" required />
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="registerConfirmPassword" class="form-label">@Localizer["ConfirmPasswordLabel"]</label>
-                                        <input type="password" class="form-control" id="registerConfirmPassword" name="Input.ConfirmPassword" required />
-                                    </div>
-                                    <div class="mb-3">
-                                        <altcha-widget id="altcha-register" name="altcha"
-                                                       challengeurl='@Url.Content("~/altcha/challenge?d=2")'
-                                                       verifyurl='@Url.Content("~/altcha/verify")'
-                                                       workers="1"
-                                                       maxnumber="500000"
-                                                       workerurl='@($"{Context.Request.Scheme}://{Context.Request.Host}{Url.Content("~/lib/altcha/altcha.worker.js")}?v=5")'>
-                                        </altcha-widget>
-                                        <noscript>@Localizer["EnableJavascript"]</noscript>
-                                    </div>
-                                    <button type="submit" class="btn btn-primary">@Localizer["RegisterTitle"]</button>
-                                </form>
+                                <partial name="~/Pages/Shared/Account/_RegisterForm.cshtml" model="registerFormOptions" />
                             </div>
                         </div>
                     </div>

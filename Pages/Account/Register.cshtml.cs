@@ -40,6 +40,11 @@ public class RegisterModel : PageModel
         [StringLength(100, MinimumLength = 6)]
         [RegularExpression("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).+$", ErrorMessage = "Password must contain upper and lower case letters and numbers.")]
         public string Password { get; set; } = string.Empty;
+
+        [DataType(DataType.Password)]
+        [Display(Name = "Confirm password")]
+        [Compare(nameof(Password))]
+        public string ConfirmPassword { get; set; } = string.Empty;
         public string Captcha { get; set; } = string.Empty;
 
         [Display(Name = "Referral code")]
