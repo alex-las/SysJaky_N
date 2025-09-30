@@ -4,7 +4,7 @@ using SysJaky_N.Models;
 
 namespace SysJaky_N.Services;
 
-public record CourseListCacheEntry(IReadOnlyList<Course> Courses, int TotalPages);
+public record CourseListCacheEntry(IReadOnlyList<Course> Courses, int TotalPages, int TotalCount);
 
 public record CourseDetailCacheEntry(
     Course Course,
