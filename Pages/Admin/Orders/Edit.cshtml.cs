@@ -1,10 +1,11 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using SysJaky_N.Authorization;
 using SysJaky_N.Data;
 using SysJaky_N.Models;
 
-namespace SysJaky_N.Pages.Orders;
+namespace SysJaky_N.Pages.Admin.Orders;
 
 [Authorize(Policy = AuthorizationPolicies.AdminOnly)]
 public class EditModel : PageModel

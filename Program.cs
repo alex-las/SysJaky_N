@@ -258,7 +258,9 @@ try
     app.MapControllers();
     // Přesměrování na jednotné místo „Můj účet“
     app.MapGet("/Account/Dashboard", () => Results.Redirect("/Account/Manage", true));
-    app.MapGet("/Orders", () => Results.Redirect("/Account/Manage#orders"));
+    app.MapGet("/Orders", () => Results.Redirect("/Account/Manage#orders", true));
+    app.MapGet("/Orders/Index", () => Results.Redirect("/Account/Manage#orders", true));
+    app.MapGet("/Orders/Edit/{id:int}", (int id) => Results.Redirect($"/Admin/Orders/Edit/{id}", true));
     app.MapPost("/payment/webhook", async (HttpRequest request, PaymentService paymentService) =>
     {
         await paymentService.HandleWebhookAsync(request);

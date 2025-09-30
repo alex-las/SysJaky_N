@@ -141,7 +141,7 @@ public class CartModel : PageModel
         HttpContext.Session.Remove("VoucherId");
         HttpContext.Session.Remove("Bundles");
 
-        return RedirectToPage("/Orders/Index");
+        return Redirect("/Account/Manage#orders");
     }
 
     public async Task<IActionResult> OnPostApplyVoucherAsync(string code)
