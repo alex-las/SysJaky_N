@@ -61,6 +61,7 @@ public class Course
 
     public ICollection<CourseTag> CourseTags { get; set; } = new List<CourseTag>();
 
+    [StringLength(1000)]
     public string? PopoverHtml { get; set; }
 }
 
