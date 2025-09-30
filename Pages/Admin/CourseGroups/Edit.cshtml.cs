@@ -1,17 +1,18 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 using SysJaky_N.Data;
 using SysJaky_N.Models;
 
-namespace SysJaky_N.Pages.CourseGroups;
+namespace SysJaky_N.Pages.Admin.CourseGroups;
 
 [Authorize(Policy = AuthorizationPolicies.AdminOnly)]
-public class CreateModel : PageModel
+public class EditModel : PageModel
 {
     private readonly ApplicationDbContext _context;
 
-    public CreateModel(ApplicationDbContext context)
+    public EditModel(ApplicationDbContext context)
     {
         _context = context;
     }
@@ -19,8 +20,15 @@ public class CreateModel : PageModel
     [BindProperty]
     public CourseGroup CourseGroup { get; set; } = new();
 
-    public void OnGet()
+    public async Task<IActionResult> OnGetAsync(int id)
     {
+        var group = await _context.CourseGroups.FindAsync(id);
+        if (group == null)
+        {
+            return NotFound();
+        }
+        CourseGroup = group;
+        return Page();
     }
 
     public async Task<IActionResult> OnPostAsync()
@@ -30,7 +38,7 @@ public class CreateModel : PageModel
             return Page();
         }
 
-        _context.CourseGroups.Add(CourseGroup);
+        _context.Attach(CourseGroup).State = EntityState.Modified;
         await _context.SaveChangesAsync();
         return RedirectToPage("Index");
     }

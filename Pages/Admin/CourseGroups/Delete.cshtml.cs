@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using SysJaky_N.Data;
 using SysJaky_N.Models;
 
-namespace SysJaky_N.Pages.CourseGroups;
+namespace SysJaky_N.Pages.Admin.CourseGroups;
 
 [Authorize(Policy = AuthorizationPolicies.AdminOnly)]
 public class DeleteModel : PageModel

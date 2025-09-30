@@ -1,19 +1,18 @@
-@page "{id:int}"
-@model SysJaky_N.Pages.CourseGroups.EditModel
+@page
+@model SysJaky_N.Pages.Admin.CourseGroups.CreateModel
 @{
-    ViewData["Title"] = "Edit Group";
+    ViewData["Title"] = "Create Group";
 }
 
-<h1>Edit Group</h1>
+<h1>Create Group</h1>
 
 <form method="post">
-    <input type="hidden" asp-for="CourseGroup.Id" />
     <div class="form-group">
         <label asp-for="CourseGroup.Name"></label>
         <input asp-for="CourseGroup.Name" class="form-control" />
         <span asp-validation-for="CourseGroup.Name" class="text-danger"></span>
     </div>
-    <button type="submit" class="btn btn-primary">Save</button>
+    <button type="submit" class="btn btn-primary">Create</button>
     <a asp-page="Index" class="btn btn-secondary">Back to List</a>
 </form>
 
