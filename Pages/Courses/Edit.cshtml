@@ -1,5 +1,6 @@
 @page "{id:int}"
 @model SysJaky_N.Pages.Courses.EditModel
+@using Microsoft.AspNetCore.Html
 @using Microsoft.AspNetCore.Mvc.Rendering
 @using SysJaky_N.Pages.Courses
 @{
@@ -16,6 +17,14 @@
     backLink.Attributes["href"] = Url.Page("Index");
     backLink.InnerHtml.Append("Back to List");
     actions.AppendHtml(backLink);
+
+    var formModel = new CourseFormModel
+    {
+        Course = Model.Course,
+        CourseGroups = Model.CourseGroups,
+        CoverImage = Model.CoverImage,
+        ActionButtons = actions
+    };
 }
 
 <h1>Edit Course</h1>
@@ -29,13 +38,7 @@
         </div>
     }
 
-    <partial name="Courses/Shared/_CourseForm" model="new CourseFormModel
-    {
-        Course = Model.Course,
-        CourseGroups = Model.CourseGroups,
-        CoverImage = Model.CoverImage,
-        ActionButtons = actions
-    }" />
+    <partial name="Courses/Shared/_CourseForm" model="formModel" />
 </form>
 
 @section Scripts {

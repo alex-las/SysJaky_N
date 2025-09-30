@@ -57,6 +57,8 @@ public class IndexModel : PageModel
 
     public int TotalPages { get; set; }
 
+    public int TotalCount { get; set; }
+
     public async Task OnGetAsync()
     {
         const int pageSize = 10;
@@ -176,10 +178,11 @@ public class IndexModel : PageModel
                 .Take(pageSize)
                 .ToListAsync();
 
-            return new CourseListCacheEntry(courses, totalPages);
+            return new CourseListCacheEntry(courses, totalPages, count);
         });
 
         TotalPages = cacheEntry.TotalPages;
+        TotalCount = cacheEntry.TotalCount;
         Courses = cacheEntry.Courses.ToList();
     }
 
