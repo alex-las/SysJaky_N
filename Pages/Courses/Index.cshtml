@@ -1,108 +1,76 @@
 @page
 @model SysJaky_N.Pages.Courses.IndexModel
 @{
-    ViewData["Title"] = "Courses";
+    ViewData["Title"] = "Kurzy a školení";
 }
 
-<h1>Courses</h1>
+<h1 class="mb-3">Kurzy a školení</h1>
 
 @if (TempData["CartError"] is string cartError && !string.IsNullOrWhiteSpace(cartError))
 {
     <div class="alert alert-danger" role="alert">@cartError</div>
 }
 
-<form method="get" class="mb-3">
+<form method="get" class="mb-4" role="search" aria-label="Filtry kurzů">
     <div class="row g-2">
         <div class="col-sm-6 col-lg-3">
-            <input type="text" asp-for="SearchString" placeholder="Search..." class="form-control" aria-label="Search courses" />
+            <input type="text" asp-for="SearchString" placeholder="Hledat kurz, nástroj nebo dovednost…" class="form-control" aria-label="Hledání kurzů" />
         </div>
         <div class="col-sm-6 col-lg-3">
-            <select asp-for="CourseGroupId" asp-items="Model.CourseGroups" class="form-select" aria-label="Filter by group">
-                <option value="">All Groups</option>
+            <select asp-for="CourseGroupId" asp-items="Model.CourseGroups" class="form-select" aria-label="Skupina kurzů">
+                <option value="">Všechny skupiny</option>
             </select>
         </div>
         <div class="col-sm-6 col-lg-3">
-            <select asp-for="Level" asp-items="Model.LevelOptions" class="form-select" aria-label="Filter by level">
-                <option value="">All Levels</option>
+            <select asp-for="Level" asp-items="Model.LevelOptions" class="form-select" aria-label="Úroveň">
+                <option value="">Všechny úrovně</option>
             </select>
         </div>
         <div class="col-sm-6 col-lg-3">
-            <select asp-for="Mode" asp-items="Model.ModeOptions" class="form-select" aria-label="Filter by mode">
-                <option value="">All Modes</option>
+            <select asp-for="Mode" asp-items="Model.ModeOptions" class="form-select" aria-label="Forma">
+                <option value="">Všechny formy</option>
             </select>
         </div>
         <div class="col-sm-6 col-lg-3">
             <div class="input-group">
-                <span class="input-group-text" id="minDurationLabel">Min duration</span>
-                <input type="number" asp-for="MinDuration" class="form-control" aria-labelledby="minDurationLabel" min="0" />
+                <span class="input-group-text" id="minDurationLabel">Min. délka</span>
+                <input type="number" asp-for="MinDuration" class="form-control" min="0" aria-labelledby="minDurationLabel" />
             </div>
         </div>
         <div class="col-sm-6 col-lg-3">
             <div class="input-group">
-                <span class="input-group-text" id="maxDurationLabel">Max duration</span>
-                <input type="number" asp-for="MaxDuration" class="form-control" aria-labelledby="maxDurationLabel" min="0" />
+                <span class="input-group-text" id="maxDurationLabel">Max. délka</span>
+                <input type="number" asp-for="MaxDuration" class="form-control" min="0" aria-labelledby="maxDurationLabel" />
             </div>
         </div>
         <div class="col-12 col-lg-6">
-            <select asp-for="SelectedTagIds" asp-items="Model.TagOptions" class="form-select" multiple size="4" aria-label="Filter by tags"></select>
+            <label class="form-label">Štítky</label>
+            <select asp-for="SelectedTagIds" asp-items="Model.TagOptions" class="form-select" multiple size="4" aria-label="Štítky"></select>
         </div>
         <div class="col-12 text-end">
-            <button type="submit" class="btn btn-primary">Filter</button>
+            <button type="submit" class="btn btn-primary">Zobrazit výsledky</button>
         </div>
     </div>
 </form>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Title</th>
-            <th>Group</th>
-            <th>Level</th>
-            <th>Mode</th>
-            <th>Duration (min)</th>
-            <th>Tags</th>
-            <th>Price</th>
-            <th>Date</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-    @foreach (var item in Model.Courses)
+<div class="row g-3">
+    @foreach (var c in Model.Courses)
     {
-        <tr>
-            <td>@item.Title</td>
-            <td>@item.CourseGroup?.Name</td>
-            <td>@item.Level</td>
-            <td>@item.Mode</td>
-            <td>@item.Duration</td>
-            <td>
-                @if (item.CourseTags.Any())
-                {
-                    <span>@string.Join(", ", item.CourseTags.Select(ct => ct.Tag.Name))</span>
-                }
-            </td>
-            <td>@item.Price</td>
-            <td>@item.Date.ToString("d")</td>
-            <td>
-                <form method="post" asp-page-handler="AddToCart" style="display:inline">
-                    <input type="hidden" name="courseId" value="@item.Id" />
-                    <button type="submit" aria-label="Add @item.Title to cart">Add to cart</button>
-                </form>
-            </td>
-        </tr>
+        <div class="col-12 col-md-6 col-lg-4">
+            @await Html.PartialAsync("/Pages/Shared/Components/_CourseCard.cshtml", c)
+        </div>
     }
-    </tbody>
-</table>
+</div>
 
 @if (Model.TotalPages > 1)
 {
-    <nav>
+    <nav class="mt-3" aria-label="Stránkování kurzů">
         <ul class="pagination">
             <li class="page-item @(Model.PageNumber <= 1 ? "disabled" : "")">
-                <a class="page-link" asp-route-PageNumber="@(Model.PageNumber - 1)" asp-route-CourseGroupId="@Model.CourseGroupId" asp-route-SearchString="@Model.SearchString" asp-route-Level="@Model.Level" asp-route-Mode="@Model.Mode" asp-route-MinDuration="@Model.MinDuration" asp-route-MaxDuration="@Model.MaxDuration" asp-route-SelectedTagIds="@Model.SelectedTagIds">Previous</a>
+                <a class="page-link" asp-route-PageNumber="@(Model.PageNumber - 1)" asp-route-CourseGroupId="@Model.CourseGroupId" asp-route-SearchString="@Model.SearchString" asp-route-Level="@Model.Level" asp-route-Mode="@Model.Mode" asp-route-MinDuration="@Model.MinDuration" asp-route-MaxDuration="@Model.MaxDuration" asp-route-SelectedTagIds="@Model.SelectedTagIds">Předchozí</a>
             </li>
             <li class="page-item @(Model.PageNumber >= Model.TotalPages ? "disabled" : "")">
-                <a class="page-link" asp-route-PageNumber="@(Model.PageNumber + 1)" asp-route-CourseGroupId="@Model.CourseGroupId" asp-route-SearchString="@Model.SearchString" asp-route-Level="@Model.Level" asp-route-Mode="@Model.Mode" asp-route-MinDuration="@Model.MinDuration" asp-route-MaxDuration="@Model.MaxDuration" asp-route-SelectedTagIds="@Model.SelectedTagIds">Next</a>
+                <a class="page-link" asp-route-PageNumber="@(Model.PageNumber + 1)" asp-route-CourseGroupId="@Model.CourseGroupId" asp-route-SearchString="@Model.SearchString" asp-route-Level="@Model.Level" asp-route-Mode="@Model.Mode" asp-route-MinDuration="@Model.MinDuration" asp-route-MaxDuration="@Model.MaxDuration" asp-route-SelectedTagIds="@Model.SelectedTagIds">Další</a>
             </li>
         </ul>
     </nav>
