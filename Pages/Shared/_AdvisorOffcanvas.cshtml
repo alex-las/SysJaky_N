@@ -5,12 +5,8 @@
   </div>
   <div class="offcanvas-body">
     <form method="get" action="/Courses/Index" id="advisorForm" class="vstack gap-3">
-      <select name="persona" class="form-select">
-        <option value="">Jsem…</option><option>Jednotlivec</option><option>HR / týmový leader</option><option>Laboratoř</option><option>Manažer kvality</option><option>Auditor</option><option>Začátečník v ISO</option>
-      </select>
-      <select name="goal" class="form-select">
-        <option value="">Chci…</option><option>získat/obnovit certifikát</option><option>rychle doplnit dovednost</option><option>rekvalifikovat se</option><option>školení pro celý tým</option>
-      </select>
+      <select name="persona" class="form-select" persona-options></select>
+      <select name="goal" class="form-select" goal-options></select>
       <div class="input-group">
         <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
         <input class="form-control" name="City" placeholder="Město (volitelně)" />
