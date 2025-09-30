@@ -30,38 +30,38 @@
         var jsonLdDescription = (Model.Course.Description ?? string.Empty)
             .ReplaceLineEndings(" ")
             .Replace("\"", "'");
-        var jsonLdData = new
+
+        var jsonLdData = new System.Text.Json.Nodes.JsonObject
         {
-            @context = "https://schema.org",
-            @type = "Course",
-            name = Model.Course.Title,
-            description = jsonLdDescription,
-            provider = new
+            ["@context"] = "https://schema.org",
+            ["@type"] = "Course",
+            ["name"] = Model.Course.Title,
+            ["description"] = jsonLdDescription,
+            ["provider"] = new System.Text.Json.Nodes.JsonObject
             {
-                @type = "Organization",
-                name = "Systémy jakosti",
-                sameAs = "https://www.systemy-jakosti.cz/"
+                ["@type"] = "Organization",
+                ["name"] = "Systémy jakosti",
+                ["sameAs"] = "https://www.systemy-jakosti.cz/"
             },
-            hasCourseInstance = new
+            ["hasCourseInstance"] = new System.Text.Json.Nodes.JsonObject
             {
-                @type = "CourseInstance",
-                startDate = Model.Course.Date.ToString("yyyy-MM-dd"),
-                courseMode = Model.Course.Mode ?? string.Empty,
-                offers = new
+                ["@type"] = "CourseInstance",
+                ["startDate"] = Model.Course.Date.ToString("yyyy-MM-dd"),
+                ["courseMode"] = Model.Course.Mode ?? string.Empty,
+                ["offers"] = new System.Text.Json.Nodes.JsonObject
                 {
-                    @type = "Offer",
-                    price = Model.Course.Price,
-                    priceCurrency = "CZK",
-                    availability = "https://schema.org/InStock"
+                    ["@type"] = "Offer",
+                    ["price"] = System.Text.Json.Nodes.JsonValue.Create(Model.Course.Price),
+                    ["priceCurrency"] = "CZK",
+                    ["availability"] = "https://schema.org/InStock"
                 }
             }
         };
-        var jsonLd = System.Text.Json.JsonSerializer.Serialize(
-            jsonLdData,
-            new System.Text.Json.JsonSerializerOptions
-            {
-                Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
-            });
+
+        var jsonLd = jsonLdData.ToJsonString(new System.Text.Json.JsonSerializerOptions
+        {
+            Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+        });
     }
     <script type="application/ld+json">
         @Html.Raw(jsonLd)
