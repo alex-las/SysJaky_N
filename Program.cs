@@ -66,7 +66,7 @@ try
         ConfigureApplicationDbContext(options));
 
     // --- Tichá továrna pro DB sink (žádné EF logy) ---
-    builder.Services.AddPooledDbContextFactory<ApplicationDbContext>(opt =>
+    builder.Services.AddDbContextFactory<ApplicationDbContext>(opt =>
         ConfigureApplicationDbContext(opt, quietLogging: true));
 
     // --- Serilog s možností vypnout DB sink přes DISABLE_DB_LOGS=1 ---
@@ -149,7 +149,7 @@ try
     builder.Services.Configure<PaymentGatewayOptions>(builder.Configuration.GetSection("PaymentGateway"));
     builder.Services.AddScoped<PaymentService>();
     builder.Services.AddSingleton<ICourseSearchOptionProvider, CourseSearchOptionProvider>();
-    builder.Services.AddSingleton<IConverter>(new SynchronizedConverter(new PdfTools()));
+    builder.Services.AddSingleton<IConverter>(sp => new SynchronizedConverter(new PdfTools()));
     builder.Services.AddSingleton<IRazorLightEngine>(sp =>
     {
         var environment = sp.GetRequiredService<IHostEnvironment>();
