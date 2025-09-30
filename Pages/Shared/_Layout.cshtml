@@ -12,23 +12,23 @@
     <link rel="stylesheet" href="~/lib/altcha/altcha.min.css" />
     @await RenderSectionAsync("Head", required: false)
 </head>
-<body>
+<body class="app-shell">
     <a class="visually-hidden-focusable" href="#main-content">Přeskočit na obsah</a>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-primary border-bottom box-shadow mb-3" role="navigation">
+    <header class="site-header py-3 py-lg-4">
+        <nav class="navbar navbar-expand-lg" role="navigation">
             <div class="container">
-                <a class="navbar-brand" asp-area="" asp-page="/Index">SysJaky_N</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                <a class="navbar-brand" asp-area="" asp-page="/Index">
+                    <span class="chip"><i class="bi bi-lightning-charge-fill"></i> SysJaky</span>
+                    <span class="ms-2 d-none d-md-inline text-white-50">smart learning hub</span>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#primaryNavigation" aria-controls="primaryNavigation"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+                <div class="collapse navbar-collapse" id="primaryNavigation">
+                    <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
                         <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-page="/Index" aria-current="@(ViewContext.RouteData.Values["page"]?.ToString() == "/Index" ? "page" : null)">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-page="/Privacy" aria-current="@(ViewContext.RouteData.Values["page"]?.ToString() == "/Privacy" ? "page" : null)">Privacy</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-page="/Courses/Index" aria-current="@(ViewContext.RouteData.Values["page"]?.ToString() == "/Courses/Index" ? "page" : null)">Courses</a>
@@ -39,44 +39,59 @@
                         <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-page="/Contact" aria-current="@(ViewContext.RouteData.Values["page"]?.ToString() == "/Contact" ? "page" : null)">Contact</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-page="/Privacy" aria-current="@(ViewContext.RouteData.Values["page"]?.ToString() == "/Privacy" ? "page" : null)">Privacy</a>
+                        </li>
                         @if (User.IsInRole("Admin"))
                         {
-                            <li class="nav-item">
-                                <a class="nav-link" asp-page="/Admin/Dashboard/Index">Admin</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-page="/Admin/Articles/Index" aria-current="@(ViewContext.RouteData.Values["page"]?.ToString() == "/Admin/Articles/Index" ? "page" : null)">Manage Articles</a>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" id="adminMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Admin
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="adminMenu">
+                                    <li>
+                                        <a class="dropdown-item" asp-page="/Admin/Dashboard/Index">Dashboard</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" asp-area="" asp-page="/Admin/Articles/Index">Manage Articles</a>
+                                    </li>
+                                </ul>
                             </li>
                         }
                         <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-page="/Cart" aria-current="@(ViewContext.RouteData.Values["page"]?.ToString() == "/Cart" ? "page" : null)">Cart</a>
                         </li>
+                    </ul>
+                    <div class="d-flex align-items-center ms-lg-4 mt-3 mt-lg-0">
                         @if (!User.Identity.IsAuthenticated)
                         {
-                            <li class="nav-item">
-                                <a class="btn btn-outline-light" data-bs-toggle="modal" data-bs-target="#authModal">Login / Register</a>
-                            </li>
+                            <button type="button" class="btn btn-auth" data-bs-toggle="modal" data-bs-target="#authModal">
+                                <i class="bi bi-person-circle"></i>
+                                <span>Login / Register</span>
+                            </button>
                         }
                         else
                         {
-                            <li class="nav-item">
-                                <a class="nav-link" asp-page="/Account/Manage" aria-current="@(ViewContext.RouteData.Values["page"]?.ToString() == "/Account/Manage" ? "page" : null)">@User.Identity?.Name</a>
-                            </li>
+                            <a class="nav-link" asp-page="/Account/Manage" aria-current="@(ViewContext.RouteData.Values["page"]?.ToString() == "/Account/Manage" ? "page" : null)">
+                                <i class="bi bi-person-check-fill"></i>
+                                <span class="ms-2">@User.Identity?.Name</span>
+                            </a>
                         }
-                    </ul>
+                    </div>
                 </div>
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main id="main-content" role="main" class="pb-3">
+    <div class="container py-4 py-lg-5">
+        <main id="main-content" role="main" class="pb-4">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
+    <footer class="footer text-muted">
         <div class="container">
-            &copy; 2025 - SysJaky_N - <a asp-area="" asp-page="/Privacy">Privacy</a>
+            <small>&copy; 2025 SysJaky_N. Všechna práva vyhrazena.</small>
+            <a asp-area="" asp-page="/Privacy" class="fw-semibold">Zásady ochrany soukromí</a>
         </div>
     </footer>
 
