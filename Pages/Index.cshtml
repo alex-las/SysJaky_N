@@ -5,12 +5,67 @@
     ViewData["Title"] = "Home page";
 }
 
-<section class="hero text-center">
+<section class="py-5 gradient-hero text-white text-center rounded-4 mb-4">
     <div class="container-xl">
-        <h1 class="display-4 mb-3">@Localizer["HeroTitle"]</h1>
-        <p class="lead mx-auto">@Localizer["HeroDescription"]</p>
+        <h1 class="display-5 fw-bold mb-2">Najděte školení, které <span class="underline-accent">sedne vašemu cíli</span></h1>
+        <p class="lead mb-4 opacity-75">Vyberte roli a cíl – my zúžíme výběr. Nebo rovnou hledejte.</p>
+
+        <form method="get" action="/Courses/Index" class="row g-2 justify-content-center" id="heroForm">
+            <div class="col-12 col-md-3">
+                <select name="persona" class="form-select" aria-label="Jsem">
+                    <option value="">Jsem…</option>
+                    <option>Jednotlivec</option>
+                    <option>HR / týmový leader</option>
+                    <option>Laboratoř</option>
+                    <option>Manažer kvality</option>
+                    <option>Auditor</option>
+                    <option>Začátečník v ISO</option>
+                </select>
+            </div>
+            <div class="col-12 col-md-3">
+                <select name="goal" class="form-select" aria-label="Chci">
+                    <option value="">Chci…</option>
+                    <option>získat/obnovit certifikát</option>
+                    <option>rychle doplnit dovednost</option>
+                    <option>rekvalifikovat se</option>
+                    <option>školení pro celý tým</option>
+                </select>
+            </div>
+            <div class="col-12 col-md-4">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-search"></i></span>
+                    <input name="q" class="form-control" placeholder="Hledat kurz, nástroj nebo dovednost…" />
+                </div>
+            </div>
+            <div class="col-12 col-md-2 d-grid">
+                <button class="btn btn-light fw-semibold" type="submit">Navrhnout kurzy</button>
+            </div>
+        </form>
+
+        <div class="d-flex flex-wrap gap-2 justify-content-center mt-3">
+            <a class="chip chip-light" href="/Courses/Index?Mode=Online">Online</a>
+            <a class="chip chip-light" href="/Courses/Index?CourseGroupId=REKVAL">Rekvalifikace</a>
+            <a class="chip chip-light" href="/Courses/Index?Level=Beginner">Začátečník</a>
+            <a class="chip chip-light" href="/Courses/Index?City=Praha">Praha</a>
+            <a class="chip chip-light" href="/Courses/Index?HasCertificate=true">S certifikátem</a>
+        </div>
     </div>
 </section>
+
+<script>
+    // Ulož volby pro pozdější předvyplnění (malý závazek = vyšší konverze)
+    (function () {
+        const form = document.getElementById('heroForm');
+        const pSel = form?.querySelector('select[name="persona"]');
+        const gSel = form?.querySelector('select[name="goal"]');
+        if (pSel && localStorage.persona) pSel.value = localStorage.persona;
+        if (gSel && localStorage.goal) gSel.value = localStorage.goal;
+        form?.addEventListener('submit', () => {
+            if (pSel) localStorage.persona = pSel.value || "";
+            if (gSel) localStorage.goal = gSel.value || "";
+        });
+    })();
+</script>
 
 <section class="app-section">
     <div class="container-xl">
