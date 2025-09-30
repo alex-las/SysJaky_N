@@ -53,12 +53,10 @@
     </div>
 </form>
 
-<div class="row g-3">
+<div class="courses-grid">
     @foreach (var c in Model.Courses)
     {
-        <div class="col-12 col-md-6 col-lg-4">
-            @await Html.PartialAsync("/Pages/Shared/Components/_CourseCard.cshtml", c)
-        </div>
+        @await Html.PartialAsync("/Pages/Shared/Components/_CourseCard.cshtml", c)
     }
 </div>
 
