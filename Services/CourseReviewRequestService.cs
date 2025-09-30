@@ -1,29 +1,26 @@
 using System.Globalization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using SysJaky_N.Data;
-using SysJaky_N.Models;
 using SysJaky_N.EmailTemplates.Models;
+using SysJaky_N.Models;
 
 namespace SysJaky_N.Services;
 
-public class CourseReviewRequestService : BackgroundService
+public class CourseReviewRequestService : ScopedRecurringBackgroundService<CourseReviewRequestService>
 {
-    private readonly IServiceScopeFactory _scopeFactory;
     private readonly ILogger<CourseReviewRequestService> _logger;
     private readonly Uri _baseUri;
     private readonly string _formPathTemplate;
-    private readonly TimeSpan _interval;
 
     public CourseReviewRequestService(
         IServiceScopeFactory scopeFactory,
         IOptions<CourseReviewRequestOptions> options,
         ILogger<CourseReviewRequestService> logger)
+        : base(scopeFactory, logger, RecurringSchedule.FixedDelay(GetInterval(options)))
     {
-        _scopeFactory = scopeFactory;
         _logger = logger;
 
         var opts = options.Value ?? new CourseReviewRequestOptions();
@@ -37,43 +34,24 @@ public class CourseReviewRequestService : BackgroundService
         _formPathTemplate = NormalizeTemplate(string.IsNullOrWhiteSpace(opts.FormPathTemplate)
             ? "/Courses/Details/{courseId}"
             : opts.FormPathTemplate);
+    }
 
+    protected override string FailureMessage => "Chyba při odesílání žádostí o hodnocení kurzů.";
+
+    protected override async Task ExecuteInScopeAsync(IServiceProvider serviceProvider, CancellationToken stoppingToken)
+    {
+        await ProcessAsync(serviceProvider, stoppingToken);
+    }
+
+    private static TimeSpan GetInterval(IOptions<CourseReviewRequestOptions> optionsAccessor)
+    {
+        var opts = optionsAccessor.Value ?? new CourseReviewRequestOptions();
         var hours = opts.CheckIntervalHours > 0 ? opts.CheckIntervalHours : 24;
-        _interval = TimeSpan.FromHours(hours);
+        return TimeSpan.FromHours(hours);
     }
 
-    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    private async Task ProcessAsync(IServiceProvider serviceProvider, CancellationToken cancellationToken)
     {
-        while (!stoppingToken.IsCancellationRequested)
-        {
-            try
-            {
-                await ProcessAsync(stoppingToken);
-            }
-            catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)
-            {
-                break;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Chyba při odesílání žádostí o hodnocení kurzů.");
-            }
-
-            try
-            {
-                await Task.Delay(_interval, stoppingToken);
-            }
-            catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)
-            {
-                break;
-            }
-        }
-    }
-
-    private async Task ProcessAsync(CancellationToken cancellationToken)
-    {
-        using var scope = _scopeFactory.CreateScope();
-        var serviceProvider = scope.ServiceProvider;
         var context = serviceProvider.GetRequiredService<ApplicationDbContext>();
         var emailSender = serviceProvider.GetRequiredService<IEmailSender>();
 
