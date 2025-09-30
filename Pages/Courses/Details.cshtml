@@ -179,28 +179,23 @@
         </section>
     </div>
     <div class="col-lg-4">
-        <aside class="course-cta-card" aria-labelledby="course-cta-title">
-            <div class="course-cta-card__price">
-                <strong id="course-cta-title">Cena kurzu</strong>
-                <div class="fs-4 fw-bold text-primary">@Model.Course.Price.ToString("C")</div>
+        <div class="p-3 border rounded-3 position-sticky top-0">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <strong>Cena</strong>
+                <div class="fs-5 fw-bold">@Model.Course.Price.ToString("C")</div>
             </div>
+            <ul class="list-unstyled small text-muted mb-3">
+                <li><i class="bi bi-check-circle"></i> Certifikát v ceně (pokud je u termínu uvedeno)</li>
+                <li><i class="bi bi-check-circle"></i> Materiály ke stažení</li>
+                <li><i class="bi bi-check-circle"></i> Snadné storno do 5 pracovních dnů</li>
+            </ul>
             <div class="d-grid gap-2">
                 <form method="post">
-                    <button type="submit" class="btn btn-primary d-flex align-items-center justify-content-center gap-2">
-                        <i class="bi bi-cart-plus"></i>
-                        <span>Přihlásit se</span>
-                    </button>
+                    <button type="submit" class="btn btn-primary">Přihlásit se</button>
                 </form>
-                <a class="btn btn-secondary d-flex align-items-center justify-content-center gap-2" href="/Courses/ICS/@Model.Course.Id">
-                    <i class="bi bi-calendar-plus"></i>
-                    <span>Přidat do kalendáře</span>
-                </a>
-                <a class="btn btn-outline-secondary d-flex align-items-center justify-content-center gap-2" asp-page="/Contact">
-                    <i class="bi bi-building"></i>
-                    <span>Firemní poptávka</span>
-                </a>
+                <a class="btn btn-outline-secondary" asp-page="/Contact" asp-route-subject="Firemní poptávka: @Model.Course.Title">Pro tým</a>
             </div>
-        </aside>
+        </div>
 
         @if (User.Identity?.IsAuthenticated ?? false)
         {
