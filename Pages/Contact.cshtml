@@ -1,15 +1,17 @@
 @page
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 @model SysJaky_N.Pages.ContactModel
 @{
-    ViewData["Title"] = "Kontakt";
+    ViewData["Title"] = Localizer["Title"];
 }
 
-<h1>Kontakt</h1>
+<h1>@Localizer["Title"]</h1>
 
 <div class="row">
     <div class="col-md-6">
         <p class="mb-3 text-muted">
-            Hledáte školení pro celý tým? Napište nám témata, preferovanou formu (online/prezenčně) a termíny.
+            @Localizer["Intro"]
         </p>
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -28,11 +30,11 @@
                 <textarea asp-for="Input.Message" class="form-control"></textarea>
                 <span asp-validation-for="Input.Message" class="text-danger"></span>
             </div>
-            <button type="submit" class="btn btn-primary">Odeslat</button>
+            <button type="submit" class="btn btn-primary">@Localizer["Submit"]</button>
         </form>
-        @if (TempData["Success"] != null)
+        @if (TempData["Success"] is string success && !string.IsNullOrEmpty(success))
         {
-            <div class="alert alert-success mt-3">@TempData["Success"]</div>
+            <div class="alert alert-success mt-3">@success</div>
         }
     </div>
     <div class="col-md-6">

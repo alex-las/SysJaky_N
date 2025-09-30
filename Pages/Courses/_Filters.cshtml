@@ -1,9 +1,11 @@
 @model SysJaky_N.Pages.Courses.IndexModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 
 <div class="offcanvas offcanvas-lg offcanvas-start d-lg-none" tabindex="-1" id="filters" aria-labelledby="filtersLabel">
     <div class="offcanvas-header d-lg-none">
-        <h5 id="filtersLabel">Filtry</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Zavřít"></button>
+        <h5 id="filtersLabel">@Localizer["FiltersTitle"]</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label='@Localizer["Close"]'></button>
     </div>
     <div class="offcanvas-body">
         @await Html.PartialAsync("/Pages/Courses/_FiltersForm.cshtml", Model)

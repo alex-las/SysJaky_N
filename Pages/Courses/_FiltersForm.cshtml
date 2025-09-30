@@ -1,43 +1,45 @@
 @model SysJaky_N.Pages.Courses.IndexModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 
-<form method="get" class="mb-0" role="search" aria-label="Filtry kurzů">
+<form method="get" class="mb-0" role="search" aria-label='@Localizer["FiltersAria"]'>
     <div class="row g-2">
         <div class="col-sm-6 col-lg-12">
-            <input type="text" asp-for="SearchString" placeholder="Co se chcete naučit? Zadejte kurz, nástroj nebo dovednost" class="form-control" aria-label="Hledání kurzů" />
+            <input type="text" asp-for="SearchString" placeholder='@Localizer["SearchPlaceholder"]' class="form-control" aria-label='@Localizer["SearchAria"]' />
         </div>
         <div class="col-sm-6 col-lg-12">
-            <select asp-for="CourseGroupId" asp-items="Model.CourseGroups" class="form-select" aria-label="Skupina kurzů">
-                <option value="">Všechny skupiny</option>
+            <select asp-for="CourseGroupId" asp-items="Model.CourseGroups" class="form-select" aria-label='@Localizer["CourseGroupAria"]'>
+                <option value="">@Localizer["CourseGroupAll"]</option>
             </select>
         </div>
         <div class="col-sm-6 col-lg-12">
-            <select asp-for="Level" asp-items="Model.LevelOptions" class="form-select" aria-label="Úroveň">
-                <option value="">Všechny úrovně</option>
+            <select asp-for="Level" asp-items="Model.LevelOptions" class="form-select" aria-label='@Localizer["LevelAria"]'>
+                <option value="">@Localizer["LevelAll"]</option>
             </select>
         </div>
         <div class="col-sm-6 col-lg-12">
-            <select asp-for="Mode" asp-items="Model.ModeOptions" class="form-select" aria-label="Forma">
-                <option value="">Všechny formy</option>
+            <select asp-for="Mode" asp-items="Model.ModeOptions" class="form-select" aria-label='@Localizer["ModeAria"]'>
+                <option value="">@Localizer["ModeAll"]</option>
             </select>
         </div>
         <div class="col-sm-6 col-lg-6">
             <div class="input-group">
-                <span class="input-group-text" id="minDurationLabel">Min. délka</span>
+                <span class="input-group-text" id="minDurationLabel">@Localizer["MinDuration"]</span>
                 <input type="number" asp-for="MinDuration" class="form-control" min="0" aria-labelledby="minDurationLabel" />
             </div>
         </div>
         <div class="col-sm-6 col-lg-6">
             <div class="input-group">
-                <span class="input-group-text" id="maxDurationLabel">Max. délka</span>
+                <span class="input-group-text" id="maxDurationLabel">@Localizer["MaxDuration"]</span>
                 <input type="number" asp-for="MaxDuration" class="form-control" min="0" aria-labelledby="maxDurationLabel" />
             </div>
         </div>
         <div class="col-12">
-            <label class="form-label">Štítky</label>
-            <select asp-for="SelectedTagIds" asp-items="Model.TagOptions" class="form-select" multiple size="4" aria-label="Štítky"></select>
+            <label class="form-label">@Localizer["TagsLabel"]</label>
+            <select asp-for="SelectedTagIds" asp-items="Model.TagOptions" class="form-select" multiple size="4" aria-label='@Localizer["TagsAria"]'></select>
         </div>
         <div class="col-12 text-end">
-            <button type="submit" class="btn btn-primary">Vyhledat kurzy</button>
+            <button type="submit" class="btn btn-primary">@Localizer["Submit"]</button>
         </div>
     </div>
 </form>

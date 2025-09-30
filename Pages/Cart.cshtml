@@ -1,10 +1,12 @@
 @page
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 @model SysJaky_N.Pages.CartModel
 @{
-    ViewData["Title"] = "Cart";
+    ViewData["Title"] = Localizer["Title"];
 }
 
-<h1>Cart</h1>
+<h1>@Localizer["Title"]</h1>
 
 @if (TempData["CartError"] is string cartError && !string.IsNullOrWhiteSpace(cartError))
 {
@@ -13,17 +15,17 @@
 
 @if (Model.Items.Count == 0)
 {
-    <p>Your cart is empty.</p>
+    <p>@Localizer["Empty"]</p>
 }
 else
 {
     <table class="table">
         <thead>
             <tr>
-                <th>Course</th>
-                <th>Quantity</th>
-                <th>Price</th>
-                <th>Total</th>
+                <th>@Localizer["CourseHeader"]</th>
+                <th>@Localizer["QuantityHeader"]</th>
+                <th>@Localizer["PriceHeader"]</th>
+                <th>@Localizer["TotalHeader"]</th>
             </tr>
         </thead>
         <tbody>
@@ -40,20 +42,20 @@ else
     </table>
     @if (Model.BundleOffers.Any())
     {
-        <h3>Bundle offers</h3>
+        <h3>@Localizer["BundleOffers"]</h3>
         @foreach (var block in Model.BundleOffers)
         {
             var normal = block.Modules.Sum(m => m.Price);
-            <p>You have all modules of <strong>@block.Title</strong>. Bundle price: @block.Price (save @(normal - block.Price)).</p>
+            <p>@Localizer["BundleDescription", block.Title, block.Price, normal - block.Price]</p>
             <form method="post" asp-page-handler="ApplyBundle">
                 <input type="hidden" name="blockId" value="@block.Id" />
-                <button type="submit" class="btn btn-warning btn-sm">Apply bundle</button>
+                <button type="submit" class="btn btn-warning btn-sm">@Localizer["ApplyBundle"]</button>
             </form>
         }
     }
     @if (Model.AppliedBundles.Any())
     {
-        <h3>Applied bundles</h3>
+        <h3>@Localizer["AppliedBundles"]</h3>
         <ul>
         @foreach (var block in Model.AppliedBundles)
         {
@@ -62,8 +64,8 @@ else
         </ul>
     }
     <form method="post" asp-page-handler="ApplyVoucher">
-        <input type="text" name="code" placeholder="Voucher code" />
-        <button type="submit">Apply</button>
+        <input type="text" name="code" placeholder='@Localizer["VoucherPlaceholder"]' />
+        <button type="submit">@Localizer["Apply"]</button>
         @if (!string.IsNullOrEmpty(Model.ErrorMessage))
         {
             <span class="text-danger">@Model.ErrorMessage</span>
@@ -71,10 +73,10 @@ else
     </form>
     @if (Model.AppliedVoucher != null)
     {
-        <p>Voucher applied: @Model.AppliedVoucher.Code (@Model.DiscountAmount)</p>
+        <p>@Localizer["VoucherApplied", Model.AppliedVoucher.Code, Model.DiscountAmount]</p>
     }
-    <p>Total: @Model.Total</p>
+    <p>@Localizer["TotalLine", Model.Total]</p>
     <form method="post" asp-page-handler="Checkout">
-        <button type="submit">Create Order</button>
+        <button type="submit">@Localizer["CreateOrder"]</button>
     </form>
 }

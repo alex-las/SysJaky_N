@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Title" xml:space="preserve">
+    <value>Košík</value>
+  </data>
+  <data name="Empty" xml:space="preserve">
+    <value>Váš košík je prázdný.</value>
+  </data>
+  <data name="CourseHeader" xml:space="preserve">
+    <value>Kurz</value>
+  </data>
+  <data name="QuantityHeader" xml:space="preserve">
+    <value>Množství</value>
+  </data>
+  <data name="PriceHeader" xml:space="preserve">
+    <value>Cena</value>
+  </data>
+  <data name="TotalHeader" xml:space="preserve">
+    <value>Celkem</value>
+  </data>
+  <data name="BundleOffers" xml:space="preserve">
+    <value>Balíčkové nabídky</value>
+  </data>
+  <data name="BundleDescription" xml:space="preserve">
+    <value>Máte všechny moduly kurzu <strong>{0}</strong>. Balíček stojí {1} (ušetříte {2}).</value>
+  </data>
+  <data name="ApplyBundle" xml:space="preserve">
+    <value>Využít balíček</value>
+  </data>
+  <data name="AppliedBundles" xml:space="preserve">
+    <value>Uplatněné balíčky</value>
+  </data>
+  <data name="VoucherPlaceholder" xml:space="preserve">
+    <value>Kód voucheru</value>
+  </data>
+  <data name="Apply" xml:space="preserve">
+    <value>Uplatnit</value>
+  </data>
+  <data name="VoucherApplied" xml:space="preserve">
+    <value>Voucher uplatněn: {0} ({1})</value>
+  </data>
+  <data name="TotalLine" xml:space="preserve">
+    <value>Celkem: {0}</value>
+  </data>
+  <data name="CreateOrder" xml:space="preserve">
+    <value>Vytvořit objednávku</value>
+  </data>
+</root>

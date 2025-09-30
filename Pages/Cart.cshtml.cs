@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Localization;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using SysJaky_N.Data;
@@ -21,6 +22,7 @@ public class CartModel : PageModel
     private readonly IEmailSender _emailSender;
     private readonly IAuditService _auditService;
     private readonly CartService _cartService;
+    private readonly IStringLocalizer<CartModel> _localizer;
 
     private const decimal VatRate = 0.21m;
 
@@ -29,13 +31,15 @@ public class CartModel : PageModel
         UserManager<ApplicationUser> userManager,
         IEmailSender emailSender,
         IAuditService auditService,
-        CartService cartService)
+        CartService cartService,
+        IStringLocalizer<CartModel> localizer)
     {
         _context = context;
         _userManager = userManager;
         _emailSender = emailSender;
         _auditService = auditService;
         _cartService = cartService;
+        _localizer = localizer;
     }
 
     public List<CartItemView> Items { get; set; } = new();
@@ -62,7 +66,7 @@ public class CartModel : PageModel
             await ApplyStoredVoucherAsync();
             if (string.IsNullOrEmpty(ErrorMessage))
             {
-                ErrorMessage = "Your cart is empty.";
+                ErrorMessage = _localizer["Empty"];
             }
 
             return Page();
@@ -105,7 +109,7 @@ public class CartModel : PageModel
             await ApplyStoredVoucherAsync();
             if (string.IsNullOrEmpty(ErrorMessage))
             {
-                ErrorMessage = "Your cart is empty.";
+                ErrorMessage = _localizer["Empty"];
             }
 
             return Page();
@@ -152,7 +156,7 @@ public class CartModel : PageModel
         var cartLines = BuildCartLines(Items);
         if (voucher == null || !IsVoucherValidForCart(voucher, cartLines))
         {
-            ErrorMessage = "Invalid voucher code";
+            ErrorMessage = _localizer["InvalidVoucher"];
             HttpContext.Session.Remove("VoucherId");
             return Page();
         }
