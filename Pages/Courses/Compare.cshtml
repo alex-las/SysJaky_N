@@ -1,0 +1,40 @@
+@page
+@model SysJaky_N.Pages.Courses.CompareModel
+@{
+    ViewData["Title"] = "Porovnání kurzů";
+}
+
+<h1 class="h4 mb-3">Porovnání kurzů</h1>
+
+@if (Model.Courses.Count == 0)
+{
+    <div class="alert alert-info">Vyberte alespoň dva kurzy k porovnání.</div>
+}
+else
+{
+    <div class="table-responsive feature-card p-3">
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th scope="col">Název</th>
+                    <th scope="col">Délka</th>
+                    <th scope="col">Úroveň</th>
+                    <th scope="col">Forma</th>
+                    <th scope="col">Cena</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var course in Model.Courses)
+                {
+                    <tr>
+                        <td>@course.Title</td>
+                        <td>@course.Duration min</td>
+                        <td>@course.Level</td>
+                        <td>@course.Mode</td>
+                        <td>@course.Price.ToString("C")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

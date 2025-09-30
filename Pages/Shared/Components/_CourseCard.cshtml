@@ -30,12 +30,18 @@
       </div>
       <div class="fw-semibold">@Model.Price.ToString("C")</div>
     </div>
-    <div class="d-flex gap-2">
-      <a class="btn btn-outline-secondary" asp-page="/Courses/Details" asp-route-id="@Model.Id">Detail</a>
-      <form method="post" asp-page="/Courses/Index" asp-page-handler="AddToCart" class="d-inline">
-        <input type="hidden" name="courseId" value="@Model.Id" />
-        <button type="submit" class="btn btn-primary" aria-label="Přihlásit se na @Model.Title">Přihlásit se</button>
-      </form>
+    <div class="d-flex flex-column align-items-end gap-2">
+      <div class="form-check form-check-inline">
+        <input class="form-check-input cmp-check" type="checkbox" value="@Model.Id" id="cmp_@Model.Id">
+        <label class="form-check-label small" for="cmp_@Model.Id">Porovnat</label>
+      </div>
+      <div class="d-flex gap-2">
+        <a class="btn btn-outline-secondary" asp-page="/Courses/Details" asp-route-id="@Model.Id">Detail</a>
+        <form method="post" asp-page="/Courses/Index" asp-page-handler="AddToCart" class="d-inline">
+          <input type="hidden" name="courseId" value="@Model.Id" />
+          <button type="submit" class="btn btn-primary" aria-label="Přihlásit se na @Model.Title">Přihlásit se</button>
+        </form>
+      </div>
     </div>
   </div>
 </div>
