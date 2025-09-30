@@ -6,6 +6,7 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SysJaky_N", "SysJaky_N.csproj", "{0F00B5CC-7387-4BBD-BC19-D3115079631E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SysJaky_N.Tests", "SysJaky_N.Tests/SysJaky_N.Tests.csproj", "{B21BBA35-6CC5-49A3-9E37-0F6FF4320A67}"
+
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +22,7 @@ Global
                 {B21BBA35-6CC5-49A3-9E37-0F6FF4320A67}.Debug|Any CPU.Build.0 = Debug|Any CPU
                 {B21BBA35-6CC5-49A3-9E37-0F6FF4320A67}.Release|Any CPU.ActiveCfg = Release|Any CPU
                 {B21BBA35-6CC5-49A3-9E37-0F6FF4320A67}.Release|Any CPU.Build.0 = Release|Any CPU
+
         EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

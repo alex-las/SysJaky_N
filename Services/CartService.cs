@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using SysJaky_N.Data;
 using SysJaky_N.Extensions;
 using SysJaky_N.Models;
@@ -15,10 +16,12 @@ public class CartService
 {
     private const string CartSessionKey = "Cart";
     private readonly ApplicationDbContext _context;
+    private readonly IStringLocalizer<CartService> _localizer;
 
-    public CartService(ApplicationDbContext context)
+    public CartService(ApplicationDbContext context, IStringLocalizer<CartService> localizer)
     {
         _context = context;
+        _localizer = localizer;
     }
 
     public IReadOnlyList<CartItem> GetItems(ISession session)
@@ -53,7 +56,7 @@ public class CartService
     {
         if (quantity <= 0)
         {
-            return CartOperationResult.Failed("Quantity must be greater than zero.", GetItems(session));
+            return CartOperationResult.Failed(_localizer["QuantityGreaterThanZero"].Value, GetItems(session));
         }
 
         var cart = GetItems(session).ToList();
@@ -101,7 +104,7 @@ public class CartService
     {
         if (quantity <= 0)
         {
-            return CartOperationResult.Failed("Quantity must be greater than zero.", GetItems(session));
+            return CartOperationResult.Failed(_localizer["QuantityGreaterThanZero"].Value, GetItems(session));
         }
 
         var validationError = await ValidateCourseAsync(courseId, quantity, cancellationToken);
@@ -119,7 +122,7 @@ public class CartService
     {
         if (requestedQuantity <= 0)
         {
-            return "Quantity must be greater than zero.";
+            return _localizer["QuantityGreaterThanZero"].Value;
         }
 
         var courseExists = await _context.Courses
@@ -127,7 +130,7 @@ public class CartService
             .AnyAsync(c => c.Id == courseId, cancellationToken);
         if (!courseExists)
         {
-            return "Selected course is no longer available.";
+            return _localizer["CourseUnavailable"].Value;
         }
 
         var capacityRecords = await _context.CourseTerms
@@ -145,8 +148,8 @@ public class CartService
         if (availableSeats < requestedQuantity)
         {
             return availableSeats > 0
-                ? $"Only {availableSeats} seats remain for this course."
-                : "This course is fully booked.";
+                ? _localizer["OnlySeatsRemain", availableSeats].Value
+                : _localizer["CourseFullyBooked"].Value;
         }
 
         return null;
