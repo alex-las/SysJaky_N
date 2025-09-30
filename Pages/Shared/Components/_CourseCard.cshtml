@@ -1,0 +1,30 @@
+@model SysJaky_N.Models.Course
+<div class="feature-card h-100 p-3 d-flex flex-column justify-content-between">
+  <div class="d-flex flex-column gap-2">
+    @if (!string.IsNullOrWhiteSpace(Model.CoverImageUrl)){
+      <img src="@Model.CoverImageUrl" alt="Obrázek kurzu @Model.Title" class="img-fluid rounded mb-2" loading="lazy" decoding="async" />
+    }
+    <h3 class="h5 mb-1">@Model.Title</h3>
+    @if (!string.IsNullOrWhiteSpace(Model.Description)){
+      <p class="text-muted small mb-2">@Model.Description</p>
+    }
+    <div class="d-flex flex-wrap gap-2 align-items-center small">
+      <span class="badge badge-soft-primary"><i class="bi bi-bar-chart"></i> @Model.Level</span>
+      <span class="badge badge-soft-primary"><i class="bi bi-laptop"></i> @Model.Mode</span>
+      <span class="badge badge-soft-accent"><i class="bi bi-clock"></i> @Model.Duration&nbsp;min</span>
+    </div>
+  </div>
+  <div class="d-flex justify-content-between align-items-end mt-3">
+    <div class="small text-muted">
+      <i class="bi bi-calendar2"></i> @Model.Date.ToShortDateString()
+      <div class="fw-semibold">@Model.Price.ToString("C")</div>
+    </div>
+    <div class="d-flex gap-2">
+      <a class="btn btn-outline-secondary" asp-page="/Courses/Details" asp-route-id="@Model.Id">Detail</a>
+      <form method="post" asp-page="/Courses/Index" asp-page-handler="AddToCart" class="d-inline">
+        <input type="hidden" name="courseId" value="@Model.Id" />
+        <button type="submit" class="btn btn-primary" aria-label="Přihlásit se na @Model.Title">Přihlásit se</button>
+      </form>
+    </div>
+  </div>
+</div>
