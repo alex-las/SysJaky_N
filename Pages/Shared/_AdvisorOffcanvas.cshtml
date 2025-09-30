@@ -1,0 +1,22 @@
+<div class="offcanvas offcanvas-end" tabindex="-1" id="advisor" aria-labelledby="advisorLabel">
+  <div class="offcanvas-header">
+    <h5 id="advisorLabel">Najdeme vhodné školení</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+  </div>
+  <div class="offcanvas-body">
+    <form method="get" action="/Courses/Index" id="advisorForm" class="vstack gap-3">
+      <select name="persona" class="form-select">
+        <option value="">Jsem…</option><option>Jednotlivec</option><option>HR / týmový leader</option><option>Laboratoř</option><option>Manažer kvality</option><option>Auditor</option><option>Začátečník v ISO</option>
+      </select>
+      <select name="goal" class="form-select">
+        <option value="">Chci…</option><option>získat/obnovit certifikát</option><option>rychle doplnit dovednost</option><option>rekvalifikovat se</option><option>školení pro celý tým</option>
+      </select>
+      <div class="input-group">
+        <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
+        <input class="form-control" name="City" placeholder="Město (volitelně)" />
+      </div>
+      <div class="d-grid"><button class="btn btn-primary">Zobrazit návrhy</button></div>
+      <div class="text-muted small">Tip: Vaši volbu si zapamatujeme pro příště.</div>
+    </form>
+  </div>
+</div>
