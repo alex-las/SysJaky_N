@@ -52,13 +52,6 @@
     </div>
 </form>
 
-@if (User.IsInRole("Admin"))
-{
-    <p>
-        <a asp-page="Create">Create New</a>
-    </p>
-}
-
 <table class="table">
     <thead>
         <tr>
@@ -91,18 +84,10 @@
             <td>@item.Price</td>
             <td>@item.Date.ToString("d")</td>
             <td>
-                @if (User.IsInRole("Admin"))
-                {
-                    <a asp-page="Edit" asp-route-id="@item.Id">Edit</a> 
-                    <a asp-page="Delete" asp-route-id="@item.Id">Delete</a>
-                }
-                else
-                {
-                    <form method="post" asp-page-handler="AddToCart" style="display:inline">
-                        <input type="hidden" name="courseId" value="@item.Id" />
-                        <button type="submit" aria-label="Add @item.Title to cart">Add to cart</button>
-                    </form>
-                }
+                <form method="post" asp-page-handler="AddToCart" style="display:inline">
+                    <input type="hidden" name="courseId" value="@item.Id" />
+                    <button type="submit" aria-label="Add @item.Title to cart">Add to cart</button>
+                </form>
             </td>
         </tr>
     }

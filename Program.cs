@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using SysJaky_N.Data;
 using SysJaky_N.Models;
 using SysJaky_N.Services;
+using System.Linq;
 using DinkToPdf;
 using DinkToPdf.Contracts;
 using System.Text;
@@ -21,7 +22,7 @@ using Microsoft.Extensions.Hosting;
 using System.IO;
 using System.Security.Claims;
 using OfficeOpenXml;
-using Microsoft.Extensions.Logging.Abstractions; // kvùli NullLoggerFactory
+using Microsoft.Extensions.Logging.Abstractions; // kvÅ¯li NullLoggerFactory
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
@@ -46,19 +47,19 @@ try
             "Connection string 'DefaultConnection' not found. Configure it using secrets or KeyVault.");
     }
 
-    // --- Hlavní app DB context ---
+    // --- HlavnÃ­ app DB context ---
     builder.Services.AddDbContext<ApplicationDbContext>(options =>
         options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 36))));
 
-    // --- Tichý LoggingDbContext pro DB sink (žádné EF logy) ---
+    // --- TichÃ½ LoggingDbContext pro DB sink (Å¾Ã¡dnÃ© EF logy) ---
     builder.Services.AddPooledDbContextFactory<LoggingDbContext>(opt =>
     {
         opt.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 36)));
-        opt.UseLoggerFactory(NullLoggerFactory.Instance); // vypne EF logování z tohoto contextu
+        opt.UseLoggerFactory(NullLoggerFactory.Instance); // vypne EF logovÃ¡nÃ­ z tohoto contextu
         opt.EnableDetailedErrors(false).EnableSensitiveDataLogging(false);
     });
 
-    // --- Serilog s možností vypnout DB sink pøes DISABLE_DB_LOGS=1 ---
+    // --- Serilog s moÅ¾nostÃ­ vypnout DB sink pÅ™es DISABLE_DB_LOGS=1 ---
     builder.Host.UseSerilog((context, services, configuration) =>
     {
         var disableDbSink = Environment.GetEnvironmentVariable("DISABLE_DB_LOGS") == "1";
@@ -76,7 +77,7 @@ try
                 rollingInterval: RollingInterval.Day,
                 retainedFileCountLimit: 14,
                 shared: true)
-            // DB sink jen pokud není zakázaný env promìnnou
+            // DB sink jen pokud nenÃ­ zakÃ¡zanÃ½ env promÄ›nnou
             .WriteTo.Conditional(_ => !disableDbSink,
                 wt => wt.Sink(new EfCoreLogSink(
                     services.GetRequiredService<IDbContextFactory<LoggingDbContext>>()
@@ -92,6 +93,8 @@ try
     {
         options.AddPolicy(AuthorizationPolicies.AdminOnly,
             policy => policy.RequireRole(ApplicationRoles.Admin));
+        options.AddPolicy(AuthorizationPolicies.AdminDashboardAccess,
+            policy => policy.RequireRole(ApplicationRoles.AdminDashboardRoles.ToArray()));
         options.AddPolicy(AuthorizationPolicies.AdminOrInstructor,
             policy => policy.RequireRole(ApplicationRoles.Admin, ApplicationRoles.Instructor));
         options.AddPolicy(AuthorizationPolicies.EditorOnly,
@@ -197,7 +200,7 @@ try
 
     var app = builder.Build();
 
-    // DB migrate + seed (bez rekurze – sink používá tichý LoggingDbContext)
+    // DB migrate + seed (bez rekurze â€“ sink pouÅ¾Ã­vÃ¡ tichÃ½ LoggingDbContext)
     using (var scope = app.Services.CreateScope())
     {
         var services = scope.ServiceProvider;

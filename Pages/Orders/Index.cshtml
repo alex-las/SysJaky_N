@@ -26,10 +26,6 @@
             <td>@order.Total</td>
             <td>
                 <a asp-page="Details" asp-route-id="@order.Id">Details</a>
-                @if (User.IsInRole("Admin"))
-                {
-                    <text> | <a asp-page="Edit" asp-route-id="@order.Id">Change Status</a></text>
-                }
             </td>
         </tr>
     }

@@ -1,11 +1,12 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using SysJaky_N.Authorization;
 using SysJaky_N.Data;
 
 namespace SysJaky_N.Pages.Admin.Dashboard;
 
-[Authorize(Policy = AuthorizationPolicies.AdminOnly)]
+[Authorize(Policy = AuthorizationPolicies.AdminDashboardAccess)]
 public class IndexModel : PageModel
 {
     private readonly ApplicationDbContext _context;
