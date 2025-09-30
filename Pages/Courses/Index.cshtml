@@ -14,7 +14,7 @@
 <form method="get" class="mb-4" role="search" aria-label="Filtry kurzů">
     <div class="row g-2">
         <div class="col-sm-6 col-lg-3">
-            <input type="text" asp-for="SearchString" placeholder="Hledat kurz, nástroj nebo dovednost…" class="form-control" aria-label="Hledání kurzů" />
+            <input type="text" asp-for="SearchString" placeholder="Co se chcete naučit? Zadejte kurz, nástroj nebo dovednost" class="form-control" aria-label="Hledání kurzů" />
         </div>
         <div class="col-sm-6 col-lg-3">
             <select asp-for="CourseGroupId" asp-items="Model.CourseGroups" class="form-select" aria-label="Skupina kurzů">
@@ -48,7 +48,7 @@
             <select asp-for="SelectedTagIds" asp-items="Model.TagOptions" class="form-select" multiple size="4" aria-label="Štítky"></select>
         </div>
         <div class="col-12 text-end">
-            <button type="submit" class="btn btn-primary">Zobrazit výsledky</button>
+            <button type="submit" class="btn btn-primary">Vyhledat kurzy</button>
         </div>
     </div>
 </form>
