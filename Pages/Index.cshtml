@@ -5,36 +5,52 @@
     ViewData["Title"] = "Home page";
 }
 
-<section class="text-center py-5 bg-light">
-    <h1 class="display-4">@Localizer["HeroTitle"]</h1>
-    <p class="lead">@Localizer["HeroDescription"]</p>
+<section class="hero text-center">
+    <div class="container-xl">
+        <h1 class="display-4 mb-3">@Localizer["HeroTitle"]</h1>
+        <p class="lead mx-auto">@Localizer["HeroDescription"]</p>
+    </div>
 </section>
 
-<section class="py-5">
-    <h2 class="text-center mb-4">@Localizer["HowItWorksTitle"]</h2>
-    <div class="row text-center">
-        <div class="col-md-4">
-            <i class="bi bi-journal display-4 mb-3"></i>
-            <h3>@Localizer["StepSelectTitle"]</h3>
-            <p>@Localizer["StepSelectDescription"]</p>
-        </div>
-        <div class="col-md-4">
-            <i class="bi bi-person-check display-4 mb-3"></i>
-            <h3>@Localizer["StepRegisterTitle"]</h3>
-            <p>@Localizer["StepRegisterDescription"]</p>
-        </div>
-        <div class="col-md-4">
-            <i class="bi bi-credit-card display-4 mb-3"></i>
-            <h3>@Localizer["StepPayTitle"]</h3>
-            <p>@Localizer["StepPayDescription"]</p>
+<section class="app-section">
+    <div class="container-xl">
+        <h2 class="section-title text-center">@Localizer["HowItWorksTitle"]</h2>
+        <div class="row g-4 text-center">
+            <div class="col-md-4">
+                <div class="feature-card h-100 p-4">
+                    <div class="icon-circle mx-auto mb-3">
+                        <i class="bi bi-journal"></i>
+                    </div>
+                    <h3 class="h5">@Localizer["StepSelectTitle"]</h3>
+                    <p class="mb-0">@Localizer["StepSelectDescription"]</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card h-100 p-4">
+                    <div class="icon-circle mx-auto mb-3">
+                        <i class="bi bi-person-check"></i>
+                    </div>
+                    <h3 class="h5">@Localizer["StepRegisterTitle"]</h3>
+                    <p class="mb-0">@Localizer["StepRegisterDescription"]</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card h-100 p-4">
+                    <div class="icon-circle mx-auto mb-3">
+                        <i class="bi bi-credit-card"></i>
+                    </div>
+                    <h3 class="h5">@Localizer["StepPayTitle"]</h3>
+                    <p class="mb-0">@Localizer["StepPayDescription"]</p>
+                </div>
+            </div>
         </div>
     </div>
 </section>
 
-<section class="py-5 bg-white">
-    <div class="container">
-        <h2 class="text-center mb-4">Why Choose Our Platform?</h2>
-        <p class="text-center">Our courses are crafted by experts and delivered in an accessible format that helps you learn quickly and effectively.</p>
+<section class="app-section app-section-alt">
+    <div class="container-xl text-center">
+        <h2 class="section-title mb-3">Why Choose Our Platform?</h2>
+        <p class="mx-auto app-section-description">Our courses are crafted by experts and delivered in an accessible format that helps you learn quickly and effectively.</p>
     </div>
 </section>
 

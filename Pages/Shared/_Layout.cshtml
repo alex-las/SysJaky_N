@@ -14,22 +14,22 @@
     <link rel="stylesheet" href="~/lib/altcha/altcha.min.css" />
     @await RenderSectionAsync("Head", required: false)
 </head>
-<body>
+<body class="app-body">
     <a class="visually-hidden-focusable" href="#main-content">Přeskočit na obsah</a>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-primary border-bottom box-shadow mb-3" role="navigation">
-            <div class="container">
+    <header class="app-header">
+        <nav class="navbar navbar-expand-lg navbar-toggleable-lg navbar-dark app-navbar" role="navigation">
+            <div class="container-xl">
                 <a class="navbar-brand" asp-area="" asp-page="/Index">SysJaky_N</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                <div class="navbar-collapse collapse d-lg-inline-flex justify-content-between">
                     @{
                         var currentPage = ViewContext.RouteData.Values["page"]?.ToString();
                         var canAccessAdmin = ApplicationRoles.AdminDashboardRoles.Any(role => User.IsInRole(role));
                     }
-                    <ul class="navbar-nav me-auto mb-2 mb-sm-0">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 gap-lg-1">
                         <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-page="/Index" aria-current="@(currentPage == "/Index" ? "page" : null)">Home</a>
                         </li>
@@ -46,7 +46,7 @@
                             <a class="nav-link" asp-area="" asp-page="/Contact" aria-current="@(currentPage == "/Contact" ? "page" : null)">Contact</a>
                         </li>
                     </ul>
-                    <ul class="navbar-nav ms-auto align-items-center gap-2 mb-2 mb-sm-0">
+                    <ul class="navbar-nav ms-auto align-items-center gap-3 mb-2 mb-lg-0">
                         @if (canAccessAdmin)
                         {
                             <li class="nav-item">
@@ -59,13 +59,13 @@
                         @if (!User.Identity.IsAuthenticated)
                         {
                             <li class="nav-item">
-                                <a class="btn btn-outline-light ms-sm-2" data-bs-toggle="modal" data-bs-target="#authModal">Login / Register</a>
+                                <a class="btn btn-outline-light" data-bs-toggle="modal" data-bs-target="#authModal">Login / Register</a>
                             </li>
                         }
                         else
                         {
                             <li class="nav-item">
-                                <a class="btn btn-outline-light ms-sm-2" asp-page="/Account/Manage">@User.Identity?.Name</a>
+                                <a class="btn btn-outline-light" asp-page="/Account/Manage">@User.Identity?.Name</a>
                             </li>
                         }
                         <li class="nav-item">
@@ -79,14 +79,14 @@
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main id="main-content" role="main" class="pb-3">
+    <div class="app-content container-xl px-3 px-md-4">
+        <main id="main-content" role="main" class="app-main">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
+    <footer class="footer app-footer text-muted mt-5">
+        <div class="container-xl">
             &copy; 2025 - SysJaky_N - <a asp-area="" asp-page="/Privacy">Privacy</a>
         </div>
     </footer>
