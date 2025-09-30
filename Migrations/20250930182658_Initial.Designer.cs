@@ -11,8 +11,8 @@ using SysJaky_N.Data;
 namespace SysJaky_N.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250917102937_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20250930182658_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -483,6 +483,10 @@ namespace SysJaky_N.Migrations
                     b.Property<string>("OpenGraphImage")
                         .HasMaxLength(2048)
                         .HasColumnType("varchar(2048)");
+
+                    b.Property<string>("PopoverHtml")
+                        .HasMaxLength(1000)
+                        .HasColumnType("varchar(1000)");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(65,30)");
