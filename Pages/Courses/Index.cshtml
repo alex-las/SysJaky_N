@@ -29,6 +29,49 @@
     </div>
 </div>
 
+<div id="cmpBar" class="compare-bar d-none">
+    <div class="container-xl d-flex justify-content-between align-items-center">
+        <div class="small" id="cmpCount">0 vybráno</div>
+        <a id="cmpGo" class="btn btn-primary btn-sm disabled" aria-disabled="true">Porovnat</a>
+    </div>
+</div>
+<script>
+    const bar = document.getElementById('cmpBar');
+    const btn = document.getElementById('cmpGo');
+    const cnt = document.getElementById('cmpCount');
+    const sel = new Set();
+
+    document.querySelectorAll('.cmp-check').forEach(ch => {
+        ch.addEventListener('change', () => {
+            if (ch.checked) {
+                sel.add(ch.value);
+            } else {
+                sel.delete(ch.value);
+            }
+
+            const selected = sel.size;
+            cnt.textContent = `${selected} vybráno`;
+
+            if (selected > 1 && selected <= 3) {
+                bar.classList.remove('d-none');
+                btn.classList.remove('disabled');
+                btn.removeAttribute('aria-disabled');
+                btn.href = '/Courses/Compare?ids=' + Array.from(sel).join(',');
+            } else {
+                btn.classList.add('disabled');
+                btn.setAttribute('aria-disabled', 'true');
+                btn.removeAttribute('href');
+
+                if (selected === 0) {
+                    bar.classList.add('d-none');
+                } else {
+                    bar.classList.remove('d-none');
+                }
+            }
+        });
+    });
+</script>
+
 @if (TempData["CartError"] is string cartError && !string.IsNullOrWhiteSpace(cartError))
 {
     <div class="alert alert-danger" role="alert">@cartError</div>
