@@ -13,20 +13,24 @@ namespace SysJaky_N.Logging;
 
 internal sealed class EfCoreLogSink : ILogEventSink
 {
-    private readonly IServiceScopeFactory _scopeFactory;
-
     private readonly IDbContextFactory<LoggingDbContext> _ctxFactory;
+
+    private static readonly AsyncLocal<bool> _isLogging = new();
 
     internal EfCoreLogSink(IDbContextFactory<LoggingDbContext> ctxFactory)
         => _ctxFactory = ctxFactory;
 
     public void Emit(LogEvent logEvent)
     {
+        if (ShouldSkipLogging())
+        {
+            return;
+        }
+
+        _isLogging.Value = true;
+
         try
         {
-            using var scope = _scopeFactory.CreateScope();
-            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-
             using var ctx = _ctxFactory.CreateDbContext();
 
             var entry = new LogEntry
@@ -37,7 +41,7 @@ internal sealed class EfCoreLogSink : ILogEventSink
                 Exception = logEvent.Exception?.ToString(),
                 Properties = SerializeProperties(logEvent.Properties),
                 CorrelationId = ExtractScalarValue(logEvent.Properties, "CorrelationId"),
-                SourceContext = src
+                SourceContext = ExtractScalarValue(logEvent.Properties, "SourceContext")
             };
 
             ctx.LogEntries.Add(entry);
@@ -45,11 +49,7 @@ internal sealed class EfCoreLogSink : ILogEventSink
         }
         catch
         {
-            // Schltnout – logování nesmí nikdy shodit appku
-        }
-        finally
-        {
-            _isWriting.Value = false;
+            // Schltnout â€“ logovÃ¡nÃ­ nesmÃ­ nikdy shodit appku
         }
         finally
         {
