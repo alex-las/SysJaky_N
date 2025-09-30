@@ -134,6 +134,7 @@ try
     builder.Services.Configure<CourseReviewRequestOptions>(builder.Configuration.GetSection("CourseReviews"));
     builder.Services.AddScoped<IAuditService, AuditService>();
     builder.Services.AddScoped<ICourseMediaStorage, LocalCourseMediaStorage>();
+    builder.Services.AddScoped<ICourseEditor, CourseEditor>();
     builder.Services.AddScoped<CartService>();
     builder.Services.Configure<CertificateOptions>(builder.Configuration.GetSection("Certificates"));
     builder.Services.AddScoped<CertificateService>();

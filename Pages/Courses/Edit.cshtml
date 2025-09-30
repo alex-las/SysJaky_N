@@ -1,83 +1,41 @@
 @page "{id:int}"
 @model SysJaky_N.Pages.Courses.EditModel
+@using Microsoft.AspNetCore.Mvc.Rendering
+@using SysJaky_N.Pages.Courses
 @{
     ViewData["Title"] = "Edit Course";
+    var actions = new HtmlContentBuilder();
+    var submitButton = new TagBuilder("button");
+    submitButton.Attributes["type"] = "submit";
+    submitButton.AddCssClass("btn btn-primary");
+    submitButton.InnerHtml.Append("Save");
+    actions.AppendHtml(submitButton);
+
+    var backLink = new TagBuilder("a");
+    backLink.AddCssClass("btn btn-secondary");
+    backLink.Attributes["href"] = Url.Page("Index");
+    backLink.InnerHtml.Append("Back to List");
+    actions.AppendHtml(backLink);
 }
 
 <h1>Edit Course</h1>
 
 <form method="post" enctype="multipart/form-data">
     <input type="hidden" asp-for="Course.Id" />
-    <div class="form-group">
-        <label asp-for="Course.Title"></label>
-        <input asp-for="Course.Title" class="form-control" />
-        <span asp-validation-for="Course.Title" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="Course.Description"></label>
-        <textarea asp-for="Course.Description" class="form-control"></textarea>
-        <span asp-validation-for="Course.Description" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="Course.MetaTitle"></label>
-        <input asp-for="Course.MetaTitle" class="form-control" />
-        <span asp-validation-for="Course.MetaTitle" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="Course.MetaDescription"></label>
-        <textarea asp-for="Course.MetaDescription" class="form-control"></textarea>
-        <span asp-validation-for="Course.MetaDescription" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="Course.OpenGraphImage"></label>
-        <input asp-for="Course.OpenGraphImage" class="form-control" />
-        <span asp-validation-for="Course.OpenGraphImage" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="Course.CourseGroupId"></label>
-        <select asp-for="Course.CourseGroupId" asp-items="Model.CourseGroups" class="form-control">
-            <option value="">-- Select Group --</option>
-        </select>
-        <span asp-validation-for="Course.CourseGroupId" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="Course.Price"></label>
-        <input asp-for="Course.Price" class="form-control" />
-        <span asp-validation-for="Course.Price" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="Course.Date"></label>
-        <input asp-for="Course.Date" class="form-control" />
-        <span asp-validation-for="Course.Date" class="text-danger"></span>
-    </div>
     @if (!string.IsNullOrEmpty(Model.Course.CoverImageUrl))
     {
         <div class="mb-3">
             <img src="@Model.Course.CoverImageUrl" alt="Cover for @Model.Course.Title" class="img-fluid rounded" style="max-width: 240px;" />
         </div>
     }
-    <div class="form-group">
-        <label asp-for="CoverImage"></label>
-        <input asp-for="CoverImage" type="file" class="form-control" accept="image/jpeg" />
-        <span asp-validation-for="CoverImage" class="text-danger"></span>
 
-    <div class="form-group">
-        <label asp-for="Course.Level"></label>
-        <select asp-for="Course.Level" class="form-select" asp-items="Html.GetEnumSelectList<SysJaky_N.Models.CourseLevel>()"></select>
-        <span asp-validation-for="Course.Level" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="Course.Mode"></label>
-        <select asp-for="Course.Mode" class="form-select" asp-items="Html.GetEnumSelectList<SysJaky_N.Models.CourseMode>()"></select>
-        <span asp-validation-for="Course.Mode" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="Course.Duration"></label>
-        <input asp-for="Course.Duration" class="form-control" min="0" />
-        <span asp-validation-for="Course.Duration" class="text-danger"></span>
-    </div>
-    <button type="submit" class="btn btn-primary">Save</button>
-    <a asp-page="Index" class="btn btn-secondary">Back to List</a>
+    <partial name="Courses/Shared/_CourseForm" model="new CourseFormModel
+    {
+        Course = Model.Course,
+        CourseGroups = Model.CourseGroups,
+        CoverImage = Model.CoverImage,
+        ActionButtons = actions
+    }" />
 </form>
 
 @section Scripts {
