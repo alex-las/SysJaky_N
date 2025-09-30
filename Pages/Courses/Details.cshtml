@@ -47,7 +47,7 @@
             {
                 ["@type"] = "CourseInstance",
                 ["startDate"] = Model.Course.Date.ToString("yyyy-MM-dd"),
-                ["courseMode"] = Model.Course.Mode ?? string.Empty,
+                ["courseMode"] = Model.Course.Mode.ToString(),
                 ["offers"] = new System.Text.Json.Nodes.JsonObject
                 {
                     ["@type"] = "Offer",
