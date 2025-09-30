@@ -138,7 +138,7 @@
             var audienceFor = new List<string> { levelSummary, modePreference };
             if (Model.Course.CourseGroup is not null)
             {
-                audienceFor.Add($"Členy vzdělávacího bloku „{Model.Course.CourseGroup.Title}“ hledající navazující obsah.");
+                audienceFor.Add($"Členy vzdělávacího bloku „{Model.Course.CourseGroup.Name}“ hledající navazující obsah.");
             }
 
             var audienceNotFor = new List<string> { levelLimitation, modeLimitation };
