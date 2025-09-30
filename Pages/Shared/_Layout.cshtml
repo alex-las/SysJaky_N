@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+@using System.Linq
+@using SysJaky_N.Authorization
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -23,46 +25,55 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+                    @{
+                        var currentPage = ViewContext.RouteData.Values["page"]?.ToString();
+                        var canAccessAdmin = ApplicationRoles.AdminDashboardRoles.Any(role => User.IsInRole(role));
+                    }
+                    <ul class="navbar-nav me-auto mb-2 mb-sm-0">
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-page="/Index" aria-current="@(ViewContext.RouteData.Values["page"]?.ToString() == "/Index" ? "page" : null)">Home</a>
+                            <a class="nav-link" asp-area="" asp-page="/Index" aria-current="@(currentPage == "/Index" ? "page" : null)">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-page="/Privacy" aria-current="@(ViewContext.RouteData.Values["page"]?.ToString() == "/Privacy" ? "page" : null)">Privacy</a>
+                            <a class="nav-link" asp-area="" asp-page="/Privacy" aria-current="@(currentPage == "/Privacy" ? "page" : null)">Privacy</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-page="/Courses/Index" aria-current="@(ViewContext.RouteData.Values["page"]?.ToString() == "/Courses/Index" ? "page" : null)">Courses</a>
+                            <a class="nav-link" asp-area="" asp-page="/Courses/Index" aria-current="@(currentPage == "/Courses/Index" ? "page" : null)">Courses</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-page="/Articles/Index" aria-current="@(ViewContext.RouteData.Values["page"]?.ToString() == "/Articles/Index" ? "page" : null)">Articles</a>
+                            <a class="nav-link" asp-area="" asp-page="/Articles/Index" aria-current="@(currentPage == "/Articles/Index" ? "page" : null)">Articles</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-page="/Contact" aria-current="@(ViewContext.RouteData.Values["page"]?.ToString() == "/Contact" ? "page" : null)">Contact</a>
+                            <a class="nav-link" asp-area="" asp-page="/Contact" aria-current="@(currentPage == "/Contact" ? "page" : null)">Contact</a>
                         </li>
-                        @if (User.IsInRole("Admin"))
+                    </ul>
+                    <ul class="navbar-nav ms-auto align-items-center gap-2 mb-2 mb-sm-0">
+                        @if (canAccessAdmin)
                         {
                             <li class="nav-item">
-                                <a class="nav-link" asp-page="/Admin/Dashboard/Index">Admin</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-page="/Admin/Articles/Index" aria-current="@(ViewContext.RouteData.Values["page"]?.ToString() == "/Admin/Articles/Index" ? "page" : null)">Manage Articles</a>
+                                <a class="nav-link d-flex align-items-center gap-1" asp-page="/Admin/Dashboard/Index">
+                                    <i class="bi bi-speedometer2"></i>
+                                    <span>Admin Dashboard</span>
+                                </a>
                             </li>
                         }
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-page="/Cart" aria-current="@(ViewContext.RouteData.Values["page"]?.ToString() == "/Cart" ? "page" : null)">Cart</a>
-                        </li>
                         @if (!User.Identity.IsAuthenticated)
                         {
                             <li class="nav-item">
-                                <a class="btn btn-outline-light" data-bs-toggle="modal" data-bs-target="#authModal">Login / Register</a>
+                                <a class="btn btn-outline-light ms-sm-2" data-bs-toggle="modal" data-bs-target="#authModal">Login / Register</a>
                             </li>
                         }
                         else
                         {
                             <li class="nav-item">
-                                <a class="nav-link" asp-page="/Account/Manage" aria-current="@(ViewContext.RouteData.Values["page"]?.ToString() == "/Account/Manage" ? "page" : null)">@User.Identity?.Name</a>
+                                <a class="btn btn-outline-light ms-sm-2" asp-page="/Account/Manage">@User.Identity?.Name</a>
                             </li>
                         }
+                        <li class="nav-item">
+                            <a class="nav-link position-relative @(currentPage == "/Cart" ? "active" : null)" asp-area="" asp-page="/Cart" aria-label="Shopping cart">
+                                <i class="bi bi-cart fs-5"></i>
+                                <span class="visually-hidden">Cart</span>
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </div>
