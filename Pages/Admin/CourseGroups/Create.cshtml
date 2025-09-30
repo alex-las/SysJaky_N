@@ -7,13 +7,8 @@
 <h1>Create Group</h1>
 
 <form method="post">
-    <div class="form-group">
-        <label asp-for="CourseGroup.Name"></label>
-        <input asp-for="CourseGroup.Name" class="form-control" />
-        <span asp-validation-for="CourseGroup.Name" class="text-danger"></span>
-    </div>
-    <button type="submit" class="btn btn-primary">Create</button>
-    <a asp-page="Index" class="btn btn-secondary">Back to List</a>
+    <partial name="_CourseGroupForm" for="CourseGroup" />
+    <partial name="_FormActions" model="new SysJaky_N.Pages.Admin.Shared.FormActionsModel { SubmitText = \"Create\", CancelText = \"Back to List\" }" />
 </form>
 
 @section Scripts {

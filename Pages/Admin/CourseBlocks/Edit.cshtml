@@ -5,32 +5,8 @@
 }
 <h1>Edit Course Block</h1>
 <form method="post">
-    <div class="mb-3">
-        <label asp-for="CourseBlock.Title" class="form-label"></label>
-        <input asp-for="CourseBlock.Title" class="form-control" />
-        <span asp-validation-for="CourseBlock.Title" class="text-danger"></span>
-    </div>
-    <div class="mb-3">
-        <label asp-for="CourseBlock.Description" class="form-label"></label>
-        <textarea asp-for="CourseBlock.Description" class="form-control"></textarea>
-        <span asp-validation-for="CourseBlock.Description" class="text-danger"></span>
-    </div>
-    <div class="mb-3">
-        <label asp-for="CourseBlock.Price" class="form-label"></label>
-        <input asp-for="CourseBlock.Price" class="form-control" />
-        <span asp-validation-for="CourseBlock.Price" class="text-danger"></span>
-    </div>
-    <div class="mb-3">
-        <label>Modules</label>
-        @foreach (var course in Model.AvailableCourses)
-        {
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="@course.Id" name="SelectedCourseIds" @(Model.SelectedCourseIds.Contains(course.Id) ? "checked" : string.Empty) />
-                <label class="form-check-label">@course.Title</label>
-            </div>
-        }
-    </div>
-    <button type="submit" class="btn btn-primary">Save</button>
+    <partial name="_CourseBlockForm" model="new SysJaky_N.Pages.Admin.CourseBlocks.CourseBlockFormModel(Model.CourseBlock, Model.AvailableCourses, Model.SelectedCourseIds)" />
+    <partial name="_FormActions" model="new SysJaky_N.Pages.Admin.Shared.FormActionsModel { SubmitText = \"Save\", ShowCancel = false }" />
 </form>
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
