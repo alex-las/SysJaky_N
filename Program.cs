@@ -66,8 +66,13 @@ try
         ConfigureApplicationDbContext(options));
 
     // --- Tichá továrna pro DB sink (žádné EF logy) ---
-    builder.Services.AddDbContextFactory<ApplicationDbContext>(opt =>
-        ConfigureApplicationDbContext(opt, quietLogging: true));
+    builder.Services.AddSingleton<IDbContextFactory<ApplicationDbContext>>(_ =>
+        new DelegateDbContextFactory<ApplicationDbContext>(() =>
+        {
+            var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
+            ConfigureApplicationDbContext(optionsBuilder, quietLogging: true);
+            return new ApplicationDbContext(optionsBuilder.Options);
+        }));
 
     // --- Serilog s možností vypnout DB sink přes DISABLE_DB_LOGS=1 ---
     builder.Host.UseSerilog((context, services, configuration) =>
