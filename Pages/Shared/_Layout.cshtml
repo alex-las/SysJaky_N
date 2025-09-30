@@ -64,8 +64,16 @@
                         }
                         else
                         {
-                            <li class="nav-item">
-                                <a class="btn btn-outline-light" asp-page="/Account/Manage">@User.Identity?.Name</a>
+                            <li class="nav-item dropdown">
+                                <a class="btn btn-outline-light dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                                    @User.Identity?.Name
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li><a class="dropdown-item" asp-page="/Account/Manage">Přehled & profil</a></li>
+                                    <li><a class="dropdown-item" href="/Account/Manage#orders">Moje objednávky</a></li>
+                                    <li><hr class="dropdown-divider" /></li>
+                                    <li><a class="dropdown-item" asp-page="/Cart">Košík</a></li>
+                                </ul>
                             </li>
                         }
                         <li class="nav-item">
