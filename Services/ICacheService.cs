@@ -10,7 +10,8 @@ public record CourseDetailCacheEntry(
     Course Course,
     CourseBlock? CourseBlock,
     IReadOnlyList<CourseReview> Reviews,
-    IReadOnlyList<Lesson> Lessons);
+    IReadOnlyList<Lesson> Lessons,
+    IReadOnlyList<CourseTerm> Terms);
 
 public interface ICacheService
 {

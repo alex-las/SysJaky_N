@@ -34,6 +34,7 @@ public class DetailsModel : PageModel
     public CourseBlock? CourseBlock { get; set; }
     public IList<Lesson> Lessons { get; set; } = new List<Lesson>();
     public Dictionary<int, LessonProgress> ProgressByLessonId { get; set; } = new();
+    public IList<CourseTermSummary> Terms { get; set; } = new List<CourseTermSummary>();
 
     [BindProperty]
     public CourseReview NewReview { get; set; } = new();
@@ -210,7 +211,14 @@ public class DetailsModel : PageModel
                 .ThenBy(l => l.Id)
                 .ToListAsync();
 
-            return new CourseDetailCacheEntry(course, courseBlock, reviews, lessons);
+            var nowUtc = DateTime.UtcNow;
+            var terms = await _context.CourseTerms
+                .AsNoTracking()
+                .Where(term => term.CourseId == courseId && term.IsActive && term.EndUtc >= nowUtc)
+                .OrderBy(term => term.StartUtc)
+                .ToListAsync();
+
+            return new CourseDetailCacheEntry(course, courseBlock, reviews, lessons, terms);
         });
 
         if (cacheEntry == null)
@@ -222,6 +230,16 @@ public class DetailsModel : PageModel
         CourseBlock = cacheEntry.CourseBlock;
         Reviews = cacheEntry.Reviews.ToList();
         Lessons = cacheEntry.Lessons.ToList();
+        var isOnline = ResolveIsOnline(cacheEntry.Course);
+        var location = ResolveLocation(cacheEntry.Course);
+        Terms = cacheEntry.Terms
+            .Select(term => new CourseTermSummary(
+                term.Id,
+                DateTime.SpecifyKind(term.StartUtc, DateTimeKind.Utc).ToLocalTime(),
+                isOnline,
+                location,
+                Math.Max(0, term.Capacity - term.SeatsTaken)))
+            .ToList();
 
         await LoadLessonProgressAsync();
         return true;
@@ -249,6 +267,39 @@ public class DetailsModel : PageModel
             .ToListAsync();
 
         ProgressByLessonId = progressEntries.ToDictionary(lp => lp.LessonId);
+    }
+
+    public record CourseTermSummary(
+        int Id,
+        DateTime StartsAt,
+        bool IsOnline,
+        string Location,
+        int SeatsLeft);
+
+    private static bool ResolveIsOnline(Course? course)
+    {
+        if (course == null)
+        {
+            return false;
+        }
+
+        return course.Type == CourseType.Online || course.Mode == CourseMode.SelfPaced;
+    }
+
+    private static string ResolveLocation(Course? course)
+    {
+        if (course == null)
+        {
+            return "Bude upřesněno";
+        }
+
+        return course.Type switch
+        {
+            CourseType.Online => "Online",
+            CourseType.Hybrid => "Hybridní (kombinace)",
+            CourseType.InPerson => "Prezenčně",
+            _ => "Bude upřesněno"
+        };
     }
 }
 
