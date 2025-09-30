@@ -6,7 +6,7 @@
 <h1>Edit Course Block</h1>
 <form method="post">
     <partial name="_CourseBlockForm" model="new SysJaky_N.Pages.Admin.CourseBlocks.CourseBlockFormModel(Model.CourseBlock, Model.AvailableCourses, Model.SelectedCourseIds)" />
-    <partial name="_FormActions" model='new SysJaky_N.Pages.Admin.Shared.FormActionsModel { SubmitText = "Save", ShowCancel = false }' />
+    <partial name="~/Pages/Shared/_FormActions.cshtml" model='new SysJaky_N.Pages.Admin.Shared.FormActionsModel { SubmitText = "Save", ShowCancel = false }' />
 </form>
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
