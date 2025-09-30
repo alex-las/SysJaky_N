@@ -13,11 +13,11 @@ namespace SysJaky_N.Logging;
 
 internal sealed class EfCoreLogSink : ILogEventSink
 {
-    private readonly IDbContextFactory<LoggingDbContext> _ctxFactory;
+    private readonly IDbContextFactory<ApplicationDbContext> _ctxFactory;
 
     private static readonly AsyncLocal<bool> _isLogging = new();
 
-    internal EfCoreLogSink(IDbContextFactory<LoggingDbContext> ctxFactory)
+    internal EfCoreLogSink(IDbContextFactory<ApplicationDbContext> ctxFactory)
         => _ctxFactory = ctxFactory;
 
     public void Emit(LogEvent logEvent)

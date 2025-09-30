@@ -49,17 +49,25 @@ try
             "Connection string 'DefaultConnection' not found. Configure it using secrets or KeyVault.");
     }
 
+    var serverVersion = new MySqlServerVersion(new Version(8, 0, 36));
+
+    void ConfigureApplicationDbContext(DbContextOptionsBuilder options, bool quietLogging = false)
+    {
+        options.UseMySql(connectionString, serverVersion);
+        if (quietLogging)
+        {
+            options.UseLoggerFactory(NullLoggerFactory.Instance); // vypne EF logování z tohoto contextu
+            options.EnableDetailedErrors(false).EnableSensitiveDataLogging(false);
+        }
+    }
+
     // --- Hlavní app DB context ---
     builder.Services.AddDbContext<ApplicationDbContext>(options =>
-        options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 36))));
+        ConfigureApplicationDbContext(options));
 
-    // --- Tichý LoggingDbContext pro DB sink (žádné EF logy) ---
-    builder.Services.AddPooledDbContextFactory<LoggingDbContext>(opt =>
-    {
-        opt.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 36)));
-        opt.UseLoggerFactory(NullLoggerFactory.Instance); // vypne EF logování z tohoto contextu
-        opt.EnableDetailedErrors(false).EnableSensitiveDataLogging(false);
-    });
+    // --- Tichá továrna pro DB sink (žádné EF logy) ---
+    builder.Services.AddPooledDbContextFactory<ApplicationDbContext>(opt =>
+        ConfigureApplicationDbContext(opt, quietLogging: true));
 
     // --- Serilog s možností vypnout DB sink přes DISABLE_DB_LOGS=1 ---
     builder.Host.UseSerilog((context, services, configuration) =>
@@ -82,7 +90,7 @@ try
             // DB sink jen pokud není zakázaný env proměnnou
             .WriteTo.Conditional(_ => !disableDbSink,
                 wt => wt.Sink(new EfCoreLogSink(
-                    services.GetRequiredService<IDbContextFactory<LoggingDbContext>>()
+                    services.GetRequiredService<IDbContextFactory<ApplicationDbContext>>()
                 )));
     });
 
@@ -239,7 +247,7 @@ try
 
     var app = builder.Build();
 
-    // DB migrate + seed (bez rekurze – sink používá tichý LoggingDbContext)
+    // DB migrate + seed (bez rekurze – sink používá tichou továrnu ApplicationDbContext)
     using (var scope = app.Services.CreateScope())
     {
         var services = scope.ServiceProvider;
