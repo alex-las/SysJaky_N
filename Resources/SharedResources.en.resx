@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="FieldRequired" xml:space="preserve">
+    <value>The {0} field is required.</value>
+  </data>
+  <data name="StringLength" xml:space="preserve">
+    <value>The {0} field must be at most {1} characters long.</value>
+  </data>
+  <data name="EmailAddressInvalid" xml:space="preserve">
+    <value>The {0} field must contain a valid email address.</value>
+  </data>
+  <data name="ContactNameLabel" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="ContactEmailLabel" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="ContactMessageLabel" xml:space="preserve">
+    <value>Message</value>
+  </data>
+</root>

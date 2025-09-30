@@ -1,6 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Localization;
+using SysJaky_N.Resources;
 using SysJaky_N.Data;
 using SysJaky_N.Models;
 using SysJaky_N.Services;
@@ -13,12 +15,14 @@ public class ContactModel : PageModel
     private readonly ApplicationDbContext _context;
     private readonly IEmailSender _emailSender;
     private readonly IConfiguration _configuration;
+    private readonly IStringLocalizer<ContactModel> _localizer;
 
-    public ContactModel(ApplicationDbContext context, IEmailSender emailSender, IConfiguration configuration)
+    public ContactModel(ApplicationDbContext context, IEmailSender emailSender, IConfiguration configuration, IStringLocalizer<ContactModel> localizer)
     {
         _context = context;
         _emailSender = emailSender;
         _configuration = configuration;
+        _localizer = localizer;
     }
 
     [BindProperty]
@@ -26,16 +30,19 @@ public class ContactModel : PageModel
 
     public class InputModel
     {
-        [Required]
-        [StringLength(100)]
+        [Display(Name = nameof(SharedResources.ContactNameLabel), ResourceType = typeof(SharedResources))]
+        [Required(ErrorMessageResourceType = typeof(SharedResources), ErrorMessageResourceName = nameof(SharedResources.FieldRequired))]
+        [StringLength(100, ErrorMessageResourceType = typeof(SharedResources), ErrorMessageResourceName = nameof(SharedResources.StringLength))]
         public string Name { get; set; } = string.Empty;
 
-        [Required]
-        [EmailAddress]
+        [Display(Name = nameof(SharedResources.ContactEmailLabel), ResourceType = typeof(SharedResources))]
+        [Required(ErrorMessageResourceType = typeof(SharedResources), ErrorMessageResourceName = nameof(SharedResources.FieldRequired))]
+        [EmailAddress(ErrorMessageResourceType = typeof(SharedResources), ErrorMessageResourceName = nameof(SharedResources.EmailAddressInvalid))]
         public string Email { get; set; } = string.Empty;
 
-        [Required]
-        [StringLength(4000)]
+        [Display(Name = nameof(SharedResources.ContactMessageLabel), ResourceType = typeof(SharedResources))]
+        [Required(ErrorMessageResourceType = typeof(SharedResources), ErrorMessageResourceName = nameof(SharedResources.FieldRequired))]
+        [StringLength(4000, ErrorMessageResourceType = typeof(SharedResources), ErrorMessageResourceName = nameof(SharedResources.StringLength))]
         public string Message { get; set; } = string.Empty;
     }
 
@@ -70,7 +77,7 @@ public class ContactModel : PageModel
                 new ContactMessageEmailModel(Input.Name, Input.Email, Input.Message));
         }
 
-        TempData["Success"] = "Message sent.";
+        TempData["Success"] = _localizer["MessageSent"];
         return RedirectToPage();
     }
 }

@@ -1,19 +1,21 @@
 @page
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 @model SysJaky_N.Pages.Courses.IndexModel
 @{
-    ViewData["Title"] = "Kurzy a školení";
+    ViewData["Title"] = Localizer["Title"];
 }
 
-<h1 class="mb-3">Kurzy a školení</h1>
+<h1 class="mb-3">@Localizer["Title"]</h1>
 
 <ul class="nav nav-pills mb-3">
-    <li class="nav-item"><a class="nav-link active" asp-page="/Courses/Index">Seznam</a></li>
-    <li class="nav-item"><a class="nav-link" asp-page="/Courses/Calendar">Kalendář</a></li>
+    <li class="nav-item"><a class="nav-link active" asp-page="/Courses/Index">@Localizer["TabList"]</a></li>
+    <li class="nav-item"><a class="nav-link" asp-page="/Courses/Calendar">@Localizer["TabCalendar"]</a></li>
 </ul>
 
 <div class="result-header sticky-top z-2 d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3 py-2 bg-body border-bottom">
     <div class="small text-muted">
-        @Model.TotalCount výsledků
+        @Localizer["ResultCount", Model.TotalCount]
         @if (!string.IsNullOrWhiteSpace(Context.Request.Query["persona"]))
         {
             <span class="ms-2 badge bg-primary-subtle text-primary">@(Context.Request.Query["persona"])</span>
@@ -24,8 +26,8 @@
         }
     </div>
     <div class="d-flex gap-2">
-        <a class="btn btn-sm btn-outline-secondary" href="@Url.Page("/Courses/Index")">Zrušit filtry</a>
-        <a class="btn btn-sm btn-outline-primary d-lg-none" data-bs-toggle="offcanvas" href="#filters"><i class="bi bi-sliders"></i> Filtry</a>
+        <a class="btn btn-sm btn-outline-secondary" href="@Url.Page("/Courses/Index")">@Localizer["ResetFilters"]</a>
+        <a class="btn btn-sm btn-outline-primary d-lg-none" data-bs-toggle="offcanvas" href="#filters"><i class="bi bi-sliders"></i> @Localizer["FiltersButton"]</a>
     </div>
 </div>
 
@@ -95,13 +97,13 @@
 
         @if (Model.TotalPages > 1)
         {
-            <nav class="mt-3" aria-label="Stránkování kurzů">
+            <nav class="mt-3" aria-label='@Localizer["PaginationLabel"]'>
                 <ul class="pagination">
                     <li class="page-item @(Model.PageNumber <= 1 ? "disabled" : "")">
-                        <a class="page-link" asp-route-PageNumber="@(Model.PageNumber - 1)" asp-route-CourseGroupId="@Model.CourseGroupId" asp-route-SearchString="@Model.SearchString" asp-route-Level="@Model.Level" asp-route-Mode="@Model.Mode" asp-route-MinDuration="@Model.MinDuration" asp-route-MaxDuration="@Model.MaxDuration" asp-route-SelectedTagIds="@Model.SelectedTagIds">Předchozí</a>
+                        <a class="page-link" asp-route-PageNumber="@(Model.PageNumber - 1)" asp-route-CourseGroupId="@Model.CourseGroupId" asp-route-SearchString="@Model.SearchString" asp-route-Level="@Model.Level" asp-route-Mode="@Model.Mode" asp-route-MinDuration="@Model.MinDuration" asp-route-MaxDuration="@Model.MaxDuration" asp-route-SelectedTagIds="@Model.SelectedTagIds">@Localizer["Previous"]</a>
                     </li>
                     <li class="page-item @(Model.PageNumber >= Model.TotalPages ? "disabled" : "")">
-                        <a class="page-link" asp-route-PageNumber="@(Model.PageNumber + 1)" asp-route-CourseGroupId="@Model.CourseGroupId" asp-route-SearchString="@Model.SearchString" asp-route-Level="@Model.Level" asp-route-Mode="@Model.Mode" asp-route-MinDuration="@Model.MinDuration" asp-route-MaxDuration="@Model.MaxDuration" asp-route-SelectedTagIds="@Model.SelectedTagIds">Další</a>
+                        <a class="page-link" asp-route-PageNumber="@(Model.PageNumber + 1)" asp-route-CourseGroupId="@Model.CourseGroupId" asp-route-SearchString="@Model.SearchString" asp-route-Level="@Model.Level" asp-route-Mode="@Model.Mode" asp-route-MinDuration="@Model.MinDuration" asp-route-MaxDuration="@Model.MaxDuration" asp-route-SelectedTagIds="@Model.SelectedTagIds">@Localizer["Next"]</a>
                     </li>
                 </ul>
             </nav>

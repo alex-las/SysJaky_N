@@ -1,7 +1,15 @@
-@using System.Linq
+@using System.Globalization
 @using SysJaky_N.Authorization
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+@{
+    var currentCulture = CultureInfo.CurrentUICulture;
+    var currentLanguageLabel = Localizer[currentCulture.TwoLetterISOLanguageName == "en" ? "LanguageNameEn" : "LanguageNameCs"];
+    var currentPage = ViewContext.RouteData.Values["page"]?.ToString();
+    var canAccessAdmin = ApplicationRoles.AdminDashboardRoles.Any(role => User.IsInRole(role));
+    var returnUrl = string.Concat(Context.Request.Path, Context.Request.QueryString);
+}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="@currentCulture.TwoLetterISOLanguageName">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -15,35 +23,31 @@
     @await RenderSectionAsync("Head", required: false)
 </head>
 <body class="app-body">
-    <a class="visually-hidden-focusable" href="#main-content">Přeskočit na obsah</a>
+    <a class="visually-hidden-focusable" href="#main-content">@Localizer["SkipToContent"]</a>
     <header class="app-header">
         <nav class="navbar navbar-expand-lg navbar-toggleable-lg navbar-dark app-navbar" role="navigation" style="background-color: #1ca8d7;">
             <div class="container-xl">
-                <a class="navbar-brand" asp-area="" asp-page="/Index">Systémy jakosti</a>
+                <a class="navbar-brand" asp-area="" asp-page="/Index">@Localizer["BrandName"]</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+                        aria-expanded="false" aria-label='@Localizer["ToggleNavigation"]'>
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-lg-inline-flex justify-content-between">
-                    @{
-                        var currentPage = ViewContext.RouteData.Values["page"]?.ToString();
-                        var canAccessAdmin = ApplicationRoles.AdminDashboardRoles.Any(role => User.IsInRole(role));
-                    }
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0 gap-lg-1">
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-page="/Index" aria-current="@(currentPage == "/Index" ? "page" : null)">Domů</a>
+                            <a class="nav-link" asp-area="" asp-page="/Index" aria-current="@(currentPage == "/Index" ? "page" : null)">@Localizer["NavHome"]</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-page="/Courses/Index" aria-current="@(currentPage == "/Courses/Index" ? "page" : null)">Kurzy a školení</a>
+                            <a class="nav-link" asp-area="" asp-page="/Courses/Index" aria-current="@(currentPage == "/Courses/Index" ? "page" : null)">@Localizer["NavCourses"]</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-page="/Articles/Index" aria-current="@(currentPage == "/Articles/Index" ? "page" : null)">Články</a>
+                            <a class="nav-link" asp-area="" asp-page="/Articles/Index" aria-current="@(currentPage == "/Articles/Index" ? "page" : null)">@Localizer["NavArticles"]</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-page="/Contact" aria-current="@(currentPage == "/Contact" ? "page" : null)">Firemní poptávka</a>
+                            <a class="nav-link" asp-area="" asp-page="/Contact" aria-current="@(currentPage == "/Contact" ? "page" : null)">@Localizer["NavCorporateInquiry"]</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-page="/Privacy" aria-current="@(currentPage == "/Privacy" ? "page" : null)">Ochrana soukromí</a>
+                            <a class="nav-link" asp-area="" asp-page="/Privacy" aria-current="@(currentPage == "/Privacy" ? "page" : null)">@Localizer["NavPrivacy"]</a>
                         </li>
                     </ul>
                     <ul class="navbar-nav ms-auto align-items-center gap-3 mb-2 mb-lg-0">
@@ -52,19 +56,45 @@
                             <li class="nav-item">
                                 <a class="nav-link d-flex align-items-center gap-1" asp-page="/Admin/Dashboard/Index">
                                     <i class="bi bi-speedometer2"></i>
-                                    <span>Admin Dashboard</span>
+                                    <span>@Localizer["AdminDashboard"]</span>
                                 </a>
                             </li>
                         }
                         <li class="nav-item">
                             <a class="btn btn-outline-light ms-2" data-bs-toggle="offcanvas" href="#advisor" role="button">
-                                <i class="bi bi-magic"></i> Poradit s výběrem
+                                <i class="bi bi-magic"></i> @Localizer["AdvisorButton"]
                             </a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <button class="btn btn-outline-light dropdown-toggle d-flex align-items-center gap-1" data-bs-toggle="dropdown">
+                                <i class="bi bi-translate"></i>
+                                <span>@currentLanguageLabel</span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li>
+                                    <form method="post" asp-controller="Localization" asp-action="SetLanguage" class="px-3 py-1">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="returnUrl" value="@returnUrl" />
+                                        <button type="submit" name="culture" value="cs" class="dropdown-item w-100 text-start @(currentCulture.TwoLetterISOLanguageName == "cs" ? "active" : string.Empty)">
+                                            @Localizer["LanguageNameCs"]
+                                        </button>
+                                    </form>
+                                </li>
+                                <li>
+                                    <form method="post" asp-controller="Localization" asp-action="SetLanguage" class="px-3 py-1">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="returnUrl" value="@returnUrl" />
+                                        <button type="submit" name="culture" value="en" class="dropdown-item w-100 text-start @(currentCulture.TwoLetterISOLanguageName == "en" ? "active" : string.Empty)">
+                                            @Localizer["LanguageNameEn"]
+                                        </button>
+                                    </form>
+                                </li>
+                            </ul>
                         </li>
                         @if (!User.Identity.IsAuthenticated)
                         {
                             <li class="nav-item">
-                                <a class="btn btn-outline-light" data-bs-toggle="modal" data-bs-target="#authModal">Login / Register</a>
+                                <a class="btn btn-outline-light" data-bs-toggle="modal" data-bs-target="#authModal">@Localizer["LoginRegister"]</a>
                             </li>
                         }
                         else
@@ -74,19 +104,19 @@
                                     @User.Identity?.Name
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end">
-                                    <li><a class="dropdown-item" asp-page="/Account/Manage">Přehled &amp; profil</a></li>
-                                    <li><a class="dropdown-item" href="/Account/Manage#upcoming-courses">Nadcházející kurzy</a></li>
-                                    <li><a class="dropdown-item" href="/Account/Manage#wishlist">Wishlist</a></li>
-                                    <li><a class="dropdown-item" href="/Account/Manage#orders">Moje objednávky</a></li>
+                                    <li><a class="dropdown-item" asp-page="/Account/Manage">@Localizer["ProfileOverview"]</a></li>
+                                    <li><a class="dropdown-item" href="/Account/Manage#upcoming-courses">@Localizer["UpcomingCourses"]</a></li>
+                                    <li><a class="dropdown-item" href="/Account/Manage#wishlist">@Localizer["Wishlist"]</a></li>
+                                    <li><a class="dropdown-item" href="/Account/Manage#orders">@Localizer["Orders"]</a></li>
                                     <li><hr class="dropdown-divider" /></li>
-                                    <li><a class="dropdown-item" asp-page="/Cart">Košík</a></li>
+                                    <li><a class="dropdown-item" asp-page="/Cart">@Localizer["Cart"]</a></li>
                                 </ul>
                             </li>
                         }
                         <li class="nav-item">
-                            <a class="nav-link position-relative @(currentPage == "/Cart" ? "active" : null)" asp-area="" asp-page="/Cart" aria-label="Shopping cart">
+                            <a class="nav-link position-relative @(currentPage == "/Cart" ? "active" : null)" asp-area="" asp-page="/Cart" aria-label='@Localizer["CartAriaLabel"]'>
                                 <i class="bi bi-cart fs-5"></i>
-                                <span class="visually-hidden">Cart</span>
+                                <span class="visually-hidden">@Localizer["Cart"]</span>
                             </a>
                         </li>
                     </ul>
@@ -102,7 +132,7 @@
 
     <footer class="footer app-footer text-muted mt-5">
         <div class="container-xl">
-            &copy; 2025 - SysJaky_N - <a asp-area="" asp-page="/Privacy">Privacy</a>
+            &copy; 2025 - SysJaky_N - <a asp-area="" asp-page="/Privacy">@Localizer["FooterPrivacy"]</a>
         </div>
     </footer>
 
@@ -119,16 +149,16 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="authModalLabel">Login</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <h5 class="modal-title" id="authModalLabel">@Localizer["LoginTitle"]</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label='@Localizer["Close"]'></button>
                     </div>
                     <div class="modal-body">
                         <ul class="nav nav-tabs mb-3" id="authTab" role="tablist">
                             <li class="nav-item" role="presentation">
-                                <button class="nav-link active" id="login-tab" data-bs-toggle="tab" data-bs-target="#login-tab-pane" type="button" role="tab">Login</button>
+                                <button class="nav-link active" id="login-tab" data-bs-toggle="tab" data-bs-target="#login-tab-pane" type="button" role="tab">@Localizer["LoginTitle"]</button>
                             </li>
                             <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="register-tab" data-bs-toggle="tab" data-bs-target="#register-tab-pane" type="button" role="tab">Register</button>
+                                <button class="nav-link" id="register-tab" data-bs-toggle="tab" data-bs-target="#register-tab-pane" type="button" role="tab">@Localizer["RegisterTitle"]</button>
                             </li>
                         </ul>
                         <div class="tab-content" id="authTabContent">
@@ -136,11 +166,11 @@
                                 <form method="post" asp-page="/Account/Login">
                                     <div asp-validation-summary="All" class="text-danger"></div>
                                     <div class="mb-3">
-                                        <label for="loginEmail" class="form-label">Email</label>
+                                        <label for="loginEmail" class="form-label">@Localizer["EmailLabel"]</label>
                                         <input type="email" class="form-control" id="loginEmail" name="Input.Email" required />
                                     </div>
                                     <div class="mb-3">
-                                        <label for="loginPassword" class="form-label">Password</label>
+                                        <label for="loginPassword" class="form-label">@Localizer["PasswordLabel"]</label>
                                         <input type="password" class="form-control" id="loginPassword" name="Input.Password" required />
                                     </div>
                                     <div class="mb-3">
@@ -151,38 +181,42 @@
                                                        maxnumber="500000"
                                                        workerurl='@($"{Context.Request.Scheme}://{Context.Request.Host}{Url.Content("~/lib/altcha/altcha.worker.js")}?v=5")'>
                                         </altcha-widget>
-                                        <noscript>Prosím povolte JavaScript.</noscript>
+                                        <noscript>@Localizer["EnableJavascript"]</noscript>
                                     </div>
                                     <div class="mb-3 form-check">
                                         <input type="hidden" name="Input.RememberMe" value="false" />
                                         <input type="checkbox" class="form-check-input" id="rememberMe" name="Input.RememberMe" value="true" />
-                                        <label class="form-check-label" for="rememberMe">Remember me</label>
+                                        <label class="form-check-label" for="rememberMe">@Localizer["RememberMe"]</label>
                                     </div>
-                                    <button type="submit" class="btn btn-primary w-100">Login</button>
+                                    <button type="submit" class="btn btn-primary">@Localizer["LoginTitle"]</button>
                                 </form>
                             </div>
                             <div class="tab-pane fade" id="register-tab-pane" role="tabpanel" aria-labelledby="register-tab">
                                 <form method="post" asp-page="/Account/Register">
                                     <div asp-validation-summary="All" class="text-danger"></div>
                                     <div class="mb-3">
-                                        <label for="registerEmail" class="form-label">Email</label>
+                                        <label for="registerEmail" class="form-label">@Localizer["EmailLabel"]</label>
                                         <input type="email" class="form-control" id="registerEmail" name="Input.Email" required />
                                     </div>
                                     <div class="mb-3">
-                                        <label for="registerPassword" class="form-label">Password</label>
+                                        <label for="registerPassword" class="form-label">@Localizer["PasswordLabel"]</label>
                                         <input type="password" class="form-control" id="registerPassword" name="Input.Password" required />
                                     </div>
                                     <div class="mb-3">
-                                        <!-- REGISTER (lazy) -->
-                                        <div class="mb-3">
-                                            <div id="altcha-register-holder"></div>
-                                            <noscript>Prosím povolte JavaScript.</noscript>
-                                        </div>
-
-
-                                        <noscript>Prosím povolte JavaScript.</noscript>
+                                        <label for="registerConfirmPassword" class="form-label">@Localizer["ConfirmPasswordLabel"]</label>
+                                        <input type="password" class="form-control" id="registerConfirmPassword" name="Input.ConfirmPassword" required />
                                     </div>
-                                    <button type="submit" class="btn btn-success w-100">Register</button>
+                                    <div class="mb-3">
+                                        <altcha-widget id="altcha-register" name="altcha"
+                                                       challengeurl='@Url.Content("~/altcha/challenge?d=2")'
+                                                       verifyurl='@Url.Content("~/altcha/verify")'
+                                                       workers="1"
+                                                       maxnumber="500000"
+                                                       workerurl='@($"{Context.Request.Scheme}://{Context.Request.Host}{Url.Content("~/lib/altcha/altcha.worker.js")}?v=5")'>
+                                        </altcha-widget>
+                                        <noscript>@Localizer["EnableJavascript"]</noscript>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">@Localizer["RegisterTitle"]</button>
                                 </form>
                             </div>
                         </div>
@@ -193,57 +227,5 @@
     }
 
     @await RenderSectionAsync("Scripts", required: false)
-
-    <script type="module">
-        const absWorkerUrl = new URL('@Url.Content("~/lib/altcha/altcha.worker.js")', window.location.origin).href;
-
-        function fixWorkerUrls(root=document) {
-          root.querySelectorAll('altcha-widget').forEach(w => {
-            try { new URL(w.getAttribute('workerurl') ?? ''); }
-            catch { w.setAttribute('workerurl', absWorkerUrl); }
-          });
-        }
-        fixWorkerUrls();
-
-        // lazy create for Register tab
-        const regTabBtn = document.querySelector('#register-tab');
-        const regHost = document.querySelector('#altcha-register-holder');
-
-        function ensureRegisterAltcha() {
-        const el = document.createElement('altcha-widget');
-        el.id = 'altcha-register';
-        el.setAttribute('name','altcha');
-        el.setAttribute('challengeurl','@Url.Content("~/altcha/challenge?d=2")');
-        el.setAttribute('verifyurl','@Url.Content("~/altcha/verify")');
-        el.setAttribute('workers','1');
-        el.setAttribute('maxnumber','500000');
-        el.setAttribute('workerurl', absWorkerUrl);
-        regHost.appendChild(el);
-        }
-
-        document.addEventListener('shown.bs.tab', (e) => {
-          if (e.target?.id === 'register-tab') ensureRegisterAltcha();
-        });
-
-        // vyčištění po zavření modalu
-        const authModal = document.getElementById('authModal');
-        if (authModal) {
-          authModal.addEventListener('hidden.bs.modal', () => {
-            authModal.querySelectorAll('altcha-widget').forEach(x => x.remove());
-            // vrať zpět jen login widget
-            const loginPane = authModal.querySelector('#login-tab-pane .mb-3');
-            if (loginPane) {
-              const w = document.createElement('altcha-widget');
-              w.setAttribute('id','altcha-login');
-              w.setAttribute('name','altcha');
-              w.setAttribute('challengeurl','@Url.Content("~/altcha/challenge?d=2")');
-              w.setAttribute('verifyurl','@Url.Content("~/altcha/verify")');
-              w.setAttribute('workerurl', absWorkerUrl);
-              loginPane.prepend(w);
-            }
-          });
-        }
-    </script>
-
 </body>
 </html>

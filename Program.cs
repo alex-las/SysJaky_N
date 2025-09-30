@@ -23,6 +23,7 @@ using System.IO;
 using System.Security.Claims;
 using OfficeOpenXml;
 using Microsoft.Extensions.Logging.Abstractions; // kvůli NullLoggerFactory
+using Microsoft.Extensions.Options;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
@@ -115,8 +116,27 @@ try
     builder.Services.AddDistributedMemoryCache();
     builder.Services.AddSession();
     builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
-    builder.Services.AddRazorPages().AddViewLocalization();
+    builder.Services
+        .AddRazorPages()
+        .AddViewLocalization()
+        .AddDataAnnotationsLocalization(options =>
+        {
+            options.DataAnnotationLocalizerProvider = (type, factory) =>
+                factory.Create(typeof(SysJaky_N.Resources.SharedResources));
+        });
     builder.Services.AddControllers();
+    builder.Services.Configure<RequestLocalizationOptions>(options =>
+    {
+        var supportedCultures = new[] { "cs", "en" };
+        options.SetDefaultCulture("cs");
+        options.AddSupportedCultures(supportedCultures);
+        options.AddSupportedUICultures(supportedCultures);
+
+        options.RequestCultureProviders.Insert(0, new CookieRequestCultureProvider
+        {
+            CookieName = CookieRequestCultureProvider.DefaultCookieName
+        });
+    });
     builder.Services.Configure<PaymentGatewayOptions>(builder.Configuration.GetSection("PaymentGateway"));
     builder.Services.AddScoped<PaymentService>();
     builder.Services.AddSingleton<IConverter>(new SynchronizedConverter(new PdfTools()));
@@ -240,10 +260,8 @@ try
 
     app.UseRouting();
 
-    var localizationOptions = new RequestLocalizationOptions()
-        .SetDefaultCulture("cs")
-        .AddSupportedCultures("cs", "en")
-        .AddSupportedUICultures("cs", "en");
+    var localizationOptions = app.Services
+        .GetRequiredService<IOptions<RequestLocalizationOptions>>().Value;
     app.UseRequestLocalization(localizationOptions);
 
     app.UseSession();

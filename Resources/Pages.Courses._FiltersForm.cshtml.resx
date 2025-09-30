@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="FiltersAria" xml:space="preserve">
+    <value>Filtry kurzů</value>
+  </data>
+  <data name="SearchPlaceholder" xml:space="preserve">
+    <value>Co se chcete naučit? Zadejte kurz, nástroj nebo dovednost</value>
+  </data>
+  <data name="SearchAria" xml:space="preserve">
+    <value>Hledání kurzů</value>
+  </data>
+  <data name="CourseGroupAria" xml:space="preserve">
+    <value>Skupina kurzů</value>
+  </data>
+  <data name="CourseGroupAll" xml:space="preserve">
+    <value>Všechny skupiny</value>
+  </data>
+  <data name="LevelAria" xml:space="preserve">
+    <value>Úroveň</value>
+  </data>
+  <data name="LevelAll" xml:space="preserve">
+    <value>Všechny úrovně</value>
+  </data>
+  <data name="ModeAria" xml:space="preserve">
+    <value>Forma</value>
+  </data>
+  <data name="ModeAll" xml:space="preserve">
+    <value>Všechny formy</value>
+  </data>
+  <data name="MinDuration" xml:space="preserve">
+    <value>Min. délka</value>
+  </data>
+  <data name="MaxDuration" xml:space="preserve">
+    <value>Max. délka</value>
+  </data>
+  <data name="TagsLabel" xml:space="preserve">
+    <value>Štítky</value>
+  </data>
+  <data name="TagsAria" xml:space="preserve">
+    <value>Výběr štítků</value>
+  </data>
+  <data name="Submit" xml:space="preserve">
+    <value>Vyhledat kurzy</value>
+  </data>
+</root>
