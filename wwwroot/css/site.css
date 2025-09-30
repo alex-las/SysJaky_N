@@ -285,9 +285,9 @@ select:focus-visible {
 
 .feature-card:hover,
 .feature-card:focus-within {
-  transform: translateY(-6px);
+  transform: translateY(-4px);
   border-color: var(--accent);
-  box-shadow: var(--shadow-soft);
+  box-shadow: 0 16px 36px rgba(12, 56, 87, 0.12);
 }
 
 .card,
