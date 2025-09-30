@@ -26,6 +26,46 @@
     {
         <meta property="og:image" content="@ogImage" />
     }
+    @{
+        var jsonLdDescription = (Model.Course.Description ?? string.Empty)
+            .ReplaceLineEndings(" ")
+            .Replace("\"", "'");
+        var jsonLdData = new
+        {
+            @context = "https://schema.org",
+            @type = "Course",
+            name = Model.Course.Title,
+            description = jsonLdDescription,
+            provider = new
+            {
+                @type = "Organization",
+                name = "Systémy jakosti",
+                sameAs = "https://www.systemy-jakosti.cz/"
+            },
+            hasCourseInstance = new
+            {
+                @type = "CourseInstance",
+                startDate = Model.Course.Date.ToString("yyyy-MM-dd"),
+                courseMode = Model.Course.Mode ?? string.Empty,
+                offers = new
+                {
+                    @type = "Offer",
+                    price = Model.Course.Price,
+                    priceCurrency = "CZK",
+                    availability = "https://schema.org/InStock"
+                }
+            }
+        };
+        var jsonLd = System.Text.Json.JsonSerializer.Serialize(
+            jsonLdData,
+            new System.Text.Json.JsonSerializerOptions
+            {
+                Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+            });
+    }
+    <script type="application/ld+json">
+        @Html.Raw(jsonLd)
+    </script>
 }
 
 <h1 class="mb-3">@Model.Course.Title</h1>
