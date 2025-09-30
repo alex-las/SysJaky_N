@@ -1,59 +1,28 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using SysJaky_N.Data;
 using SysJaky_N.Models;
 
 namespace SysJaky_N.Services;
 
-public class SalesStatsService : BackgroundService
+public class SalesStatsService : ScopedRecurringBackgroundService<SalesStatsService>
 {
-    private readonly IServiceScopeFactory _scopeFactory;
-    private readonly ILogger<SalesStatsService> _logger;
-
     public SalesStatsService(IServiceScopeFactory scopeFactory, ILogger<SalesStatsService> logger)
+        : base(scopeFactory, logger, RecurringSchedule.DailyAtUtc(TimeSpan.Zero))
     {
-        _scopeFactory = scopeFactory;
-        _logger = logger;
     }
 
-    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    protected override string FailureMessage => "Error updating sales statistics";
+
+    protected override async Task ExecuteInScopeAsync(IServiceProvider serviceProvider, CancellationToken stoppingToken)
     {
-        while (!stoppingToken.IsCancellationRequested)
-        {
-            try
-            {
-                await UpdateSalesStatsAsync(stoppingToken);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error updating sales statistics");
-            }
-
-            try
-            {
-                var now = DateTime.UtcNow;
-                var nextRun = now.Date.AddDays(1);
-                var delay = nextRun - now;
-                if (delay <= TimeSpan.Zero)
-                {
-                    delay = TimeSpan.FromDays(1);
-                }
-
-                await Task.Delay(delay, stoppingToken);
-            }
-            catch (TaskCanceledException)
-            {
-                // ignored
-            }
-        }
+        await UpdateSalesStatsAsync(serviceProvider, stoppingToken);
     }
 
-    private async Task UpdateSalesStatsAsync(CancellationToken token)
+    private static async Task UpdateSalesStatsAsync(IServiceProvider serviceProvider, CancellationToken token)
     {
-        using var scope = _scopeFactory.CreateScope();
-        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        var context = serviceProvider.GetRequiredService<ApplicationDbContext>();
 
         var salesByDate = await context.Orders
             .Where(o => o.Status == OrderStatus.Paid)
