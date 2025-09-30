@@ -1,6 +1,4 @@
 using Microsoft.AspNetCore.Authorization;
-using System;
-using System.IO;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -18,19 +16,16 @@ public class CreateModel : PageModel
 {
     private readonly ApplicationDbContext _context;
     private readonly IAuditService _auditService;
-    private readonly ICourseMediaStorage _courseMediaStorage;
-    private readonly ICacheService _cacheService;
+    private readonly ICourseEditor _courseEditor;
 
     public CreateModel(
         ApplicationDbContext context,
         IAuditService auditService,
-        ICourseMediaStorage courseMediaStorage,
-        ICacheService cacheService)
+        ICourseEditor courseEditor)
     {
         _context = context;
         _auditService = auditService;
-        _courseMediaStorage = courseMediaStorage;
-        _cacheService = cacheService;
+        _courseEditor = courseEditor;
     }
 
     [BindProperty]
@@ -48,53 +43,42 @@ public class CreateModel : PageModel
 
     public async Task<IActionResult> OnPostAsync()
     {
-        if (CoverImage is { Length: > 0 } && !string.Equals(CoverImage.ContentType, "image/jpeg", StringComparison.OrdinalIgnoreCase))
-        {
-            ModelState.AddModelError(nameof(CoverImage), "Nahrajte prosím obálku ve formátu JPEG.");
-        }
-        else if (CoverImage is { Length: 0 })
-        {
-            ModelState.AddModelError(nameof(CoverImage), "Soubor s obálkou je prázdný.");
-        }
+        _courseEditor.ValidateCoverImage(CoverImage, ModelState, nameof(CoverImage));
 
         if (!ModelState.IsValid)
         {
-            CourseGroups = new SelectList(_context.CourseGroups, "Id", "Name");
+            CourseGroups = new SelectList(_context.CourseGroups, "Id", "Name", Course.CourseGroupId);
             return Page();
         }
 
         await using var transaction = await _context.Database.BeginTransactionAsync();
 
-        try
-        {
-            _context.Courses.Add(Course);
-            await _context.SaveChangesAsync();
+        _context.Courses.Add(Course);
+        await _context.SaveChangesAsync();
 
-            if (CoverImage is { Length: > 0 })
-            {
-                using var imageStream = CoverImage.OpenReadStream();
-                var coverUrl = await _courseMediaStorage.SaveCoverImageAsync(
-                    Course.Id,
-                    imageStream,
-                    CoverImage.ContentType,
-                    HttpContext.RequestAborted);
-                Course.CoverImageUrl = coverUrl;
-                await _context.SaveChangesAsync();
-            }
+        var coverResult = await _courseEditor.SaveCoverImageAsync(
+            Course.Id,
+            CoverImage,
+            HttpContext.RequestAborted);
 
-            await transaction.CommitAsync();
-
-            _cacheService.InvalidateCourseList();
-            _cacheService.InvalidateCourseDetail(Course.Id);
-        }
-        catch (Exception ex) when (ex is IOException or InvalidOperationException)
+        if (!coverResult.Succeeded)
         {
             await transaction.RollbackAsync();
             Course.Id = 0;
-            ModelState.AddModelError(nameof(CoverImage), "Nepodařilo se uložit obálku kurzu. Zkontrolujte prosím soubor a zkuste to znovu.");
-            CourseGroups = new SelectList(_context.CourseGroups, "Id", "Name");
+            ModelState.AddModelError(nameof(CoverImage), coverResult.ErrorMessage ?? string.Empty);
+            CourseGroups = new SelectList(_context.CourseGroups, "Id", "Name", Course.CourseGroupId);
             return Page();
         }
+
+        if (coverResult.CoverImageUrl is { } coverUrl)
+        {
+            Course.CoverImageUrl = coverUrl;
+            await _context.SaveChangesAsync();
+        }
+
+        await transaction.CommitAsync();
+
+        _courseEditor.InvalidateCourseCache(Course.Id);
 
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         await _auditService.LogAsync(userId, "CourseCreated", $"Course {Course.Id} created");

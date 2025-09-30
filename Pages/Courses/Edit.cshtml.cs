@@ -1,6 +1,4 @@
 using Microsoft.AspNetCore.Authorization;
-using System;
-using System.IO;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -18,19 +16,16 @@ public class EditModel : PageModel
 {
     private readonly ApplicationDbContext _context;
     private readonly IAuditService _auditService;
-    private readonly ICourseMediaStorage _courseMediaStorage;
-    private readonly ICacheService _cacheService;
+    private readonly ICourseEditor _courseEditor;
 
     public EditModel(
         ApplicationDbContext context,
         IAuditService auditService,
-        ICourseMediaStorage courseMediaStorage,
-        ICacheService cacheService)
+        ICourseEditor courseEditor)
     {
         _context = context;
         _auditService = auditService;
-        _courseMediaStorage = courseMediaStorage;
-        _cacheService = cacheService;
+        _courseEditor = courseEditor;
     }
 
     [BindProperty]
@@ -55,14 +50,7 @@ public class EditModel : PageModel
 
     public async Task<IActionResult> OnPostAsync()
     {
-        if (CoverImage is { Length: > 0 } && !string.Equals(CoverImage.ContentType, "image/jpeg", StringComparison.OrdinalIgnoreCase))
-        {
-            ModelState.AddModelError(nameof(CoverImage), "Nahrajte prosím obálku ve formátu JPEG.");
-        }
-        else if (CoverImage is { Length: 0 })
-        {
-            ModelState.AddModelError(nameof(CoverImage), "Soubor s obálkou je prázdný.");
-        }
+        _courseEditor.ValidateCoverImage(CoverImage, ModelState, nameof(CoverImage));
 
         Course? courseToUpdate = await _context.Courses.FirstOrDefaultAsync(c => c.Id == Course.Id);
         if (courseToUpdate == null)
@@ -79,36 +67,38 @@ public class EditModel : PageModel
 
         courseToUpdate.Title = Course.Title;
         courseToUpdate.Description = Course.Description;
+        courseToUpdate.MetaTitle = Course.MetaTitle;
+        courseToUpdate.MetaDescription = Course.MetaDescription;
+        courseToUpdate.OpenGraphImage = Course.OpenGraphImage;
         courseToUpdate.CourseGroupId = Course.CourseGroupId;
         courseToUpdate.Price = Course.Price;
         courseToUpdate.Date = Course.Date;
+        courseToUpdate.Level = Course.Level;
+        courseToUpdate.Mode = Course.Mode;
+        courseToUpdate.Duration = Course.Duration;
+
+        var coverResult = await _courseEditor.SaveCoverImageAsync(
+            courseToUpdate.Id,
+            CoverImage,
+            HttpContext.RequestAborted);
+
+        if (!coverResult.Succeeded)
+        {
+            ModelState.AddModelError(nameof(CoverImage), coverResult.ErrorMessage ?? string.Empty);
+            Course.CoverImageUrl = courseToUpdate.CoverImageUrl;
+            CourseGroups = new SelectList(_context.CourseGroups, "Id", "Name", Course.CourseGroupId);
+            return Page();
+        }
+
+        if (coverResult.CoverImageUrl is { } coverUrl)
+        {
+            courseToUpdate.CoverImageUrl = coverUrl;
+        }
 
         try
         {
-            if (CoverImage is { Length: > 0 })
-            {
-                try
-                {
-                    using var imageStream = CoverImage.OpenReadStream();
-                    var coverUrl = await _courseMediaStorage.SaveCoverImageAsync(
-                        courseToUpdate.Id,
-                        imageStream,
-                        CoverImage.ContentType,
-                        HttpContext.RequestAborted);
-                    courseToUpdate.CoverImageUrl = coverUrl;
-                }
-                catch (Exception ex) when (ex is IOException or InvalidOperationException)
-                {
-                    ModelState.AddModelError(nameof(CoverImage), "Nepodařilo se uložit obálku kurzu. Zkontrolujte prosím soubor a zkuste to znovu.");
-                    Course.CoverImageUrl = courseToUpdate.CoverImageUrl;
-                    CourseGroups = new SelectList(_context.CourseGroups, "Id", "Name", Course.CourseGroupId);
-                    return Page();
-                }
-            }
-
             await _context.SaveChangesAsync();
-            _cacheService.InvalidateCourseList();
-            _cacheService.InvalidateCourseDetail(courseToUpdate.Id);
+            _courseEditor.InvalidateCourseCache(courseToUpdate.Id);
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             await _auditService.LogAsync(userId, "CourseEdited", $"Course {Course.Id} edited");
         }
