@@ -1,0 +1,93 @@
+@using System
+@model SysJaky_N.Models.ViewModels.RegisterFormOptions
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+@{
+    var formId = Model.FormId ?? "register-form";
+    var emailId = Model.EmailInputId ?? $"{formId}-email";
+    var passwordId = Model.PasswordInputId ?? $"{formId}-password";
+    var confirmId = Model.ConfirmPasswordInputId ?? $"{formId}-confirm";
+    var referralId = Model.ReferralCodeInputId ?? $"{formId}-referral";
+    var altchaId = Model.AltchaId ?? $"{formId}-altcha";
+    var headingTag = string.IsNullOrWhiteSpace(Model.HeadingTagName) ? "h1" : Model.HeadingTagName;
+    var workerUrl = Model.UseAbsoluteWorkerUrl
+        ? $"{Context.Request.Scheme}://{Context.Request.Host}{Url.Content(Model.AltchaWorkerUrl)}{(string.IsNullOrEmpty(Model.AltchaWorkerVersionSuffix) ? string.Empty : Model.AltchaWorkerVersionSuffix)}"
+        : Url.Content(Model.AltchaWorkerUrl);
+    var method = string.IsNullOrWhiteSpace(Model.Method) ? "post" : Model.Method;
+}
+
+@if (!string.IsNullOrWhiteSpace(Model.HeadingLocalizationKey))
+{
+    var headingContent = Localizer[Model.HeadingLocalizationKey];
+    if (headingTag.Equals("h1", StringComparison.OrdinalIgnoreCase))
+    {
+        <h1 id="@Model.HeadingId">@headingContent</h1>
+    }
+    else if (headingTag.Equals("h2", StringComparison.OrdinalIgnoreCase))
+    {
+        <h2 id="@Model.HeadingId">@headingContent</h2>
+    }
+    else if (headingTag.Equals("h3", StringComparison.OrdinalIgnoreCase))
+    {
+        <h3 id="@Model.HeadingId">@headingContent</h3>
+    }
+    else
+    {
+        <div id="@Model.HeadingId" class="@headingTag">@headingContent</div>
+    }
+}
+
+<form method="@method"
+      id="@formId"
+      class="@Model.FormCssClass"
+      asp-page="@(string.IsNullOrEmpty(Model.AspPage) ? null : Model.AspPage)"
+      asp-page-handler="@(string.IsNullOrEmpty(Model.AspPageHandler) ? null : Model.AspPageHandler)"
+      action="@(string.IsNullOrEmpty(Model.Action) ? null : Model.Action)"
+      asp-antiforgery="@Model.IncludeAntiforgery">
+    <div asp-validation-summary="All" class="@Model.ValidationSummaryCssClass"></div>
+
+    <div class="mb-3">
+        <label class="form-label" for="@emailId">@Localizer[Model.EmailLabelKey]</label>
+        <input class="form-control" asp-for="Input.Email" id="@emailId" autocomplete="email" />
+        <span class="text-danger" asp-validation-for="Input.Email"></span>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label" for="@passwordId">@Localizer[Model.PasswordLabelKey]</label>
+        <input class="form-control" asp-for="Input.Password" id="@passwordId" autocomplete="new-password" />
+        <span class="text-danger" asp-validation-for="Input.Password"></span>
+    </div>
+
+    @if (Model.IncludeConfirmPassword)
+    {
+        <div class="mb-3">
+            <label class="form-label" for="@confirmId">@Localizer[Model.ConfirmPasswordLabelKey]</label>
+            <input class="form-control" asp-for="Input.ConfirmPassword" id="@confirmId" autocomplete="new-password" />
+            <span class="text-danger" asp-validation-for="Input.ConfirmPassword"></span>
+        </div>
+    }
+
+    @if (Model.IncludeReferralCode)
+    {
+        <div class="mb-3">
+            <label class="form-label" for="@referralId">@Localizer[Model.ReferralCodeLabelKey]</label>
+            <input class="form-control" asp-for="Input.ReferralCode" id="@referralId" />
+            <span class="text-danger" asp-validation-for="Input.ReferralCode"></span>
+        </div>
+    }
+
+    <div class="mb-3">
+        <altcha-widget id="@altchaId"
+                       name="@Model.AltchaWidgetName"
+                       challengeurl='@Url.Content(Model.AltchaChallengeUrl)'
+                       verifyurl='@Url.Content(Model.AltchaVerifyUrl)'
+                       workerurl='@workerUrl'
+                       workers='@Model.AltchaWorkers'
+                       maxnumber='@Model.AltchaMaxNumber'
+                       @(Model.EnableRefetchOnExpire ? "refetchonexpire" : null)>
+        </altcha-widget>
+        <noscript>@Localizer[Model.EnableJavascriptKey]</noscript>
+        <span class="text-danger" asp-validation-for="Input.Captcha"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">@Localizer[Model.SubmitButtonKey]</button>
+</form>

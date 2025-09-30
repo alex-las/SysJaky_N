@@ -1,31 +1,31 @@
 @page
 @model SysJaky_N.Pages.Account.LoginModel
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
 
-<h1>Login</h1>
+@{
+    ViewData["Title"] = Localizer["LoginTitle"];
+    var loginFormOptions = new LoginFormOptions
+    {
+        Input = Model.Input,
+        FormId = "account-login-form",
+        FormCssClass = "card card-body p-4 auth-form",
+        HeadingLocalizationKey = "LoginTitle",
+        HeadingTagName = "h1",
+        ValidationSummaryCssClass = "text-danger",
+        EmailInputId = "account-login-email",
+        PasswordInputId = "account-login-password",
+        RememberMeInputId = "account-login-remember",
+        AltchaId = "account-login-altcha",
+        AltchaChallengeUrl = "~/altcha/challenge",
+        AltchaWorkerVersionSuffix = string.Empty,
+        UseAbsoluteWorkerUrl = false,
+        AltchaWorkers = "1",
+        AltchaMaxNumber = "500000",
+        EnableRefetchOnExpire = true
+    };
+}
 
-<form method="post">
-    <div asp-validation-summary="All"></div>
-    <div>
-        <label asp-for="Input.Email"></label>
-        <input asp-for="Input.Email" />
-        <span asp-validation-for="Input.Email"></span>
-    </div>
-    <div>
-        <label asp-for="Input.Password"></label>
-        <input asp-for="Input.Password" type="password" />
-        <span asp-validation-for="Input.Password"></span>
-    </div>
-    <div>
-        <altcha-widget name="altcha" challengeurl="@Url.Content("~/altcha/challenge")" verifyurl="@Url.Content("~/altcha/verify")" workerurl="@Url.Content("~/lib/altcha/altcha.worker.js")" refetchonexpire></altcha-widget>
-        <noscript>Prosím povolte JavaScript.</noscript>
-        <span asp-validation-for="Input.Captcha"></span>
-    </div>
-    <div>
-        <input asp-for="Input.RememberMe" />
-        <label asp-for="Input.RememberMe">Remember me</label>
-    </div>
-    <button type="submit">Login</button>
-</form>
+<partial name="~/Pages/Shared/Account/_LoginForm.cshtml" model="loginFormOptions" />
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
