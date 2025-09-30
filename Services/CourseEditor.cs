@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.Extensions.Localization;
 
 namespace SysJaky_N.Services;
 
@@ -11,11 +12,16 @@ public sealed class CourseEditor : ICourseEditor
 {
     private readonly ICourseMediaStorage _courseMediaStorage;
     private readonly ICacheService _cacheService;
+    private readonly IStringLocalizer<CourseEditor> _localizer;
 
-    public CourseEditor(ICourseMediaStorage courseMediaStorage, ICacheService cacheService)
+    public CourseEditor(
+        ICourseMediaStorage courseMediaStorage,
+        ICacheService cacheService,
+        IStringLocalizer<CourseEditor> localizer)
     {
         _courseMediaStorage = courseMediaStorage;
         _cacheService = cacheService;
+        _localizer = localizer;
     }
 
     public bool ValidateCoverImage(IFormFile? coverImage, ModelStateDictionary modelState, string fieldName)
@@ -24,12 +30,12 @@ public sealed class CourseEditor : ICourseEditor
 
         if (coverImage is { Length: > 0 } && !string.Equals(coverImage.ContentType, "image/jpeg", StringComparison.OrdinalIgnoreCase))
         {
-            modelState.AddModelError(fieldName, "Nahrajte prosím obálku ve formátu JPEG.");
+            modelState.AddModelError(fieldName, _localizer["CoverImageMustBeJpeg"].Value);
             isValid = false;
         }
         else if (coverImage is { Length: 0 })
         {
-            modelState.AddModelError(fieldName, "Soubor s obálkou je prázdný.");
+            modelState.AddModelError(fieldName, _localizer["CoverImageEmpty"].Value);
             isValid = false;
         }
 
@@ -58,7 +64,7 @@ public sealed class CourseEditor : ICourseEditor
         }
         catch (Exception ex) when (ex is IOException or InvalidOperationException)
         {
-            return CourseCoverImageResult.Failure("Nepodařilo se uložit obálku kurzu. Zkontrolujte prosím soubor a zkuste to znovu.");
+            return CourseCoverImageResult.Failure(_localizer["CoverImageSaveFailed"].Value);
         }
     }
 
