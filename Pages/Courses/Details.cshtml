@@ -1,5 +1,7 @@
 @page "{id:int}"
 @model SysJaky_N.Pages.Courses.DetailsModel
+@using System.Collections.Generic
+@using SysJaky_N.Models
 @{
     var metaTitle = string.IsNullOrWhiteSpace(Model.Course.MetaTitle)
         ? Model.Course.Title
@@ -84,6 +86,78 @@
 
 <div class="row g-4">
     <div class="col-lg-8">
+        @{
+            var outcomeTopics = Model.Course.CourseTags?
+                .Select(ct => ct.Tag?.Name)
+                .Where(name => !string.IsNullOrWhiteSpace(name))
+                .Distinct(System.StringComparer.OrdinalIgnoreCase)
+                .ToList() ?? new List<string>();
+
+            if (outcomeTopics.Count == 0)
+            {
+                outcomeTopics = new List<string>
+                {
+                    "Praktické postupy pro každodenní práci",
+                    "Aktuální normy a legislativní změny",
+                    "Ověřené tipy a doporučení z praxe"
+                };
+            }
+
+            string levelSummary = Model.Course.Level switch
+            {
+                CourseLevel.Beginner => "Začínající profesionály, kteří se chtějí rychle zorientovat.",
+                CourseLevel.Intermediate => "Specialisty se základní zkušeností, kteří potřebují posunout své dovednosti dál.",
+                CourseLevel.Advanced => "Zkušené odborníky hledající detailní vhled do pokročilých témat.",
+                _ => "Odborníky se zájmem o prohloubení znalostí."
+            };
+
+            string levelLimitation = Model.Course.Level switch
+            {
+                CourseLevel.Beginner => "Účastníky očekávající velmi pokročilé nebo strategické know-how.",
+                CourseLevel.Intermediate => "Úplné začátečníky bez předchozích zkušeností v dané oblasti.",
+                CourseLevel.Advanced => "Účastníky hledající jen úvodní seznámení s problematikou.",
+                _ => "Účastníky mimo zaměření kurzu."
+            };
+
+            string modePreference = Model.Course.Mode switch
+            {
+                CourseMode.SelfPaced => "Lidi, kteří preferují studium vlastním tempem s možností vracet se k materiálům.",
+                CourseMode.InstructorLed => "Účastníky, kteří chtějí interaktivní vedení lektorem a prostor pro dotazy.",
+                CourseMode.Blended => "Týmy, které ocení kombinaci samostudia a živých setkání.",
+                _ => "Zájemce o flexibilní vzdělávání."
+            };
+
+            string modeLimitation = Model.Course.Mode switch
+            {
+                CourseMode.SelfPaced => "Zájemce vyžadující intenzivní osobní vedení lektora v reálném čase.",
+                CourseMode.InstructorLed => "Ty, kteří preferují zcela samostatné tempo bez pevně daných termínů.",
+                CourseMode.Blended => "Účastníky, kteří nemohou kombinovat online studium se živými setkáními.",
+                _ => "Účastníky s odlišnými preferencemi formy výuky."
+            };
+
+            var audienceFor = new List<string> { levelSummary, modePreference };
+            if (Model.Course.CourseGroup is not null)
+            {
+                audienceFor.Add($"Členy vzdělávacího bloku „{Model.Course.CourseGroup.Title}“ hledající navazující obsah.");
+            }
+
+            var audienceNotFor = new List<string> { levelLimitation, modeLimitation };
+            if (!Model.Course.IsActive)
+            {
+                audienceNotFor.Add("Zájemce o aktuálně otevřený termín – kurz je dočasně pozastaven.");
+            }
+
+            audienceFor = audienceFor
+                .Where(item => !string.IsNullOrWhiteSpace(item))
+                .Distinct(System.StringComparer.OrdinalIgnoreCase)
+                .ToList();
+
+            audienceNotFor = audienceNotFor
+                .Where(item => !string.IsNullOrWhiteSpace(item))
+                .Distinct(System.StringComparer.OrdinalIgnoreCase)
+                .ToList();
+        }
+
         @if (!string.IsNullOrWhiteSpace(Model.Course.Description))
         {
             <section class="mb-4">
@@ -91,6 +165,42 @@
                 <p>@Model.Course.Description</p>
             </section>
         }
+
+        <section class="mb-4">
+            <h2 class="h5 mb-3">Co se naučíte</h2>
+            <ul class="list-unstyled mb-0">
+                @foreach (var topic in outcomeTopics)
+                {
+                    <li class="d-flex align-items-start gap-2 mb-2">
+                        <i class="bi bi-check2 text-success"></i>
+                        <span>@topic</span>
+                    </li>
+                }
+            </ul>
+        </section>
+
+        <section class="mb-4">
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <h3 class="h6 text-uppercase text-muted mb-2">Pro koho je</h3>
+                    <ul class="small text-muted mb-0">
+                        @foreach (var item in audienceFor)
+                        {
+                            <li class="mb-1">@item</li>
+                        }
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <h3 class="h6 text-uppercase text-muted mb-2">Pro koho není</h3>
+                    <ul class="small text-muted mb-0">
+                        @foreach (var item in audienceNotFor)
+                        {
+                            <li class="mb-1">@item</li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </section>
 
         <section class="mb-4">
             <h2 class="h5">Detaily</h2>
