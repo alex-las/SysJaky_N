@@ -98,6 +98,61 @@
     })();
 </script>
 
+<section class="container-xl">
+  <div class="row g-3 align-items-stretch">
+    <div class="col-lg-8">
+      <div class="feature-card h-100 p-3">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <h2 class="h5 mb-0">Doporučeno pro vás</h2>
+          <a class="btn btn-sm btn-outline-secondary" href="/Courses/Index">Zobrazit vše</a>
+        </div>
+        <div class="row g-3">
+          @foreach (var c in Model.PicksForPersona)
+          {
+            <div class="col-12 col-md-6">
+              @await Html.PartialAsync("/Pages/Shared/Components/_CourseCard.cshtml", c)
+            </div>
+          }
+          @if (!Model.PicksForPersona.Any())
+          {
+            <div class="col-12 text-muted">Vyberte nahoře „Jsem… / Chci…“, nebo použijte vyhledávání.</div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-4">
+      <div class="feature-card h-100 p-3">
+        <h2 class="h6">Co startuje nejdřív</h2>
+        <ul class="list-unstyled small mb-3">
+          @foreach (var c in Model.FastSoonest)
+          {
+            <li class="mb-2">
+              <a asp-page="/Courses/Details" asp-route-id="@c.Id">@c.Title</a>
+              <span class="text-muted">— @c.Date.ToString("d")</span>
+            </li>
+          }
+        </ul>
+        <a class="btn btn-outline-primary btn-sm" href="/Courses/Calendar"><i class="bi bi-calendar3"></i> Kalendář termínů</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-3 mt-1">
+    <div class="col-12">
+      <div class="feature-card p-3">
+        <h2 class="h6 mb-2">Novinky</h2>
+        <div class="d-flex flex-wrap gap-3">
+          @foreach (var a in Model.FreshNews)
+          {
+            <a class="news-pill" asp-page="/Articles/Details" asp-route-id="@a.Id">@a.Title</a>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section class="app-section">
     <div class="container-xl">
         <h2 class="section-title text-center">@Localizer["HowItWorksTitle"]</h2>
