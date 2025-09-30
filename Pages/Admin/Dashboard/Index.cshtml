@@ -42,102 +42,108 @@
         const topCourseLabels = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.TopCourseLabels));
         const topCourseData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.TopCourseValues));
 
-        new Chart(document.getElementById('topCoursesChart'), {
-            type: 'bar',
-            data: {
-                labels: topCourseLabels,
-                datasets: [{
-                    label: 'Počet prodaných kusů',
-                    data: topCourseData,
-                    backgroundColor: 'rgba(54, 162, 235, 0.5)'
-                }]
-            }
-        });
+        const topCoursesCanvas = document.getElementById('topCoursesChart');
+        if (topCoursesCanvas) {
+            new Chart(topCoursesCanvas, {
+                type: 'bar',
+                data: {
+                    labels: topCourseLabels,
+                    datasets: [{
+                        label: 'Počet prodaných kusů',
+                        data: topCourseData,
+                        backgroundColor: 'rgba(54, 162, 235, 0.5)'
+                    }]
+                }
+            });
+        }
 
         const revenueLabels = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.RevenueLabels));
         const revenueData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.RevenueValues));
         const orderCounts = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.OrderCounts));
         const averageOrderValues = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.AverageOrderValues));
 
-        new Chart(document.getElementById('revenueChart'), {
-            type: 'bar',
-            data: {
-                labels: revenueLabels,
-                datasets: [
-                    {
-                        type: 'bar',
-                        label: 'Počet objednávek',
-                        data: orderCounts,
-                        backgroundColor: 'rgba(54, 162, 235, 0.5)',
-                        borderColor: 'rgba(54, 162, 235, 1)',
-                        borderWidth: 1,
-                        yAxisID: 'yOrders'
-                    },
-                    {
-                        type: 'line',
-                        label: 'Tržby',
-                        data: revenueData,
-                        borderColor: 'rgba(75, 192, 192, 1)',
-                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                        fill: true,
-                        tension: 0.3,
-                        yAxisID: 'yRevenue'
-                    },
-                    {
-                        type: 'line',
-                        label: 'Průměrná hodnota objednávky',
-                        data: averageOrderValues,
-                        borderColor: 'rgba(255, 159, 64, 1)',
-                        backgroundColor: 'rgba(255, 159, 64, 0.2)',
-                        tension: 0.3,
-                        borderDash: [5, 5],
-                        yAxisID: 'yAverage'
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                interaction: {
-                    mode: 'index',
-                    intersect: false
+        const revenueCanvas = document.getElementById('revenueChart');
+        if (revenueCanvas) {
+            new Chart(revenueCanvas, {
+                type: 'bar',
+                data: {
+                    labels: revenueLabels,
+                    datasets: [
+                        {
+                            type: 'bar',
+                            label: 'Počet objednávek',
+                            data: orderCounts,
+                            backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 1,
+                            yAxisID: 'yOrders'
+                        },
+                        {
+                            type: 'line',
+                            label: 'Tržby',
+                            data: revenueData,
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                            fill: true,
+                            tension: 0.3,
+                            yAxisID: 'yRevenue'
+                        },
+                        {
+                            type: 'line',
+                            label: 'Průměrná hodnota objednávky',
+                            data: averageOrderValues,
+                            borderColor: 'rgba(255, 159, 64, 1)',
+                            backgroundColor: 'rgba(255, 159, 64, 0.2)',
+                            tension: 0.3,
+                            borderDash: [5, 5],
+                            yAxisID: 'yAverage'
+                        }
+                    ]
                 },
-                stacked: false,
-                scales: {
-                    yOrders: {
-                        type: 'linear',
-                        position: 'left',
-                        beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: 'Objednávky'
-                        }
+                options: {
+                    responsive: true,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false
                     },
-                    yRevenue: {
-                        type: 'linear',
-                        position: 'right',
-                        beginAtZero: true,
-                        grid: {
-                            drawOnChartArea: false
+                    stacked: false,
+                    scales: {
+                        yOrders: {
+                            type: 'linear',
+                            position: 'left',
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Objednávky'
+                            }
                         },
-                        title: {
-                            display: true,
-                            text: 'Tržby'
-                        }
-                    },
-                    yAverage: {
-                        type: 'linear',
-                        position: 'right',
-                        beginAtZero: true,
-                        grid: {
-                            drawOnChartArea: false
+                        yRevenue: {
+                            type: 'linear',
+                            position: 'right',
+                            beginAtZero: true,
+                            grid: {
+                                drawOnChartArea: false
+                            },
+                            title: {
+                                display: true,
+                                text: 'Tržby'
+                            }
                         },
-                        title: {
-                            display: true,
-                            text: 'Průměrná hodnota'
+                        yAverage: {
+                            type: 'linear',
+                            position: 'right',
+                            beginAtZero: true,
+                            grid: {
+                                drawOnChartArea: false
+                            },
+                            title: {
+                                display: true,
+                                text: 'Průměrná hodnota'
+                            }
                         }
                     }
                 }
-            }
-        });
+            });
+        }
     </script>
 }
