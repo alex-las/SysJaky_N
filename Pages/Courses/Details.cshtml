@@ -166,6 +166,52 @@
             </section>
         }
 
+        @if (Model.Terms.Any())
+        {
+            <section class="mb-4">
+                <h2 class="h5">Nejbližší termíny</h2>
+                <div class="table-responsive">
+                    <table class="table align-middle">
+                        <thead><tr><th>Datum</th><th>Místo</th><th>Dostupnost</th><th class="text-end"></th></tr></thead>
+                        <tbody>
+                            @foreach (var term in Model.Terms)
+                            {
+                                var scarce = term.SeatsLeft <= 3 && term.SeatsLeft > 0;
+                                var seatsLabel = term.SeatsLeft switch
+                                {
+                                    1 => "místo",
+                                    2 or 3 or 4 => "místa",
+                                    _ => "míst"
+                                };
+                                <tr>
+                                    <td>@term.StartsAt.ToString("d")</td>
+                                    <td>@(term.IsOnline ? "Online" : term.Location)</td>
+                                    <td>
+                                        @if (term.SeatsLeft == 0)
+                                        {
+                                            <span class="badge bg-secondary">Obsazeno</span>
+                                        }
+                                        else if (scarce)
+                                        {
+                                            <span class="badge bg-warning text-dark">Poslední @term.SeatsLeft @seatsLabel</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-success">Volno</span>
+                                        }
+                                    </td>
+                                    <td class="text-end">
+                                        <a class="btn btn-outline-secondary btn-sm" asp-page="/CourseTerms/Details" asp-route-id="@term.Id">Detail</a>
+                                        <a class="btn btn-secondary btn-sm" href="/CourseTerms/ICS/@term.Id">.ics</a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        }
+
         <section class="mb-4">
             <h2 class="h5 mb-3">Co se naučíte</h2>
             <ul class="list-unstyled mb-0">
