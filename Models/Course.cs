@@ -60,6 +60,8 @@ public class Course
     public ICollection<Lesson> Lessons { get; set; } = new List<Lesson>();
 
     public ICollection<CourseTag> CourseTags { get; set; } = new List<CourseTag>();
+
+    public string? PopoverHtml { get; set; }
 }
 
 public enum CourseType
