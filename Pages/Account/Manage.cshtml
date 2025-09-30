@@ -54,6 +54,7 @@
                     <th>Zahájení</th>
                     <th>Ukončení</th>
                     <th>Kalendář</th>
+                    <th>Detail</th>
                 </tr>
             </thead>
             <tbody>
@@ -71,6 +72,7 @@
                     <td>@term.StartUtc.ToLocalTime().ToString("g")</td>
                     <td>@term.EndUtc.ToLocalTime().ToString("g")</td>
                     <td><a href="/CourseTerms/ICS/@term.Id">Stáhnout .ics</a></td>
+                    <td><a class="btn btn-outline-secondary btn-sm" asp-page="/CourseTerms/Details" asp-route-id="@term.Id">Detail termínu</a></td>
                 </tr>
             }
             </tbody>
