@@ -6,8 +6,8 @@
 
 <h1>Users</h1>
 
-<form method="get" class="mb-3">
-    <input type="text" name="Search" value="@Model.Search" placeholder="Search" />
+<form method="get" class="mb-3" role="search" aria-label="Vyhledávání uživatelů">
+    <input type="text" name="Search" value="@Model.Search" placeholder="Search" aria-label="Hledat uživatele" />
     <button type="submit">Search</button>
 </form>
 
@@ -54,7 +54,7 @@
     </div>
 </form>
 
-<div>
+<div role="navigation" aria-label="Stránkování uživatelů" class="d-flex gap-2">
     @for (var i = 1; i <= Model.TotalPages; i++)
     {
         if (i == Model.PageIndex)
