@@ -2,7 +2,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using SysJaky_N.Data;
+using SysJaky_N.Extensions;
 using SysJaky_N.Models;
+using System.Globalization;
 
 namespace SysJaky_N.Pages
 {
@@ -17,7 +19,7 @@ namespace SysJaky_N.Pages
             _context = context;
         }
 
-        public IList<Course> PicksForPersona { get; set; } = new List<Course>();
+    public IList<CourseCardViewModel> PicksForPersona { get; set; } = new List<CourseCardViewModel>();
         public IList<Course> FastSoonest { get; set; } = new List<Course>();
         public IList<Article> FreshNews { get; set; } = new List<Article>();
 
@@ -35,6 +37,8 @@ namespace SysJaky_N.Pages
 
             IQueryable<Course> baseQuery = _context.Courses
                 .AsNoTracking()
+                .Include(c => c.CourseTags)
+                    .ThenInclude(ct => ct.Tag)
                 .Where(c => c.IsActive);
 
             if (!string.IsNullOrWhiteSpace(persona))
@@ -70,8 +74,30 @@ namespace SysJaky_N.Pages
                 .Take(6)
                 .ToListAsync();
 
-            PicksForPersona = recommended
+            var recommendedCourses = recommended
                 .Select(x => x.Course)
+                .ToList();
+
+            var snapshots = await _context.LoadTermSnapshotsAsync(recommendedCourses.Select(c => c.Id));
+            var culture = CultureInfo.CurrentCulture;
+            var addToCartUrl = Url.Page("/Courses/Index", pageHandler: "AddToCart") ?? "/Courses/Index?handler=AddToCart";
+
+            PicksForPersona = recommendedCourses
+                .Select(course =>
+                {
+                    var detailsUrl = Url.Page("/Courses/Details", new { id = course.Id }) ?? $"/Courses/Details/{course.Id}";
+                    var wishlistUrl = Url.Page("/Courses/Details", new { id = course.Id, handler = "AddToWishlist" })
+                        ?? $"/Courses/Details/{course.Id}?handler=AddToWishlist";
+
+                    snapshots.TryGetValue(course.Id, out var snapshot);
+
+                    return course.ToCourseCardViewModel(
+                        culture,
+                        detailsUrl,
+                        addToCartUrl,
+                        wishlistUrl,
+                        snapshot);
+                })
                 .ToList();
 
             FreshNews = await _context.Articles
