@@ -1,0 +1,91 @@
+@{
+    var testimonials = new[]
+    {
+        new
+        {
+            Quote = "Absolvovali jsme komplexní přípravu k certifikaci ISO 9001. Profesionální přístup, srozumitelný výklad a praktické příklady nám velmi pomohly. Certifikaci jsme získali na první pokus.",
+            Name = "Ing. Jana Nováková",
+            Title = "Manažerka kvality",
+            Company = "XYZ s.r.o.",
+            ImageUrl = "https://via.placeholder.com/120",
+            Rating = 5
+        },
+        new
+        {
+            Quote = "Lektorský tým kombinuje teoretické znalosti s praktickými zkušenostmi. Díky jejich školení máme připravený interní tým auditorů.",
+            Name = "Petr Svoboda",
+            Title = "Jednatel",
+            Company = "ABC Lab a.s.",
+            ImageUrl = "https://via.placeholder.com/120",
+            Rating = 5
+        },
+        new
+        {
+            Quote = "Firemní školení na míru přesně odpovídalo potřebám naší organizace. Oceňujeme flexibilitu a odbornost lektorů.",
+            Name = "Mgr. Marie Dvořáková",
+            Title = "HR Manager",
+            Company = "DEF Group",
+            ImageUrl = "https://via.placeholder.com/120",
+            Rating = 5
+        }
+    };
+}
+
+<section class="container py-5" aria-labelledby="testimonialsHeading">
+    <div class="text-center mb-4">
+        <h2 id="testimonialsHeading" class="fw-bold">Co o nás říkají klienti</h2>
+        <p class="text-muted mb-0">Reálné zkušenosti firem, které s námi spolupracovaly</p>
+    </div>
+
+    <div id="testimonialsCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="7000">
+        <div class="carousel-indicators">
+            @for (var i = 0; i < testimonials.Length; i++)
+            {
+                <button type="button" data-bs-target="#testimonialsCarousel" data-bs-slide-to="@i" class="@(i == 0 ? "active" : null)" aria-current="@(i == 0 ? "true" : "false")" aria-label="Testimonial @(i + 1)"></button>
+            }
+        </div>
+
+        <div class="carousel-inner">
+            @for (var i = 0; i < testimonials.Length; i++)
+            {
+                var testimonial = testimonials[i];
+                <div class="carousel-item @(i == 0 ? "active" : null)">
+                    <article class="row align-items-center justify-content-center g-4">
+                        <div class="col-md-4 text-center">
+                            <div class="ratio ratio-1x1 mx-auto" style="max-width: 160px;">
+                                <img src="@testimonial.ImageUrl" class="rounded-circle object-fit-cover shadow" alt="@testimonial.Name" loading="lazy" />
+                            </div>
+                            <div class="mt-3">
+                                <div class="text-warning d-flex justify-content-center gap-1" aria-hidden="true">
+                                    @for (var star = 0; star < 5; star++)
+                                    {
+                                        <i class="bi bi-star-fill"></i>
+                                    }
+                                </div>
+                                <span class="visually-hidden">Hodnocení: @testimonial.Rating z 5</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <blockquote class="blockquote fs-5">
+                                <p class="mb-4">“@testimonial.Quote”</p>
+                                <footer class="blockquote-footer">
+                                    <span class="fw-semibold">@testimonial.Name</span>
+                                    <span class="d-block text-muted">@testimonial.Title, @testimonial.Company</span>
+                                </footer>
+                            </blockquote>
+                        </div>
+                    </article>
+                </div>
+            }
+        </div>
+
+        <button class="carousel-control-prev" type="button" data-bs-target="#testimonialsCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Předchozí</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#testimonialsCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Další</span>
+        </button>
+    </div>
+</section>
