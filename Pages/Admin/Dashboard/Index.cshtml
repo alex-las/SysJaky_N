@@ -1,76 +1,228 @@
 @page
 @model SysJaky_N.Pages.Admin.Dashboard.IndexModel
 @{
-    ViewData["Title"] = "Přehled";
+    ViewData["Title"] = "Řídicí panel";
 }
 
-<h1>Přehled</h1>
+<h1 class="mb-4">Řídicí panel</h1>
 
-<div class="row mb-4">
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">Počet objednávek</h5>
-                <p class="card-text display-6">@Model.OrderCount</p>
-            </div>
-        </div>
+@if (TempData["ChatbotSettingsSaved"] is bool saved && saved)
+{
+    <div class="alert alert-success" role="alert">
+        Nastavení chatbota bylo úspěšně uloženo.
     </div>
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">Celkové tržby</h5>
-                <p class="card-text display-6">@Model.TotalRevenue.ToString("C")</p>
-            </div>
-        </div>
-    </div>
-</div>
+}
 
-<div class="row">
-    <div class="col-md-6">
-        <h3>Nejprodávanější kurzy</h3>
-        <canvas id="topCoursesChart"></canvas>
-    </div>
-    <div class="col-md-6">
-        <h3>Denní statistiky prodeje</h3>
-        <canvas id="revenueChart"></canvas>
-    </div>
-</div>
-
-<div class="row mt-4">
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-body">
-                <h3 class="card-title">Nástroje</h3>
-                <div class="d-flex flex-wrap gap-2">
-                    <a class="btn btn-outline-primary" asp-page="/Instructor/Attendance">
-                        <i class="bi bi-qr-code-scan"></i> Docházka (QR)
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-6">
-        <div class="card h-100">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-start mb-3">
+<div class="row g-4">
+    <div class="col-12 col-xxl-9">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header py-3">
+                <div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-lg-between gap-3">
                     <div>
-                        <h3 class="card-title">Nastavení chatbota</h3>
-                        <p class="text-muted mb-0">Správa zobrazení a automatického spuštění virtuálního poradce.</p>
+                        <h2 class="h5 mb-1">Filtr přehledu</h2>
+                        <p class="text-muted mb-0">Zvolte období, normy a města, pro která chcete zobrazit statistiky.</p>
                     </div>
-                    @if (TempData["ChatbotSettingsSaved"] is bool saved && saved)
-                    {
-                        <span class="badge bg-success">Uloženo</span>
-                    }
+                    <div class="d-flex flex-wrap gap-2">
+                        <button id="preset7" type="button" class="btn btn-outline-secondary btn-sm" data-range="7">
+                            Posledních 7 dní
+                        </button>
+                        <button id="preset30" type="button" class="btn btn-outline-secondary btn-sm" data-range="30">
+                            Posledních 30 dní
+                        </button>
+                        <button id="preset365" type="button" class="btn btn-outline-secondary btn-sm" data-range="365">
+                            Posledních 12 měsíců
+                        </button>
+                    </div>
                 </div>
+            </div>
+            <div class="card-body">
+                <form id="dashboardFilters" class="row g-3 align-items-end" autocomplete="off">
+                    <div class="col-sm-6 col-lg-3">
+                        <label class="form-label" for="filterFrom">Od</label>
+                        <input id="filterFrom" type="date" class="form-control" required />
+                    </div>
+                    <div class="col-sm-6 col-lg-3">
+                        <label class="form-label" for="filterTo">Do</label>
+                        <input id="filterTo" type="date" class="form-control" required />
+                    </div>
+                    <div class="col-sm-6 col-lg-3">
+                        <label class="form-label" for="filterNorms">Norma</label>
+                        <select id="filterNorms" class="form-select" multiple size="4" aria-describedby="filterNormsHelp"></select>
+                        <div id="filterNormsHelp" class="form-text">Podržením Ctrl vyberete více norem.</div>
+                    </div>
+                    <div class="col-sm-6 col-lg-3">
+                        <label class="form-label" for="filterCities">Město</label>
+                        <select id="filterCities" class="form-select" multiple size="4" aria-describedby="filterCitiesHelp"></select>
+                        <div id="filterCitiesHelp" class="form-text">Podržením Ctrl vyberete více měst.</div>
+                    </div>
+                    <div class="col-12 d-flex flex-wrap gap-2">
+                        <button id="applyFilters" type="submit" class="btn btn-primary">
+                            <i class="bi bi-arrow-repeat"></i> Aktualizovat přehled
+                        </button>
+                        <button id="exportReport" type="button" class="btn btn-outline-success">
+                            <i class="bi bi-file-earmark-excel"></i> Exportovat do Excelu
+                        </button>
+                        <div id="filtersStatus" class="text-muted small align-self-center">
+                            <span class="spinner-border spinner-border-sm me-2 d-none" id="filtersSpinner" role="status" aria-hidden="true"></span>
+                            <span id="filtersStatusText">Připraveno</span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="row g-3 mb-4" id="summaryCards">
+            <div class="col-sm-6 col-xl-3">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <p class="text-muted text-uppercase fw-semibold mb-1">Tržby celkem</p>
+                        <p class="display-6 mb-0" id="summaryRevenue">—</p>
+                        <p class="text-success small mb-0" id="summaryRevenueChange"></p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-xl-3">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <p class="text-muted text-uppercase fw-semibold mb-1">Objednávky</p>
+                        <p class="display-6 mb-0" id="summaryOrders">—</p>
+                        <p class="text-muted small mb-0" id="summaryAverageOrder">—</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-xl-3">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <p class="text-muted text-uppercase fw-semibold mb-1">Prodáno míst</p>
+                        <p class="display-6 mb-0" id="summarySeats">—</p>
+                        <p class="text-muted small mb-0" id="summaryOccupancy">—</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-xl-3">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <p class="text-muted text-uppercase fw-semibold mb-1">Aktivní zákazníci</p>
+                        <p class="display-6 mb-0" id="summaryCustomers">—</p>
+                        <p class="text-muted small mb-0" id="summaryNewCustomers">—</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow-sm mb-4">
+            <div class="card-header d-flex flex-column flex-md-row align-items-md-center justify-content-md-between gap-2">
+                <div>
+                    <h2 class="h5 mb-0">Vývoj tržeb a objednávek</h2>
+                    <small class="text-muted" id="salesRangeLabel">—</small>
+                </div>
+                <div class="text-muted small" id="salesAggregateLabel"></div>
+            </div>
+            <div class="card-body">
+                <canvas id="salesTrendChart" height="280" role="img" aria-label="Graf vývoje tržeb"></canvas>
+                <p class="text-muted small mt-3 mb-0" id="salesEmpty" hidden>
+                    Pro zvolené období nejsou dostupná data.
+                </p>
+            </div>
+        </div>
+
+        <div class="card shadow-sm mb-4">
+            <div class="card-header d-flex flex-column flex-md-row align-items-md-center justify-content-md-between gap-2">
+                <h2 class="h5 mb-0">Top kurzy podle tržeb</h2>
+                <small class="text-muted" id="topCoursesTotal">—</small>
+            </div>
+            <div class="card-body">
+                <canvas id="topCoursesChart" height="240" role="img" aria-label="Graf nejúspěšnějších kurzů"></canvas>
+                <div class="table-responsive mt-4">
+                    <table class="table table-sm mb-0 align-middle">
+                        <thead>
+                            <tr>
+                                <th scope="col">Kurz</th>
+                                <th scope="col" class="text-end">Tržby</th>
+                                <th scope="col" class="text-end">Počet míst</th>
+                            </tr>
+                        </thead>
+                        <tbody id="topCoursesTable">
+                            <tr><td colspan="3" class="text-center text-muted py-3">Načítám…</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4 mb-4">
+            <div class="col-lg-6">
+                <div class="card shadow-sm h-100">
+                    <div class="card-header d-flex flex-column flex-md-row align-items-md-center justify-content-md-between gap-2">
+                        <h2 class="h5 mb-0">Konverzní trychtýř</h2>
+                        <small class="text-muted" id="conversionRates">—</small>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="conversionChart" height="240" role="img" aria-label="Graf konverzí"></canvas>
+                        <ul class="list-unstyled mt-3 mb-0" id="conversionDetails">
+                            <li class="text-muted">Načítám…</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card shadow-sm h-100">
+                    <div class="card-header">
+                        <h2 class="h5 mb-0">Oblíbenost termínů</h2>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="heatmapChart" height="260" role="img" aria-label="Heatmapa oblíbenosti termínů"></canvas>
+                        <p class="text-muted small mt-3 mb-0" id="heatmapEmpty" hidden>
+                            Pro vybraný filtr nejsou dostupné žádné termíny.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-xxl-3">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header">
+                <h2 class="h5 mb-0">Real-time statistiky</h2>
+            </div>
+            <div class="card-body">
+                <p class="mb-2">
+                    <span class="text-muted d-block">Online uživatelé</span>
+                    <span class="fs-3 fw-semibold" id="realtimeUsers">—</span>
+                </p>
+                <p class="mb-2">
+                    <span class="text-muted d-block">Aktuální košíky</span>
+                    <span class="fs-3 fw-semibold" id="realtimeCarts">—</span>
+                </p>
+                <p class="mb-0">
+                    <span class="text-muted d-block">Hodnota v košících</span>
+                    <span class="fs-5" id="realtimeCartValue">—</span>
+                </p>
+                <p class="text-muted small mt-3 mb-0" id="realtimeUpdated">Čekám na připojení…</p>
+            </div>
+        </div>
+
+        <div class="card shadow-sm">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <div>
+                    <h2 class="h5 mb-0">Nastavení chatbota</h2>
+                    <small class="text-muted">Spravujte zobrazení virtuálního poradce.</small>
+                </div>
+                @if (TempData["ChatbotSettingsSaved"] is bool badgeSaved && badgeSaved)
+                {
+                    <span class="badge bg-success">Uloženo</span>
+                }
+            </div>
+            <div class="card-body">
                 <form method="post" asp-page-handler="Chatbot" class="vstack gap-3">
                     @Html.AntiForgeryToken()
                     <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" asp-for="ChatbotSettings.IsEnabled" />
-                        <label class="form-check-label" asp-for="ChatbotSettings.IsEnabled">Zobrazit chatbota na webu</label>
+                        <input class="form-check-input" type="checkbox" asp-for="ChatbotSettings.IsEnabled" id="chatbotEnabled" />
+                        <label class="form-check-label" for="chatbotEnabled">Zobrazit chatbota na webu</label>
                     </div>
                     <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" asp-for="ChatbotSettings.AutoInitialize" />
-                        <label class="form-check-label" asp-for="ChatbotSettings.AutoInitialize">Automaticky inicializovat po načtení stránky</label>
+                        <input class="form-check-input" type="checkbox" asp-for="ChatbotSettings.AutoInitialize" id="chatbotAuto" />
+                        <label class="form-check-label" for="chatbotAuto">Automaticky inicializovat po načtení stránky</label>
                     </div>
                     <button type="submit" class="btn btn-primary align-self-start">
                         <i class="bi bi-save"></i> Uložit nastavení
@@ -83,112 +235,20 @@
 
 @section Scripts {
     <script src="~/lib/chart.js/chart.js" asp-append-version="true"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@microsoft/signalr@7.0.5/dist/browser/signalr.min.js" crossorigin="anonymous"></script>
+    <script src="~/js/admin/dashboard.js" asp-append-version="true"></script>
     <script>
-        const topCourseLabels = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.TopCourseLabels));
-        const topCourseData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.TopCourseValues));
-
-        const topCoursesCanvas = document.getElementById('topCoursesChart');
-        if (topCoursesCanvas) {
-            new Chart(topCoursesCanvas, {
-                type: 'bar',
-                data: {
-                    labels: topCourseLabels,
-                    datasets: [{
-                        label: 'Počet prodaných kusů',
-                        data: topCourseData,
-                        backgroundColor: 'rgba(54, 162, 235, 0.5)'
-                    }]
-                }
-            });
-        }
-
-        const revenueLabels = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.RevenueLabels));
-        const revenueData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.RevenueValues));
-        const orderCounts = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.OrderCounts));
-        const averageOrderValues = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.AverageOrderValues));
-
-        const revenueCanvas = document.getElementById('revenueChart');
-        if (revenueCanvas) {
-            new Chart(revenueCanvas, {
-                type: 'bar',
-                data: {
-                    labels: revenueLabels,
-                    datasets: [
-                        {
-                            type: 'bar',
-                            label: 'Počet objednávek',
-                            data: orderCounts,
-                            backgroundColor: 'rgba(54, 162, 235, 0.5)',
-                            borderColor: 'rgba(54, 162, 235, 1)',
-                            borderWidth: 1,
-                            yAxisID: 'yOrders'
-                        },
-                        {
-                            type: 'line',
-                            label: 'Tržby',
-                            data: revenueData,
-                            borderColor: 'rgba(75, 192, 192, 1)',
-                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                            fill: true,
-                            tension: 0.3,
-                            yAxisID: 'yRevenue'
-                        },
-                        {
-                            type: 'line',
-                            label: 'Průměrná hodnota objednávky',
-                            data: averageOrderValues,
-                            borderColor: 'rgba(255, 159, 64, 1)',
-                            backgroundColor: 'rgba(255, 159, 64, 0.2)',
-                            tension: 0.3,
-                            borderDash: [5, 5],
-                            yAxisID: 'yAverage'
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    interaction: {
-                        mode: 'index',
-                        intersect: false
-                    },
-                    stacked: false,
-                    scales: {
-                        yOrders: {
-                            type: 'linear',
-                            position: 'left',
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'Objednávky'
-                            }
-                        },
-                        yRevenue: {
-                            type: 'linear',
-                            position: 'right',
-                            beginAtZero: true,
-                            grid: {
-                                drawOnChartArea: false
-                            },
-                            title: {
-                                display: true,
-                                text: 'Tržby'
-                            }
-                        },
-                        yAverage: {
-                            type: 'linear',
-                            position: 'right',
-                            beginAtZero: true,
-                            grid: {
-                                drawOnChartArea: false
-                            },
-                            title: {
-                                display: true,
-                                text: 'Průměrná hodnota'
-                            }
-                        }
-                    }
-                }
-            });
-        }
+        window.dashboardKonfigurace = {
+            api: {
+                filtry: '@Url.Content("~/api/analytics/filters")',
+                prehled: '@Url.Content("~/api/analytics/dashboard")',
+                export: '@Url.Content("~/api/analytics/export")',
+                hub: '@Url.Content("~/hubs/dashboard")'
+            },
+            texty: {
+                zadnaData: 'Žádná data',
+                mena: '@System.Globalization.CultureInfo.CurrentCulture.NumberFormat.CurrencySymbol'
+            }
+        };
     </script>
 }
