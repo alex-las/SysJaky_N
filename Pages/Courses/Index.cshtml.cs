@@ -43,6 +43,9 @@ public class IndexModel : PageModel
     public List<CourseType> SelectedTypes { get; set; } = new();
 
     [BindProperty(SupportsGet = true)]
+    public List<string> SelectedCategoryIds { get; set; } = new();
+
+    [BindProperty(SupportsGet = true)]
     public decimal? MinPrice { get; set; }
 
     [BindProperty(SupportsGet = true)]
@@ -51,6 +54,8 @@ public class IndexModel : PageModel
     public IReadOnlyList<FilterOption> NormOptions { get; private set; } = Array.Empty<FilterOption>();
 
     public IReadOnlyList<FilterOption> CityOptions { get; private set; } = Array.Empty<FilterOption>();
+
+    public IReadOnlyList<CategoryOption> CategoryOptions { get; private set; } = Array.Empty<CategoryOption>();
 
     public IReadOnlyList<EnumOption> LevelOptions { get; private set; } = Array.Empty<EnumOption>();
 
@@ -81,6 +86,65 @@ public class IndexModel : PageModel
     };
 
     private const int PageSize = 10;
+
+    private static readonly CourseCategoryDefinition[] CourseCategories =
+    {
+        new("quality-management", "Systémy managementu kvality (ISO 9001)", new[]
+        {
+            "Úvod do systému managementu kvality",
+            "Manažer kvality (ISO 9001) - certifikační kurz",
+            "Interní auditor kvality (ISO 9001)",
+            "Procesní řízení v organizaci",
+            "Správce dokumentace",
+            "Nápravná opatření a 8D reporty"
+        }),
+        new("environmental-management", "Environmentální management (ISO 14001)", new[]
+        {
+            "Úvod do EMS",
+            "Interní auditor EMS (ISO 14001)",
+            "Environmentální aspekty a legislativa"
+        }),
+        new("integrated-systems", "Integrované systémy", new[]
+        {
+            "Manažer integrovaného systému (ISO 9001, 14001, 45001)",
+            "Auditor integrovaného systému"
+        }),
+        new("laboratory-accreditation", "Laboratoře - Akreditace (ISO/IEC 17025, ISO 15189)", new[]
+        {
+            "Manažer kvality laboratoře - základní znalosti",
+            "Interní auditor zkušební laboratoře",
+            "Metrolog ve zkušební laboratoři",
+            "Manažer kvality zdravotnické laboratoře",
+            "Validace a verifikace metod"
+        }),
+        new("occupational-safety", "BOZP (ISO 45001)", new[]
+        {
+            "Úvod do systému managementu BOZP",
+            "Interní auditor BOZP (ISO 45001)",
+            "Management rizik BOZP"
+        }),
+        new("information-security", "Informační bezpečnost (ISO 27001)", new[]
+        {
+            "Úvod do ISMS",
+            "Interní auditor ISMS (ISO 27001)",
+            "GDPR a ISO 27001"
+        }),
+        new("automotive", "Automotive (IATF 16949)", new[]
+        {
+            "Core Tools (APQP, PPAP, FMEA, MSA, SPC)",
+            "Manažer kvality v automotive"
+        }),
+        new("soft-skills", "Soft skills", new[]
+        {
+            "Vedení lidí a leadership",
+            "Time management",
+            "Efektivní komunikace",
+            "Prezentační dovednosti"
+        })
+    };
+
+    private static readonly IReadOnlyDictionary<string, CourseCategoryDefinition> CourseCategoryLookup =
+        CourseCategories.ToDictionary(c => c.Id, StringComparer.OrdinalIgnoreCase);
 
     public async Task OnGetAsync()
     {
@@ -117,6 +181,7 @@ public class IndexModel : PageModel
         SelectedCityTagIds ??= new List<int>();
         SelectedLevels ??= new List<CourseLevel>();
         SelectedTypes ??= new List<CourseType>();
+        SelectedCategoryIds ??= new List<string>();
 
         var allTags = await _context.Tags
             .AsNoTracking()
@@ -167,6 +232,29 @@ public class IndexModel : PageModel
             .OrderBy(t => t)
             .ToList();
 
+        var activeCourseTitles = await _context.Courses
+            .AsNoTracking()
+            .Where(c => c.IsActive)
+            .Select(c => c.Title)
+            .ToListAsync();
+
+        var activeTitleSet = new HashSet<string>(activeCourseTitles, StringComparer.OrdinalIgnoreCase);
+
+        CategoryOptions = CourseCategories
+            .Select(category =>
+            {
+                var count = category.TitleSet.Count(title => activeTitleSet.Contains(title));
+                return new CategoryOption(category.Id, category.Name, count);
+            })
+            .ToList();
+
+        var selectedCategorySet = new HashSet<string>(SelectedCategoryIds, StringComparer.OrdinalIgnoreCase);
+
+        SelectedCategoryIds = CourseCategories
+            .Where(category => selectedCategorySet.Contains(category.Id))
+            .Select(category => category.Id)
+            .ToList();
+
         var priceQuery = _context.Courses
             .AsNoTracking()
             .Where(c => c.IsActive)
@@ -214,6 +302,7 @@ public class IndexModel : PageModel
         var cityIds = SelectedCityTagIds?.Distinct().OrderBy(id => id).ToArray() ?? Array.Empty<int>();
         var levelValues = SelectedLevels?.Distinct().OrderBy(l => l).ToArray() ?? Array.Empty<CourseLevel>();
         var typeValues = SelectedTypes?.Distinct().OrderBy(t => t).ToArray() ?? Array.Empty<CourseType>();
+        var categoryIds = SelectedCategoryIds?.ToArray() ?? Array.Empty<string>();
 
         var minPrice = MinPrice;
         var maxPrice = MaxPrice;
@@ -227,6 +316,7 @@ public class IndexModel : PageModel
         HasActiveFilters = !string.IsNullOrWhiteSpace(normalizedSearch)
             || normIds.Length > 0
             || cityIds.Length > 0
+            || categoryIds.Length > 0
             || levelValues.Length > 0
             || typeValues.Length > 0
             || (minPrice.HasValue && minPrice.Value > PriceMinimum)
@@ -252,6 +342,7 @@ public class IndexModel : PageModel
             cityIds,
             levelValues,
             typeValues,
+            categoryIds,
             clampedMin,
             clampedMax);
     }
@@ -307,6 +398,31 @@ public class IndexModel : PageModel
                 query = query.Where(c => c.CourseTags.Any(ct => cityIds.Contains(ct.TagId)));
             }
 
+            if (filterContext.CategoryIds.Count > 0)
+            {
+                var selectedTitles = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                foreach (var categoryId in filterContext.CategoryIds)
+                {
+                    if (CourseCategoryLookup.TryGetValue(categoryId, out var definition))
+                    {
+                        foreach (var title in definition.TitleSet)
+                        {
+                            selectedTitles.Add(title);
+                        }
+                    }
+                }
+
+                if (selectedTitles.Count == 0)
+                {
+                    query = query.Where(static c => false);
+                }
+                else
+                {
+                    var titles = selectedTitles.ToArray();
+                    query = query.Where(c => titles.Contains(c.Title));
+                }
+            }
+
             if (filterContext.Levels.Count > 0)
             {
                 var levels = filterContext.Levels;
@@ -351,12 +467,13 @@ public class IndexModel : PageModel
         var searchKey = string.IsNullOrWhiteSpace(filterContext.Search) ? "none" : Uri.EscapeDataString(filterContext.Search);
         var normsKey = filterContext.NormTagIds.Count == 0 ? "none" : string.Join('-', filterContext.NormTagIds);
         var citiesKey = filterContext.CityTagIds.Count == 0 ? "none" : string.Join('-', filterContext.CityTagIds);
+        var categoriesKey = filterContext.CategoryIds.Count == 0 ? "none" : string.Join('-', filterContext.CategoryIds);
         var levelsKey = filterContext.Levels.Count == 0 ? "none" : string.Join('-', filterContext.Levels);
         var typesKey = filterContext.Types.Count == 0 ? "none" : string.Join('-', filterContext.Types);
         var minKey = filterContext.MinPrice?.ToString(CultureInfo.InvariantCulture) ?? "null";
         var maxKey = filterContext.MaxPrice?.ToString(CultureInfo.InvariantCulture) ?? "null";
 
-        return $"page={filterContext.PageNumber}|search={searchKey}|norms={normsKey}|cities={citiesKey}|levels={levelsKey}|types={typesKey}|minPrice={minKey}|maxPrice={maxKey}";
+        return $"page={filterContext.PageNumber}|search={searchKey}|norms={normsKey}|cities={citiesKey}|categories={categoriesKey}|levels={levelsKey}|types={typesKey}|minPrice={minKey}|maxPrice={maxKey}";
     }
 
     private List<CourseCardViewModel> BuildCourseCards(CourseListCacheEntry cacheEntry)
@@ -390,12 +507,23 @@ public class IndexModel : PageModel
         IReadOnlyList<int> CityTagIds,
         IReadOnlyList<CourseLevel> Levels,
         IReadOnlyList<CourseType> Types,
+        IReadOnlyList<string> CategoryIds,
         decimal? MinPrice,
         decimal? MaxPrice);
 
     public record FilterOption(int Id, string Name);
 
     public record EnumOption(string Value, string Label);
+
+    public record CategoryOption(string Id, string Name, int Count);
+
+    private sealed record CourseCategoryDefinition(string Id, string Name, IReadOnlyCollection<string> Titles)
+    {
+        public HashSet<string> TitleSet { get; } = Titles
+            .Where(title => !string.IsNullOrWhiteSpace(title))
+            .Select(title => title.Trim())
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+    }
 
     private record CoursesResponse(
         PaginationMetadata Pagination,

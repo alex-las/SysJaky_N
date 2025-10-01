@@ -6,6 +6,13 @@
     ViewData["Title"] = Localizer["Title"];
 }
 
+<nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-page="/Index">@Localizer["BreadcrumbHome"]</a></li>
+        <li class="breadcrumb-item active" aria-current="page">@Localizer["BreadcrumbCourses"]</li>
+    </ol>
+</nav>
+
 <h1 class="mb-3">@Localizer["Title"]</h1>
 
 <ul class="nav nav-pills mb-3">
@@ -99,6 +106,7 @@
             cities = Model.SelectedCityTagIds,
             levels = Model.SelectedLevels.Select(l => l.ToString()),
             types = Model.SelectedTypes.Select(t => t.ToString()),
+            categories = Model.SelectedCategoryIds,
             minPrice = Model.MinPrice ?? Model.PriceMinimum,
             maxPrice = Model.MaxPrice ?? Model.PriceMaximum,
             hasFilters = Model.HasActiveFilters,
@@ -134,6 +142,7 @@
         {
             norms = Model.NormOptions.Select(o => new { id = o.Id, name = o.Name }),
             cities = Model.CityOptions.Select(o => new { id = o.Id, name = o.Name }),
+            categories = Model.CategoryOptions.Select(o => new { id = o.Id, name = o.Name, count = o.Count }),
             levels = Model.LevelOptions.Select(o => new { value = o.Value, label = o.Label }),
             types = Model.TypeOptions.Select(o => new { value = o.Value, label = o.Label })
         },
@@ -141,6 +150,8 @@
         {
             searchPlaceholder = Localizer["SearchPlaceholder"].Value ?? string.Empty,
             searchLabel = Localizer["SearchLabel"].Value ?? "Hledat",
+            categoriesLabel = Localizer["CategoriesLabel"].Value ?? "Kategorie kurzů",
+            categoryCountTemplate = Localizer["CategoryCountFormat", "{0}", "{1}"].Value ?? "{0} ({1})",
             normsLabel = Localizer["NormsLabel"].Value ?? "Normy",
             citiesLabel = Localizer["CitiesLabel"].Value ?? "Města",
             levelsLabel = Localizer["LevelsLabel"].Value ?? "Úrovně",

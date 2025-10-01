@@ -21,6 +21,7 @@ if (!dataElement) {
         cities: new Set((initial.cities ?? []).map(Number)),
         levels: new Set((initial.levels ?? []).map(String)),
         types: new Set((initial.types ?? []).map(String)),
+        categories: new Set((initial.categories ?? []).map(String)),
         minPrice: Number(initial.minPrice ?? priceBounds.min),
         maxPrice: Number(initial.maxPrice ?? priceBounds.max)
     };
@@ -46,6 +47,7 @@ if (!dataElement) {
         search: [],
         norms: [],
         cities: [],
+        categories: [],
         levels: [],
         types: [],
         priceMin: [],
@@ -80,6 +82,8 @@ if (!dataElement) {
 
     const normOptions = new Map((filtersConfig.norms ?? []).map(opt => [String(opt.id), opt.name]));
     const cityOptions = new Map((filtersConfig.cities ?? []).map(opt => [String(opt.id), opt.name]));
+    const categoryOptions = filtersConfig.categories ?? [];
+    const categoryOptionMap = new Map(categoryOptions.map(opt => [String(opt.id), opt]));
     const levelOptions = filtersConfig.levels ?? [];
     const typeOptions = filtersConfig.types ?? [];
 
@@ -91,6 +95,8 @@ if (!dataElement) {
         if (norms) controls.norms.push(norms);
         const cities = container.querySelector('[data-filter="cities"]');
         if (cities) controls.cities.push(cities);
+        const categories = container.querySelector('[data-filter="categories"]');
+        if (categories) controls.categories.push(categories);
         const levels = container.querySelector('[data-filter="levels"]');
         if (levels) controls.levels.push(levels);
         const types = container.querySelector('[data-filter="types"]');
@@ -172,6 +178,33 @@ if (!dataElement) {
         syncing = true;
         controls.search.forEach(input => {
             input.value = state.search ?? '';
+        });
+
+        const validCategoryIds = new Set(categoryOptions.map(option => String(option.id)));
+        Array.from(state.categories).forEach(id => {
+            if (!validCategoryIds.has(String(id))) {
+                state.categories.delete(id);
+            }
+        });
+
+        const categoryTemplate = resources.categoryCountTemplate || '{0} ({1})';
+        controls.categories.forEach(select => {
+            select.innerHTML = '';
+            categoryOptions.forEach(option => {
+                const optionElement = document.createElement('option');
+                const optionId = String(option.id);
+                optionElement.value = optionId;
+                const count = Number(option.count ?? 0);
+                if (Number.isFinite(count) && count >= 0) {
+                    optionElement.textContent = categoryTemplate
+                        .replace('{0}', option.name ?? '')
+                        .replace('{1}', count.toString());
+                } else {
+                    optionElement.textContent = option.name ?? '';
+                }
+                optionElement.selected = state.categories.has(optionId);
+                select.appendChild(optionElement);
+            });
         });
 
         controls.norms.forEach(select => {
@@ -683,6 +716,13 @@ if (!dataElement) {
             }
         });
 
+        state.categories.forEach(id => {
+            const option = categoryOptionMap.get(String(id));
+            if (option) {
+                activeFiltersElement.appendChild(createChip(option.name ?? String(id), 'categories', id));
+            }
+        });
+
         state.levels.forEach(level => {
             const option = levelOptions.find(opt => opt.value === level);
             if (option) {
@@ -717,6 +757,9 @@ if (!dataElement) {
                 break;
             case 'cities':
                 state.cities.delete(Number(value));
+                break;
+            case 'categories':
+                state.categories.delete(String(value));
                 break;
             case 'levels':
                 state.levels.delete(String(value));
@@ -754,6 +797,7 @@ if (!dataElement) {
                 search: state.search,
                 norms: Array.from(state.norms),
                 cities: Array.from(state.cities),
+                categories: Array.from(state.categories),
                 levels: Array.from(state.levels),
                 types: Array.from(state.types),
                 minPrice: clampPrice(state.minPrice),
@@ -783,6 +827,7 @@ if (!dataElement) {
         state.search = '';
         state.norms.clear();
         state.cities.clear();
+        state.categories.clear();
         state.levels.clear();
         state.types.clear();
         state.minPrice = priceBounds.min;
@@ -819,6 +864,7 @@ if (!dataElement) {
         }
         state.norms.forEach(id => params.append('SelectedTagIds', String(id)));
         state.cities.forEach(id => params.append('SelectedCityTagIds', String(id)));
+        state.categories.forEach(id => params.append('SelectedCategoryIds', String(id)));
         state.levels.forEach(level => params.append('SelectedLevels', level));
         state.types.forEach(type => params.append('SelectedTypes', type));
 
@@ -883,9 +929,9 @@ if (!dataElement) {
             });
         });
 
-        const handleSelectChange = (set, values) => {
+        const handleSelectChange = (set, values, transform = Number) => {
             set.clear();
-            values.forEach(value => set.add(Number(value)));
+            values.forEach(value => set.add(transform(value)));
             state.pageNumber = 1;
             syncControls();
             updateChips();
@@ -898,7 +944,7 @@ if (!dataElement) {
                     return;
                 }
                 const selected = Array.from(event.target.selectedOptions).map(opt => opt.value);
-                handleSelectChange(state.norms, selected);
+                handleSelectChange(state.norms, selected, Number);
             });
         });
 
@@ -908,7 +954,17 @@ if (!dataElement) {
                     return;
                 }
                 const selected = Array.from(event.target.selectedOptions).map(opt => opt.value);
-                handleSelectChange(state.cities, selected);
+                handleSelectChange(state.cities, selected, Number);
+            });
+        });
+
+        controls.categories.forEach(select => {
+            select.addEventListener('change', event => {
+                if (syncing) {
+                    return;
+                }
+                const selected = Array.from(event.target.selectedOptions).map(opt => opt.value);
+                handleSelectChange(state.categories, selected, value => String(value));
             });
         });
 
@@ -1003,6 +1059,9 @@ if (!dataElement) {
             state.search = saved.search ?? state.search;
             state.norms = new Set((saved.norms ?? []).map(Number));
             state.cities = new Set((saved.cities ?? []).map(Number));
+            state.categories = new Set((saved.categories ?? [])
+                .map(String)
+                .filter(id => categoryOptionMap.has(id)));
             state.levels = new Set((saved.levels ?? []).map(String));
             state.types = new Set((saved.types ?? []).map(String));
             state.minPrice = clampPrice(Number(saved.minPrice ?? priceBounds.min));
