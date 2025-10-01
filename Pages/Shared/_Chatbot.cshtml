@@ -1,0 +1,40 @@
+<div class="chatbot" data-chatbot>
+    <button type="button" class="chatbot-toggle" data-chatbot-toggle aria-haspopup="dialog" aria-expanded="false" aria-controls="chatbot-panel">
+        <span class="visually-hidden">Otevřít chat s virtuálním poradcem</span>
+        <i class="bi bi-chat-dots"></i>
+    </button>
+    <div class="chatbot-panel" id="chatbot-panel" role="dialog" aria-modal="false" aria-label="Virtuální poradce" hidden>
+        <div class="chatbot-header">
+            <div class="chatbot-header-text">
+                <h2 class="chatbot-title">Virtuální poradce</h2>
+                <p class="chatbot-subtitle">Rád poradím s výběrem vhodného kurzu.</p>
+            </div>
+            <button type="button" class="chatbot-close" data-chatbot-close aria-label="Zavřít chat">
+                <i class="bi bi-x"></i>
+            </button>
+        </div>
+        <div class="chatbot-body">
+            <div class="chatbot-messages" data-chatbot-messages role="log" aria-live="polite" tabindex="0"></div>
+            <div class="chatbot-quick-replies" data-chatbot-quick-replies role="group" aria-label="Rychlé dotazy">
+                <button type="button" class="chatbot-quick-reply" data-quick-reply="Hledám školení pro ISO 9001">Hledám školení pro ISO 9001</button>
+                <button type="button" class="chatbot-quick-reply" data-quick-reply="Kdy začíná nejbližší kurz?">Kdy začíná nejbližší kurz?</button>
+                <button type="button" class="chatbot-quick-reply" data-quick-reply="Kolik to stojí?">Kolik to stojí?</button>
+            </div>
+            <form class="chatbot-form" data-chatbot-form novalidate>
+                <label class="visually-hidden" for="chatbot-input">Vaše zpráva</label>
+                <input id="chatbot-input" class="chatbot-input" type="text" name="message" placeholder="Napište dotaz..." autocomplete="off" required />
+                <button type="submit" class="chatbot-send">
+                    <span>Odeslat</span>
+                </button>
+            </form>
+            <button type="button" class="chatbot-escalate" data-chatbot-escalate>Potřebuji mluvit s člověkem</button>
+            <form class="chatbot-escalate-form" data-chatbot-escalate-form hidden novalidate>
+                <p class="chatbot-escalate-description">Vyplňte prosím e-mail, kolega se vám ozve co nejdříve.</p>
+                <label class="chatbot-label" for="chatbot-escalate-email">E-mail</label>
+                <input id="chatbot-escalate-email" class="chatbot-input" type="email" name="email" placeholder="vas@email.cz" autocomplete="email" required />
+                <button type="submit" class="chatbot-send">Odeslat požadavek</button>
+                <button type="button" class="chatbot-cancel-escalation" data-chatbot-cancel-escalation>Zavřít</button>
+            </form>
+        </div>
+    </div>
+</div>
