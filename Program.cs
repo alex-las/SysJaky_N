@@ -192,6 +192,8 @@ try
             .Build();
     });
     builder.Services.Configure<SmtpOptions>(builder.Configuration.GetSection("Smtp"));
+    builder.Services.Configure<PushNotificationOptions>(builder.Configuration.GetSection("PushNotifications"));
+    builder.Services.AddSingleton<IPushSubscriptionStore, InMemoryPushSubscriptionStore>();
     builder.Services.AddScoped<IEmailSender, EmailSender>();
     builder.Services.Configure<CourseReviewRequestOptions>(builder.Configuration.GetSection("CourseReviews"));
     builder.Services.AddScoped<IAuditService, AuditService>();

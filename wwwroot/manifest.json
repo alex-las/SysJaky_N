@@ -1,0 +1,39 @@
+{
+  "name": "SysJaky",
+  "short_name": "SysJaky",
+  "start_url": "/?source=pwa",
+  "display": "standalone",
+  "background_color": "#0b7bb3",
+  "theme_color": "#0b7bb3",
+  "description": "Kurzy SysJaky dostupné i offline jako progresivní webová aplikace.",
+  "lang": "cs",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "/img/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/img/icons/icon-256.png",
+      "sizes": "256x256",
+      "type": "image/png"
+    },
+    {
+      "src": "/img/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/img/icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    }
+  ]
+}

@@ -142,12 +142,6 @@ document.addEventListener('DOMContentLoaded', () => {
         target.addEventListener('hidden.bs.collapse', () => updateAriaExpanded(toggle, false));
     });
 
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/service-worker.js').catch((error) => {
-            console.warn('Service worker registration failed', error);
-        });
-    }
-
     const wishlistStorageKey = 'courseWishlist';
 
     const readWishlistState = () => {
