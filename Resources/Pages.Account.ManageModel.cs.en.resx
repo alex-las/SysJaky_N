@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="ErrorEmailInvalid" xml:space="preserve">
+    <value>Please enter a valid email address.</value>
+  </data>
+  <data name="ErrorPhoneInvalid" xml:space="preserve">
+    <value>Please enter a valid phone number.</value>
+  </data>
+  <data name="ErrorTokenRequired" xml:space="preserve">
+    <value>The token is required.</value>
+  </data>
+  <data name="ErrorTokenNotFound" xml:space="preserve">
+    <value>The token was not found.</value>
+  </data>
+  <data name="ErrorTokenAlreadyRedeemed" xml:space="preserve">
+    <value>This token has already been redeemed.</value>
+  </data>
+  <data name="ErrorTokenNotAssociated" xml:space="preserve">
+    <value>The token is not associated with a course item.</value>
+  </data>
+  <data name="ErrorNoSeatsAvailable" xml:space="preserve">
+    <value>No seats are currently available for this course.</value>
+  </data>
+  <data name="CourseFallback" xml:space="preserve">
+    <value>Course {0}</value>
+  </data>
+  <data name="StatusTokenRedeemed" xml:space="preserve">
+    <value>The token was redeemed for {0} ({1}).</value>
+  </data>
+  <data name="ProfileUpdated" xml:space="preserve">
+    <value>Your profile has been saved.</value>
+  </data>
+</root>

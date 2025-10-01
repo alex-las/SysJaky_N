@@ -3,7 +3,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
+using System;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using SysJaky_N.Data;
 using SysJaky_N.Models;
 
@@ -15,12 +18,14 @@ public class ManageModel : PageModel
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly SignInManager<ApplicationUser> _signInManager;
     private readonly ApplicationDbContext _context;
+    private readonly IStringLocalizer<ManageModel> _localizer;
 
-    public ManageModel(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ApplicationDbContext context)
+    public ManageModel(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ApplicationDbContext context, IStringLocalizer<ManageModel> localizer)
     {
         _userManager = userManager;
         _signInManager = signInManager;
         _context = context;
+        _localizer = localizer;
     }
 
     [BindProperty]
@@ -52,8 +57,6 @@ public class ManageModel : PageModel
 
     public class RedeemTokenInputModel
     {
-        [Required]
-        [Display(Name = "Seat token")]
         public string Token { get; set; } = string.Empty;
     }
 
@@ -81,6 +84,7 @@ public class ManageModel : PageModel
 
         if (!ModelState.IsValid)
         {
+            LocalizeValidationErrors();
             await LoadPageDataAsync(user, resetInput: false, resetRedeemInput: true);
             return Page();
         }
@@ -101,6 +105,8 @@ public class ManageModel : PageModel
         await _userManager.UpdateAsync(user);
         await _signInManager.RefreshSignInAsync(user);
 
+        StatusMessage = _localizer["ProfileUpdated"];
+
         return RedirectToPage();
     }
 
@@ -114,6 +120,7 @@ public class ManageModel : PageModel
 
         if (!ModelState.IsValid)
         {
+            LocalizeValidationErrors();
             await LoadPageDataAsync(user, resetInput: true, resetRedeemInput: false);
             return Page();
         }
@@ -121,7 +128,7 @@ public class ManageModel : PageModel
         var tokenValue = RedeemTokenInput.Token?.Trim();
         if (string.IsNullOrEmpty(tokenValue))
         {
-            ModelState.AddModelError(nameof(RedeemTokenInput.Token), "Token is required.");
+            ModelState.AddModelError(nameof(RedeemTokenInput.Token), _localizer["ErrorTokenRequired"]);
             await LoadPageDataAsync(user, resetInput: true, resetRedeemInput: false);
             return Page();
         }
@@ -135,14 +142,14 @@ public class ManageModel : PageModel
 
         if (seatToken == null)
         {
-            ModelState.AddModelError(nameof(RedeemTokenInput.Token), "Token was not found.");
+            ModelState.AddModelError(nameof(RedeemTokenInput.Token), _localizer["ErrorTokenNotFound"]);
             await LoadPageDataAsync(user, resetInput: true, resetRedeemInput: false);
             return Page();
         }
 
         if (seatToken.RedeemedAtUtc.HasValue)
         {
-            ModelState.AddModelError(nameof(RedeemTokenInput.Token), "This token has already been redeemed.");
+            ModelState.AddModelError(nameof(RedeemTokenInput.Token), _localizer["ErrorTokenAlreadyRedeemed"]);
             await LoadPageDataAsync(user, resetInput: true, resetRedeemInput: false);
             return Page();
         }
@@ -150,7 +157,7 @@ public class ManageModel : PageModel
         var orderItem = seatToken.OrderItem;
         if (orderItem == null)
         {
-            ModelState.AddModelError(nameof(RedeemTokenInput.Token), "Token is not associated with a course item.");
+            ModelState.AddModelError(nameof(RedeemTokenInput.Token), _localizer["ErrorTokenNotAssociated"]);
             await LoadPageDataAsync(user, resetInput: true, resetRedeemInput: false);
             return Page();
         }
@@ -179,7 +186,7 @@ public class ManageModel : PageModel
         if (allocatedTerm == null)
         {
             await transaction.RollbackAsync();
-            ModelState.AddModelError(nameof(RedeemTokenInput.Token), "No seats are currently available for this course.");
+            ModelState.AddModelError(nameof(RedeemTokenInput.Token), _localizer["ErrorNoSeatsAvailable"]);
             await LoadPageDataAsync(user, resetInput: true, resetRedeemInput: false);
             return Page();
         }
@@ -199,11 +206,34 @@ public class ManageModel : PageModel
         await _context.SaveChangesAsync();
         await transaction.CommitAsync();
 
-        var courseTitle = orderItem.Course?.Title ?? $"Course {orderItem.CourseId}";
+        var courseTitle = orderItem.Course?.Title ?? _localizer["CourseFallback", orderItem.CourseId];
         var termDate = allocatedTerm.StartUtc.ToLocalTime().ToString("g");
-        StatusMessage = $"Token redeemed for {courseTitle} ({termDate}).";
+        StatusMessage = _localizer["StatusTokenRedeemed", courseTitle, termDate];
 
         return RedirectToPage();
+    }
+
+    private void LocalizeValidationErrors()
+    {
+        ReplaceErrorMessage($"{nameof(Input)}.{nameof(InputModel.Email)}", static message => message.Contains("valid e-mail", StringComparison.OrdinalIgnoreCase), _localizer["ErrorEmailInvalid"]);
+        ReplaceErrorMessage($"{nameof(Input)}.{nameof(InputModel.PhoneNumber)}", static message => message.Contains("valid phone", StringComparison.OrdinalIgnoreCase), _localizer["ErrorPhoneInvalid"]);
+    }
+
+    private void ReplaceErrorMessage(string key, Func<string, bool> predicate, string replacement)
+    {
+        if (!ModelState.TryGetValue(key, out var entry))
+        {
+            return;
+        }
+
+        var needsReplacement = entry.Errors.Any(error => predicate(error.ErrorMessage));
+        if (!needsReplacement)
+        {
+            return;
+        }
+
+        entry.Errors.Clear();
+        entry.Errors.Add(replacement);
     }
 
     private async Task LoadPageDataAsync(ApplicationUser user, bool resetInput, bool resetRedeemInput)

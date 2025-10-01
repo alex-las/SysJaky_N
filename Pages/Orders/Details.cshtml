@@ -1,102 +1,48 @@
 @page "{id:int}"
 @model SysJaky_N.Pages.Orders.DetailsModel
-@{ 
-    ViewData["Title"] = "Order Details"; 
+@using System.Collections.Generic
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+@{
+    ViewData["Title"] = Localizer["Title", Model.Order.Id];
+    var orderResources = new OrderDetailsViewModel
+    {
+        Order = Model.Order,
+        PaymentEnabled = Model.PaymentEnabled,
+        QrCodeImage = Model.QrCodeImage,
+        StatusLabel = Localizer["StatusLabel"],
+        DateLabel = Localizer["DateLabel"],
+        CourseHeader = Localizer["CourseHeader"],
+        QuantityHeader = Localizer["QuantityHeader"],
+        UnitPriceExclVatHeader = Localizer["UnitPriceExclVatHeader"],
+        VatHeader = Localizer["VatHeader"],
+        TotalHeader = Localizer["TotalHeader"],
+        SubtotalLabel = Localizer["SubtotalLabel"],
+        VatLabel = Localizer["VatLabel"],
+        TotalLabel = Localizer["TotalLabel"],
+        SeatTokensHeading = Localizer["SeatTokensHeading"],
+        CourseFallbackFormat = Localizer["CourseFallbackFormat"],
+        SeatTokenRedeemedFormat = Localizer["SeatTokenRedeemedFormat"],
+        SeatTokenAvailableText = Localizer["SeatTokenAvailableText"],
+        QrCodeAltText = Localizer["QrCodeAltText"],
+        PayButtonText = Localizer["PayButtonText"],
+        DownloadInvoiceText = Localizer["DownloadInvoiceText"],
+        StatusTranslations = new Dictionary<OrderStatus, string>
+        {
+            [OrderStatus.Pending] = Localizer["StatusPending"],
+            [OrderStatus.Paid] = Localizer["StatusPaid"],
+            [OrderStatus.Cancelled] = Localizer["StatusCancelled"],
+            [OrderStatus.Refunded] = Localizer["StatusRefunded"],
+        }
+    };
 }
 
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a asp-page="/Account/Manage">Profile</a></li>
-        <li class="breadcrumb-item active" aria-current="page">Order @Model.Order.Id</li>
+        <li class="breadcrumb-item"><a asp-page="/Account/Manage">@Localizer["ProfileBreadcrumb"]</a></li>
+        <li class="breadcrumb-item active" aria-current="page">@Localizer["BreadcrumbCurrent", Model.Order.Id]</li>
     </ol>
 </nav>
 
-<h1>Order @Model.Order.Id</h1>
-<p>Status: @Model.Order.Status</p>
-<p>Date: @Model.Order.CreatedAt</p>
+<h1>@Localizer["Heading", Model.Order.Id]</h1>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Course</th>
-            <th>Quantity</th>
-            <th>Unit price (excl. VAT)</th>
-            <th>VAT</th>
-            <th>Total</th>
-        </tr>
-    </thead>
-    <tbody>
-    @foreach (var item in Model.Order.Items)
-    {
-        <tr>
-            <td>@item.Course?.Title</td>
-            <td>@item.Quantity</td>
-            <td>@item.UnitPriceExclVat</td>
-            <td>@item.Vat</td>
-            <td>@item.Total</td>
-        </tr>
-    }
-    </tbody>
-</table>
-<p>Subtotal (excl. VAT): @Model.Order.PriceExclVat</p>
-<p>VAT: @Model.Order.Vat</p>
-<p>Total: @Model.Order.Total</p>
-
-@{
-    var hasSeatTokens = false;
-    foreach (var item in Model.Order.Items)
-    {
-        if (item.SeatTokens.Count > 0)
-        {
-            hasSeatTokens = true;
-            break;
-        }
-    }
-}
-
-@if (Model.Order.Status == OrderStatus.Paid && hasSeatTokens)
-{
-    <h2>Seat tokens</h2>
-    @foreach (var item in Model.Order.Items)
-    {
-        if (item.SeatTokens.Count == 0)
-        {
-            continue;
-        }
-
-        <h3>@(item.Course?.Title ?? $"Course {item.CourseId}")</h3>
-        <ul>
-            @foreach (var token in item.SeatTokens)
-            {
-                <li>
-                    <code>@token.Token</code>
-                    @if (token.RedeemedAtUtc.HasValue)
-                    {
-                        <span>- redeemed @token.RedeemedAtUtc.Value.ToLocalTime().ToString("g")</span>
-                    }
-                    else
-                    {
-                        <span>- available</span>
-                    }
-                </li>
-            }
-        </ul>
-    }
-}
-
-@if (!string.IsNullOrEmpty(Model.QrCodeImage))
-{
-    <img src="@Model.QrCodeImage" alt="QR code" />
-}
-
-@if (Model.PaymentEnabled && Model.Order.Status == OrderStatus.Pending)
-{
-    <form method="post" asp-page-handler="Pay">
-        <button type="submit" class="btn btn-primary">Zaplatit online</button>
-    </form>
-}
-
-@if (Model.Order.Status == OrderStatus.Paid)
-{
-    <a class="btn btn-secondary" asp-page-handler="DownloadInvoice" asp-route-id="@Model.Order.Id">Download Invoice</a>
-}
+<partial name="~/Pages/Shared/Orders/_OrderDetails.cshtml" model="orderResources" />

@@ -1,8 +1,40 @@
 @page "{id:int}"
 @model SysJaky_N.Pages.Admin.Orders.DetailsModel
+@using System.Collections.Generic
 @using SysJaky_N.Models
+@using SysJaky_N.Models.ViewModels
 @{
     ViewData["Title"] = $"Objednávka {Model.Order.Id}";
+    var orderResources = new OrderDetailsViewModel
+    {
+        Order = Model.Order,
+        PaymentEnabled = Model.PaymentEnabled,
+        QrCodeImage = Model.QrCodeImage,
+        StatusLabel = "Stav:",
+        DateLabel = "Datum:",
+        CourseHeader = "Kurz",
+        QuantityHeader = "Množství",
+        UnitPriceExclVatHeader = "Jednotková cena (bez DPH)",
+        VatHeader = "DPH",
+        TotalHeader = "Celkem",
+        SubtotalLabel = "Mezisoučet (bez DPH):",
+        VatLabel = "DPH:",
+        TotalLabel = "Celkem:",
+        SeatTokensHeading = "Přístupové tokeny",
+        CourseFallbackFormat = "Kurz {0}",
+        SeatTokenRedeemedFormat = "uplatněno {0}",
+        SeatTokenAvailableText = "k dispozici",
+        QrCodeAltText = "QR kód",
+        PayButtonText = "Spustit platbu",
+        DownloadInvoiceText = "Stáhnout fakturu",
+        StatusTranslations = new Dictionary<OrderStatus, string>
+        {
+            [OrderStatus.Pending] = "Čeká na platbu",
+            [OrderStatus.Paid] = "Zaplaceno",
+            [OrderStatus.Cancelled] = "Zrušeno",
+            [OrderStatus.Refunded] = "Vráceno"
+        }
+    };
 }
 
 <nav aria-label="breadcrumb">
@@ -13,90 +45,5 @@
 </nav>
 
 <h1>Objednávka @Model.Order.Id</h1>
-<p>Stav: @(Model.Order.Status switch
-    {
-        OrderStatus.Pending => "Čeká na platbu",
-        OrderStatus.Paid => "Zaplaceno",
-        OrderStatus.Cancelled => "Zrušeno",
-        OrderStatus.Refunded => "Vráceno",
-        _ => Model.Order.Status.ToString()
-    })</p>
-<p>Datum: @Model.Order.CreatedAt.ToString("g")</p>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Kurz</th>
-            <th>Množství</th>
-            <th>Jednotková cena (bez DPH)</th>
-            <th>DPH</th>
-            <th>Celkem</th>
-        </tr>
-    </thead>
-    <tbody>
-    @foreach (var item in Model.Order.Items)
-    {
-        <tr>
-            <td>@item.Course?.Title</td>
-            <td>@item.Quantity</td>
-            <td>@item.UnitPriceExclVat</td>
-            <td>@item.Vat</td>
-            <td>@item.Total</td>
-        </tr>
-    }
-    </tbody>
-</table>
-<p>Mezisoučet (bez DPH): @Model.Order.PriceExclVat</p>
-<p>DPH: @Model.Order.Vat</p>
-<p>Celkem: @Model.Order.Total</p>
-
-@{
-    var hasSeatTokens = Model.Order.Items.Any(i => i.SeatTokens.Count > 0);
-}
-
-@if (Model.Order.Status == OrderStatus.Paid && hasSeatTokens)
-{
-    <h2>Přístupové tokeny</h2>
-    @foreach (var item in Model.Order.Items)
-    {
-        if (item.SeatTokens.Count == 0)
-        {
-            continue;
-        }
-
-        <h3>@(item.Course?.Title ?? $"Kurz {item.CourseId}")</h3>
-        <ul>
-            @foreach (var token in item.SeatTokens)
-            {
-                <li>
-                    <code>@token.Token</code>
-                    @if (token.RedeemedAtUtc.HasValue)
-                    {
-                        <span>- uplatněno @token.RedeemedAtUtc.Value.ToLocalTime().ToString("g")</span>
-                    }
-                    else
-                    {
-                        <span>- k dispozici</span>
-                    }
-                </li>
-            }
-        </ul>
-    }
-}
-
-@if (!string.IsNullOrEmpty(Model.QrCodeImage))
-{
-    <img src="@Model.QrCodeImage" alt="QR kód" />
-}
-
-@if (Model.PaymentEnabled && Model.Order.Status == OrderStatus.Pending)
-{
-    <form method="post" asp-page-handler="Pay">
-        <button type="submit" class="btn btn-primary">Spustit platbu</button>
-    </form>
-}
-
-@if (Model.Order.Status == OrderStatus.Paid)
-{
-    <a class="btn btn-secondary" asp-page-handler="DownloadInvoice" asp-route-id="@Model.Order.Id">Stáhnout fakturu</a>
-}
+<partial name="~/Pages/Shared/Orders/_OrderDetails.cshtml" model="orderResources" />
