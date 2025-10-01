@@ -41,6 +41,26 @@ html {
   --bs-link-hover-color: var(--primary-dark);
 }
 
+[data-theme="dark"] {
+  color-scheme: dark;
+  --primary: #3db9e5;
+  --primary-dark: #5dc4ed;
+  --primary-light: #6dd0f1;
+  --primary-600: #2c90ba;
+  --primary-50: #0f172a;
+  --neutral-900: #e2e8f0;
+  --neutral-700: #cbd5e1;
+  --neutral-500: #94a3b8;
+  --neutral-300: #334155;
+  --neutral-200: #1e293b;
+  --neutral-100: #0f172a;
+  --neutral-50: #020617;
+  --neutral-400: #64748b;
+  --accent: #fbbf24;
+  --accent-dark: #f59e0b;
+  /* Další barvy... */
+}
+
 html {
   position: relative;
   min-height: 100%;
@@ -156,6 +176,29 @@ button:focus-visible {
 .app-navbar {
   background: linear-gradient(120deg, var(--primary) 0%, var(--primary-dark) 55%, var(--primary-light) 100%);
   padding-block: 1rem;
+}
+
+.theme-toggle {
+  min-width: 2.5rem;
+  min-height: 2.5rem;
+  border-radius: 999px;
+  padding: 0.5rem;
+}
+
+.theme-toggle i {
+  font-size: 1.1rem;
+}
+
+[data-theme="dark"] .theme-toggle {
+  border-color: rgba(148, 163, 184, 0.7);
+  color: var(--neutral-900);
+  background-color: rgba(30, 41, 59, 0.6);
+}
+
+[data-theme="dark"] .theme-toggle:hover,
+[data-theme="dark"] .theme-toggle:focus-visible {
+  background-color: rgba(51, 65, 85, 0.8);
+  color: var(--neutral-900);
 }
 
 .chatbot {

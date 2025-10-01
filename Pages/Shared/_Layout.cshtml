@@ -12,6 +12,10 @@
     var canAccessAdmin = ApplicationRoles.AdminDashboardRoles.Any(role => User.IsInRole(role));
     var returnUrl = string.Concat(Context.Request.Path, Context.Request.QueryString);
     var pushPublicKey = Configuration["PushNotifications:PublicKey"] ?? string.Empty;
+    var toggleThemeLabel = Localizer["ToggleTheme"];
+    var themeToggleText = toggleThemeLabel.ResourceNotFound
+        ? (currentCulture.TwoLetterISOLanguageName == "cs" ? "Přepnout vzhled" : "Toggle theme")
+        : toggleThemeLabel.Value;
 }
 <!DOCTYPE html>
 <html lang="@currentCulture.TwoLetterISOLanguageName">
@@ -77,6 +81,15 @@
                                 </a>
                             </li>
                         }
+                        <li class="nav-item">
+                            <button type="button" class="btn btn-outline-light d-flex align-items-center justify-content-center gap-2 theme-toggle"
+                                    data-theme-toggle aria-pressed="false" aria-label='@themeToggleText'
+                                    title='@themeToggleText'>
+                                <i class="bi bi-sun-fill" data-theme-icon="light" aria-hidden="true"></i>
+                                <i class="bi bi-moon-stars-fill d-none" data-theme-icon="dark" aria-hidden="true"></i>
+                                <span class="visually-hidden">@themeToggleText</span>
+                            </button>
+                        </li>
                         <li class="nav-item">
                             <a class="btn btn-outline-light ms-2" data-bs-toggle="offcanvas" href="#advisor" role="button" aria-controls="advisor" aria-haspopup="dialog">
                                 <i class="bi bi-magic"></i> @Localizer["AdvisorButton"]
@@ -180,6 +193,7 @@
     <script src="~/js/pwa.js" asp-append-version="true" defer></script>
     <script src="~/js/newsletter.js" asp-append-version="true" defer></script>
     <script src="~/js/chatbot.js" asp-append-version="true" defer></script>
+    <script type="module" src="~/js/theme-switcher.js" asp-append-version="true"></script>
 
     @await Html.PartialAsync("/Pages/Shared/_AdvisorOffcanvas.cshtml")
 
