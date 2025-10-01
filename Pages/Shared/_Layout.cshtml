@@ -25,6 +25,13 @@
     <meta name="theme-color" content="#0b7bb3" />
     <meta name="application-name" content="SysJaky" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="description" content="Školení a kurzy ISO 9001, 14001, 17025, 15189, 45001, 27001, IATF 16949. Komplexní příprava k certifikaci a akreditaci. Firemní školení na míru." />
+    <meta name="keywords" content="školení ISO, kurzy ISO 9001, certifikace ISO, akreditace laboratoří, ISO 14001, IATF 16949, HACCP" />
+    <meta name="author" content="Systémy jakosti s.r.o." />
+    <meta property="og:title" content="Systémy jakosti - Školení a certifikace ISO" />
+    <meta property="og:description" content="Profesionální školení ISO 9001, 14001, 17025 a další. Příprava k certifikaci." />
+    <meta property="og:image" content="~/img/og-image.jpg" />
+    <meta property="og:type" content="website" />
     <title>@ViewData["Title"] - SysJaky_N</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -39,6 +46,19 @@
     <link rel="manifest" href="~/manifest.json" crossorigin="use-credentials" />
     <link rel="apple-touch-icon" sizes="192x192" href="~/img/icons/icon-192.png" />
     <link rel="apple-touch-icon" sizes="512x512" href="~/img/icons/icon-512.png" />
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "EducationalOrganization",
+      "name": "Systémy jakosti s.r.o.",
+      "description": "Poskytovatel školení a poradenství v oblasti ISO norem",
+      "url": "https://www.systemy-jakosti.cz",
+      "address": {
+        "@type": "PostalAddress",
+        "addressCountry": "CZ"
+      }
+    }
+    </script>
     @await RenderSectionAsync("Head", required: false)
 </head>
 <body class="app-body">
