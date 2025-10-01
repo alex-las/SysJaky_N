@@ -4,13 +4,8 @@
 @{
     var culture = CultureInfo.CurrentCulture;
     var headingId = $"course-card-title-{Model.Id}";
-    var countdownText = Model.DaysUntilStart switch
-    {
-        > 0 => string.Format(Localizer["StartsInDays", Model.DaysUntilStart.Value].Value ?? "Začíná za {0} dní", Model.DaysUntilStart.Value),
-        0 => Localizer["StartsToday"].Value ?? "Začíná dnes",
-        < 0 => Localizer["AlreadyStarted"].Value ?? "Kurz probíhá",
-        null => null
-    };
+    var countdownTemplate = Localizer["CountdownBadgeTemplate"].Value ?? "Začíná za {0} dní";
+    var countdownTodayLabel = Localizer["StartsToday"].Value ?? "Začíná dnes";
     var occupancy = Math.Round(Model.OccupancyPercent);
     var occupancyDisplay = string.Format(Localizer["OccupancyLabel"].Value ?? "Obsazenost", occupancy);
     var occupancyAria = string.Format(Localizer["OccupancyAria", occupancy.ToString("0", culture)].Value ?? "Obsazenost {0}%", occupancy.ToString("0", culture));
@@ -53,6 +48,11 @@
 
     @if (Model.IsoBadges.Any())
     {
+        var primaryBadge = Model.IsoBadges.First();
+        <span class="course-card__iso-pill badge rounded-pill text-white" style="position:absolute;top:1rem;right:1rem;background:var(--primary);">
+          @primaryBadge.Label
+        </span>
+
         <ul class="course-card__iso-list" aria-label="@Localizer["IsoBadgeListAria"].Value">
         @foreach (var badge in Model.IsoBadges)
         {
@@ -85,6 +85,15 @@
   <div class="course-card__body d-flex flex-column flex-grow-1 gap-3 p-3">
     <header>
       <h3 id="@headingId" class="h5 mb-1 course-card__title">@Model.Title</h3>
+      <span class="course-card__countdown-badge badge rounded-pill bg-primary-subtle text-primary-emphasis small fw-semibold d-inline-flex align-items-center gap-1 mt-1 d-none"
+            data-course-countdown
+            data-threshold-days="14"
+            data-start-date="@Model.Date.ToString("o")"
+            data-label-template="@countdownTemplate"
+            data-label-today="@countdownTodayLabel">
+        <i class="bi bi-hourglass-split" aria-hidden="true"></i>
+        <span data-countdown-text></span>
+      </span>
       @if (!string.IsNullOrWhiteSpace(Model.Description))
       {
         <p class="course-card__excerpt text-muted mb-0">@Model.Description</p>
@@ -113,20 +122,17 @@
       </button>
     </div>
 
-    <div class="course-card__progress" aria-label="@occupancyAria">
-      <div class="progress" role="progressbar" aria-valuenow="@occupancy" aria-valuemin="0" aria-valuemax="100">
-        <div class="progress-bar" style="width:@occupancy%"></div>
-      </div>
-      <div class="course-card__progress-text">@occupancyDisplay: @occupancy.ToString("0", culture)%</div>
-    </div>
+    @if (occupancy > 50 && Model.Capacity > 0)
+    {
+        <div class="course-card__progress" aria-label="@occupancyAria">
+          <progress class="course-card__progress-bar w-100" value="@Model.SeatsTaken" max="@Model.Capacity"></progress>
+          <div class="course-card__progress-text">@occupancyDisplay: @occupancy.ToString("0", culture)%</div>
+        </div>
+    }
 
     <div class="course-card__schedule d-flex flex-wrap justify-content-between gap-2 align-items-center">
       <div class="d-flex flex-column">
         <span class="course-card__date" aria-label="@Localizer["CourseDateAria", Model.DateDisplay].Value">@Model.DateDisplay</span>
-        @if (!string.IsNullOrWhiteSpace(countdownText))
-        {
-            <span class="course-card__countdown">@countdownText</span>
-        }
       </div>
       <div class="course-card__price fw-semibold text-end">@Model.PriceDisplay</div>
     </div>
@@ -155,3 +161,62 @@
     </div>
   </div>
 </article>
+
+<script>
+  (() => {
+    if (window.__courseCardCountdownInit) {
+      return;
+    }
+
+    window.__courseCardCountdownInit = true;
+
+    const msInDay = 24 * 60 * 60 * 1000;
+
+    const renderCountdown = () => {
+      document.querySelectorAll('[data-course-countdown]').forEach((element) => {
+        const startDateValue = element.getAttribute('data-start-date');
+        if (!startDateValue) {
+          element.classList.add('d-none');
+          return;
+        }
+
+        const threshold = Number.parseInt(element.getAttribute('data-threshold-days') ?? '', 10) || 0;
+        const template = element.getAttribute('data-label-template') ?? 'Začíná za {0} dní';
+        const todayLabel = element.getAttribute('data-label-today') ?? 'Začíná dnes';
+
+        const startDate = new Date(startDateValue);
+        if (Number.isNaN(startDate.getTime())) {
+          element.classList.add('d-none');
+          return;
+        }
+
+        const now = new Date();
+        const startMidnight = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
+        const nowMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const diffDays = Math.round((startMidnight.getTime() - nowMidnight.getTime()) / msInDay);
+
+        if (diffDays < 0 || diffDays > threshold) {
+          element.classList.add('d-none');
+          return;
+        }
+
+        const label = diffDays === 0
+          ? todayLabel
+          : template.replace('{0}', diffDays.toString());
+
+        const textTarget = element.querySelector('[data-countdown-text]');
+        if (textTarget) {
+          textTarget.textContent = label;
+        }
+
+        element.classList.remove('d-none');
+      });
+    };
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', renderCountdown, { once: true });
+    } else {
+      renderCountdown();
+    }
+  })();
+</script>
