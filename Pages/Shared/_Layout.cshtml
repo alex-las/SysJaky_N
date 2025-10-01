@@ -173,10 +173,13 @@
         window.__appConfig = window.__appConfig || {};
         window.__appConfig.pushPublicKey = '@JavaScriptEncoder.Default.Encode(pushPublicKey)';
     </script>
+    @await Component.InvokeAsync("ChatbotWidget")
+
     <script src="~/dist/scripts.min.js" asp-append-version="true" defer></script>
     <script type="module" src='@Url.Content("~/lib/altcha/altcha.min.js")' defer></script>
     <script src="~/js/pwa.js" asp-append-version="true" defer></script>
     <script src="~/js/newsletter.js" asp-append-version="true" defer></script>
+    <script src="~/js/chatbot.js" asp-append-version="true" defer></script>
 
     @await Html.PartialAsync("/Pages/Shared/_AdvisorOffcanvas.cshtml")
 

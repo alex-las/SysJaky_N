@@ -37,6 +37,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Lesson> Lessons { get; set; } = default!;
     public DbSet<LessonProgress> LessonProgresses { get; set; } = default!;
     public DbSet<Testimonial> Testimonials { get; set; } = default!;
+    public DbSet<ChatbotSettings> ChatbotSettings { get; set; } = default!;
 
     public DbSet<Certificate> Certificates { get; set; } = default!;
     public DbSet<Attendance> Attendances { get; set; } = default!;
@@ -222,5 +223,13 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .WithMany(t => t.CourseTags)
             .HasForeignKey(ct => ct.TagId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<ChatbotSettings>()
+            .Property(s => s.IsEnabled)
+            .HasDefaultValue(true);
+
+        builder.Entity<ChatbotSettings>()
+            .Property(s => s.AutoInitialize)
+            .HasDefaultValue(true);
     }
 }

@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using SysJaky_N.Authorization;
 using SysJaky_N.Data;
+using SysJaky_N.Models;
 
 namespace SysJaky_N.Pages.Admin.Dashboard;
 
@@ -24,6 +26,7 @@ public class IndexModel : PageModel
     public List<decimal> RevenueValues { get; set; } = new();
     public List<int> OrderCounts { get; set; } = new();
     public List<decimal> AverageOrderValues { get; set; } = new();
+    public ChatbotSettingsInput ChatbotSettings { get; set; } = new();
 
     public async Task OnGetAsync()
     {
@@ -59,5 +62,56 @@ public class IndexModel : PageModel
             OrderCounts.Add(stat.OrderCount);
             AverageOrderValues.Add(stat.AverageOrderValue);
         }
+
+        var settings = await _context.ChatbotSettings
+            .AsNoTracking()
+            .OrderBy(s => s.Id)
+            .FirstOrDefaultAsync();
+
+        if (settings is null)
+        {
+            ChatbotSettings.IsEnabled = true;
+            ChatbotSettings.AutoInitialize = true;
+        }
+        else
+        {
+            ChatbotSettings.IsEnabled = settings.IsEnabled;
+            ChatbotSettings.AutoInitialize = settings.AutoInitialize;
+        }
+    }
+
+    public async Task<IActionResult> OnPostChatbotAsync()
+    {
+        if (!ModelState.IsValid)
+        {
+            await OnGetAsync();
+            return Page();
+        }
+
+        var settings = await _context.ChatbotSettings
+            .OrderBy(s => s.Id)
+            .FirstOrDefaultAsync();
+
+        if (settings is null)
+        {
+            settings = new ChatbotSettings();
+            _context.ChatbotSettings.Add(settings);
+        }
+
+        settings.IsEnabled = ChatbotSettings.IsEnabled;
+        settings.AutoInitialize = ChatbotSettings.AutoInitialize;
+        settings.UpdatedAtUtc = DateTime.UtcNow;
+
+        await _context.SaveChangesAsync();
+
+        TempData["ChatbotSettingsSaved"] = true;
+
+        return RedirectToPage();
+    }
+
+    public class ChatbotSettingsInput
+    {
+        public bool IsEnabled { get; set; }
+        public bool AutoInitialize { get; set; }
     }
 }

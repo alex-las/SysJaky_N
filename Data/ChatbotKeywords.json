@@ -1,0 +1,19 @@
+[
+  {
+    "keywords": ["iso 9001", "iso9001", "qms", "řízení kvality"],
+    "response": "Skvěle, pro oblast ISO 9001 doporučuji tyto kurzy:",
+    "courseTitleContains": ["ISO 9001"],
+    "followUp": "Pokud hledáte něco konkrétnějšího, napište mi detaily." 
+  },
+  {
+    "keywords": ["cena", "kolik to stojí", "kolik stojí", "price"],
+    "response": "Ceny kurzů se liší podle délky a formátu. Tady je přehled vybraných kurzů:",
+    "followUp": "U každého kurzu najdete cenu i možnost přihlášení."
+  },
+  {
+    "keywords": ["termín", "kdy začíná", "nejbližší kurz", "start"],
+    "response": "Tady jsou nejbližší volné termíny:",
+    "sortByNextTerm": true,
+    "followUp": "Pokud vám žádný termín nevyhovuje, napište a najdeme alternativu."
+  }
+]
