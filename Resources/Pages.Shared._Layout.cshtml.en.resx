@@ -24,6 +24,9 @@
   <data name="NavHome" xml:space="preserve">
     <value>Home</value>
   </data>
+  <data name="NavAbout" xml:space="preserve">
+    <value>About</value>
+  </data>
   <data name="NavCourses" xml:space="preserve">
     <value>Courses &amp; Training</value>
   </data>

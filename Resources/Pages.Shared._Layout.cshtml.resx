@@ -24,6 +24,9 @@
   <data name="NavHome" xml:space="preserve">
     <value>Domů</value>
   </data>
+  <data name="NavAbout" xml:space="preserve">
+    <value>O společnosti</value>
+  </data>
   <data name="NavCourses" xml:space="preserve">
     <value>Kurzy a školení</value>
   </data>
