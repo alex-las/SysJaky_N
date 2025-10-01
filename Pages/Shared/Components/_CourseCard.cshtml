@@ -1,6 +1,6 @@
 @model SysJaky_N.Models.Course
 @inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
-<div class="feature-card h-100 p-3 d-flex flex-column justify-content-between">
+<div class="feature-card h-100 p-3 d-flex flex-column justify-content-between" role="article" aria-label="@Model.Title">
   <div class="d-flex flex-column gap-2">
     @if (!string.IsNullOrWhiteSpace(Model.CoverImageUrl)){
       <img src="@Model.CoverImageUrl" alt="@Localizer["CourseImageAlt", Model.Title]" class="img-fluid rounded mb-2" loading="lazy" decoding="async" />
@@ -18,13 +18,13 @@
   <div class="d-flex justify-content-between align-items-end mt-3">
     <div class="small text-muted">
       <div class="d-flex align-items-center">
-        <i class="bi bi-calendar2 me-2"></i>
+        <i class="bi bi-calendar2 me-2" aria-hidden="true"></i>
         <small class="text-muted">
-          @Model.Date.ToString("d")
+          <span aria-label='@Localizer["CourseDateAria", Model.Date.ToString("d")]'>@Model.Date.ToString("d")</span>
           @if (!string.IsNullOrWhiteSpace(Model.PopoverHtml))
           {
-            <a tabindex="0" role="button" class="ms-1 text-decoration-dotted" data-bs-toggle="popover" data-bs-html="true" data-bs-content="@Model.PopoverHtml">
-              <i class="bi bi-info-circle"></i>
+            <a tabindex="0" role="button" class="ms-1 text-decoration-dotted" data-bs-toggle="popover" data-bs-html="true" data-bs-content="@Model.PopoverHtml" aria-label='@Localizer["CourseAdditionalInfoAria", Model.Title]'>
+              <i class="bi bi-info-circle" aria-hidden="true"></i>
             </a>
           }
         </small>

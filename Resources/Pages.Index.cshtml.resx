@@ -27,6 +27,12 @@
   <data name="HeroSearchPlaceholder" xml:space="preserve">
     <value>Hledat kurz, nástroj nebo dovednost…</value>
   </data>
+  <data name="HeroSearchAriaLabel" xml:space="preserve">
+    <value>Vyhledávání kurzů</value>
+  </data>
+  <data name="HeroSearchLabel" xml:space="preserve">
+    <value>Vyhledávání</value>
+  </data>
   <data name="HeroSubheading" xml:space="preserve">
     <value>Vyberte roli a cíl – my zúžíme výběr. Nebo rovnou hledejte.</value>
   </data>
@@ -38,6 +44,12 @@
   </data>
   <data name="PersonaAriaLabel" xml:space="preserve">
     <value>Jsem</value>
+  </data>
+  <data name="PersonaLabel" xml:space="preserve">
+    <value>Vyberte svoji roli</value>
+  </data>
+  <data name="PersonaHelp" xml:space="preserve">
+    <value>Pomůže nám lépe doporučit kurzy.</value>
   </data>
   <data name="StepSelectTitle" xml:space="preserve">
     <value>Vyberte kurz</value>
@@ -77,6 +89,12 @@
   </data>
   <data name="GoalAriaLabel" xml:space="preserve">
     <value>Chci</value>
+  </data>
+  <data name="GoalLabel" xml:space="preserve">
+    <value>Vyberte cíl</value>
+  </data>
+  <data name="GoalHelp" xml:space="preserve">
+    <value>Popište, čeho chcete školením dosáhnout.</value>
   </data>
   <data name="NewsHeading" xml:space="preserve">
     <value>Novinky</value>

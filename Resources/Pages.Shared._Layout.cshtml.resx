@@ -69,6 +69,18 @@
   <data name="CartAriaLabel" xml:space="preserve">
     <value>Nákupní košík</value>
   </data>
+  <data name="PrimaryNavigation" xml:space="preserve">
+    <value>Hlavní navigace</value>
+  </data>
+  <data name="LanguageMenuLabel" xml:space="preserve">
+    <value>Změna jazyka</value>
+  </data>
+  <data name="ChangeLanguageFormLabel" xml:space="preserve">
+    <value>Vybrat jazyk</value>
+  </data>
+  <data name="AccountMenuLabel" xml:space="preserve">
+    <value>Uživatelské menu</value>
+  </data>
   <data name="FooterPrivacy" xml:space="preserve">
     <value>Ochrana soukromí</value>
   </data>

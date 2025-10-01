@@ -27,4 +27,10 @@
   <data name="EnrollAriaLabel" xml:space="preserve">
     <value>Enroll in {0}</value>
   </data>
+  <data name="CourseDateAria" xml:space="preserve">
+    <value>Course date {0}</value>
+  </data>
+  <data name="CourseAdditionalInfoAria" xml:space="preserve">
+    <value>Additional information about {0}</value>
+  </data>
 </root>

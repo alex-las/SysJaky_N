@@ -18,6 +18,12 @@
   <data name="Intro" xml:space="preserve">
     <value>Looking for training for your whole team? Let us know the topics, preferred format (online/on-site) and dates.</value>
   </data>
+  <data name="ContactDetailsRegionLabel" xml:space="preserve">
+    <value>Contact details and form</value>
+  </data>
+  <data name="MapTitle" xml:space="preserve">
+    <value>Map of our office location</value>
+  </data>
   <data name="Submit" xml:space="preserve">
     <value>Send</value>
   </data>

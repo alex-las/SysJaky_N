@@ -19,13 +19,14 @@
 }
 else
 {
-    <table class="table">
+    <table class="table" role="table">
+        <caption class="visually-hidden">@Localizer["CartTableCaption"]</caption>
         <thead>
             <tr>
-                <th>@Localizer["CourseHeader"]</th>
-                <th>@Localizer["QuantityHeader"]</th>
-                <th>@Localizer["PriceHeader"]</th>
-                <th>@Localizer["TotalHeader"]</th>
+                <th scope="col">@Localizer["CourseHeader"]</th>
+                <th scope="col">@Localizer["QuantityHeader"]</th>
+                <th scope="col">@Localizer["PriceHeader"]</th>
+                <th scope="col">@Localizer["TotalHeader"]</th>
             </tr>
         </thead>
         <tbody>
@@ -42,12 +43,12 @@ else
     </table>
     @if (Model.BundleOffers.Any())
     {
-        <h3>@Localizer["BundleOffers"]</h3>
+        <h2 class="h4">@Localizer["BundleOffers"]</h2>
         @foreach (var block in Model.BundleOffers)
         {
             var normal = block.Modules.Sum(m => m.Price);
             <p>@Localizer["BundleDescription", block.Title, block.Price, normal - block.Price]</p>
-            <form method="post" asp-page-handler="ApplyBundle">
+            <form method="post" asp-page-handler="ApplyBundle" class="d-inline" aria-label="@Localizer["ApplyBundleAria", block.Title]">
                 <input type="hidden" name="blockId" value="@block.Id" />
                 <button type="submit" class="btn btn-warning btn-sm">@Localizer["ApplyBundle"]</button>
             </form>
@@ -63,12 +64,18 @@ else
         }
         </ul>
     }
-    <form method="post" asp-page-handler="ApplyVoucher">
-        <input type="text" name="code" placeholder='@Localizer["VoucherPlaceholder"]' />
-        <button type="submit">@Localizer["Apply"]</button>
+    <form method="post" asp-page-handler="ApplyVoucher" class="row g-2 align-items-end" aria-label="@Localizer["VoucherFormLabel"]">
+        <div class="col-12 col-md-auto">
+            <label class="form-label visually-hidden" for="voucherCode">@Localizer["VoucherCodeLabel"]</label>
+            <input type="text" id="voucherCode" name="code" class="form-control" placeholder='@Localizer["VoucherPlaceholder"]' aria-describedby="voucherCodeHelp" />
+            <div id="voucherCodeHelp" class="visually-hidden">@Localizer["VoucherHelpText"]</div>
+        </div>
+        <div class="col-12 col-md-auto">
+            <button type="submit" class="btn btn-primary">@Localizer["Apply"]</button>
+        </div>
         @if (!string.IsNullOrEmpty(Model.ErrorMessage))
         {
-            <span class="text-danger">@Model.ErrorMessage</span>
+            <span class="text-danger" role="alert">@Model.ErrorMessage</span>
         }
     </form>
     @if (Model.AppliedVoucher != null)
@@ -76,7 +83,7 @@ else
         <p>@Localizer["VoucherApplied", Model.AppliedVoucher.Code, Model.DiscountAmount]</p>
     }
     <p>@Localizer["TotalLine", Model.Total]</p>
-    <form method="post" asp-page-handler="Checkout">
-        <button type="submit">@Localizer["CreateOrder"]</button>
+    <form method="post" asp-page-handler="Checkout" class="mt-3" aria-label="@Localizer["CheckoutFormLabel"]">
+        <button type="submit" class="btn btn-primary">@Localizer["CreateOrder"]</button>
     </form>
 }

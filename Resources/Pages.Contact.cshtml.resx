@@ -18,6 +18,12 @@
   <data name="Intro" xml:space="preserve">
     <value>Hledáte školení pro celý tým? Napište nám témata, preferovanou formu (online/prezenčně) a termíny.</value>
   </data>
+  <data name="ContactDetailsRegionLabel" xml:space="preserve">
+    <value>Kontaktní údaje a formulář</value>
+  </data>
+  <data name="MapTitle" xml:space="preserve">
+    <value>Mapa umístění naší kanceláře</value>
+  </data>
   <data name="Submit" xml:space="preserve">
     <value>Odeslat</value>
   </data>

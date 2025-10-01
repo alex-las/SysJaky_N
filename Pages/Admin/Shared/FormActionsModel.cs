@@ -13,4 +13,6 @@ public class FormActionsModel
     public string CancelCssClass { get; set; } = "btn btn-secondary";
 
     public bool ShowCancel { get; set; } = true;
+
+    public string ActionsAriaLabel { get; set; } = "Form actions";
 }

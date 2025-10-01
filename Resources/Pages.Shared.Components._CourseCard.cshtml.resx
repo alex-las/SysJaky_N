@@ -27,4 +27,10 @@
   <data name="EnrollAriaLabel" xml:space="preserve">
     <value>Přihlásit se na {0}</value>
   </data>
+  <data name="CourseDateAria" xml:space="preserve">
+    <value>Datum konání {0}</value>
+  </data>
+  <data name="CourseAdditionalInfoAria" xml:space="preserve">
+    <value>Další informace o kurzu {0}</value>
+  </data>
 </root>

@@ -27,6 +27,12 @@
   <data name="HeroSearchPlaceholder" xml:space="preserve">
     <value>Search for a course, tool, or skill…</value>
   </data>
+  <data name="HeroSearchAriaLabel" xml:space="preserve">
+    <value>Search courses</value>
+  </data>
+  <data name="HeroSearchLabel" xml:space="preserve">
+    <value>Search</value>
+  </data>
   <data name="HeroSubheading" xml:space="preserve">
     <value>Pick your role and goal — we will narrow the list for you. Or just start searching.</value>
   </data>
@@ -38,6 +44,12 @@
   </data>
   <data name="PersonaAriaLabel" xml:space="preserve">
     <value>I am</value>
+  </data>
+  <data name="PersonaLabel" xml:space="preserve">
+    <value>Choose your role</value>
+  </data>
+  <data name="PersonaHelp" xml:space="preserve">
+    <value>Helps us tailor course suggestions.</value>
   </data>
   <data name="StepSelectTitle" xml:space="preserve">
     <value>Select a course</value>
@@ -77,6 +89,12 @@
   </data>
   <data name="GoalAriaLabel" xml:space="preserve">
     <value>I want to</value>
+  </data>
+  <data name="GoalLabel" xml:space="preserve">
+    <value>Choose your goal</value>
+  </data>
+  <data name="GoalHelp" xml:space="preserve">
+    <value>Tell us what you want to achieve with the training.</value>
   </data>
   <data name="NewsHeading" xml:space="preserve">
     <value>News</value>

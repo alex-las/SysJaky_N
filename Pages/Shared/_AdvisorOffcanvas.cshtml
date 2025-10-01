@@ -1,19 +1,28 @@
 @inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
-<div class="offcanvas offcanvas-end" tabindex="-1" id="advisor" aria-labelledby="advisorLabel">
+<div class="offcanvas offcanvas-end" tabindex="-1" id="advisor" aria-labelledby="advisorLabel" aria-describedby="advisorDescription" role="dialog" aria-modal="true">
   <div class="offcanvas-header">
     <h5 id="advisorLabel">@Localizer["Heading"]</h5>
-    <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label='@Localizer["Close"]'></button>
   </div>
   <div class="offcanvas-body">
-    <form method="get" action="/Courses/Index" id="advisorForm" class="vstack gap-3">
-      <select name="persona" class="form-select" persona-options></select>
-      <select name="goal" class="form-select" goal-options></select>
-      <div class="input-group">
-        <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
-        <input class="form-control" name="City" placeholder="@Localizer["CityPlaceholder"]" />
+    <form method="get" action="/Courses/Index" id="advisorForm" class="vstack gap-3" aria-describedby="advisorDescription">
+      <div>
+        <label class="form-label visually-hidden" for="advisorPersona">@Localizer["PersonaLabel"]</label>
+        <select id="advisorPersona" name="persona" class="form-select" persona-options aria-describedby="advisorPersonaHelp"></select>
+        <div id="advisorPersonaHelp" class="form-text">@Localizer["PersonaHelp"]</div>
       </div>
-      <div class="d-grid"><button class="btn btn-primary">@Localizer["ShowSuggestions"]</button></div>
-      <div class="text-muted small">@Localizer["Tip"]</div>
+      <div>
+        <label class="form-label visually-hidden" for="advisorGoal">@Localizer["GoalLabel"]</label>
+        <select id="advisorGoal" name="goal" class="form-select" goal-options aria-describedby="advisorGoalHelp"></select>
+        <div id="advisorGoalHelp" class="form-text">@Localizer["GoalHelp"]</div>
+      </div>
+      <div class="input-group">
+        <label class="input-group-text" for="advisorCity"><i class="bi bi-geo-alt" aria-hidden="true"></i><span class="visually-hidden">@Localizer["CityLabel"]</span></label>
+        <input class="form-control" id="advisorCity" name="City" placeholder="@Localizer["CityPlaceholder"]" aria-describedby="advisorCityHelp" />
+      </div>
+      <div id="advisorCityHelp" class="form-text">@Localizer["CityHelp"]</div>
+      <div class="d-grid"><button class="btn btn-primary" type="submit">@Localizer["ShowSuggestions"]</button></div>
+      <div class="text-muted small" id="advisorDescription">@Localizer["Tip"]</div>
     </form>
   </div>
 </div>
