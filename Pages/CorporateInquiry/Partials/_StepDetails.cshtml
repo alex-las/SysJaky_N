@@ -22,7 +22,7 @@
         <option value="">@Localizer["ModePlaceholder"]</option>
         @foreach (var option in Model.ModeOptions)
         {
-            <option value="@option" @(Model.Input.Mode == option ? "selected" : null)>@Localizer[$"ModeOption_{option}"]</option>
+            <option value="@option" selected="@(Model.Input.Mode == option ? "selected" : null)">@Localizer[$"ModeOption_{option}"]</option>
         }
     </select>
     <span asp-validation-for="Input.Mode" class="invalid-feedback"></span>
