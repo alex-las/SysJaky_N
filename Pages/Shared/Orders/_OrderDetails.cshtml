@@ -1,0 +1,87 @@
+@model SysJaky_N.Models.ViewModels.OrderDetailsViewModel
+@using SysJaky_N.Models
+@{
+    var order = Model.Order;
+    var hasSeatTokens = order.Items.Any(i => i.SeatTokens.Count > 0);
+    string FormatStatus(OrderStatus status) => Model.StatusTranslations.TryGetValue(status, out var text)
+        ? text
+        : status.ToString();
+    string FormatCourseTitle(OrderItem item) => item.Course?.Title ?? string.Format(Model.CourseFallbackFormat, item.CourseId);
+}
+
+<p><strong>@Model.StatusLabel</strong> @FormatStatus(order.Status)</p>
+<p><strong>@Model.DateLabel</strong> @order.CreatedAt.ToString("g")</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>@Model.CourseHeader</th>
+            <th>@Model.QuantityHeader</th>
+            <th>@Model.UnitPriceExclVatHeader</th>
+            <th>@Model.VatHeader</th>
+            <th>@Model.TotalHeader</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in order.Items)
+    {
+        <tr>
+            <td>@(item.Course?.Title ?? string.Format(Model.CourseFallbackFormat, item.CourseId))</td>
+            <td>@item.Quantity</td>
+            <td>@item.UnitPriceExclVat</td>
+            <td>@item.Vat</td>
+            <td>@item.Total</td>
+        </tr>
+    }
+    </tbody>
+</table>
+<p><strong>@Model.SubtotalLabel</strong> @order.PriceExclVat</p>
+<p><strong>@Model.VatLabel</strong> @order.Vat</p>
+<p><strong>@Model.TotalLabel</strong> @order.Total</p>
+
+@if (order.Status == OrderStatus.Paid && hasSeatTokens)
+{
+    <h2>@Model.SeatTokensHeading</h2>
+    @foreach (var item in order.Items)
+    {
+        if (item.SeatTokens.Count == 0)
+        {
+            continue;
+        }
+
+        <h3>@FormatCourseTitle(item)</h3>
+        <ul>
+            @foreach (var token in item.SeatTokens)
+            {
+                <li>
+                    <code>@token.Token</code>
+                    @if (token.RedeemedAtUtc.HasValue)
+                    {
+                        <span>- @string.Format(Model.SeatTokenRedeemedFormat, token.RedeemedAtUtc.Value.ToLocalTime().ToString("g"))</span>
+                    }
+                    else
+                    {
+                        <span>- @Model.SeatTokenAvailableText</span>
+                    }
+                </li>
+            }
+        </ul>
+    }
+}
+
+@if (!string.IsNullOrEmpty(Model.QrCodeImage))
+{
+    <img src="@Model.QrCodeImage" alt="@Model.QrCodeAltText" />
+}
+
+@if (Model.PaymentEnabled && order.Status == OrderStatus.Pending)
+{
+    <form method="post" asp-page-handler="Pay">
+        <button type="submit" class="btn btn-primary">@Model.PayButtonText</button>
+    </form>
+}
+
+@if (order.Status == OrderStatus.Paid)
+{
+    <a class="btn btn-secondary" asp-page-handler="DownloadInvoice" asp-route-id="@order.Id">@Model.DownloadInvoiceText</a>
+}
