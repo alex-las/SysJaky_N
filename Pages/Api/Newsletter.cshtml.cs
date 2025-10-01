@@ -7,6 +7,7 @@ using SysJaky_N.Data;
 using SysJaky_N.EmailTemplates.Models;
 using SysJaky_N.Models;
 using SysJaky_N.Services;
+using EmailTemplate = SysJaky_N.Services.EmailTemplate;
 
 namespace SysJaky_N.Pages.Api;
 
@@ -58,7 +59,7 @@ public class NewsletterModel : PageModel
 
         if (!ModelState.IsValid)
         {
-            return ValidationProblem(ModelState);
+            return BadRequest(ModelState);
         }
 
         normalizedEmail = normalizedEmail.ToLowerInvariant();
