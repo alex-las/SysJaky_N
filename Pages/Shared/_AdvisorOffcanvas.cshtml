@@ -1,6 +1,7 @@
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
 <div class="offcanvas offcanvas-end" tabindex="-1" id="advisor" aria-labelledby="advisorLabel">
   <div class="offcanvas-header">
-    <h5 id="advisorLabel">Najdeme vhodné školení</h5>
+    <h5 id="advisorLabel">@Localizer["Heading"]</h5>
     <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
   </div>
   <div class="offcanvas-body">
@@ -9,10 +10,10 @@
       <select name="goal" class="form-select" goal-options></select>
       <div class="input-group">
         <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
-        <input class="form-control" name="City" placeholder="Město (volitelně)" />
+        <input class="form-control" name="City" placeholder="@Localizer["CityPlaceholder"]" />
       </div>
-      <div class="d-grid"><button class="btn btn-primary">Zobrazit návrhy</button></div>
-      <div class="text-muted small">Tip: Vaši volbu si zapamatujeme pro příště.</div>
+      <div class="d-grid"><button class="btn btn-primary">@Localizer["ShowSuggestions"]</button></div>
+      <div class="text-muted small">@Localizer["Tip"]</div>
     </form>
   </div>
 </div>
