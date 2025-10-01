@@ -1,12 +1,12 @@
 @page "{id:int}"
 @model SysJaky_N.Pages.Admin.Articles.DeleteModel
 @{
-    ViewData["Title"] = "Delete Article";
+    ViewData["Title"] = "Smazat článek";
 }
 
-<h1>Delete Article</h1>
+<h1>Smazat článek</h1>
 
-<h3>Are you sure you want to delete this?</h3>
+<h3>Opravdu chcete tento článek smazat?</h3>
 <div>
     <h4>@Model.Article?.Title</h4>
     <p>@Model.Article?.Content</p>
@@ -14,6 +14,6 @@
 
 <form method="post">
     <input type="hidden" asp-for="Article!.Id" />
-    <button type="submit" class="btn btn-danger">Delete</button>
-    <a asp-page="Index" class="btn btn-secondary">Cancel</a>
+    <button type="submit" class="btn btn-danger">Smazat</button>
+    <a asp-page="Index" class="btn btn-secondary">Zrušit</a>
 </form>

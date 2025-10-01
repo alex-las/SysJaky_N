@@ -1,20 +1,20 @@
 @page
 @model SysJaky_N.Pages.Admin.Articles.IndexModel
 @{
-    ViewData["Title"] = "Manage Articles";
+    ViewData["Title"] = "Správa článků";
 }
 
-<h1>Manage Articles</h1>
+<h1>Správa článků</h1>
 
 <p>
-    <a asp-page="Create">Create New</a>
+    <a asp-page="Create">Vytvořit nový</a>
 </p>
 
 <table class="table">
     <thead>
         <tr>
-            <th>Title</th>
-            <th>Created At</th>
+            <th>Název</th>
+            <th>Vytvořeno</th>
             <th></th>
         </tr>
     </thead>
@@ -25,9 +25,9 @@
             <td>@item.Title</td>
             <td>@item.CreatedAt.ToString("g")</td>
             <td>
-                <a asp-page="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-page="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-page="Delete" asp-route-id="@item.Id">Delete</a>
+                <a asp-page="Edit" asp-route-id="@item.Id">Upravit</a> |
+                <a asp-page="Details" asp-route-id="@item.Id">Detail</a> |
+                <a asp-page="Delete" asp-route-id="@item.Id">Smazat</a>
             </td>
         </tr>
     }

@@ -62,8 +62,15 @@ public class OrderItem
 
 public enum OrderStatus
 {
+    [Display(Name = "Čeká na platbu")]
     Pending,
+
+    [Display(Name = "Zaplaceno")]
     Paid,
+
+    [Display(Name = "Zrušeno")]
     Cancelled,
+
+    [Display(Name = "Vráceno")]
     Refunded
 }

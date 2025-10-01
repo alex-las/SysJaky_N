@@ -1,18 +1,19 @@
 @page
 @model SysJaky_N.Pages.Admin.Orders.IndexModel
+@using SysJaky_N.Models
 @{
-    ViewData["Title"] = "Orders";
+    ViewData["Title"] = "Objednávky";
 }
 
-<h1>Orders</h1>
+<h1>Objednávky</h1>
 
 <table class="table">
     <thead>
         <tr>
             <th>Id</th>
-            <th>Date</th>
-            <th>Status</th>
-            <th>Total</th>
+            <th>Datum</th>
+            <th>Stav</th>
+            <th>Celkem</th>
             <th></th>
         </tr>
     </thead>
@@ -22,11 +23,18 @@
         <tr>
             <td>@order.Id</td>
             <td>@order.CreatedAt.ToString("g")</td>
-            <td>@order.Status</td>
+            <td>@(order.Status switch
+                {
+                    OrderStatus.Pending => "Čeká na platbu",
+                    OrderStatus.Paid => "Zaplaceno",
+                    OrderStatus.Cancelled => "Zrušeno",
+                    OrderStatus.Refunded => "Vráceno",
+                    _ => order.Status.ToString()
+                })</td>
             <td>@order.Total</td>
             <td>
-                <a asp-page="Details" asp-route-id="@order.Id">Details</a> |
-                <a asp-page="Edit" asp-route-id="@order.Id">Change Status</a>
+                <a asp-page="Details" asp-route-id="@order.Id">Detail</a> |
+                <a asp-page="Edit" asp-route-id="@order.Id">Změnit stav</a>
             </td>
         </tr>
     }

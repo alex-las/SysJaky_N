@@ -1,21 +1,27 @@
 @page "{id:int}"
 @model SysJaky_N.Pages.Admin.Vouchers.DeleteModel
+@using SysJaky_N.Models
 @{
-    ViewData["Title"] = "Delete Voucher";
+    ViewData["Title"] = "Smazat voucher";
 }
 
-<h1>Delete Voucher</h1>
+<h1>Smazat voucher</h1>
 
 <div>
-    <h4>Are you sure you want to delete this voucher?</h4>
+    <h4>Opravdu chcete tento voucher smazat?</h4>
     <dl class="row">
-        <dt class="col-sm-3">Code</dt>
+        <dt class="col-sm-3">Kód</dt>
         <dd class="col-sm-9">@Model.Voucher.Code</dd>
-        <dt class="col-sm-3">Type</dt>
-        <dd class="col-sm-9">@Model.Voucher.Type</dd>
-        <dt class="col-sm-3">Value</dt>
+        <dt class="col-sm-3">Typ</dt>
+        <dd class="col-sm-9">@(Model.Voucher.Type switch
+            {
+                VoucherType.Percentage => "Procentuální sleva",
+                VoucherType.FixedAmount => "Fixní částka",
+                _ => Model.Voucher.Type.ToString()
+            })</dd>
+        <dt class="col-sm-3">Hodnota</dt>
         <dd class="col-sm-9">
-            @if (Model.Voucher.Type == SysJaky_N.Models.VoucherType.Percentage)
+            @if (Model.Voucher.Type == VoucherType.Percentage)
             {
                 @string.Format("{0:0.##}%", Model.Voucher.Value)
             }
@@ -24,7 +30,7 @@
                 @Model.Voucher.Value.ToString("C")
             }
         </dd>
-        <dt class="col-sm-3">Expires</dt>
+        <dt class="col-sm-3">Platnost</dt>
         <dd class="col-sm-9">
             @if (Model.Voucher.ExpiresUtc.HasValue)
             {
@@ -32,19 +38,19 @@
             }
             else
             {
-                @:Never
+                @:Nikdy
             }
         </dd>
-        <dt class="col-sm-3">Max redemptions</dt>
-        <dd class="col-sm-9">@(Model.Voucher.MaxRedemptions?.ToString() ?? "Unlimited")</dd>
-        <dt class="col-sm-3">Used</dt>
+        <dt class="col-sm-3">Max. uplatnění</dt>
+        <dd class="col-sm-9">@(Model.Voucher.MaxRedemptions?.ToString() ?? "Bez omezení")</dd>
+        <dt class="col-sm-3">Využito</dt>
         <dd class="col-sm-9">@Model.Voucher.UsedCount</dd>
-        <dt class="col-sm-3">Applies to</dt>
-        <dd class="col-sm-9">@Model.Voucher.AppliesToCourse?.Title ?? "All courses"</dd>
+        <dt class="col-sm-3">Platí pro</dt>
+        <dd class="col-sm-9">@Model.Voucher.AppliesToCourse?.Title ?? "Všechny kurzy"</dd>
     </dl>
     <form method="post" class="d-flex gap-2">
         <input type="hidden" asp-for="Voucher.Id" />
-        <button type="submit" class="btn btn-danger">Delete</button>
-        <a asp-page="Index" class="btn btn-secondary">Back to List</a>
+        <button type="submit" class="btn btn-danger">Smazat</button>
+        <a asp-page="Index" class="btn btn-secondary">Zpět na přehled</a>
     </form>
 </div>

@@ -1,14 +1,14 @@
 @page
 @model SysJaky_N.Pages.Admin.Articles.CreateModel
 @{
-    ViewData["Title"] = "Create Article";
+    ViewData["Title"] = "Vytvořit článek";
 }
 
-<h1>Create Article</h1>
+<h1>Vytvořit článek</h1>
 
 <form method="post">
     <partial name="_ArticleForm" for="Article" />
-    <partial name="~/Pages/Shared/_FormActions.cshtml" model='new SysJaky_N.Pages.Admin.Shared.FormActionsModel { SubmitText = "Create", CancelText = "Back to list" }' />
+    <partial name="~/Pages/Shared/_FormActions.cshtml" model='new SysJaky_N.Pages.Admin.Shared.FormActionsModel { SubmitText = "Vytvořit", CancelText = "Zpět na přehled" }' />
 </form>
 
 @section Scripts {
