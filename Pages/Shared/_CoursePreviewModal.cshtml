@@ -1,0 +1,48 @@
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+<div class="modal fade" id="coursePreviewModal" tabindex="-1" aria-labelledby="coursePreviewModalLabel" aria-hidden="true" role="dialog" aria-modal="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="coursePreviewModalLabel" data-course-modal="title">Název kurzu</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="@Localizer["Close"]"></button>
+            </div>
+            <div class="modal-body">
+                <p class="text-muted mb-3" data-course-modal="subtitle"></p>
+                <dl class="row g-3">
+                    <div class="col-sm-6">
+                        <dt>Začátek</dt>
+                        <dd data-course-modal="start"></dd>
+                    </div>
+                    <div class="col-sm-6">
+                        <dt>Konec</dt>
+                        <dd data-course-modal="end"></dd>
+                    </div>
+                    <div class="col-sm-6">
+                        <dt>Město</dt>
+                        <dd data-course-modal="city"></dd>
+                    </div>
+                    <div class="col-sm-6">
+                        <dt>Režim</dt>
+                        <dd data-course-modal="mode"></dd>
+                    </div>
+                    <div class="col-12">
+                        <dt>Popis</dt>
+                        <dd data-course-modal="description" class="mb-0"></dd>
+                    </div>
+                    <div class="col-12">
+                        <dt>Dostupnost</dt>
+                        <dd data-course-modal="availability"></dd>
+                    </div>
+                </dl>
+                <div class="d-flex flex-wrap gap-2" data-course-modal="badges"></div>
+            </div>
+            <div class="modal-footer flex-wrap gap-2">
+                <a class="btn btn-outline-secondary me-auto" data-course-modal="details-link" href="#" target="_blank" rel="noopener">Detail kurzu</a>
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-primary" data-course-modal="google">Přidat do Google kalendáře</button>
+                    <button type="button" class="btn btn-outline-primary" data-course-modal="ics">Exportovat ICS</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
