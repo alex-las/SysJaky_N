@@ -12,8 +12,11 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ValidationStep1" xml:space="preserve">
-    <value>Please select at least one ISO standard.</value>
+  <data name="ValidationTrainingTypesRequired" xml:space="preserve">
+    <value>Select at least one standard.</value>
+  </data>
+  <data name="ValidationLocationRequired" xml:space="preserve">
+    <value>Please provide the location for the in-person part of the training.</value>
   </data>
   <data name="SuccessMessage" xml:space="preserve">
     <value>Thank you, we will contact you shortly with an offer.</value>

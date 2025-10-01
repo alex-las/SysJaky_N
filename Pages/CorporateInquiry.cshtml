@@ -2,7 +2,7 @@
 @using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
 @model SysJaky_N.Pages.CorporateInquiryModel
-@{
+@{ 
     ViewData["Title"] = Localizer["Title"];
     var shouldResetStorage = TempData.Peek("Success") is string;
     var modeLabels = new System.Collections.Generic.Dictionary<string, string>();
@@ -11,6 +11,18 @@
         modeLabels[option] = Localizer[$"ModeOption_{option}"].Value;
     }
     var modeLabelsJson = System.Text.Json.JsonSerializer.Serialize(modeLabels);
+    var serviceTypeLabels = new System.Collections.Generic.Dictionary<string, string>();
+    foreach (var option in Model.ServiceTypeOptions)
+    {
+        serviceTypeLabels[option] = Localizer[$"ServiceType_{option}"].Value;
+    }
+    var serviceTypeLabelsJson = System.Text.Json.JsonSerializer.Serialize(serviceTypeLabels);
+    var trainingLevelLabels = new System.Collections.Generic.Dictionary<string, string>();
+    foreach (var option in Model.TrainingLevelOptions)
+    {
+        trainingLevelLabels[option] = Localizer[$"TrainingLevel_{option}"].Value;
+    }
+    var trainingLevelLabelsJson = System.Text.Json.JsonSerializer.Serialize(trainingLevelLabels);
 }
 
 <h1 class="mb-4">@Localizer["Title"]</h1>
@@ -21,7 +33,7 @@
 </noscript>
 
 <div class="progress mb-4" aria-label="@Localizer["ProgressAriaLabel"]">
-    <div id="wizardProgressBar" class="progress-bar" role="progressbar" style="width:25%;" aria-valuenow="1" aria-valuemin="1" aria-valuemax="4">1 / 4</div>
+    <div id="wizardProgressBar" class="progress-bar" role="progressbar" style="width:20%;" aria-valuenow="1" aria-valuemin="1" aria-valuemax="5">1 / 5</div>
 </div>
 
 @if (TempData["Success"] is string success && !string.IsNullOrEmpty(success))
@@ -37,13 +49,20 @@
       data-participant-price="@Model.ParticipantPrice"
       data-mode-multipliers='@Html.Raw(Model.ModeMultipliersJson)'
       data-mode-labels='@Html.Raw(modeLabelsJson)'
+      data-service-multipliers='@Html.Raw(Model.ServiceTypeMultipliersJson)'
+      data-level-multipliers='@Html.Raw(Model.TrainingLevelMultipliersJson)'
+      data-service-labels='@Html.Raw(serviceTypeLabelsJson)'
+      data-level-labels='@Html.Raw(trainingLevelLabelsJson)'
       data-summary-placeholder="@Localizer["SummaryPlaceholder"]"
       data-price-unavailable="@Localizer["PriceUnavailable"]"
-      data-validation-step1="@Localizer["ValidationStep1"]"
+      data-validation-service-required="@Localizer["ValidationServiceTypeRequired"]"
+      data-validation-training-types="@Localizer["ValidationTrainingTypesRequired"]"
       data-validation-participant-required="@Localizer["ValidationParticipantRequired"]"
       data-validation-participant-range="@Localizer["ValidationParticipantRange"]"
       data-validation-date-required="@Localizer["ValidationDateRequired"]"
       data-validation-mode-required="@Localizer["ValidationModeRequired"]"
+      data-validation-training-level-required="@Localizer["ValidationTrainingLevelRequired"]"
+      data-validation-location-required="@Localizer["ValidationLocationRequired"]"
       data-validation-company-id-required="@Localizer["ValidationCompanyIdRequired"]"
       data-validation-company-name-required="@Localizer["ValidationCompanyNameRequired"]"
       data-validation-contact-person-required="@Localizer["ValidationContactPersonRequired"]"
@@ -55,18 +74,22 @@
     <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
 
     <div class="wizard-step" data-step="1">
-        <partial name="CorporateInquiry/Partials/_StepTraining" model="Model" />
+        <partial name="CorporateInquiry/Partials/_StepServiceType" model="Model" />
     </div>
 
     <div class="wizard-step d-none" data-step="2">
-        <partial name="CorporateInquiry/Partials/_StepDetails" model="Model" />
+        <partial name="CorporateInquiry/Partials/_StepTraining" model="Model" />
     </div>
 
     <div class="wizard-step d-none" data-step="3">
-        <partial name="CorporateInquiry/Partials/_StepCompany" model="Model" />
+        <partial name="CorporateInquiry/Partials/_StepDetails" model="Model" />
     </div>
 
     <div class="wizard-step d-none" data-step="4">
+        <partial name="CorporateInquiry/Partials/_StepCompany" model="Model" />
+    </div>
+
+    <div class="wizard-step d-none" data-step="5">
         <partial name="CorporateInquiry/Partials/_StepSummary" model="Model" />
     </div>
 
@@ -100,21 +123,32 @@
             const submitButton = document.getElementById('wizardSubmit');
             const priceValue = document.getElementById('priceEstimateValue');
             const storageKey = 'corporateInquiryDraft';
+            const serviceTypeRadios = Array.from(form.querySelectorAll('input[name="Input.ServiceType"]'));
             const isoCheckboxes = Array.from(form.querySelectorAll('input[name="Input.TrainingTypes"]'));
             const participantInput = form.querySelector('[name="Input.ParticipantCount"]');
             const dateInput = form.querySelector('[name="Input.PreferredDate"]');
-            const modeSelect = form.querySelector('[name="Input.Mode"]');
+            const trainingLevelRadios = Array.from(form.querySelectorAll('input[name="Input.TrainingLevel"]'));
+            const modeRadios = Array.from(form.querySelectorAll('input[name="Input.Mode"]'));
+            const locationInput = form.querySelector('[name="Input.Location"]');
+            const specialRequirementsInput = form.querySelector('[name="Input.SpecialRequirements"]');
+            const participantDisplay = document.getElementById('participant-count-display');
+            const locationContainer = form.querySelector('[data-location-container]');
             const companyIdInput = form.querySelector('[name="Input.CompanyId"]');
             const companyNameInput = form.querySelector('[name="Input.CompanyName"]');
             const contactPersonInput = form.querySelector('[name="Input.ContactPerson"]');
             const contactEmailInput = form.querySelector('[name="Input.ContactEmail"]');
             const contactPhoneInput = form.querySelector('[name="Input.ContactPhone"]');
-            const step1Error = document.getElementById('step1-error');
+            const trainingTypesError = document.getElementById('training-types-error');
+
             const summaryElements = {
+                serviceType: document.getElementById('summary-service-type'),
                 trainingTypes: document.getElementById('summary-training-types'),
                 participantCount: document.getElementById('summary-participant-count'),
                 preferredDate: document.getElementById('summary-preferred-date'),
                 mode: document.getElementById('summary-mode'),
+                trainingLevel: document.getElementById('summary-training-level'),
+                location: document.getElementById('summary-location'),
+                specialRequirements: document.getElementById('summary-special-requirements'),
                 companyId: document.getElementById('summary-company-id'),
                 companyName: document.getElementById('summary-company-name'),
                 contactPerson: document.getElementById('summary-contact-person'),
@@ -124,11 +158,14 @@
             };
 
             const validationMessages = {
-                step1: form.dataset.validationStep1,
+                serviceTypeRequired: form.dataset.validationServiceRequired,
+                trainingTypesRequired: form.dataset.validationTrainingTypes,
                 participantCountRequired: form.dataset.validationParticipantRequired,
                 participantCountRange: form.dataset.validationParticipantRange,
                 preferredDateRequired: form.dataset.validationDateRequired,
                 modeRequired: form.dataset.validationModeRequired,
+                trainingLevelRequired: form.dataset.validationTrainingLevelRequired,
+                locationRequired: form.dataset.validationLocationRequired,
                 companyIdRequired: form.dataset.validationCompanyIdRequired,
                 companyNameRequired: form.dataset.validationCompanyNameRequired,
                 contactPersonRequired: form.dataset.validationContactPersonRequired,
@@ -139,12 +176,18 @@
             };
 
             const modeLabels = JSON.parse(form.dataset.modeLabels || '{}');
+            const serviceLabels = JSON.parse(form.dataset.serviceLabels || '{}');
+            const trainingLevelLabels = JSON.parse(form.dataset.levelLabels || '{}');
             const basePrice = Number(form.dataset.basePrice || 0);
             const participantPrice = Number(form.dataset.participantPrice || 0);
             const modeMultipliers = JSON.parse(form.dataset.modeMultipliers || '{}');
+            const serviceMultipliers = JSON.parse(form.dataset.serviceMultipliers || '{}');
+            const levelMultipliers = JSON.parse(form.dataset.levelMultipliers || '{}');
             const totalSteps = steps.length;
             const dateFormatter = new Intl.DateTimeFormat(document.documentElement.lang || undefined, { dateStyle: 'medium' });
             const currencyFormatter = new Intl.NumberFormat(document.documentElement.lang || undefined, { style: 'currency', currency: 'CZK', maximumFractionDigits: 0 });
+            const locationRequiredModes = ['InPerson', 'Hybrid'];
+            const summaryPlaceholder = form.dataset.summaryPlaceholder || '';
 
             const initialStepFromServer = Number(form.dataset.initialStep || '1');
             let currentStep = Number.isNaN(initialStepFromServer) || initialStepFromServer < 1 || initialStepFromServer > totalSteps
@@ -169,6 +212,8 @@
                 }
             }
 
+            toggleLocationField();
+            updateParticipantDisplay();
             updateStep(currentStep);
             updateSummary();
             updatePrice();
@@ -199,19 +244,53 @@
                 persistState();
             });
 
-            const trackedFields = [participantInput, dateInput, modeSelect, companyIdInput, companyNameInput, contactPersonInput, contactEmailInput, contactPhoneInput];
+            const trackedFields = [participantInput, dateInput, locationInput, specialRequirementsInput, companyIdInput, companyNameInput, contactPersonInput, contactEmailInput, contactPhoneInput];
             trackedFields.forEach(field => {
                 if (!field) {
                     return;
                 }
                 field.addEventListener('input', () => {
                     showFieldError(field.name, '');
+                    if (field === participantInput) {
+                        updateParticipantDisplay();
+                    }
                     updatePrice();
                     updateSummary();
                     persistState();
                 });
                 field.addEventListener('change', () => {
                     showFieldError(field.name, '');
+                    if (field === participantInput) {
+                        updateParticipantDisplay();
+                    }
+                    updatePrice();
+                    updateSummary();
+                    persistState();
+                });
+            });
+
+            serviceTypeRadios.forEach(radio => {
+                radio.addEventListener('change', () => {
+                    showFieldError('Input.ServiceType', '');
+                    updatePrice();
+                    updateSummary();
+                    persistState();
+                });
+            });
+
+            trainingLevelRadios.forEach(radio => {
+                radio.addEventListener('change', () => {
+                    showFieldError('Input.TrainingLevel', '');
+                    updatePrice();
+                    updateSummary();
+                    persistState();
+                });
+            });
+
+            modeRadios.forEach(radio => {
+                radio.addEventListener('change', () => {
+                    showFieldError('Input.Mode', '');
+                    toggleLocationField();
                     updatePrice();
                     updateSummary();
                     persistState();
@@ -220,9 +299,9 @@
 
             isoCheckboxes.forEach(checkbox => {
                 checkbox.addEventListener('change', () => {
-                    if (step1Error) {
-                        step1Error.textContent = '';
-                        step1Error.classList.add('d-none');
+                    if (trainingTypesError) {
+                        trainingTypesError.textContent = '';
+                        trainingTypesError.classList.add('d-none');
                     }
                     updatePrice();
                     updateSummary();
@@ -232,10 +311,14 @@
 
             function collectFormState() {
                 return {
+                    serviceType: getCheckedValue(serviceTypeRadios),
                     trainingTypes: isoCheckboxes.filter(c => c.checked).map(c => c.value),
                     participantCount: participantInput ? participantInput.value : '',
                     preferredDate: dateInput ? dateInput.value : '',
-                    mode: modeSelect ? modeSelect.value : '',
+                    trainingLevel: getCheckedValue(trainingLevelRadios),
+                    mode: getCheckedValue(modeRadios),
+                    location: locationInput ? locationInput.value : '',
+                    specialRequirements: specialRequirementsInput ? specialRequirementsInput.value : '',
                     companyId: companyIdInput ? companyIdInput.value : '',
                     companyName: companyNameInput ? companyNameInput.value : '',
                     contactPerson: contactPersonInput ? contactPersonInput.value : '',
@@ -246,6 +329,7 @@
             }
 
             function applyState(state) {
+                setCheckedValue(serviceTypeRadios, state.serviceType);
                 isoCheckboxes.forEach(checkbox => {
                     checkbox.checked = Array.isArray(state.trainingTypes) && state.trainingTypes.includes(checkbox.value);
                 });
@@ -255,8 +339,13 @@
                 if (dateInput && state.preferredDate !== undefined) {
                     dateInput.value = state.preferredDate;
                 }
-                if (modeSelect && state.mode !== undefined) {
-                    modeSelect.value = state.mode;
+                setCheckedValue(trainingLevelRadios, state.trainingLevel);
+                setCheckedValue(modeRadios, state.mode);
+                if (locationInput && state.location !== undefined) {
+                    locationInput.value = state.location;
+                }
+                if (specialRequirementsInput && state.specialRequirements !== undefined) {
+                    specialRequirementsInput.value = state.specialRequirements;
                 }
                 if (companyIdInput && state.companyId !== undefined) {
                     companyIdInput.value = state.companyId;
@@ -273,6 +362,8 @@
                 if (contactPhoneInput && state.contactPhone !== undefined) {
                     contactPhoneInput.value = state.contactPhone;
                 }
+                toggleLocationField();
+                updateParticipantDisplay();
             }
 
             function loadState() {
@@ -316,9 +407,20 @@
                 const messageElement = form.querySelector(`[data-valmsg-for="${fieldName}"]`);
                 if (messageElement) {
                     messageElement.textContent = message || '';
+                    if (message) {
+                        messageElement.classList.remove('d-none');
+                        if (messageElement.classList.contains('invalid-feedback') && !messageElement.classList.contains('d-block')) {
+                            messageElement.classList.add('d-block');
+                        }
+                    } else if (!messageElement.classList.contains('d-block')) {
+                        messageElement.classList.add('d-none');
+                    }
                 }
-                const field = form.querySelector(`[name="${fieldName}"]`);
-                if (field) {
+                const fields = Array.from(form.querySelectorAll(`[name="${fieldName}"]`));
+                if (!fields.length) {
+                    return;
+                }
+                fields.forEach(field => {
                     if (message) {
                         field.classList.add('is-invalid');
                         field.setAttribute('aria-invalid', 'true');
@@ -326,7 +428,7 @@
                         field.classList.remove('is-invalid');
                         field.removeAttribute('aria-invalid');
                     }
-                }
+                });
             }
 
             function validateStep(step) {
@@ -334,16 +436,21 @@
                 clearStepErrors(step);
 
                 if (step === 1) {
-                    const selected = isoCheckboxes.filter(c => c.checked);
-                    if (selected.length === 0) {
+                    const serviceTypeValue = getCheckedValue(serviceTypeRadios);
+                    if (!serviceTypeValue) {
                         isValid = false;
-                        const container = document.getElementById('step1-error');
-                        if (container) {
-                            container.textContent = validationMessages.step1 || '';
-                            container.classList.remove('d-none');
-                        }
+                        showFieldError('Input.ServiceType', validationMessages.serviceTypeRequired);
                     }
                 } else if (step === 2) {
+                    const selectedTrainings = isoCheckboxes.filter(c => c.checked);
+                    if (selectedTrainings.length === 0) {
+                        isValid = false;
+                        if (trainingTypesError) {
+                            trainingTypesError.textContent = validationMessages.trainingTypesRequired || '';
+                            trainingTypesError.classList.remove('d-none');
+                        }
+                    }
+                } else if (step === 3) {
                     const participantValue = participantInput ? Number(participantInput.value) : 0;
                     if (!participantInput || participantInput.value.trim() === '') {
                         isValid = false;
@@ -358,11 +465,27 @@
                         showFieldError('Input.PreferredDate', validationMessages.preferredDateRequired);
                     }
 
-                    if (!modeSelect || modeSelect.value.trim() === '') {
+                    const trainingLevelValue = getCheckedValue(trainingLevelRadios);
+                    if (!trainingLevelValue) {
+                        isValid = false;
+                        showFieldError('Input.TrainingLevel', validationMessages.trainingLevelRequired);
+                    }
+
+                    const modeValue = getCheckedValue(modeRadios);
+                    if (!modeValue) {
                         isValid = false;
                         showFieldError('Input.Mode', validationMessages.modeRequired);
                     }
-                } else if (step === 3) {
+
+                    if (locationInput) {
+                        if (locationRequiredModes.includes(modeValue) && locationInput.value.trim() === '') {
+                            isValid = false;
+                            showFieldError('Input.Location', validationMessages.locationRequired);
+                        } else if (!locationRequiredModes.includes(modeValue)) {
+                            showFieldError('Input.Location', '');
+                        }
+                    }
+                } else if (step === 4) {
                     if (!companyIdInput || companyIdInput.value.trim() === '') {
                         isValid = false;
                         showFieldError('Input.CompanyId', validationMessages.companyIdRequired);
@@ -391,12 +514,9 @@
                     }
                 }
 
-                if (isValid && step === 1) {
-                    const container = document.getElementById('step1-error');
-                    if (container) {
-                        container.textContent = '';
-                        container.classList.add('d-none');
-                    }
+                if (isValid && step === 2 && trainingTypesError) {
+                    trainingTypesError.textContent = '';
+                    trainingTypesError.classList.add('d-none');
                 }
 
                 return isValid;
@@ -418,75 +538,133 @@
             }
 
             function clearStepErrors(step) {
-                if (step === 1) {
-                    const container = document.getElementById('step1-error');
-                    if (container) {
-                        container.textContent = '';
-                        container.classList.add('d-none');
-                    }
+                if (step === 2 && trainingTypesError) {
+                    trainingTypesError.textContent = '';
+                    trainingTypesError.classList.add('d-none');
                 }
 
-                const fields = ['Input.ParticipantCount', 'Input.PreferredDate', 'Input.Mode', 'Input.CompanyId', 'Input.CompanyName', 'Input.ContactPerson', 'Input.ContactEmail', 'Input.ContactPhone'];
+                const fields = ['Input.ServiceType', 'Input.TrainingTypes', 'Input.ParticipantCount', 'Input.PreferredDate', 'Input.TrainingLevel', 'Input.Mode', 'Input.Location', 'Input.CompanyId', 'Input.CompanyName', 'Input.ContactPerson', 'Input.ContactEmail', 'Input.ContactPhone'];
                 fields.forEach(fieldName => {
                     showFieldError(fieldName, '');
                 });
             }
 
             function updateSummary() {
-                if (!summaryElements.trainingTypes) {
+                if (!summaryElements.serviceType) {
                     return;
                 }
-                const selected = isoCheckboxes.filter(c => c.checked).map(checkbox => {
+
+                const serviceTypeValue = getCheckedValue(serviceTypeRadios);
+                summaryElements.serviceType.textContent = serviceTypeValue ? (serviceLabels[serviceTypeValue] || serviceTypeValue) : summaryPlaceholder;
+
+                const selectedTrainings = isoCheckboxes.filter(c => c.checked).map(checkbox => {
                     const label = form.querySelector(`label[for="${checkbox.id}"]`);
                     return label ? label.textContent.trim() : checkbox.value;
                 });
-                summaryElements.trainingTypes.textContent = selected.length ? selected.join(', ') : form.dataset.summaryPlaceholder;
+                summaryElements.trainingTypes.textContent = selectedTrainings.length ? selectedTrainings.join(', ') : summaryPlaceholder;
 
-                summaryElements.participantCount.textContent = participantInput && participantInput.value ? participantInput.value : form.dataset.summaryPlaceholder;
+                if (participantInput && participantInput.value) {
+                    const participantValue = Number(participantInput.value);
+                    summaryElements.participantCount.textContent = Number.isNaN(participantValue) ? participantInput.value : (participantValue >= 50 ? '50+' : participantValue.toString());
+                } else {
+                    summaryElements.participantCount.textContent = summaryPlaceholder;
+                }
 
                 if (dateInput && dateInput.value) {
                     const date = new Date(dateInput.value);
-                    summaryElements.preferredDate.textContent = Number.isNaN(date.getTime()) ? form.dataset.summaryPlaceholder : dateFormatter.format(date);
+                    summaryElements.preferredDate.textContent = Number.isNaN(date.getTime()) ? summaryPlaceholder : dateFormatter.format(date);
                 } else {
-                    summaryElements.preferredDate.textContent = form.dataset.summaryPlaceholder;
+                    summaryElements.preferredDate.textContent = summaryPlaceholder;
                 }
 
-                const modeValue = modeSelect ? modeSelect.value : '';
-                summaryElements.mode.textContent = modeValue ? (modeLabels[modeValue] || modeValue) : form.dataset.summaryPlaceholder;
+                const modeValue = getCheckedValue(modeRadios);
+                summaryElements.mode.textContent = modeValue ? (modeLabels[modeValue] || modeValue) : summaryPlaceholder;
 
-                summaryElements.companyId.textContent = companyIdInput && companyIdInput.value ? companyIdInput.value : form.dataset.summaryPlaceholder;
-                summaryElements.companyName.textContent = companyNameInput && companyNameInput.value ? companyNameInput.value : form.dataset.summaryPlaceholder;
-                summaryElements.contactPerson.textContent = contactPersonInput && contactPersonInput.value ? contactPersonInput.value : form.dataset.summaryPlaceholder;
-                summaryElements.contactEmail.textContent = contactEmailInput && contactEmailInput.value ? contactEmailInput.value : form.dataset.summaryPlaceholder;
-                summaryElements.contactPhone.textContent = contactPhoneInput && contactPhoneInput.value ? contactPhoneInput.value : form.dataset.summaryPlaceholder;
+                const trainingLevelValue = getCheckedValue(trainingLevelRadios);
+                summaryElements.trainingLevel.textContent = trainingLevelValue ? (trainingLevelLabels[trainingLevelValue] || trainingLevelValue) : summaryPlaceholder;
+
+                summaryElements.location.textContent = locationInput && locationInput.value ? locationInput.value : summaryPlaceholder;
+
+                const specialText = specialRequirementsInput && specialRequirementsInput.value ? specialRequirementsInput.value.trim() : '';
+                summaryElements.specialRequirements.textContent = specialText ? specialText : summaryPlaceholder;
+
+                summaryElements.companyId.textContent = companyIdInput && companyIdInput.value ? companyIdInput.value : summaryPlaceholder;
+                summaryElements.companyName.textContent = companyNameInput && companyNameInput.value ? companyNameInput.value : summaryPlaceholder;
+                summaryElements.contactPerson.textContent = contactPersonInput && contactPersonInput.value ? contactPersonInput.value : summaryPlaceholder;
+                summaryElements.contactEmail.textContent = contactEmailInput && contactEmailInput.value ? contactEmailInput.value : summaryPlaceholder;
+                summaryElements.contactPhone.textContent = contactPhoneInput && contactPhoneInput.value ? contactPhoneInput.value : summaryPlaceholder;
 
                 const estimated = calculatePrice();
-                if (estimated > 0) {
-                    summaryElements.price.textContent = currencyFormatter.format(estimated);
-                } else {
-                    summaryElements.price.textContent = form.dataset.priceUnavailable;
-                }
+                summaryElements.price.textContent = estimated > 0 ? currencyFormatter.format(estimated) : form.dataset.priceUnavailable;
             }
 
             function updatePrice() {
                 const estimated = calculatePrice();
-                if (estimated > 0) {
-                    priceValue.textContent = currencyFormatter.format(estimated);
-                } else {
-                    priceValue.textContent = form.dataset.priceUnavailable;
-                }
+                priceValue.textContent = estimated > 0 ? currencyFormatter.format(estimated) : form.dataset.priceUnavailable;
             }
 
             function calculatePrice() {
                 const trainingCount = isoCheckboxes.filter(c => c.checked).length;
                 const participants = participantInput ? Number(participantInput.value) : 0;
-                if (trainingCount === 0 || !participants) {
+                const serviceTypeValue = getCheckedValue(serviceTypeRadios);
+                const trainingLevelValue = getCheckedValue(trainingLevelRadios);
+                const modeValue = getCheckedValue(modeRadios);
+
+                if (trainingCount === 0 || !serviceTypeValue || Number.isNaN(participants) || participants <= 0) {
                     return 0;
                 }
-                const baseTotal = basePrice * trainingCount;
+
+                const serviceMultiplier = Number(serviceMultipliers[serviceTypeValue] ?? 1);
+                const levelMultiplier = Number(levelMultipliers[trainingLevelValue] ?? 1);
+                const modeMultiplier = Number(modeMultipliers[modeValue] ?? 1);
+
+                const baseTotal = basePrice * trainingCount * serviceMultiplier;
                 const participantTotal = participantPrice * participants;
-                const multiplier = modeMultipliers[modeSelect ? modeSelect.value : ''] ?? 1;
-                return Math.round((baseTotal + participantTotal) * multiplier);
+
+                return Math.round((baseTotal + participantTotal) * levelMultiplier * modeMultiplier);
+            }
+
+            function toggleLocationField() {
+                if (!locationContainer) {
+                    return;
+                }
+                const modeValue = getCheckedValue(modeRadios);
+                const shouldShow = locationRequiredModes.includes(modeValue);
+                locationContainer.classList.toggle('d-none', !shouldShow);
+                if (!shouldShow && locationInput) {
+                    locationInput.value = '';
+                    showFieldError('Input.Location', '');
+                }
+            }
+
+            function updateParticipantDisplay() {
+                if (!participantDisplay) {
+                    return;
+                }
+                if (!participantInput || participantInput.value.trim() === '') {
+                    participantDisplay.textContent = summaryPlaceholder || '—';
+                    return;
+                }
+                const value = Number(participantInput.value);
+                if (Number.isNaN(value)) {
+                    participantDisplay.textContent = participantInput.value;
+                    return;
+                }
+                participantDisplay.textContent = value >= 50 ? '50+' : value.toString();
+            }
+
+            function getCheckedValue(inputs) {
+                const selected = inputs.find(input => input.checked);
+                return selected ? selected.value : '';
+            }
+
+            function setCheckedValue(inputs, value) {
+                if (!Array.isArray(inputs)) {
+                    return;
+                }
+                inputs.forEach(input => {
+                    input.checked = Boolean(value) && input.value === value;
+                });
             }
 
             function isValidEmail(value) {

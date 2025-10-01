@@ -12,6 +12,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ServiceTypeLabel" xml:space="preserve">
+    <value>Select a service type</value>
+  </data>
   <data name="TrainingTypesLabel" xml:space="preserve">
     <value>Select desired ISO standards</value>
   </data>
@@ -23,6 +26,15 @@
   </data>
   <data name="ModeLabel" xml:space="preserve">
     <value>Preferred training mode</value>
+  </data>
+  <data name="TrainingLevelLabel" xml:space="preserve">
+    <value>Training level</value>
+  </data>
+  <data name="LocationLabel" xml:space="preserve">
+    <value>Training location</value>
+  </data>
+  <data name="SpecialRequirementsLabel" xml:space="preserve">
+    <value>Special requirements</value>
   </data>
   <data name="CompanyIdLabel" xml:space="preserve">
     <value>Company ID</value>

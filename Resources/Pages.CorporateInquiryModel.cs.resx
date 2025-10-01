@@ -12,8 +12,11 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ValidationStep1" xml:space="preserve">
-    <value>Vyberte alespoň jednu ISO normu.</value>
+  <data name="ValidationTrainingTypesRequired" xml:space="preserve">
+    <value>Vyberte alespoň jednu normu.</value>
+  </data>
+  <data name="ValidationLocationRequired" xml:space="preserve">
+    <value>Uveďte lokalitu pro prezenční část školení.</value>
   </data>
   <data name="SuccessMessage" xml:space="preserve">
     <value>Děkujeme, ozveme se vám co nejdříve s nabídkou.</value>

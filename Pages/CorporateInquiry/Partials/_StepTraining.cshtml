@@ -21,5 +21,5 @@
             : null;
         var errorClass = string.IsNullOrEmpty(trainingError) ? "d-none" : string.Empty;
     }
-    <div id="step1-error" class="text-danger small mt-2 @errorClass">@trainingError</div>
+    <div id="training-types-error" class="invalid-feedback d-block @errorClass">@trainingError</div>
 </div>
