@@ -138,14 +138,31 @@
         </main>
     </div>
 
-    <footer class="footer app-footer text-muted mt-5" role="contentinfo">
-        <div class="container-xl">
-            &copy; 2025 - SysJaky_N - <a asp-area="" asp-page="/Privacy">@Localizer["FooterPrivacy"]</a>
+    <footer class="footer app-footer mt-5" role="contentinfo">
+        <div class="container-xl py-4">
+            <div class="d-flex flex-column flex-md-row gap-3 align-items-start align-items-md-center justify-content-between">
+                <div class="text-muted small">
+                    &copy; 2025 - SysJaky_N - <a asp-area="" asp-page="/Privacy" class="text-decoration-none">@Localizer["FooterPrivacy"]</a>
+                </div>
+                <form id="newsletter-form" class="newsletter-form d-flex flex-column flex-sm-row align-items-stretch gap-2" asp-page="/Api/Newsletter" method="post" novalidate>
+                    <div class="d-flex flex-column flex-sm-row gap-2 w-100">
+                        <label class="visually-hidden" for="newsletter-email">E-mail</label>
+                        <input id="newsletter-email" name="Email" type="email" class="form-control form-control-sm" placeholder="Váš e-mail" autocomplete="email" required />
+                        <button type="submit" class="btn btn-primary btn-sm flex-shrink-0">Odebírat</button>
+                    </div>
+                    <div class="form-check small mb-0">
+                        <input class="form-check-input" type="checkbox" value="true" id="newsletter-consent" name="Consent" />
+                        <label class="form-check-label" for="newsletter-consent">Souhlasím se zpracováním</label>
+                    </div>
+                    <div class="newsletter-message small" role="status" aria-live="polite"></div>
+                </form>
+            </div>
         </div>
     </footer>
 
     <script src="~/dist/scripts.min.js" asp-append-version="true" defer></script>
     <script type="module" src='@Url.Content("~/lib/altcha/altcha.min.js")' defer></script>
+    <script src="~/js/newsletter.js" asp-append-version="true" defer></script>
 
     @await Html.PartialAsync("/Pages/Shared/_AdvisorOffcanvas.cshtml")
 

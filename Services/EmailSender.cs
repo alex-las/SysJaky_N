@@ -31,7 +31,8 @@ public enum EmailTemplate
     CourseTermCreated,
     WaitlistSeatAvailable,
     CourseReminder,
-    CourseReviewRequest
+    CourseReviewRequest,
+    NewsletterConfirmation
 }
 
 public interface IEmailSender
@@ -93,7 +94,11 @@ public class EmailSender : IEmailSender
                 {
                     var data = (CourseReviewRequestEmailModel)model;
                     return $"Ohodnoťte kurz {data.CourseTitle}";
-                })
+                }),
+            [EmailTemplate.NewsletterConfirmation] = new(
+                "NewsletterConfirmation.cshtml",
+                typeof(NewsletterConfirmationEmailModel),
+                _ => "Potvrďte odběr newsletteru")
         };
 
     public EmailSender(

@@ -42,6 +42,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<EmailLog> EmailLogs { get; set; } = default!;
     public DbSet<Tag> Tags { get; set; } = default!;
     public DbSet<CourseTag> CourseTags { get; set; } = default!;
+    public DbSet<NewsletterSubscriber> NewsletterSubscribers { get; set; } = default!;
 
 
     protected override void OnModelCreating(ModelBuilder builder)
@@ -196,6 +197,14 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 
         builder.Entity<Tag>()
             .HasIndex(t => t.Name)
+            .IsUnique();
+
+        builder.Entity<NewsletterSubscriber>()
+            .HasIndex(n => n.Email)
+            .IsUnique();
+
+        builder.Entity<NewsletterSubscriber>()
+            .HasIndex(n => n.ConfirmationToken)
             .IsUnique();
 
         builder.Entity<CourseTag>()
