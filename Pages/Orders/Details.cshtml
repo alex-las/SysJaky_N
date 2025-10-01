@@ -3,35 +3,35 @@
 @using System.Collections.Generic
 @inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
 @{
-    ViewData["Title"] = Localizer["Title", Model.Order.Id];
+    ViewData["Title"] = Localizer["Title", Model.Order.Id].Value;
     var orderResources = new OrderDetailsViewModel
     {
         Order = Model.Order,
         PaymentEnabled = Model.PaymentEnabled,
         QrCodeImage = Model.QrCodeImage,
-        StatusLabel = Localizer["StatusLabel"],
-        DateLabel = Localizer["DateLabel"],
-        CourseHeader = Localizer["CourseHeader"],
-        QuantityHeader = Localizer["QuantityHeader"],
-        UnitPriceExclVatHeader = Localizer["UnitPriceExclVatHeader"],
-        VatHeader = Localizer["VatHeader"],
-        TotalHeader = Localizer["TotalHeader"],
-        SubtotalLabel = Localizer["SubtotalLabel"],
-        VatLabel = Localizer["VatLabel"],
-        TotalLabel = Localizer["TotalLabel"],
-        SeatTokensHeading = Localizer["SeatTokensHeading"],
-        CourseFallbackFormat = Localizer["CourseFallbackFormat"],
-        SeatTokenRedeemedFormat = Localizer["SeatTokenRedeemedFormat"],
-        SeatTokenAvailableText = Localizer["SeatTokenAvailableText"],
-        QrCodeAltText = Localizer["QrCodeAltText"],
-        PayButtonText = Localizer["PayButtonText"],
-        DownloadInvoiceText = Localizer["DownloadInvoiceText"],
+        StatusLabel = Localizer["StatusLabel"].Value,
+        DateLabel = Localizer["DateLabel"].Value,
+        CourseHeader = Localizer["CourseHeader"].Value,
+        QuantityHeader = Localizer["QuantityHeader"].Value,
+        UnitPriceExclVatHeader = Localizer["UnitPriceExclVatHeader"].Value,
+        VatHeader = Localizer["VatHeader"].Value,
+        TotalHeader = Localizer["TotalHeader"].Value,
+        SubtotalLabel = Localizer["SubtotalLabel"].Value,
+        VatLabel = Localizer["VatLabel"].Value,
+        TotalLabel = Localizer["TotalLabel"].Value,
+        SeatTokensHeading = Localizer["SeatTokensHeading"].Value,
+        CourseFallbackFormat = Localizer["CourseFallbackFormat"].Value,
+        SeatTokenRedeemedFormat = Localizer["SeatTokenRedeemedFormat"].Value,
+        SeatTokenAvailableText = Localizer["SeatTokenAvailableText"].Value,
+        QrCodeAltText = Localizer["QrCodeAltText"].Value,
+        PayButtonText = Localizer["PayButtonText"].Value,
+        DownloadInvoiceText = Localizer["DownloadInvoiceText"].Value,
         StatusTranslations = new Dictionary<OrderStatus, string>
         {
-            [OrderStatus.Pending] = Localizer["StatusPending"],
-            [OrderStatus.Paid] = Localizer["StatusPaid"],
-            [OrderStatus.Cancelled] = Localizer["StatusCancelled"],
-            [OrderStatus.Refunded] = Localizer["StatusRefunded"],
+            [OrderStatus.Pending] = Localizer["StatusPending"].Value,
+            [OrderStatus.Paid] = Localizer["StatusPaid"].Value,
+            [OrderStatus.Cancelled] = Localizer["StatusCancelled"].Value,
+            [OrderStatus.Refunded] = Localizer["StatusRefunded"].Value,
         }
     };
 }
