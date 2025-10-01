@@ -3,13 +3,13 @@
 @inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
 @using System.Collections.Generic
 @{
-    ViewData["Title"] = Localizer["Title"];
+    ViewData["Title"] = Localizer["Title"].Value;
     var orderStatusTexts = new Dictionary<OrderStatus, string>
     {
-        [OrderStatus.Pending] = Localizer["OrderStatusPending"],
-        [OrderStatus.Paid] = Localizer["OrderStatusPaid"],
-        [OrderStatus.Cancelled] = Localizer["OrderStatusCancelled"],
-        [OrderStatus.Refunded] = Localizer["OrderStatusRefunded"],
+        [OrderStatus.Pending] = Localizer["OrderStatusPending"].Value,
+        [OrderStatus.Paid] = Localizer["OrderStatusPaid"].Value,
+        [OrderStatus.Cancelled] = Localizer["OrderStatusCancelled"].Value,
+        [OrderStatus.Refunded] = Localizer["OrderStatusRefunded"].Value,
     };
 }
 
