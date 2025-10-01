@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using SysJaky_N.Authorization;
 using SysJaky_N.Data;
 
 namespace SysJaky_N.Pages.Admin.Dashboard;

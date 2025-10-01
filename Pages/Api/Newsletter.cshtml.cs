@@ -7,7 +7,6 @@ using SysJaky_N.Data;
 using SysJaky_N.EmailTemplates.Models;
 using SysJaky_N.Models;
 using SysJaky_N.Services;
-using EmailTemplate = SysJaky_N.Services.EmailTemplate;
 
 namespace SysJaky_N.Pages.Api;
 
@@ -112,7 +111,7 @@ public class NewsletterModel : PageModel
 
         await _emailSender.SendEmailAsync(
             normalizedEmail,
-            EmailTemplate.NewsletterConfirmation,
+            SysJaky_N.Services.EmailTemplate.NewsletterConfirmation,
             new NewsletterConfirmationEmailModel(normalizedEmail, confirmationUrl ?? string.Empty),
             cancellationToken);
 
