@@ -11,53 +11,54 @@ public class IndexModel : PageModel
 {
     private readonly ApplicationDbContext _context;
 
+    private static readonly string[] ZnamaMesta = new[]
+    {
+        "Praha",
+        "Brno",
+        "Ostrava",
+        "Plzeň",
+        "Liberec",
+        "Olomouc",
+        "Ústí nad Labem",
+        "Hradec Králové",
+        "České Budějovice",
+        "Pardubice",
+        "Zlín"
+    };
+
     public IndexModel(ApplicationDbContext context)
     {
         _context = context;
     }
 
-    public int OrderCount { get; set; }
-    public decimal TotalRevenue { get; set; }
-    public List<string> TopCourseLabels { get; set; } = new();
-    public List<int> TopCourseValues { get; set; } = new();
-    public List<string> RevenueLabels { get; set; } = new();
-    public List<decimal> RevenueValues { get; set; } = new();
-    public List<int> OrderCounts { get; set; } = new();
-    public List<decimal> AverageOrderValues { get; set; } = new();
+    public IReadOnlyList<VolbaFiltru> VolbyNorem { get; private set; } = Array.Empty<VolbaFiltru>();
+    public IReadOnlyList<VolbaFiltru> VolbyMest { get; private set; } = Array.Empty<VolbaFiltru>();
+    public DateOnly VychoziOd { get; private set; }
+    public DateOnly VychoziDo { get; private set; }
 
     public async Task OnGetAsync()
     {
-        OrderCount = await _context.Orders.CountAsync();
-        TotalRevenue = await _context.Orders.SumAsync(o => o.Total);
+        VychoziDo = DateOnly.FromDateTime(DateTime.UtcNow);
+        VychoziOd = VychoziDo.AddDays(-29);
 
-        var topCourses = await _context.OrderItems
-            .Include(oi => oi.Course)
-            .GroupBy(oi => oi.Course!.Title)
-            .Select(g => new
-            {
-                Course = g.Key,
-                Quantity = g.Sum(oi => oi.Quantity)
-            })
-            .OrderByDescending(g => g.Quantity)
-            .Take(5)
+        var vsechnyStitky = await _context.Tags
+            .AsNoTracking()
+            .OrderBy(t => t.Name)
+            .Select(t => new VolbaFiltru(t.Id, t.Name))
             .ToListAsync();
 
-        foreach (var item in topCourses)
-        {
-            TopCourseLabels.Add(item.Course);
-            TopCourseValues.Add(item.Quantity);
-        }
+        var normy = vsechnyStitky
+            .Where(t => t.Nazev.Contains("ISO", StringComparison.OrdinalIgnoreCase)
+                        || t.Nazev.Contains("ČSN", StringComparison.OrdinalIgnoreCase)
+                        || t.Nazev.Contains("EN", StringComparison.OrdinalIgnoreCase))
+            .ToList();
+        VolbyNorem = normy.Count > 0 ? normy : vsechnyStitky;
 
-        var dailyStats = await _context.SalesStats
-            .OrderBy(s => s.Date)
-            .ToListAsync();
-
-        foreach (var stat in dailyStats)
-        {
-            RevenueLabels.Add(stat.Date.ToString("yyyy-MM-dd"));
-            RevenueValues.Add(stat.Revenue);
-            OrderCounts.Add(stat.OrderCount);
-            AverageOrderValues.Add(stat.AverageOrderValue);
-        }
+        var znamaMesta = new HashSet<string>(ZnamaMesta, StringComparer.OrdinalIgnoreCase);
+        VolbyMest = vsechnyStitky
+            .Where(t => znamaMesta.Contains(t.Nazev))
+            .ToList();
     }
+
+    public record VolbaFiltru(int Id, string Nazev);
 }

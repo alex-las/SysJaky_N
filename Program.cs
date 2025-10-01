@@ -6,6 +6,8 @@ using SysJaky_N.Data;
 using SysJaky_N.Models;
 using SysJaky_N.Services;
 using SysJaky_N.Services.Calendar;
+using SysJaky_N.Services.Analytics;
+using SysJaky_N.Hubs;
 using System.Linq;
 using DinkToPdf;
 using DinkToPdf.Contracts;
@@ -166,6 +168,7 @@ try
                 factory.Create(typeof(SysJaky_N.Resources.SharedResources));
         });
     builder.Services.AddControllers();
+    builder.Services.AddSignalR();
     builder.Services.Configure<RequestLocalizationOptions>(options =>
     {
         var supportedCultures = new[] { "cs", "en" };
@@ -225,6 +228,7 @@ try
     builder.Services.AddSingleton<IIcsCalendarBuilderFactory, IcsCalendarBuilderFactory>();
     builder.Services.Configure<AltchaOptions>(builder.Configuration.GetSection("Altcha"));
     builder.Services.AddSingleton<IAltchaService, AltchaService>();
+    builder.Services.AddSingleton<DashboardAnalyticsService>();
 
     builder.Services.Configure<ForwardedHeadersOptions>(opts =>
     {
@@ -360,6 +364,7 @@ try
         name: "default",
         pattern: "{controller}/{action=Index}/{id?}");
     app.MapControllers();
+    app.MapHub<AnalyticsHub>("/hubs/analytics");
     // Přesměrování na jednotné místo „Můj účet“
     app.MapGet("/Account/Dashboard", () => Results.Redirect("/Account/Manage", true));
     app.MapGet("/Orders", () => Results.Redirect("/Account/Manage#orders", true));

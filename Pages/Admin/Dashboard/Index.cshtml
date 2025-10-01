@@ -1,164 +1,239 @@
 @page
 @model SysJaky_N.Pages.Admin.Dashboard.IndexModel
+@using System.Text.Json
 @{
-    ViewData["Title"] = "Přehled";
+    ViewData["Title"] = "Analytický přehled";
+
+    var konfigurace = new
+    {
+        vychoziOd = Model.VychoziOd.ToString("yyyy-MM-dd"),
+        vychoziDo = Model.VychoziDo.ToString("yyyy-MM-dd"),
+        normy = Model.VolbyNorem.Select(v => new { id = v.Id, nazev = v.Nazev }),
+        mesta = Model.VolbyMest.Select(v => new { id = v.Id, nazev = v.Nazev }),
+        endpointy = new
+        {
+            prehled = Url.Content("~/api/admin/analytics/overview"),
+            realtime = Url.Content("~/api/admin/analytics/realtime"),
+            export = Url.Content("~/api/admin/analytics/export")
+        },
+        hub = Url.Content("~/hubs/analytics"),
+        intervalAktualizace = 15000
+    };
+
+    var konfiguraceJson = JsonSerializer.Serialize(konfigurace);
 }
 
-<h1>Přehled</h1>
+<div class="container-fluid">
+    <div class="d-flex flex-wrap align-items-center justify-content-between mb-4 gap-3">
+        <div>
+            <h1 class="h3 mb-1">Analytický přehled kurzů</h1>
+            <p class="text-muted mb-0">Komplexní statistiky pro rychlé řízení nabídky a výkonu kurzů.</p>
+        </div>
+        <button type="button" class="btn btn-success" id="export-do-excelu">
+            <i class="bi bi-file-earmark-spreadsheet"></i>
+            Export do Excelu
+        </button>
+    </div>
 
-<div class="row mb-4">
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">Počet objednávek</h5>
-                <p class="card-text display-6">@Model.OrderCount</p>
-            </div>
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-white">
+            <h2 class="h5 mb-0">Filtrace dat</h2>
+        </div>
+        <div class="card-body">
+            <form id="formular-filtru" class="row gy-3 gx-3 align-items-end">
+                <div class="col-12 col-md-3">
+                    <label for="filter-od" class="form-label">Od</label>
+                    <input type="date" class="form-control" id="filter-od" name="od" required />
+                </div>
+                <div class="col-12 col-md-3">
+                    <label for="filter-do" class="form-label">Do</label>
+                    <input type="date" class="form-control" id="filter-do" name="do" required />
+                </div>
+                <div class="col-12 col-md-3">
+                    <label for="filter-normy" class="form-label">Norma</label>
+                    <select class="form-select" id="filter-normy" name="normy" multiple size="4"></select>
+                    <div class="form-text">Podržením CTRL vyberete více norem.</div>
+                </div>
+                <div class="col-12 col-md-3">
+                    <label for="filter-mesta" class="form-label">Město</label>
+                    <select class="form-select" id="filter-mesta" name="mesta" multiple size="4"></select>
+                </div>
+                <div class="col-12 d-flex justify-content-end gap-2">
+                    <button type="reset" class="btn btn-outline-secondary" id="vynulovat-filtry">Vymazat</button>
+                    <button type="submit" class="btn btn-primary" id="aplikovat-filtry">Použít</button>
+                </div>
+            </form>
         </div>
     </div>
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">Celkové tržby</h5>
-                <p class="card-text display-6">@Model.TotalRevenue.ToString("C")</p>
+
+    <div class="row g-3 mb-4" id="souhrn-panel">
+        <div class="col-12 col-lg-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <p class="text-muted text-uppercase fw-semibold mb-1">Celkové tržby</p>
+                    <p class="display-6 mb-0" data-souhrn="trzby">—</p>
+                </div>
             </div>
         </div>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-md-6">
-        <h3>Nejprodávanější kurzy</h3>
-        <canvas id="topCoursesChart"></canvas>
-    </div>
-    <div class="col-md-6">
-        <h3>Denní statistiky prodeje</h3>
-        <canvas id="revenueChart"></canvas>
-    </div>
-</div>
-
-<div class="row mt-4">
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-body">
-                <h3 class="card-title">Nástroje</h3>
-                <div class="d-flex flex-wrap gap-2">
-                    <a class="btn btn-outline-primary" asp-page="/Instructor/Attendance">
-                        <i class="bi bi-qr-code-scan"></i> Docházka (QR)
-                    </a>
+        <div class="col-12 col-lg-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <p class="text-muted text-uppercase fw-semibold mb-1">Zaplacené objednávky</p>
+                    <p class="display-6 mb-0" data-souhrn="objednavky">—</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-lg-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <p class="text-muted text-uppercase fw-semibold mb-1">Průměrná objednávka</p>
+                    <p class="display-6 mb-0" data-souhrn="prumer">—</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-lg-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <p class="text-muted text-uppercase fw-semibold mb-1">Unikátní zákazníci</p>
+                    <p class="display-6 mb-0" data-souhrn="zakaznici">—</p>
                 </div>
             </div>
         </div>
     </div>
+
+    <div class="row g-4">
+        <div class="col-12 col-xl-8">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <h2 class="h5 mb-0">Vývoj tržeb a objednávek</h2>
+                    <span class="badge text-bg-light" data-rozsah></span>
+                </div>
+                <div class="card-body">
+                    <canvas id="graf-prodeju" aria-label="Graf vývoje tržeb" role="img"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-xl-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-white">
+                    <h2 class="h5 mb-0">Aktuální aktivita</h2>
+                </div>
+                <div class="card-body">
+                    <dl class="row mb-0">
+                        <dt class="col-7">Online účastníci</dt>
+                        <dd class="col-5 text-end fs-4" data-realtime="online">—</dd>
+                        <dt class="col-7">Rozpracované košíky</dt>
+                        <dd class="col-5 text-end fs-4" data-realtime="kosiky">—</dd>
+                        <dt class="col-7">Potenciál v košících</dt>
+                        <dd class="col-5 text-end fs-6" data-realtime="hodnota">—</dd>
+                    </dl>
+                    <p class="text-muted small mt-3 mb-0">Hodnoty se automaticky obnovují každých 15 sekund.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mt-1">
+        <div class="col-12 col-xl-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-white">
+                    <h2 class="h5 mb-0">Top kurzy podle tržeb</h2>
+                </div>
+                <div class="card-body">
+                    <canvas id="graf-top-kurzy" aria-label="Žebříček kurzů" role="img"></canvas>
+                    <div class="table-responsive mt-4">
+                        <table class="table table-sm align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Název</th>
+                                    <th class="text-end">Tržby</th>
+                                    <th class="text-end">Prodáno</th>
+                                </tr>
+                            </thead>
+                            <tbody id="top-kurzy-tabulka">
+                                <tr>
+                                    <td colspan="3" class="text-center text-muted">Načítání…</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-xl-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-white">
+                    <h2 class="h5 mb-0">Konverzní trychtýř</h2>
+                </div>
+                <div class="card-body">
+                    <canvas id="graf-konverzi" aria-label="Konverzní trychtýř" role="img"></canvas>
+                    <ul class="list-unstyled mt-3 mb-0" id="konverzni-souhrn">
+                        <li class="text-muted">Načítání…</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm mt-4">
+        <div class="card-header bg-white d-flex flex-wrap align-items-center justify-content-between gap-2">
+            <h2 class="h5 mb-0">Heatmapa oblíbenosti termínů</h2>
+            <span class="text-muted small">Průměrné zaplnění v % dle dne a hodiny</span>
+        </div>
+        <div class="card-body">
+            <div id="heatmapa" class="heatmapa"></div>
+            <p class="text-muted small mb-0" id="heatmapa-popisek">Vybírané období zatím neobsahuje žádná data.</p>
+        </div>
+    </div>
 </div>
 
+<style>
+    #heatmapa {
+        display: grid;
+        gap: 4px;
+        overflow-x: auto;
+    }
+
+    #heatmapa .heatmapa-legend {
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+        align-items: center;
+        margin-top: 12px;
+    }
+
+    .heatmapa-bunka {
+        min-width: 48px;
+        min-height: 36px;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #212529;
+    }
+
+    .heatmapa-den {
+        writing-mode: vertical-rl;
+        transform: rotate(180deg);
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #6c757d;
+    }
+
+    .heatmapa-hodina {
+        font-size: 0.8rem;
+        color: #6c757d;
+        text-align: center;
+    }
+</style>
+
 @section Scripts {
-    <script src="~/lib/chart.js/chart.js" asp-append-version="true"></script>
     <script>
-        const topCourseLabels = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.TopCourseLabels));
-        const topCourseData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.TopCourseValues));
-
-        const topCoursesCanvas = document.getElementById('topCoursesChart');
-        if (topCoursesCanvas) {
-            new Chart(topCoursesCanvas, {
-                type: 'bar',
-                data: {
-                    labels: topCourseLabels,
-                    datasets: [{
-                        label: 'Počet prodaných kusů',
-                        data: topCourseData,
-                        backgroundColor: 'rgba(54, 162, 235, 0.5)'
-                    }]
-                }
-            });
-        }
-
-        const revenueLabels = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.RevenueLabels));
-        const revenueData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.RevenueValues));
-        const orderCounts = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.OrderCounts));
-        const averageOrderValues = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.AverageOrderValues));
-
-        const revenueCanvas = document.getElementById('revenueChart');
-        if (revenueCanvas) {
-            new Chart(revenueCanvas, {
-                type: 'bar',
-                data: {
-                    labels: revenueLabels,
-                    datasets: [
-                        {
-                            type: 'bar',
-                            label: 'Počet objednávek',
-                            data: orderCounts,
-                            backgroundColor: 'rgba(54, 162, 235, 0.5)',
-                            borderColor: 'rgba(54, 162, 235, 1)',
-                            borderWidth: 1,
-                            yAxisID: 'yOrders'
-                        },
-                        {
-                            type: 'line',
-                            label: 'Tržby',
-                            data: revenueData,
-                            borderColor: 'rgba(75, 192, 192, 1)',
-                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                            fill: true,
-                            tension: 0.3,
-                            yAxisID: 'yRevenue'
-                        },
-                        {
-                            type: 'line',
-                            label: 'Průměrná hodnota objednávky',
-                            data: averageOrderValues,
-                            borderColor: 'rgba(255, 159, 64, 1)',
-                            backgroundColor: 'rgba(255, 159, 64, 0.2)',
-                            tension: 0.3,
-                            borderDash: [5, 5],
-                            yAxisID: 'yAverage'
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    interaction: {
-                        mode: 'index',
-                        intersect: false
-                    },
-                    stacked: false,
-                    scales: {
-                        yOrders: {
-                            type: 'linear',
-                            position: 'left',
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'Objednávky'
-                            }
-                        },
-                        yRevenue: {
-                            type: 'linear',
-                            position: 'right',
-                            beginAtZero: true,
-                            grid: {
-                                drawOnChartArea: false
-                            },
-                            title: {
-                                display: true,
-                                text: 'Tržby'
-                            }
-                        },
-                        yAverage: {
-                            type: 'linear',
-                            position: 'right',
-                            beginAtZero: true,
-                            grid: {
-                                drawOnChartArea: false
-                            },
-                            title: {
-                                display: true,
-                                text: 'Průměrná hodnota'
-                            }
-                        }
-                    }
-                }
-            });
-        }
+        window.dashboardKonfigurace = @Html.Raw(konfiguraceJson);
     </script>
+    <script src="~/lib/chart.js/chart.js" asp-append-version="true"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js" integrity="sha512-PgpTjWyd4InENcy+XUG6uHgnIY7qDpiRnbV0wOYAV/QXpVZl8vGeOawx2UY8ailqXFz3vGN9VOGBev5nYeD1aw==" crossorigin="anonymous"></script>
+    <script src="~/js/admin/dashboard.js" asp-append-version="true"></script>
 }
