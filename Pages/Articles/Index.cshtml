@@ -1,44 +1,476 @@
 @page
 @model SysJaky_N.Pages.Articles.IndexModel
-@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+@using System.Collections.Generic
+@using System.Globalization
+@using System.Linq
+@functions {
+    public record ArticleCard(
+        int Id,
+        string Title,
+        string Perex,
+        string Image,
+        string ImageAlt,
+        string ReadTime,
+        string Author,
+        DateTime PublishedAt,
+        string Category,
+        string CategoryKey,
+        string[] Tags,
+        string CtaText,
+        string CtaUrl
+    );
+
+    public record CategoryOption(string Name, string Key);
+}
 @{
-    ViewData["Title"] = Localizer["Title"];
+    ViewData["Title"] = "Články a inspirace";
+    var culture = CultureInfo.CurrentUICulture;
+
+    var sampleArticles = new List<ArticleCard>
+    {
+        new(
+            1,
+            "Jak připravit organizaci na certifikaci ISO 9001",
+            "Během pěti praktických kroků připravte firmu na certifikaci ISO9001 vyhněte se častým chybám a stáhněte checklist s časovým a finančním odhadem navíc.",
+            Url.Content("~/img/articles/iso9001-preparation.svg"),
+            "Kontrolní seznam k přípravě na certifikaci ISO 9001",
+            "7 minut čtení",
+            "Eva Malá",
+            new DateTime(2025, 3, 18),
+            "ISO 9001",
+            "iso-9001",
+            new[] { "ISO 9001", "certifikace", "management", "checklist" },
+            "Zjistit kurzy ISO 9001",
+            "/Courses/Index?search=ISO%209001"
+        ),
+        new(
+            2,
+            "Rozdíl mezi certifikací a akreditací",
+            "Zorientujte se v rozdílech mezi certifikací a akreditací zjistěte kdy potřebujete kterou a inspirujte se příklady z české praxe i zkušenostmi expertů.",
+            Url.Content("~/img/articles/cert-vs-accred.svg"),
+            "Srovnání certifikace a akreditace",
+            "5 minut čtení",
+            "Tomáš Král",
+            new DateTime(2025, 2, 6),
+            "Certifikace",
+            "certifikace",
+            new[] { "certifikace", "akreditace", "ISO", "rozdíly" },
+            "Vybrat kurz k certifikaci",
+            "/Courses/Index?search=certifikace"
+        ),
+        new(
+            3,
+            "Interní audit - jak na to",
+            "Praktický návod k internímu auditu nabízí jasné kroky, použitelné šablony a tipy auditorů které pomohou připravit tým a procesy bez zbytečného stresu.",
+            Url.Content("~/img/articles/internal-audit.svg"),
+            "Lupa nad dokumenty symbolizující interní audit",
+            "8 minut čtení",
+            "Lenka Karásková",
+            new DateTime(2025, 1, 22),
+            "Audity",
+            "audity",
+            new[] { "audit", "interní audit", "šablony", "ISO 19011" },
+            "Procvičit interní audit",
+            "/Courses/Index?search=intern%C3%AD%20audit"
+        ),
+        new(
+            4,
+            "Procesní řízení v praxi",
+            "Procesní řízení v praxi ukáže mapování procesů, KPI i kontinuální zlepšování aby role byly jasné všem data dostupná a výkonnost firmy stabilně rostla.",
+            Url.Content("~/img/articles/process-management.svg"),
+            "Schéma propojených procesů a ukazatelů",
+            "6 minut čtení",
+            "Jan Hrubý",
+            new DateTime(2024, 12, 11),
+            "Procesní řízení",
+            "procesni-rizeni",
+            new[] { "procesní řízení", "KPI", "zlepšování", "mapování" },
+            "Naučit se procesní řízení",
+            "/Courses/Index?search=procesn%C3%AD%20%C5%99%C3%ADzen%C3%AD"
+        ),
+        new(
+            5,
+            "ISO normy v automobilovém průmyslu",
+            "IATF 16949 a Core Tools v kostce pro automotive týmy. Článek shrnuje klíčové požadavky ISO zákaznická specifika a postupy jak sladit kvalitu i audity.",
+            Url.Content("~/img/articles/automotive-iso.svg"),
+            "Automobil se symbolem kvality IATF 16949",
+            "9 minut čtení",
+            "Klára Vránová",
+            new DateTime(2024, 11, 4),
+            "Automotive",
+            "automotive",
+            new[] { "IATF 16949", "automotive", "core tools", "dodavatelé" },
+            "Prohlédnout automotive kurzy",
+            "/Courses/Index?search=IATF%2016949"
+        )
+    };
+
+    var categories = sampleArticles
+        .Select(a => new CategoryOption(a.Category, a.CategoryKey))
+        .DistinctBy(c => c.Key)
+        .OrderBy(c => c.Name, StringComparer.Create(culture, ignoreCase: true))
+        .ToList();
 }
 
-<h1>@Localizer["Heading"]</h1>
-<form method="get" class="mb-3 d-flex flex-column flex-sm-row gap-2" role="search" aria-label="@Localizer["SearchAriaLabel"]">
-    <div>
-        <label class="form-label visually-hidden" for="articleSearch">@Localizer["SearchInputAriaLabel"]</label>
-        <input type="text" id="articleSearch" asp-for="SearchString" placeholder="@Localizer["SearchPlaceholder"]" class="form-control" aria-describedby="articleSearchHelp" />
-        <div id="articleSearchHelp" class="visually-hidden">@Localizer["SearchHelpText"]</div>
+<section class="articles-hero">
+    <div class="articles-hero__content">
+        <p class="text-uppercase fw-semibold text-primary mb-2">Inspirační knihovna</p>
+        <h1 class="display-5 fw-bold mb-3">Články, které zefektivní vaše systémy řízení</h1>
+        <p class="lead text-muted mb-0">Vyberte si z kurátorovaného výběru článků o ISO normách, auditech i procesním řízení. Filtrujte podle kategorií, vyhledávejte klíčová témata a přepínejte mezi dlaždicovým a seznamovým zobrazením.</p>
     </div>
-    <div>
-        <button type="submit" class="btn btn-primary">@Localizer["SearchButton"]</button>
-    </div>
-</form>
+</section>
 
-<ul>
-@foreach (var item in Model.Articles)
-{
-    <li>
-        <a asp-page="Details" asp-route-id="@item.Id">@item.Title</a> (@item.CreatedAt.ToString("d"))
-    </li>
+<section class="articles-toolbar" aria-label="Ovládací panel článků">
+    <div class="toolbar-group toolbar-group--search" role="search">
+        <label for="articleSearch" class="form-label fw-semibold">Hledat články</label>
+        <input type="search" id="articleSearch" class="form-control" placeholder="Zadejte název, téma nebo tag" data-articles-search aria-describedby="articleSearchHelp" />
+        <div id="articleSearchHelp" class="form-text">Vyhledáváme v názvu, perexu i značkách článků.</div>
+    </div>
+    <div class="toolbar-group toolbar-group--filters" role="group" aria-labelledby="articleFiltersLabel">
+        <div class="d-flex align-items-center gap-2 mb-2">
+            <i class="bi bi-filter fs-5 text-primary" aria-hidden="true"></i>
+            <span id="articleFiltersLabel" class="fw-semibold">Filtrovat podle kategorií</span>
+        </div>
+        <div class="toolbar-filters" data-filter-checkboxes>
+            @foreach (var category in categories)
+            {
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" value="@category.Key" id="filter-@category.Key" checked data-category-filter />
+                    <label class="form-check-label" for="filter-@category.Key">@category.Name</label>
+                </div>
+            }
+        </div>
+    </div>
+    <div class="toolbar-group toolbar-group--view" role="group" aria-label="Přepnout zobrazení">
+        <button type="button" class="btn btn-outline-primary active" data-view-toggle="grid" aria-pressed="true">
+            <i class="bi bi-grid" aria-hidden="true"></i>
+            <span class="ms-2">Dlaždice</span>
+        </button>
+        <button type="button" class="btn btn-outline-primary" data-view-toggle="list" aria-pressed="false">
+            <i class="bi bi-list" aria-hidden="true"></i>
+            <span class="ms-2">Seznam</span>
+        </button>
+    </div>
+</section>
+
+<section class="articles-results" aria-live="polite">
+    <div id="articlesLiveRegion" class="visually-hidden" aria-live="polite" aria-atomic="true"></div>
+    <div class="article-list article-list--grid" data-articles-list data-view="grid">
+        @foreach (var article in sampleArticles)
+        {
+            var searchText = string.Join(' ', new[]
+            {
+                article.Title,
+                article.Perex,
+                string.Join(' ', article.Tags)
+            }).ToLower(culture);
+            <article class="article-card" data-article-card data-category="@article.CategoryKey" data-tags="@string.Join('|', article.Tags.Select(t => t.ToLower(culture)))" data-search-text="@searchText">
+                <figure class="article-card__media">
+                    <img src="@article.Image" alt="@article.ImageAlt" loading="lazy" width="600" height="400" class="article-card__image" />
+                </figure>
+                <div class="article-card__body">
+                    <div class="article-card__meta">
+                        <span class="badge bg-light text-primary border border-primary-subtle">@article.Category</span>
+                        <span class="text-muted">@article.ReadTime</span>
+                    </div>
+                    <h2 class="article-card__title">@article.Title</h2>
+                    <p class="article-card__perex">@article.Perex</p>
+                    <div class="article-card__details">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="bi bi-person-circle text-primary" aria-hidden="true"></i>
+                            <span class="fw-semibold">@article.Author</span>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="bi bi-calendar-event text-primary" aria-hidden="true"></i>
+                            <time datetime="@article.PublishedAt:yyyy-MM-dd">@article.PublishedAt.ToString("d. MMMM yyyy", culture)</time>
+                        </div>
+                    </div>
+                    <div class="article-card__tags" aria-label="Tagy článku">
+                        @foreach (var tag in article.Tags)
+                        {
+                            <span class="badge rounded-pill bg-primary-subtle text-primary">@tag</span>
+                        }
+                    </div>
+                </div>
+                <footer class="article-card__footer">
+                    <div class="d-flex flex-wrap align-items-center gap-3">
+                        <a class="btn btn-primary" href="@article.CtaUrl">@article.CtaText</a>
+                        <a class="link-primary d-flex align-items-center gap-1" href="#" role="button" aria-label="Zobrazit více o článku @article.Title">
+                            Číst náhled
+                            <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                </footer>
+            </article>
+        }
+    </div>
+    <div class="articles-empty alert alert-info d-none" data-empty-state role="status">
+        <i class="bi bi-info-circle" aria-hidden="true"></i>
+        <span>Nenašli jsme žádné články pro zadanou kombinaci vyhledávání a filtrů. Upravte prosím podmínky a zkuste to znovu.</span>
+    </div>
+</section>
+
+<section class="articles-related" aria-labelledby="relatedCourses">
+    <div class="card border-0 shadow-sm overflow-hidden">
+        <div class="row g-0 align-items-center">
+            <div class="col-lg-7 p-4 p-lg-5">
+                <h2 id="relatedCourses" class="h3 fw-bold mb-3">Posuňte znalosti díky navazujícím kurzům</h2>
+                <p class="mb-4 text-muted">Každý článek navazuje na praktické kurzy, které vás provedou implementací standardů krok za krokem. Získejte přístup k bonusovým materiálům, Q&A se specialisty i komunitním workshopům.</p>
+                <div class="d-flex flex-wrap gap-3">
+                    <a class="btn btn-outline-primary" href="/Courses/Index?search=ISO">Prozkoumat všechny kurzy</a>
+                    <a class="btn btn-outline-secondary" href="/Contact">Spojit se s konzultantem</a>
+                </div>
+            </div>
+            <div class="col-lg-5 bg-primary-subtle p-4 text-center">
+                <i class="bi bi-mortarboard fs-1 text-primary" aria-hidden="true"></i>
+                <p class="mt-3 mb-0 fw-semibold text-primary">Certifikovaní lektoři a aktuální sylaby</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Head {
+    <style>
+        .articles-hero {
+            padding: 2.5rem 0 1.5rem;
+        }
+
+        .articles-hero__content {
+            max-width: 860px;
+        }
+
+        .articles-toolbar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0 1.5rem;
+            align-items: start;
+        }
+
+        .toolbar-group {
+            background: var(--bs-body-bg);
+            border: 1px solid var(--bs-border-color);
+            border-radius: 0.75rem;
+            padding: 1.25rem;
+            box-shadow: 0 0.125rem 0.75rem rgba(11, 123, 179, 0.08);
+        }
+
+        .toolbar-group--view {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .toolbar-group--view .btn {
+            flex: 1 1 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.25rem;
+        }
+
+        .toolbar-group--view .btn.active {
+            background-color: var(--bs-primary);
+            color: #fff;
+        }
+
+        .toolbar-filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem 1rem;
+        }
+
+        .article-list {
+            display: grid;
+            gap: 1.75rem;
+        }
+
+        .article-list--grid {
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        }
+
+        .article-list--list {
+            grid-template-columns: 1fr;
+        }
+
+        .article-card {
+            background: var(--bs-body-bg);
+            border-radius: 1rem;
+            border: 1px solid var(--bs-border-color);
+            box-shadow: 0 0.75rem 2rem rgba(11, 123, 179, 0.08);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .article-card:hover,
+        .article-card:focus-within {
+            transform: translateY(-4px);
+            box-shadow: 0 1.25rem 2.25rem rgba(11, 123, 179, 0.14);
+        }
+
+        .article-card__media {
+            aspect-ratio: 3 / 2;
+            margin: 0;
+        }
+
+        .article-card__image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .article-card__body {
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .article-card__meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .article-card__title {
+            font-size: 1.45rem;
+            line-height: 1.3;
+            margin: 0;
+        }
+
+        .article-card__perex {
+            margin-bottom: 0;
+            color: var(--bs-secondary-color);
+        }
+
+        .article-card__details {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem 2rem;
+            color: var(--bs-secondary-color);
+        }
+
+        .article-card__tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .article-card__footer {
+            margin-top: auto;
+            padding: 1.25rem 1.5rem 1.5rem;
+            background: var(--bs-light-bg-subtle, var(--bs-gray-100));
+            border-top: 1px solid var(--bs-border-color);
+        }
+
+        .articles-empty {
+            margin-top: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .articles-related {
+            margin-top: 3rem;
+        }
+
+        @media (max-width: 767.98px) {
+            .article-card__title {
+                font-size: 1.25rem;
+            }
+
+            .article-card__body {
+                padding: 1.25rem;
+            }
+
+            .article-card__footer {
+                padding: 1rem 1.25rem 1.25rem;
+            }
+        }
+    </style>
 }
-</ul>
 
-@if (Model.TotalPages > 1)
-{
-    <nav aria-label="@Localizer["PaginationAriaLabel"]">
-        <ul class="pagination">
-            <li class="page-item @(Model.PageNumber <= 1 ? "disabled" : string.Empty)">
-                <a class="page-link" asp-route-PageNumber="@(Model.PageNumber - 1)" asp-route-SearchString="@Model.SearchString" aria-disabled="@(Model.PageNumber <= 1)">@Localizer["Previous"]</a>
-            </li>
-            <li class="page-item disabled">
-                <span class="page-link" aria-current="page">@Localizer["PageStatus", Model.PageNumber, Model.TotalPages]</span>
-            </li>
-            <li class="page-item @(Model.PageNumber >= Model.TotalPages ? "disabled" : string.Empty)">
-                <a class="page-link" asp-route-PageNumber="@(Model.PageNumber + 1)" asp-route-SearchString="@Model.SearchString" aria-disabled="@(Model.PageNumber >= Model.TotalPages)">@Localizer["Next"]</a>
-            </li>
-        </ul>
-    </nav>
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const listElement = document.querySelector('[data-articles-list]');
+            const searchInput = document.querySelector('[data-articles-search]');
+            const filterInputs = Array.from(document.querySelectorAll('[data-category-filter]'));
+            const articleCards = Array.from(document.querySelectorAll('[data-article-card]'));
+            const noResults = document.querySelector('[data-empty-state]');
+            const liveRegion = document.getElementById('articlesLiveRegion');
+            const viewButtons = Array.from(document.querySelectorAll('[data-view-toggle]'));
+
+            if (!listElement || !searchInput) {
+                return;
+            }
+
+            const updateAnnouncement = (visible) => {
+                if (!liveRegion) {
+                    return;
+                }
+
+                liveRegion.textContent = visible === 1
+                    ? 'Zobrazuje se 1 článek.'
+                    : `Zobrazuje se ${visible} článků.`;
+            };
+
+            const applyFilters = () => {
+                const query = searchInput.value.trim().toLowerCase();
+                const activeCategories = filterInputs
+                    .filter(input => input.checked)
+                    .map(input => input.value.toLowerCase());
+
+                let visibleCount = 0;
+                articleCards.forEach(card => {
+                    const category = card.dataset.category ?? '';
+                    const searchable = card.dataset.searchText ?? '';
+                    const matchesCategory = activeCategories.length === 0 || activeCategories.includes(category);
+                    const matchesQuery = query.length === 0 || searchable.includes(query);
+                    const isVisible = matchesCategory && matchesQuery;
+
+                    card.classList.toggle('d-none', !isVisible);
+                    card.setAttribute('aria-hidden', (!isVisible).toString());
+
+                    if (isVisible) {
+                        visibleCount += 1;
+                    }
+                });
+
+                const hasResults = visibleCount > 0;
+                if (noResults) {
+                    noResults.classList.toggle('d-none', hasResults);
+                }
+
+                updateAnnouncement(visibleCount);
+            };
+
+            const switchView = (view) => {
+                if (!listElement) {
+                    return;
+                }
+
+                listElement.dataset.view = view;
+                listElement.classList.toggle('article-list--grid', view === 'grid');
+                listElement.classList.toggle('article-list--list', view === 'list');
+
+                viewButtons.forEach(button => {
+                    const isActive = button.dataset.viewToggle === view;
+                    button.classList.toggle('active', isActive);
+                    button.setAttribute('aria-pressed', isActive.toString());
+                });
+            };
+
+            searchInput.addEventListener('input', () => applyFilters());
+            filterInputs.forEach(input => input.addEventListener('change', () => applyFilters()));
+            viewButtons.forEach(button => button.addEventListener('click', () => switchView(button.dataset.viewToggle)));
+
+            applyFilters();
+        });
+    </script>
 }
