@@ -1,0 +1,23 @@
+@page
+@page "{handler?}"
+@model SysJaky_N.Pages.Api.NewsletterModel
+@{
+    if (Model.ShowConfirmationResult)
+    {
+        ViewData["Title"] = Model.ConfirmationTitle;
+    }
+}
+
+@if (Model.ShowConfirmationResult)
+{
+    <section class="container-xl py-5">
+        <h1 class="h3 mb-3">@Model.ConfirmationTitle</h1>
+        <p class="lead">@Model.ConfirmationMessage</p>
+    </section>
+}
+else
+{
+    <section class="container-xl py-5">
+        <p class="text-muted">Tento endpoint slouží pro newsletter API.</p>
+    </section>
+}
