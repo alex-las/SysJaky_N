@@ -1,4 +1,6 @@
-<div class="chatbot" data-chatbot>
+@model SysJaky_N.Models.ViewModels.ChatbotWidgetViewModel
+
+<div class="chatbot" data-chatbot data-chatbot-autoinit="@(Model.AutoInitialize ? "true" : "false")">
     <button type="button" class="chatbot-toggle" data-chatbot-toggle aria-haspopup="dialog" aria-expanded="false" aria-controls="chatbot-panel">
         <span class="visually-hidden">Otevřít chat s virtuálním poradcem</span>
         <i class="bi bi-chat-dots"></i>

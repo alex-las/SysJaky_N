@@ -401,9 +401,27 @@
         state.initialized = true;
     }
 
+    function bootstrap() {
+        const root = document.querySelector(selectors.root);
+
+        window.SysJakyChatbot = window.SysJakyChatbot || {};
+        window.SysJakyChatbot.initialize = initialize;
+
+        if (!root) {
+            return;
+        }
+
+        const autoInitAttribute = root.getAttribute('data-chatbot-autoinit');
+        const shouldAutoInit = autoInitAttribute === null || autoInitAttribute === '' || autoInitAttribute === 'true';
+
+        if (shouldAutoInit) {
+            initialize();
+        }
+    }
+
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initialize);
+        document.addEventListener('DOMContentLoaded', bootstrap);
     } else {
-        initialize();
+        bootstrap();
     }
 })();

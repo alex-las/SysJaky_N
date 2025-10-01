@@ -1,6 +1,6 @@
+using System.Linq;
 using System.Text;
 using System.Text.Json;
-using System.Linq;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -44,6 +44,15 @@ public class ChatbotModel : PageModel
 
     public async Task<IActionResult> OnPostAsync(CancellationToken cancellationToken)
     {
+        var settings = await GetSettingsAsync(cancellationToken);
+        if (!settings.IsEnabled)
+        {
+            return new JsonResult(new ChatbotResponse
+            {
+                Reply = "Virtuální poradce je momentálně vypnutý. Zkuste to prosím později."
+            });
+        }
+
         var request = await JsonSerializer.DeserializeAsync<ChatbotRequest>(Request.Body, SerializerOptions, cancellationToken);
         if (request is null || string.IsNullOrWhiteSpace(request.Message))
         {
@@ -76,6 +85,15 @@ public class ChatbotModel : PageModel
 
     public async Task<IActionResult> OnPostEscalateAsync(CancellationToken cancellationToken)
     {
+        var settings = await GetSettingsAsync(cancellationToken);
+        if (!settings.IsEnabled)
+        {
+            return new JsonResult(new ChatbotResponse
+            {
+                Reply = "Virtuální poradce je momentálně vypnutý. Prosím kontaktujte nás jinou cestou."
+            });
+        }
+
         var request = await JsonSerializer.DeserializeAsync<EscalationRequest>(Request.Body, SerializerOptions, cancellationToken);
         if (request is null || string.IsNullOrWhiteSpace(request.Email))
         {
@@ -110,6 +128,21 @@ public class ChatbotModel : PageModel
         {
             Reply = "Děkujeme, předali jsme váš dotaz kolegům. Ozvou se vám na uvedený e-mail co nejdříve."
         });
+    }
+
+    private async Task<ChatbotSettings> GetSettingsAsync(CancellationToken cancellationToken)
+    {
+        var settings = await _context.ChatbotSettings
+            .AsNoTracking()
+            .OrderBy(s => s.Id)
+            .FirstOrDefaultAsync(cancellationToken);
+
+        return settings ?? new ChatbotSettings
+        {
+            IsEnabled = true,
+            AutoInitialize = true,
+            UpdatedAtUtc = DateTime.UtcNow
+        };
     }
 
     private ChatbotKeywordEntry? FindMatchingKeyword(string message)
