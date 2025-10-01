@@ -5,17 +5,23 @@
     ViewData["Title"] = Localizer["Title"];
 }
 
-<section class="py-5 gradient-hero text-white text-center rounded-4 mb-4">
-    <div class="container-xl">
-        <h1 class="display-5 fw-bold mb-2">@Localizer["HeroHeadingPrefix"] <span class="underline-accent">@Localizer["HeroHeadingAccent"]</span></h1>
+<section class="py-5 gradient-hero text-white text-center rounded-4 mb-4 hero-section">
+    <div class="hero-background" aria-hidden="true">
+        <span class="hero-floating-icon hero-icon-1">ISO<br />9001</span>
+        <span class="hero-floating-icon hero-icon-2">ISO<br />14001</span>
+        <span class="hero-floating-icon hero-icon-3">ISO<br />45001</span>
+        <span class="hero-floating-icon hero-icon-4">ISO<br />27001</span>
+    </div>
+    <div class="container-xl position-relative">
+        <h1 class="display-5 fw-bold mb-2">@Localizer["HeroHeadingPrefix"] <span class="underline-accent"><span class="typewriter" data-typewriter-text="@Localizer["HeroHeadingAccent"]">@Localizer["HeroHeadingAccent"]</span></span></h1>
         <p class="lead mb-4 opacity-75">@Localizer["HeroSubheading"]</p>
 
         <form method="get" action="/Courses/Index" class="row g-2 justify-content-center" id="heroForm">
             <div class="col-12 col-md-3">
-                <select name="persona" class="form-select" aria-label="@Localizer["PersonaAriaLabel"]" persona-options></select>
+                <select name="persona" class="form-select filter-select" aria-label="@Localizer["PersonaAriaLabel"]" persona-options></select>
             </div>
             <div class="col-12 col-md-3">
-                <select name="goal" class="form-select" aria-label="@Localizer["GoalAriaLabel"]" goal-options></select>
+                <select name="goal" class="form-select filter-select" aria-label="@Localizer["GoalAriaLabel"]" goal-options></select>
             </div>
             <div class="col-12 col-md-4">
                 <div class="input-group">
@@ -44,13 +50,13 @@
             <div class="col">
                 <div class="trust-item d-flex align-items-center justify-content-center justify-content-md-start gap-2">
                     <i class="bi bi-star-fill"></i>
-                    <span>@Localizer["TrustRating", "4.8/5"]</span>
+                    <span>@Html.Raw(Localizer["TrustRating", "<span class=\"stat-number\" data-target=\"4.8\" data-decimals=\"1\" data-suffix=\"/5\">4.8</span>"])</span>
                 </div>
             </div>
             <div class="col">
                 <div class="trust-item d-flex align-items-center justify-content-center justify-content-md-start gap-2">
                     <i class="bi bi-people"></i>
-                    <span>@Localizer["TrustGraduates", "10 000+"]</span>
+                    <span>@Html.Raw(Localizer["TrustGraduates", "<span class=\"stat-number\" data-target=\"10000\" data-suffix=\"+\">10 000</span>"])</span>
                 </div>
             </div>
             <div class="col">
@@ -70,17 +76,84 @@
 </section>
 
 <script>
-    // Ulož volby pro pozdější předvyplnění (malý závazek = vyšší konverze)
     (function () {
-        const form = document.getElementById('heroForm');
-        const pSel = form?.querySelector('select[name="persona"]');
-        const gSel = form?.querySelector('select[name="goal"]');
-        if (pSel && localStorage.persona) pSel.value = localStorage.persona;
-        if (gSel && localStorage.goal) gSel.value = localStorage.goal;
-        form?.addEventListener('submit', () => {
-            if (pSel) localStorage.persona = pSel.value || "";
-            if (gSel) localStorage.goal = gSel.value || "";
-        });
+        const locale = document.documentElement.lang || 'cs';
+
+        const restoreSelections = () => {
+            const form = document.getElementById('heroForm');
+            const pSel = form?.querySelector('select[name="persona"]');
+            const gSel = form?.querySelector('select[name="goal"]');
+            if (pSel && localStorage.persona) pSel.value = localStorage.persona;
+            if (gSel && localStorage.goal) gSel.value = localStorage.goal;
+            form?.addEventListener('submit', () => {
+                if (pSel) localStorage.persona = pSel.value || "";
+                if (gSel) localStorage.goal = gSel.value || "";
+            });
+        };
+
+        const runTypewriter = () => {
+            const el = document.querySelector('.typewriter');
+            if (!el) return;
+            const text = el.getAttribute('data-typewriter-text') || '';
+            let index = 0;
+            el.classList.add('is-typing');
+            el.textContent = '';
+
+            const step = () => {
+                if (index <= text.length) {
+                    el.textContent = text.slice(0, index);
+                    index += 1;
+                    window.setTimeout(step, 70);
+                } else {
+                    el.classList.remove('is-typing');
+                    el.classList.add('typewriter-complete');
+                }
+            };
+
+            step();
+        };
+
+        const animateStats = () => {
+            const stats = document.querySelectorAll('.stat-number');
+            if (!stats.length) return;
+
+            stats.forEach((el) => {
+                const target = Number(el.getAttribute('data-target')) || 0;
+                const decimals = Number(el.getAttribute('data-decimals')) || 0;
+                const duration = Number(el.getAttribute('data-duration')) || 1600;
+                const prefix = el.getAttribute('data-prefix') || '';
+                const suffix = el.getAttribute('data-suffix') || '';
+
+                const startTimestamp = performance.now();
+
+                const tick = (now) => {
+                    const progress = Math.min((now - startTimestamp) / duration, 1);
+                    const current = target * progress;
+                    const formatted = current.toLocaleString(locale, {
+                        minimumFractionDigits: decimals,
+                        maximumFractionDigits: decimals
+                    });
+                    el.textContent = `${prefix}${formatted}${suffix}`;
+                    if (progress < 1) {
+                        requestAnimationFrame(tick);
+                    }
+                };
+
+                requestAnimationFrame(tick);
+            });
+        };
+
+        const init = () => {
+            restoreSelections();
+            runTypewriter();
+            animateStats();
+        };
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
     })();
 </script>
 
