@@ -1,0 +1,142 @@
+@model SysJaky_N.Models.ViewModels.CourseCardViewModel
+@using System.Text.Encodings.Web
+@using SysJaky_N.Models
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+@{
+    var culture = System.Globalization.CultureInfo.CurrentCulture;
+    var imageAlt = Localizer["CourseImageAlt", Model.Title];
+    var previewTextRaw = string.IsNullOrWhiteSpace(Model.PreviewText) ? (Model.Description ?? string.Empty) : Model.PreviewText;
+    var previewText = HtmlEncoder.Default.Encode(previewTextRaw);
+    var daysUntilStart = Model.StartDate.HasValue ? (Model.StartDate.Value.Date - DateTime.Today).Days : (int?)null;
+    var countdownText = Localizer["CountdownFallback"].Value ?? "";
+    if (daysUntilStart.HasValue)
+    {
+        countdownText = daysUntilStart.Value switch
+        {
+            > 1 => Localizer["StartsInDays", daysUntilStart.Value].Value ?? countdownText,
+            1 => Localizer["StartsTomorrow"].Value ?? countdownText,
+            0 => Localizer["StartsToday"].Value ?? countdownText,
+            < 0 => Localizer["AlreadyStarted"].Value ?? countdownText,
+            _ => Localizer["StartsInDays", daysUntilStart.Value].Value ?? countdownText
+        };
+    }
+    var occupancyPercent = Math.Clamp(Model.OccupancyPercent, 0, 100);
+    var occupancyText = Model.Capacity.HasValue && Model.SeatsTaken.HasValue
+        ? Localizer["OccupancyDetailed", Model.SeatsTaken.Value, Model.Capacity.Value, occupancyPercent].Value ?? string.Empty
+        : Localizer["OccupancySimple", occupancyPercent].Value ?? string.Empty;
+    var modeLocalized = Localizer[$"Type_{Model.Type}"];
+    var modeText = modeLocalized.ResourceNotFound ? Model.Type.ToString() : modeLocalized.Value;
+    var levelLocalized = Localizer[$"Level_{Model.Level}"];
+    var levelText = levelLocalized.ResourceNotFound ? Model.Level.ToString() : levelLocalized.Value;
+    var certificateText = Model.HasCertificate
+        ? (!string.IsNullOrWhiteSpace(Model.CertificateLabel) ? Model.CertificateLabel : (Localizer["CertificateYes"].Value ?? ""))
+        : Localizer["CertificateNo"].Value ?? string.Empty;
+    var certificateIcon = Model.HasCertificate ? "bi-award-fill" : "bi-award";
+    var modeIcon = Model.Type switch
+    {
+        CourseType.InPerson => "bi-people-fill",
+        CourseType.Hybrid => "bi-arrows-repeat",
+        _ => "bi-wifi"
+    };
+    var levelIcon = Model.Level switch
+    {
+        CourseLevel.Beginner => "bi-emoji-smile",
+        CourseLevel.Intermediate => "bi-graph-up",
+        CourseLevel.Advanced => "bi-mortarboard",
+        _ => "bi-stars"
+    };
+    var isoLabel = !string.IsNullOrWhiteSpace(Model.IsoCertification)
+        ? Localizer["IsoBadge", Model.IsoCertification].Value ?? Model.IsoCertification
+        : string.Empty;
+    var wishlistAdd = Localizer["AddToWishlist", Model.Title].Value ?? string.Empty;
+    var wishlistRemove = Localizer["RemoveFromWishlist", Model.Title].Value ?? string.Empty;
+    var wishlistLabel = Model.IsWishlisted ? wishlistRemove : wishlistAdd;
+    var wishlistStateClass = Model.IsWishlisted ? " is-active" : string.Empty;
+}
+<div class="course-card card-hover h-100" data-course-card data-course-id="@Model.Id" data-start-date="@Model.StartDate?.ToString("o")">
+  <div class="course-card__media">
+    @if (!string.IsNullOrWhiteSpace(Model.CoverImageUrl))
+    {
+      <img src="@Model.CoverImageUrl" alt="@imageAlt" class="course-card__image is-loading" loading="lazy" decoding="async" />
+    }
+    else
+    {
+      <div class="course-card__image-placeholder" aria-hidden="true">
+        <i class="bi bi-image"></i>
+      </div>
+    }
+    @if (!string.IsNullOrWhiteSpace(Model.IsoCertification))
+    {
+      <span class="course-card__iso" role="img" aria-label="@isoLabel">
+        <i class="bi @Model.IsoIcon" aria-hidden="true"></i>
+        <span>@Model.IsoCertification</span>
+      </span>
+    }
+    <button type="button" class="course-card__wishlist@wishlistStateClass" data-wishlist-button data-course-id="@Model.Id" data-wishlist-add-label="@wishlistAdd" data-wishlist-remove-label="@wishlistRemove" aria-pressed="@(Model.IsWishlisted.ToString().ToLowerInvariant())" aria-label="@wishlistLabel">
+      <span class="course-card__heart" aria-hidden="true"></span>
+      <span class="visually-hidden">@wishlistLabel</span>
+    </button>
+  </div>
+  <div class="course-card__body">
+    <div class="course-card__top">
+      <div class="course-card__countdown" data-countdown role="status" aria-live="polite">@countdownText</div>
+      @if (!string.IsNullOrWhiteSpace(previewText))
+      {
+        <button type="button" class="course-card__preview" data-course-preview="@previewText" aria-label="@Localizer["QuickPreview"].Value">
+          <i class="bi bi-eye" aria-hidden="true"></i>
+          <span class="visually-hidden">@Localizer["QuickPreview"]</span>
+        </button>
+      }
+    </div>
+    <h3 class="course-card__title h5">
+      <a class="stretched-link" asp-page="/Courses/Details" asp-route-id="@Model.Id">@Model.Title</a>
+    </h3>
+    @if (!string.IsNullOrWhiteSpace(Model.Description))
+    {
+      <p class="course-card__description">@Model.Description</p>
+    }
+    <dl class="course-card__meta" aria-label="@Localizer["CourseAttributes"]">
+      <div class="course-card__meta-item">
+        <dt><i class="bi @modeIcon" aria-hidden="true"></i><span class="visually-hidden">@Localizer["TypeLabel"]</span></dt>
+        <dd>@modeText</dd>
+      </div>
+      <div class="course-card__meta-item">
+        <dt><i class="bi @levelIcon" aria-hidden="true"></i><span class="visually-hidden">@Localizer["LevelLabel"]</span></dt>
+        <dd>@levelText</dd>
+      </div>
+      <div class="course-card__meta-item">
+        <dt><i class="bi @certificateIcon" aria-hidden="true"></i><span class="visually-hidden">@Localizer["CertificateLabel"]</span></dt>
+        <dd>@certificateText</dd>
+      </div>
+      <div class="course-card__meta-item">
+        <dt><i class="bi bi-clock" aria-hidden="true"></i><span class="visually-hidden">@Localizer["DurationLabel"]</span></dt>
+        <dd>@Model.DurationDisplay</dd>
+      </div>
+    </dl>
+  </div>
+  <div class="course-card__footer">
+    <div class="course-card__progress" aria-live="polite">
+      <div class="progress" role="presentation">
+        <div class="progress-bar" role="progressbar" style="width:@occupancyPercent%" aria-valuenow="@occupancyPercent" aria-valuemin="0" aria-valuemax="100"></div>
+      </div>
+      <span class="course-card__progress-text">@occupancyText</span>
+    </div>
+    <div class="course-card__pricing">
+      <span class="course-card__price">@Model.PriceDisplay</span>
+      <span class="course-card__date">@Model.DateDisplay</span>
+    </div>
+    <div class="course-card__actions">
+      <div class="form-check form-check-inline">
+        <input class="form-check-input cmp-check" type="checkbox" value="@Model.Id" id="cmp_@Model.Id">
+        <label class="form-check-label small" for="cmp_@Model.Id">@Localizer["Compare"]</label>
+      </div>
+      <div class="course-card__buttons">
+        <a class="btn btn-outline-secondary btn-sm" asp-page="/Courses/Details" asp-route-id="@Model.Id">@Localizer["Details"]</a>
+        <form method="post" asp-page="/Courses/Index" asp-page-handler="AddToCart" class="d-inline">
+          <input type="hidden" name="courseId" value="@Model.Id" />
+          <button type="submit" class="btn btn-primary btn-sm" aria-label="@Localizer["EnrollAriaLabel", Model.Title]">@Localizer["Enroll"]</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

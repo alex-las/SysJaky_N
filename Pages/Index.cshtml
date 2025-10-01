@@ -166,13 +166,13 @@
           <a class="btn btn-sm btn-outline-secondary" href="/Courses/Index">@Localizer["RecommendedViewAll"]</a>
         </div>
         <div class="row g-3">
-          @foreach (var c in Model.PicksForPersona)
+          @foreach (var c in Model.PicksForPersonaCards)
           {
             <div class="col-12 col-md-6">
-              @await Html.PartialAsync("/Pages/Shared/Components/_CourseCard.cshtml", c)
+              @await Html.PartialAsync("/Pages/Shared/_CourseCard.cshtml", c)
             </div>
           }
-          @if (!Model.PicksForPersona.Any())
+          @if (!Model.PicksForPersonaCards.Any())
           {
             <div class="col-12 text-muted">@Localizer["RecommendedEmpty"]</div>
           }

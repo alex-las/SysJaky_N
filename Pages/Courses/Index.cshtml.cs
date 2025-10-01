@@ -4,7 +4,9 @@ using Microsoft.EntityFrameworkCore;
 using SysJaky_N.Data;
 using SysJaky_N.Services;
 using SysJaky_N.Models;
+using SysJaky_N.Models.ViewModels;
 using System.Globalization;
+using System.Security.Claims;
 
 namespace SysJaky_N.Pages.Courses;
 
@@ -21,7 +23,7 @@ public class IndexModel : PageModel
         _cacheService = cacheService;
     }
 
-    public IList<Course> Courses { get; set; } = new List<Course>();
+    public IList<CourseCardViewModel> CourseCards { get; private set; } = new List<CourseCardViewModel>();
 
     [BindProperty(SupportsGet = true)]
     public int PageNumber { get; set; } = 1;
@@ -91,7 +93,7 @@ public class IndexModel : PageModel
 
         TotalPages = cacheEntry.TotalPages;
         TotalCount = cacheEntry.TotalCount;
-        Courses = cacheEntry.Courses.ToList();
+        CourseCards = (await BuildCourseCardViewModelsAsync(cacheEntry.Courses)).ToList();
     }
 
     public async Task<IActionResult> OnGetCoursesAsync()
@@ -102,7 +104,8 @@ public class IndexModel : PageModel
         var cacheKey = BuildCourseListCacheKey(filterContext);
         var cacheEntry = await LoadCoursesAsync(filterContext, cacheKey);
 
-        var courseSummaries = cacheEntry.Courses
+        var courseCards = await BuildCourseCardViewModelsAsync(cacheEntry.Courses);
+        var courseSummaries = courseCards
             .Select(ToCourseSummary)
             .ToList();
 
@@ -358,32 +361,101 @@ public class IndexModel : PageModel
         return $"page={filterContext.PageNumber}|search={searchKey}|norms={normsKey}|cities={citiesKey}|levels={levelsKey}|types={typesKey}|minPrice={minKey}|maxPrice={maxKey}";
     }
 
-    private CourseSummary ToCourseSummary(Course course)
+    private async Task<IReadOnlyList<CourseCardViewModel>> BuildCourseCardViewModelsAsync(IEnumerable<Course> courses)
     {
+        var courseList = courses.ToList();
+        var ids = courseList.Select(c => c.Id).ToList();
+        var upcomingTerms = await LoadUpcomingTermsAsync(ids);
+        var wishlisted = await LoadWishlistedCourseIdsAsync(ids);
         var culture = CultureInfo.CurrentCulture;
-        var dateDisplay = course.Date.ToString("d", culture);
-        var priceDisplay = course.Price.ToString("C", culture);
-        var durationDisplay = string.Format(culture, "{0} min", course.Duration);
 
-        var detailsUrl = Url.Page("/Courses/Details", new { id = course.Id }) ?? $"/Courses/Details/{course.Id}";
-        var addToCartUrl = Url.Page("/Courses/Index", pageHandler: "AddToCart") ?? "/Courses/Index?handler=AddToCart";
+        return courseList
+            .Select(course =>
+            {
+                upcomingTerms.TryGetValue(course.Id, out var term);
+                return CourseCardViewModelFactory.Create(course, term, wishlisted, Url, culture);
+            })
+            .ToList();
+    }
 
+    private CourseSummary ToCourseSummary(CourseCardViewModel card)
+    {
         return new CourseSummary(
-            course.Id,
-            course.Title,
-            course.Description,
-            course.Level.ToString(),
-            course.Mode.ToString(),
-            course.Type.ToString(),
-            course.Duration,
-            durationDisplay,
-            dateDisplay,
-            course.Price,
-            priceDisplay,
-            course.CoverImageUrl,
-            course.PopoverHtml,
-            detailsUrl,
-            addToCartUrl);
+            card.Id,
+            card.Title,
+            card.Description,
+            card.Level.ToString(),
+            card.Mode.ToString(),
+            card.Type.ToString(),
+            card.Duration,
+            card.DurationDisplay,
+            card.DateDisplay,
+            card.Price,
+            card.PriceDisplay,
+            card.CoverImageUrl,
+            card.PopoverHtml,
+            card.DetailsUrl,
+            card.AddToCartUrl,
+            card.IsoCertification,
+            card.IsoIcon,
+            card.OccupancyPercent,
+            card.Capacity,
+            card.SeatsTaken,
+            card.HasCertificate,
+            card.CertificateLabel,
+            card.PreviewText,
+            card.IsWishlisted,
+            card.StartDate?.ToString("o"));
+    }
+
+    private async Task<Dictionary<int, CourseTerm?>> LoadUpcomingTermsAsync(IEnumerable<int> courseIds)
+    {
+        var ids = courseIds.Distinct().ToList();
+        if (ids.Count == 0)
+        {
+            return new Dictionary<int, CourseTerm?>();
+        }
+
+        var nowUtc = DateTime.UtcNow;
+        var terms = await _context.CourseTerms
+            .AsNoTracking()
+            .Where(t => ids.Contains(t.CourseId) && t.IsActive && t.StartUtc >= nowUtc)
+            .OrderBy(t => t.StartUtc)
+            .ToListAsync();
+
+        var result = new Dictionary<int, CourseTerm?>();
+        foreach (var term in terms)
+        {
+            if (!result.ContainsKey(term.CourseId))
+            {
+                result[term.CourseId] = term;
+            }
+        }
+
+        return result;
+    }
+
+    private async Task<HashSet<int>> LoadWishlistedCourseIdsAsync(IEnumerable<int> courseIds)
+    {
+        var ids = courseIds.Distinct().ToList();
+        if (ids.Count == 0 || User.Identity?.IsAuthenticated != true)
+        {
+            return new HashSet<int>();
+        }
+
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrEmpty(userId))
+        {
+            return new HashSet<int>();
+        }
+
+        var wishlisted = await _context.WishlistItems
+            .AsNoTracking()
+            .Where(w => w.UserId == userId && ids.Contains(w.CourseId))
+            .Select(w => w.CourseId)
+            .ToListAsync();
+
+        return wishlisted.ToHashSet();
     }
 
     private record CourseFilterContext(
@@ -424,7 +496,17 @@ public class IndexModel : PageModel
         string? CoverImageUrl,
         string? PopoverHtml,
         string DetailsUrl,
-        string AddToCartUrl);
+        string AddToCartUrl,
+        string? IsoCertification,
+        string IsoIcon,
+        int OccupancyPercent,
+        int? Capacity,
+        int? SeatsTaken,
+        bool HasCertificate,
+        string? CertificateLabel,
+        string PreviewText,
+        bool IsWishlisted,
+        string? StartDateIso);
 
     public async Task<IActionResult> OnPostAddToCartAsync(int courseId)
     {

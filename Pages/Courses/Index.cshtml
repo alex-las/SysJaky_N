@@ -47,13 +47,13 @@
     </aside>
     <main class="col-lg-9">
         <div id="coursesGrid" class="courses-grid">
-            @foreach (var c in Model.Courses)
+            @foreach (var c in Model.CourseCards)
             {
-                @await Html.PartialAsync("/Pages/Shared/Components/_CourseCard.cshtml", c)
+                @await Html.PartialAsync("/Pages/Shared/_CourseCard.cshtml", c)
             }
         </div>
 
-        <div id="noCourses" class="alert alert-info @(Model.Courses.Count == 0 ? string.Empty : "d-none")" role="status">@Localizer["NoCoursesFound"]</div>
+        <div id="noCourses" class="alert alert-info @(Model.CourseCards.Count == 0 ? string.Empty : "d-none")" role="status">@Localizer["NoCoursesFound"]</div>
 
         <nav class="mt-3 @(Model.TotalPages > 1 ? string.Empty : "d-none")" aria-label='@Localizer["PaginationLabel"]' id="coursePagination">
             <ul class="pagination mb-0">
@@ -102,7 +102,7 @@
             minPrice = Model.MinPrice ?? Model.PriceMinimum,
             maxPrice = Model.MaxPrice ?? Model.PriceMaximum,
             hasFilters = Model.HasActiveFilters,
-            courses = Model.Courses.Select(c => new
+            courses = Model.CourseCards.Select(c => new
             {
                 id = c.Id,
                 title = c.Title,
@@ -111,14 +111,24 @@
                 mode = c.Mode.ToString(),
                 type = c.Type.ToString(),
                 duration = c.Duration,
-                durationDisplay = string.Format(culture, "{0} min", c.Duration),
-                dateDisplay = c.Date.ToString("d", culture),
+                durationDisplay = c.DurationDisplay,
+                dateDisplay = c.DateDisplay,
                 price = c.Price,
-                priceDisplay = c.Price.ToString("C", culture),
+                priceDisplay = c.PriceDisplay,
                 coverImageUrl = c.CoverImageUrl,
                 popoverHtml = c.PopoverHtml,
-                detailsUrl = Url.Page("/Courses/Details", new { id = c.Id }) ?? $"/Courses/Details/{c.Id}",
-                addToCartUrl = Url.Page("/Courses/Index", pageHandler: "AddToCart") ?? "/Courses/Index?handler=AddToCart"
+                detailsUrl = c.DetailsUrl,
+                addToCartUrl = c.AddToCartUrl,
+                isoCertification = c.IsoCertification,
+                isoIcon = c.IsoIcon,
+                occupancyPercent = c.OccupancyPercent,
+                capacity = c.Capacity,
+                seatsTaken = c.SeatsTaken,
+                hasCertificate = c.HasCertificate,
+                certificateLabel = c.CertificateLabel,
+                previewText = c.PreviewText,
+                isWishlisted = c.IsWishlisted,
+                startDateIso = c.StartDate?.ToString("o")
             })
         },
         filters = new
@@ -150,7 +160,37 @@
             fetchError = Localizer["FetchError"].Value ?? "Nepodařilo se načíst kurzy.",
             pageStatusTemplate = Localizer["PageStatus", "{0}", "{1}"].Value ?? "{0}/{1}",
             removeLabel = Localizer["RemoveFilter"].Value ?? "Odebrat filtr",
-            currencySymbol = culture.NumberFormat.CurrencySymbol
+            currencySymbol = culture.NumberFormat.CurrencySymbol,
+            countdownFallback = Localizer["CountdownFallback"].Value ?? "Začíná brzy",
+            startsInDays = Localizer["StartsInDays", "{0}"].Value ?? "Začíná za {0} dní",
+            startsTomorrow = Localizer["StartsTomorrow"].Value ?? "Začíná zítra",
+            startsToday = Localizer["StartsToday"].Value ?? "Začíná dnes",
+            alreadyStarted = Localizer["AlreadyStarted"].Value ?? "Probíhá",
+            occupancyDetailed = Localizer["OccupancyDetailed", "{0}", "{1}", "{2}"].Value ?? "{0}/{1} obsazeno ({2} %)",
+            occupancySimple = Localizer["OccupancySimple", "{0}"].Value ?? "{0}% obsazeno",
+            quickPreview = Localizer["QuickPreview"].Value ?? "Rychlý náhled",
+            courseAttributes = Localizer["CourseAttributes"].Value ?? "Parametry kurzu",
+            typeLabel = Localizer["TypeLabel"].Value ?? "Forma",
+            levelLabel = Localizer["LevelLabel"].Value ?? "Úroveň",
+            certificateLabel = Localizer["CertificateLabel"].Value ?? "Certifikát",
+            durationLabel = Localizer["DurationLabel"].Value ?? "Délka",
+            certificateYes = Localizer["CertificateYes"].Value ?? "Certifikát v ceně",
+            certificateNo = Localizer["CertificateNo"].Value ?? "Bez certifikátu",
+            addToWishlist = Localizer["AddToWishlist", "{0}"].Value ?? "Přidat do wishlistu {0}",
+            removeFromWishlist = Localizer["RemoveFromWishlist", "{0}"].Value ?? "Odebrat z wishlistu {0}",
+            isoBadge = Localizer["IsoBadge", "{0}"].Value ?? "Certifikace {0}",
+            typeLabels = new
+            {
+                Online = Localizer["Type_Online"].Value ?? "Online",
+                InPerson = Localizer["Type_InPerson"].Value ?? "Prezenčně",
+                Hybrid = Localizer["Type_Hybrid"].Value ?? "Hybrid"
+            },
+            levelLabels = new
+            {
+                Beginner = Localizer["Level_Beginner"].Value ?? "Začátečník",
+                Intermediate = Localizer["Level_Intermediate"].Value ?? "Středně pokročilý",
+                Advanced = Localizer["Level_Advanced"].Value ?? "Pokročilý"
+            }
         },
         culture = new
         {

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="CourseImageAlt" xml:space="preserve">
+    <value>Obrázek kurzu {0}</value>
+  </data>
+  <data name="Compare" xml:space="preserve">
+    <value>Porovnat</value>
+  </data>
+  <data name="Details" xml:space="preserve">
+    <value>Detail</value>
+  </data>
+  <data name="Enroll" xml:space="preserve">
+    <value>Přihlásit se</value>
+  </data>
+  <data name="EnrollAriaLabel" xml:space="preserve">
+    <value>Přihlásit se na {0}</value>
+  </data>
+  <data name="CountdownFallback" xml:space="preserve">
+    <value>Začíná brzy</value>
+  </data>
+  <data name="StartsInDays" xml:space="preserve">
+    <value>Začíná za {0} dní</value>
+  </data>
+  <data name="StartsTomorrow" xml:space="preserve">
+    <value>Začíná zítra</value>
+  </data>
+  <data name="StartsToday" xml:space="preserve">
+    <value>Začíná dnes</value>
+  </data>
+  <data name="AlreadyStarted" xml:space="preserve">
+    <value>Probíhá</value>
+  </data>
+  <data name="OccupancyDetailed" xml:space="preserve">
+    <value>{0}/{1} obsazeno ({2} %)</value>
+  </data>
+  <data name="OccupancySimple" xml:space="preserve">
+    <value>{0}% obsazeno</value>
+  </data>
+  <data name="QuickPreview" xml:space="preserve">
+    <value>Rychlý náhled</value>
+  </data>
+  <data name="CourseAttributes" xml:space="preserve">
+    <value>Parametry kurzu</value>
+  </data>
+  <data name="TypeLabel" xml:space="preserve">
+    <value>Forma</value>
+  </data>
+  <data name="LevelLabel" xml:space="preserve">
+    <value>Úroveň</value>
+  </data>
+  <data name="CertificateLabel" xml:space="preserve">
+    <value>Certifikát</value>
+  </data>
+  <data name="DurationLabel" xml:space="preserve">
+    <value>Délka</value>
+  </data>
+  <data name="CertificateYes" xml:space="preserve">
+    <value>Certifikát v ceně</value>
+  </data>
+  <data name="CertificateNo" xml:space="preserve">
+    <value>Bez certifikátu</value>
+  </data>
+  <data name="IsoBadge" xml:space="preserve">
+    <value>Certifikace {0}</value>
+  </data>
+  <data name="AddToWishlist" xml:space="preserve">
+    <value>Přidat do wishlistu {0}</value>
+  </data>
+  <data name="RemoveFromWishlist" xml:space="preserve">
+    <value>Odebrat z wishlistu {0}</value>
+  </data>
+  <data name="Type_Online" xml:space="preserve">
+    <value>Online</value>
+  </data>
+  <data name="Type_InPerson" xml:space="preserve">
+    <value>Prezenčně</value>
+  </data>
+  <data name="Type_Hybrid" xml:space="preserve">
+    <value>Hybrid</value>
+  </data>
+  <data name="Level_Beginner" xml:space="preserve">
+    <value>Začátečník</value>
+  </data>
+  <data name="Level_Intermediate" xml:space="preserve">
+    <value>Středně pokročilý</value>
+  </data>
+  <data name="Level_Advanced" xml:space="preserve">
+    <value>Pokročilý</value>
+  </data>
+</root>

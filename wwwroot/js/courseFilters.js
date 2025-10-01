@@ -303,64 +303,186 @@ if (!dataElement) {
         });
     }
 
+    function formatCountdownText(startIso) {
+        if (!startIso) {
+            return resources.countdownFallback ?? '';
+        }
+        const target = new Date(startIso);
+        if (Number.isNaN(target.getTime())) {
+            return resources.countdownFallback ?? '';
+        }
+        const today = new Date();
+        const startOfToday = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+        const diffDays = Math.floor((target.getTime() - startOfToday.getTime()) / 86400000);
+        if (diffDays > 1) {
+            return (resources.startsInDays ?? 'Začíná za {0} dní').replace('{0}', diffDays.toString());
+        }
+        if (diffDays === 1) {
+            return resources.startsTomorrow ?? 'Začíná zítra';
+        }
+        if (diffDays === 0) {
+            return resources.startsToday ?? 'Začíná dnes';
+        }
+        if (diffDays < 0) {
+            return resources.alreadyStarted ?? 'Probíhá';
+        }
+        return resources.countdownFallback ?? '';
+    }
+
+    function formatOccupancyText(course) {
+        const percent = Math.max(0, Math.min(100, Number(course.occupancyPercent ?? 0)));
+        const seats = course.seatsTaken;
+        const capacity = course.capacity;
+        if (Number.isFinite(seats) && Number.isFinite(capacity)) {
+            return (resources.occupancyDetailed ?? '{0}/{1} obsazeno ({2}%)')
+                .replace('{0}', Number(seats).toString())
+                .replace('{1}', Number(capacity).toString())
+                .replace('{2}', percent.toString());
+        }
+        return (resources.occupancySimple ?? '{0}% obsazeno').replace('{0}', percent.toString());
+    }
+
+    function resolveTypeLabel(type) {
+        return resources.typeLabels?.[type] ?? type ?? '';
+    }
+
+    function resolveLevelLabel(level) {
+        return resources.levelLabels?.[level] ?? level ?? '';
+    }
+
+    function resolveWishlistLabel(title, isWishlisted) {
+        const template = isWishlisted ? resources.removeFromWishlist ?? '' : resources.addToWishlist ?? '';
+        return template.replace('{0}', title);
+    }
+
+    function getModeIcon(type) {
+        switch (type) {
+            case 'InPerson':
+                return 'bi-people-fill';
+            case 'Hybrid':
+                return 'bi-arrows-repeat';
+            default:
+                return 'bi-wifi';
+        }
+    }
+
+    function getLevelIcon(level) {
+        switch (level) {
+            case 'Beginner':
+                return 'bi-emoji-smile';
+            case 'Intermediate':
+                return 'bi-graph-up';
+            case 'Advanced':
+                return 'bi-mortarboard';
+            default:
+                return 'bi-stars';
+        }
+    }
+
     function createCourseCard(course) {
         const wrapper = document.createElement('div');
         const id = Number(course.id);
         const checkboxId = `cmp_${id}`;
-        const description = escapeHtml(course.description ?? '');
         const title = escapeHtml(course.title ?? '');
-        const level = escapeHtml(course.level ?? '');
-        const mode = escapeHtml(course.mode ?? '');
-        const type = escapeHtml(course.type ?? '');
+        const description = escapeHtml(course.description ?? '');
+        const level = String(course.level ?? '');
+        const type = String(course.type ?? '');
         const durationDisplay = escapeHtml(course.durationDisplay ?? '');
         const dateDisplay = escapeHtml(course.dateDisplay ?? '');
         const priceDisplay = escapeHtml(course.priceDisplay ?? '');
         const detailsUrl = escapeAttribute(course.detailsUrl ?? `#/course/${id}`);
         const addToCartUrl = escapeAttribute(course.addToCartUrl ?? '/Courses/Index?handler=AddToCart');
         const coverImageUrl = course.coverImageUrl ? escapeAttribute(course.coverImageUrl) : null;
-        const popoverHtml = course.popoverHtml ? escapeAttribute(course.popoverHtml) : null;
-
+        const previewText = escapeAttribute(course.previewText ?? course.description ?? '');
+        const countdownText = escapeHtml(formatCountdownText(course.startDateIso));
+        const occupancyText = escapeHtml(formatOccupancyText(course));
+        const occupancyPercent = Math.max(0, Math.min(100, Number(course.occupancyPercent ?? 0)));
+        const typeLabel = escapeHtml(resolveTypeLabel(type));
+        const levelLabel = escapeHtml(resolveLevelLabel(level));
+        const certificateLabel = escapeHtml(course.hasCertificate ? (course.certificateLabel ?? resources.certificateYes ?? '') : (resources.certificateNo ?? ''));
+        const certificateIcon = course.hasCertificate ? 'bi-award-fill' : 'bi-award';
+        const modeIcon = getModeIcon(type);
+        const levelIcon = getLevelIcon(level);
+        const wishlistPressed = Boolean(course.isWishlisted);
+        const wishlistLabelRaw = resolveWishlistLabel(course.title ?? '', wishlistPressed);
+        const wishlistLabel = escapeHtml(wishlistLabelRaw);
+        const wishlistClass = wishlistPressed ? ' course-card__wishlist is-active' : ' course-card__wishlist';
+        const wishlistAddLabel = escapeAttribute(resolveWishlistLabel(course.title ?? '', false));
+        const wishlistRemoveLabel = escapeAttribute(resolveWishlistLabel(course.title ?? '', true));
+        const isoCertification = course.isoCertification ? escapeHtml(course.isoCertification) : '';
+        const isoLabelTemplate = resources.isoBadge ?? 'Certifikace {0}';
+        const isoAria = isoCertification ? escapeAttribute(isoLabelTemplate.replace('{0}', isoCertification)) : '';
+        const isoIcon = course.isoIcon ? escapeAttribute(course.isoIcon) : 'bi-patch-check';
+        const hasPreview = Boolean(previewText);
         const coverHtml = coverImageUrl
-            ? `<img src="${coverImageUrl}" alt="${title}" class="img-fluid rounded mb-2" loading="lazy" decoding="async">`
+            ? `<img src="${coverImageUrl}" alt="${title}" class="course-card__image is-loading" loading="lazy" decoding="async">`
+            : `<div class="course-card__image-placeholder" aria-hidden="true"><i class="bi bi-image"></i></div>`;
+        const isoHtml = isoCertification
+            ? `<span class="course-card__iso" role="img" aria-label="${isoAria}"><i class="bi ${isoIcon}" aria-hidden="true"></i><span>${isoCertification}</span></span>`
             : '';
-
-        const popoverLink = popoverHtml
-            ? `<a tabindex="0" role="button" class="ms-1 text-decoration-dotted" data-bs-toggle="popover" data-bs-html="true" data-bs-content="${popoverHtml}">
-                    <i class="bi bi-info-circle"></i>
-               </a>`
+        const previewButton = hasPreview
+            ? `<button type="button" class="course-card__preview" data-course-preview="${previewText}" aria-label="${escapeAttribute(resources.quickPreview ?? 'Rychlý náhled')}"><i class="bi bi-eye" aria-hidden="true"></i><span class="visually-hidden">${escapeHtml(resources.quickPreview ?? 'Rychlý náhled')}</span></button>`
             : '';
 
         wrapper.innerHTML = `
-        <div class="feature-card h-100 p-3 d-flex flex-column justify-content-between">
-            <div class="d-flex flex-column gap-2">
+        <div class="course-card card-hover h-100" data-course-card data-course-id="${id}" data-start-date="${escapeAttribute(course.startDateIso ?? '')}">
+            <div class="course-card__media">
                 ${coverHtml}
-                <h3 class="h5 mb-1">${title}</h3>
-                ${description ? `<p class="text-muted small mb-2">${description}</p>` : ''}
-                <div class="d-flex flex-wrap gap-2 align-items-center small">
-                    <span class="badge badge-soft-primary"><i class="bi bi-bar-chart me-1"></i>${level}</span>
-                    <span class="badge badge-soft-primary"><i class="bi bi-laptop me-1"></i>${mode}</span>
-                    <span class="badge badge-soft-accent"><i class="bi bi-geo-alt me-1"></i>${type}</span>
-                    <span class="badge badge-soft-accent"><i class="bi bi-clock me-1"></i>${durationDisplay}</span>
-                </div>
+                ${isoHtml}
+                <button type="button" class="${wishlistClass.trim()}" data-wishlist-button data-course-id="${id}" data-wishlist-add-label="${wishlistAddLabel}" data-wishlist-remove-label="${wishlistRemoveLabel}" aria-pressed="${wishlistPressed}" aria-label="${escapeAttribute(wishlistLabelRaw)}">
+                    <span class="course-card__heart" aria-hidden="true"></span>
+                    <span class="visually-hidden">${wishlistLabel}</span>
+                </button>
             </div>
-            <div class="d-flex justify-content-between align-items-end mt-3">
-                <div class="small text-muted">
-                    <div class="d-flex align-items-center">
-                        <i class="bi bi-calendar2 me-2"></i>
-                        <small class="text-muted">${dateDisplay}${popoverLink}</small>
-                    </div>
-                    <div class="fw-semibold">${priceDisplay}</div>
+            <div class="course-card__body">
+                <div class="course-card__top">
+                    <div class="course-card__countdown" data-countdown role="status" aria-live="polite">${countdownText}</div>
+                    ${previewButton}
                 </div>
-                <div class="d-flex flex-column align-items-end gap-2">
+                <h3 class="course-card__title h5">
+                    <a class="stretched-link" href="${detailsUrl}">${title}</a>
+                </h3>
+                ${description ? `<p class="course-card__description">${description}</p>` : ''}
+                <dl class="course-card__meta" aria-label="${escapeAttribute(resources.courseAttributes ?? '')}">
+                    <div class="course-card__meta-item">
+                        <dt><i class="bi ${modeIcon}" aria-hidden="true"></i><span class="visually-hidden">${escapeHtml(resources.typeLabel ?? '')}</span></dt>
+                        <dd>${typeLabel}</dd>
+                    </div>
+                    <div class="course-card__meta-item">
+                        <dt><i class="bi ${levelIcon}" aria-hidden="true"></i><span class="visually-hidden">${escapeHtml(resources.levelLabel ?? '')}</span></dt>
+                        <dd>${levelLabel}</dd>
+                    </div>
+                    <div class="course-card__meta-item">
+                        <dt><i class="bi ${certificateIcon}" aria-hidden="true"></i><span class="visually-hidden">${escapeHtml(resources.certificateLabel ?? '')}</span></dt>
+                        <dd>${certificateLabel}</dd>
+                    </div>
+                    <div class="course-card__meta-item">
+                        <dt><i class="bi bi-clock" aria-hidden="true"></i><span class="visually-hidden">${escapeHtml(resources.durationLabel ?? '')}</span></dt>
+                        <dd>${durationDisplay}</dd>
+                    </div>
+                </dl>
+            </div>
+            <div class="course-card__footer">
+                <div class="course-card__progress" aria-live="polite">
+                    <div class="progress" role="presentation">
+                        <div class="progress-bar" role="progressbar" style="width:${occupancyPercent}%" aria-valuenow="${occupancyPercent}" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <span class="course-card__progress-text">${occupancyText}</span>
+                </div>
+                <div class="course-card__pricing">
+                    <span class="course-card__price">${priceDisplay}</span>
+                    <span class="course-card__date">${dateDisplay}</span>
+                </div>
+                <div class="course-card__actions">
                     <div class="form-check form-check-inline">
                         <input class="form-check-input cmp-check" type="checkbox" value="${id}" id="${checkboxId}">
                         <label class="form-check-label small" for="${checkboxId}">${resources.compareLabel ?? 'Porovnat'}</label>
                     </div>
-                    <div class="d-flex gap-2">
-                        <a class="btn btn-outline-secondary" href="${detailsUrl}">${resources.detailsLabel ?? 'Detail'}</a>
+                    <div class="course-card__buttons">
+                        <a class="btn btn-outline-secondary btn-sm" href="${detailsUrl}">${resources.detailsLabel ?? 'Detail'}</a>
                         <form method="post" action="${addToCartUrl}" class="d-inline">
                             <input type="hidden" name="courseId" value="${id}">
-                            <button type="submit" class="btn btn-primary">${resources.enrollLabel ?? 'Přihlásit'}</button>
+                            <button type="submit" class="btn btn-primary btn-sm">${resources.enrollLabel ?? 'Přihlásit'}</button>
                         </form>
                     </div>
                 </div>
@@ -370,6 +492,9 @@ if (!dataElement) {
         const card = wrapper.firstElementChild;
         if (card) {
             coursesGrid?.appendChild(card);
+            if (window.SysJaky?.courseCard?.initScope) {
+                window.SysJaky.courseCard.initScope(card);
+            }
         }
     }
 
