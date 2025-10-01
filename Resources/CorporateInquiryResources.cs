@@ -16,10 +16,14 @@ public static class CorporateInquiryResources
 
     private static string GetString(string name) => ResourceManager.GetString(name) ?? string.Empty;
 
+    public static string ServiceTypeLabel => GetString(nameof(ServiceTypeLabel));
     public static string TrainingTypesLabel => GetString(nameof(TrainingTypesLabel));
     public static string ParticipantCountLabel => GetString(nameof(ParticipantCountLabel));
     public static string PreferredDateLabel => GetString(nameof(PreferredDateLabel));
     public static string ModeLabel => GetString(nameof(ModeLabel));
+    public static string TrainingLevelLabel => GetString(nameof(TrainingLevelLabel));
+    public static string LocationLabel => GetString(nameof(LocationLabel));
+    public static string SpecialRequirementsLabel => GetString(nameof(SpecialRequirementsLabel));
     public static string CompanyIdLabel => GetString(nameof(CompanyIdLabel));
     public static string CompanyNameLabel => GetString(nameof(CompanyNameLabel));
     public static string ContactPersonLabel => GetString(nameof(ContactPersonLabel));
