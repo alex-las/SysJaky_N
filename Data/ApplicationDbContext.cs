@@ -36,6 +36,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Instructor> Instructors { get; set; } = default!;
     public DbSet<Lesson> Lessons { get; set; } = default!;
     public DbSet<LessonProgress> LessonProgresses { get; set; } = default!;
+    public DbSet<Testimonial> Testimonials { get; set; } = default!;
 
     public DbSet<Certificate> Certificates { get; set; } = default!;
     public DbSet<Attendance> Attendances { get; set; } = default!;

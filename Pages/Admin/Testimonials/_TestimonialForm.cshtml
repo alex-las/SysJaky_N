@@ -1,0 +1,82 @@
+@model SysJaky_N.Models.Testimonial
+
+<div class="row g-3">
+    <div class="col-md-6">
+        <div class="form-floating">
+            <input asp-for="FullName" class="form-control" placeholder="Jméno a příjmení" />
+            <label asp-for="FullName"></label>
+        </div>
+        <span asp-validation-for="FullName" class="text-danger"></span>
+    </div>
+    <div class="col-md-6">
+        <div class="form-floating">
+            <input asp-for="Company" class="form-control" placeholder="Společnost" />
+            <label asp-for="Company"></label>
+        </div>
+        <span asp-validation-for="Company" class="text-danger"></span>
+    </div>
+    <div class="col-md-6">
+        <div class="form-floating">
+            <input asp-for="Position" class="form-control" placeholder="Pozice" />
+            <label asp-for="Position"></label>
+        </div>
+        <span asp-validation-for="Position" class="text-danger"></span>
+    </div>
+    <div class="col-md-3">
+        <div class="form-floating">
+            <input asp-for="Rating" type="number" min="1" max="5" class="form-control" placeholder="5" />
+            <label asp-for="Rating"></label>
+        </div>
+        <span asp-validation-for="Rating" class="text-danger"></span>
+    </div>
+    <div class="col-md-3 d-flex align-items-center">
+        <div class="form-check form-switch">
+            <input asp-for="IsPublished" class="form-check-input" type="checkbox" role="switch" />
+            <label asp-for="IsPublished" class="form-check-label"></label>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-floating">
+            <input asp-for="PhotoUrl" class="form-control" placeholder="https://" />
+            <label asp-for="PhotoUrl"></label>
+        </div>
+        <div class="form-text">URL fotografie uložené v bezpečném úložišti.</div>
+        <span asp-validation-for="PhotoUrl" class="text-danger"></span>
+    </div>
+    <div class="col-md-6">
+        <div class="form-floating">
+            <input asp-for="PhotoAltText" class="form-control" placeholder="Popis fotografie" />
+            <label asp-for="PhotoAltText"></label>
+        </div>
+        <div class="form-text">Text pro čtečky obrazovky (např. "Portrét Jana Nováka").</div>
+        <span asp-validation-for="PhotoAltText" class="text-danger"></span>
+    </div>
+    <div class="col-12">
+        <label asp-for="Quote" class="form-label"></label>
+        <textarea asp-for="Quote" class="form-control" rows="3"></textarea>
+        <div class="form-text">Maximálně 150 znaků. Osobní údaje uvádějte pouze se souhlasem.</div>
+        <span asp-validation-for="Quote" class="text-danger"></span>
+    </div>
+    <div class="col-md-6">
+        <div class="form-check">
+            <input asp-for="ConsentGranted" class="form-check-input" type="checkbox" />
+            <label asp-for="ConsentGranted" class="form-check-label"></label>
+        </div>
+        <div class="form-text">Potvrďte, že absolvent poskytl doložitelný souhlas se zveřejněním reference.</div>
+        <span asp-validation-for="ConsentGranted" class="text-danger"></span>
+    </div>
+    <div class="col-md-6">
+        @if (Model.ConsentGranted && Model.ConsentGrantedAtUtc.HasValue)
+        {
+            <div class="alert alert-success mb-0" role="status">
+                Souhlas uložen: @Model.ConsentGrantedAtUtc.Value.ToString("g") UTC
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-warning mb-0" role="note">
+                Souhlas zatím není uložen. Bez něj nebude reference zveřejněna.
+            </div>
+        }
+    </div>
+</div>

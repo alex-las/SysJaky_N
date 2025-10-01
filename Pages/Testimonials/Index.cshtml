@@ -1,0 +1,70 @@
+@page
+@model SysJaky_N.Pages.Testimonials.IndexModel
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+@{
+    ViewData["Title"] = Localizer["Title"];
+}
+
+<section class="container-xl py-5">
+    <div class="mb-4 text-center">
+        <h1 class="display-6 fw-semibold">@Localizer["Heading"]</h1>
+        <p class="lead text-muted">@Localizer["Intro"]</p>
+    </div>
+
+    <div class="row g-4">
+        @if (Model.Testimonials.Any())
+        {
+            foreach (var testimonial in Model.Testimonials)
+            {
+                var displayInitial = string.IsNullOrWhiteSpace(testimonial.FullName)
+                    ? "?"
+                    : testimonial.FullName.Trim()[0].ToString().ToUpperInvariant();
+                <div class="col-12 col-md-6">
+                    <article class="feature-card h-100 p-4">
+                        <div class="d-flex align-items-center gap-3 mb-3">
+                            @if (!string.IsNullOrWhiteSpace(testimonial.PhotoUrl))
+                            {
+                                <img src="@testimonial.PhotoUrl" alt="@(!string.IsNullOrWhiteSpace(testimonial.PhotoAltText) ? testimonial.PhotoAltText : testimonial.FullName)" class="rounded-circle" style="width: 64px; height: 64px; object-fit: cover;" />
+                            }
+                            else
+                            {
+                                <div class="rounded-circle bg-light border d-flex align-items-center justify-content-center" style="width: 64px; height: 64px;">
+                                    <span class="fw-semibold text-primary">@displayInitial</span>
+                                </div>
+                            }
+                            <div>
+                                <div class="fw-semibold">@testimonial.FullName</div>
+                                <div class="text-muted small">@testimonial.Position, @testimonial.Company</div>
+                                <div class="text-warning small" aria-hidden="true">
+                                    @for (var star = 0; star < 5; star++)
+                                    {
+                                        if (star < testimonial.Rating)
+                                        {
+                                            <i class="bi bi-star-fill"></i>
+                                        }
+                                        else
+                                        {
+                                            <i class="bi bi-star"></i>
+                                        }
+                                    }
+                                </div>
+                                <span class="visually-hidden">@Localizer["RatingLabel", testimonial.Rating]</span>
+                            </div>
+                        </div>
+                        <blockquote class="blockquote mb-0">
+                            <p class="fs-5">“@testimonial.Quote”</p>
+                        </blockquote>
+                    </article>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="col-12">
+                <div class="alert alert-info text-center" role="status">
+                    @Localizer["Empty"]
+                </div>
+            </div>
+        }
+    </div>
+</section>

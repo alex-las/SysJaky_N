@@ -1,0 +1,61 @@
+@page "{id:int}"
+@model SysJaky_N.Pages.Admin.Testimonials.DetailsModel
+@{
+    ViewData["Title"] = "Detail reference";
+    Layout = "/Pages/Admin/_Layout.cshtml";
+}
+
+<h1 class="h3 mb-4">Detail reference</h1>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <dl class="row mb-0">
+            <dt class="col-sm-3">Jméno</dt>
+            <dd class="col-sm-9">@Model.Testimonial.FullName</dd>
+
+            <dt class="col-sm-3">Pozice</dt>
+            <dd class="col-sm-9">@Model.Testimonial.Position</dd>
+
+            <dt class="col-sm-3">Společnost</dt>
+            <dd class="col-sm-9">@Model.Testimonial.Company</dd>
+
+            <dt class="col-sm-3">Hodnocení</dt>
+            <dd class="col-sm-9">@($"{Model.Testimonial.Rating}/5")</dd>
+
+            <dt class="col-sm-3">Citace</dt>
+            <dd class="col-sm-9"><q>@Model.Testimonial.Quote</q></dd>
+
+            <dt class="col-sm-3">Publikace</dt>
+            <dd class="col-sm-9">@(Model.Testimonial.IsPublished ? "Zveřejněno" : "Nepublikováno")</dd>
+
+            <dt class="col-sm-3">Souhlas</dt>
+            <dd class="col-sm-9">
+                @(Model.Testimonial.ConsentGranted ? "Udělen" : "Chybí")
+                @if (Model.Testimonial.ConsentGrantedAtUtc.HasValue)
+                {
+                    <span class="text-muted small d-block">@Model.Testimonial.ConsentGrantedAtUtc.Value.ToString("g") UTC</span>
+                }
+            </dd>
+
+            <dt class="col-sm-3">Foto</dt>
+            <dd class="col-sm-9">
+                @if (!string.IsNullOrWhiteSpace(Model.Testimonial.PhotoUrl))
+                {
+                    <a href="@Model.Testimonial.PhotoUrl" target="_blank" rel="noopener">Otevřít fotografii</a>
+                }
+                else
+                {
+                    <span class="text-muted">Nezadáno</span>
+                }
+            </dd>
+
+            <dt class="col-sm-3">Alt text</dt>
+            <dd class="col-sm-9">@(!string.IsNullOrWhiteSpace(Model.Testimonial.PhotoAltText) ? Model.Testimonial.PhotoAltText : "Nezadáno")</dd>
+        </dl>
+    </div>
+</div>
+
+<div class="mt-4 d-flex gap-2">
+    <a class="btn btn-outline-primary" asp-page="Edit" asp-route-id="@Model.Testimonial.Id">Upravit</a>
+    <a class="btn btn-outline-secondary" asp-page="Index">Zpět na přehled</a>
+</div>

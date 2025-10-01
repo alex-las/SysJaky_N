@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SysJaky_N.Data;
 
@@ -10,9 +11,11 @@ using SysJaky_N.Data;
 namespace SysJaky_N.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+[Migration("20251010120000_AddTestimonials")]
+partial class AddTestimonials
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -816,45 +819,6 @@ namespace SysJaky_N.Migrations
                     b.HasIndex("Timestamp");
 
                     b.ToTable("LogEntries");
-                });
-
-            modelBuilder.Entity("SysJaky_N.Models.NewsletterSubscriber", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<bool>("ConsentGiven")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<DateTime?>("ConsentGivenAtUtc")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("ConfirmationToken")
-                        .IsRequired()
-                        .HasMaxLength(64)
-                        .HasColumnType("varchar(64)");
-
-                    b.Property<DateTime?>("ConfirmedAtUtc")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasMaxLength(320)
-                        .HasColumnType("varchar(320)");
-
-                    b.Property<DateTime>("SubscribedAtUtc")
-                        .HasColumnType("datetime(6)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ConfirmationToken")
-                        .IsUnique();
-
-                    b.HasIndex("Email")
-                        .IsUnique();
-
-                    b.ToTable("NewsletterSubscribers");
                 });
 
             modelBuilder.Entity("SysJaky_N.Models.Order", b =>

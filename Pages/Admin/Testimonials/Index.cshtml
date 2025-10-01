@@ -1,0 +1,83 @@
+@page
+@model SysJaky_N.Pages.Admin.Testimonials.IndexModel
+@{
+    ViewData["Title"] = "Reference";
+    Layout = "/Pages/Admin/_Layout.cshtml";
+}
+
+<div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3 mb-4">
+    <div>
+        <h1 class="h3 mb-1">Reference</h1>
+        <p class="text-muted mb-0">Spravujte doporučení absolventů se zaznamenaným souhlasem.</p>
+    </div>
+    <a class="btn btn-primary" asp-page="Create">
+        <i class="bi bi-plus-lg me-1" aria-hidden="true"></i>
+        Přidat referenci
+    </a>
+</div>
+
+<div class="table-responsive shadow-sm rounded-3">
+    <table class="table align-middle mb-0">
+        <thead class="table-light">
+            <tr>
+                <th scope="col">Jméno</th>
+                <th scope="col" class="text-nowrap">Pozice</th>
+                <th scope="col">Společnost</th>
+                <th scope="col" class="text-center">Hodnocení</th>
+                <th scope="col" class="text-center">Publikováno</th>
+                <th scope="col" class="text-center">Souhlas</th>
+                <th scope="col" class="text-end">Akce</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Testimonials.Any())
+            {
+                foreach (var item in Model.Testimonials)
+                {
+                    <tr>
+                        <td>
+                            <div class="fw-semibold">@item.FullName</div>
+                            <div class="small text-muted text-wrap">@item.Quote</div>
+                        </td>
+                        <td>@item.Position</td>
+                        <td>@item.Company</td>
+                        <td class="text-center">@($"{item.Rating}/5")</td>
+                        <td class="text-center">
+                            @if (item.IsPublished)
+                            {
+                                <span class="badge bg-success">Ano</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">Ne</span>
+                            }
+                        </td>
+                        <td class="text-center">
+                            @if (item.ConsentGranted)
+                            {
+                                <span class="badge bg-success">Udělil</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-warning text-dark">Chybí</span>
+                            }
+                        </td>
+                        <td class="text-end">
+                            <div class="btn-group" role="group" aria-label="Akce">
+                                <a class="btn btn-sm btn-outline-secondary" asp-page="Details" asp-route-id="@item.Id">Detail</a>
+                                <a class="btn btn-sm btn-outline-primary" asp-page="Edit" asp-route-id="@item.Id">Upravit</a>
+                                <a class="btn btn-sm btn-outline-danger" asp-page="Delete" asp-route-id="@item.Id">Smazat</a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="7" class="text-center py-4 text-muted">Zatím nejsou přidány žádné reference.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
