@@ -7,8 +7,28 @@
 
 <section class="py-5 gradient-hero text-white text-center rounded-4 mb-4 hero-section">
     <div class="container-xl position-relative">
-        <h1 class="display-5 fw-bold mb-2">@Localizer["HeroHeadingPrefix"] <span class="underline-accent"><span class="typewriter" data-typewriter-text="@Localizer["HeroHeadingAccent"]">@Localizer["HeroHeadingAccent"]</span></span></h1>
-        <p class="lead mb-4 opacity-75">@Localizer["HeroSubheading"]</p>
+        <h1 class="display-5 fw-bold mb-3">@Localizer["HeroMainHeading"]</h1>
+        <p class="lead mb-4 opacity-75 mx-auto" style="max-width: 56rem;">@Localizer["HeroSubheading"]</p>
+
+        <ul class="list-unstyled d-flex flex-column flex-lg-row justify-content-center align-items-lg-center gap-3 mb-4">
+            <li class="d-flex align-items-center gap-2">
+                <span class="badge rounded-pill text-bg-light text-primary-emphasis"><i class="bi bi-patch-check-fill"></i></span>
+                <span class="fw-semibold">@Localizer["HeroUSP1"]</span>
+            </li>
+            <li class="d-flex align-items-center gap-2">
+                <span class="badge rounded-pill text-bg-light text-primary-emphasis"><i class="bi bi-award-fill"></i></span>
+                <span class="fw-semibold">@Localizer["HeroUSP2"]</span>
+            </li>
+            <li class="d-flex align-items-center gap-2">
+                <span class="badge rounded-pill text-bg-light text-primary-emphasis"><i class="bi bi-people-fill"></i></span>
+                <span class="fw-semibold">@Localizer["HeroUSP3"]</span>
+            </li>
+        </ul>
+
+        <div class="d-flex flex-column flex-sm-row justify-content-center gap-2 mb-4">
+            <a href="/Courses/Index" class="btn btn-light fw-semibold px-4">@Localizer["HeroPrimaryCTA"]</a>
+            <a href="/CorporateInquiry" class="btn btn-outline-light fw-semibold px-4">@Localizer["HeroSecondaryCTA"]</a>
+        </div>
 
         <form method="get" action="/Courses/Index" class="row g-2 justify-content-center" id="heroForm" role="search" aria-label="@Localizer["HeroSearchAriaLabel"]">
             <div class="col-12 col-md-3">
