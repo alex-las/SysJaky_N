@@ -13,32 +13,28 @@ namespace SysJaky_N.Migrations
             migrationBuilder.AddColumn<string>(
                 name: "CaseStudies",
                 table: "Courses",
-                type: "varchar(2000)",
-                maxLength: 2000,
+                type: "longtext",
                 nullable: true)
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.AddColumn<string>(
                 name: "CertificateInfo",
                 table: "Courses",
-                type: "varchar(2000)",
-                maxLength: 2000,
+                type: "longtext",
                 nullable: true)
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.AddColumn<string>(
                 name: "Certifications",
                 table: "Courses",
-                type: "varchar(2000)",
-                maxLength: 2000,
+                type: "longtext",
                 nullable: true)
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.AddColumn<string>(
                 name: "CourseProgram",
                 table: "Courses",
-                type: "varchar(4000)",
-                maxLength: 4000,
+                type: "longtext",
                 nullable: true)
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -61,16 +57,14 @@ namespace SysJaky_N.Migrations
             migrationBuilder.AddColumn<string>(
                 name: "FollowUpCourses",
                 table: "Courses",
-                type: "varchar(2000)",
-                maxLength: 2000,
+                type: "longtext",
                 nullable: true)
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.AddColumn<string>(
                 name: "InstructorBio",
                 table: "Courses",
-                type: "varchar(2000)",
-                maxLength: 2000,
+                type: "longtext",
                 nullable: true)
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -93,16 +87,14 @@ namespace SysJaky_N.Migrations
             migrationBuilder.AddColumn<string>(
                 name: "LearningOutcomes",
                 table: "Courses",
-                type: "varchar(2000)",
-                maxLength: 2000,
+                type: "longtext",
                 nullable: true)
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.AddColumn<string>(
                 name: "OrganizationalNotes",
                 table: "Courses",
-                type: "varchar(2000)",
-                maxLength: 2000,
+                type: "longtext",
                 nullable: true)
                 .Annotation("MySql:CharSet", "utf8mb4");
 

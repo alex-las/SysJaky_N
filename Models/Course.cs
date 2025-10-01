@@ -1,6 +1,7 @@
 namespace SysJaky_N.Models;
 
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 public class Course
 {
@@ -51,30 +52,38 @@ public class Course
     public string? TargetAudience { get; set; }
 
     [StringLength(2000)]
+    [Column(TypeName = "longtext")]
     public string? LearningOutcomes { get; set; }
 
     [StringLength(2000)]
+    [Column(TypeName = "longtext")]
     public string? CaseStudies { get; set; }
 
     [StringLength(2000)]
+    [Column(TypeName = "longtext")]
     public string? Certifications { get; set; }
 
     [StringLength(4000)]
+    [Column(TypeName = "longtext")]
     public string? CourseProgram { get; set; }
 
     [StringLength(200)]
     public string? InstructorName { get; set; }
 
     [StringLength(2000)]
+    [Column(TypeName = "longtext")]
     public string? InstructorBio { get; set; }
 
     [StringLength(2000)]
+    [Column(TypeName = "longtext")]
     public string? OrganizationalNotes { get; set; }
 
     [StringLength(2000)]
+    [Column(TypeName = "longtext")]
     public string? FollowUpCourses { get; set; }
 
     [StringLength(2000)]
+    [Column(TypeName = "longtext")]
     public string? CertificateInfo { get; set; }
 
 
