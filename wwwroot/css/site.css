@@ -201,6 +201,140 @@ button:focus-visible {
   color: var(--neutral-900);
 }
 
+.faq {
+  background-color: var(--neutral-100);
+  border-radius: 1.5rem;
+  box-shadow: var(--shadow-soft);
+  padding: clamp(1.5rem, 2.5vw, 2.75rem);
+  display: grid;
+  gap: 1.5rem;
+}
+
+.faq-header {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.faq-title {
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 700;
+  color: var(--neutral-900);
+}
+
+.faq-subtitle {
+  margin-bottom: 0;
+  color: var(--neutral-500);
+  font-size: 1rem;
+}
+
+.faq-search .input-group-text {
+  background: transparent;
+  border-right: 0;
+  color: var(--neutral-500);
+}
+
+.faq-search .form-control {
+  border-left: 0;
+  padding-block: 0.65rem;
+}
+
+.faq-search .form-control:focus {
+  box-shadow: none;
+}
+
+.faq-categories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.faq-category {
+  border: 1px solid var(--neutral-300);
+  background-color: transparent;
+  color: var(--neutral-500);
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.faq-category:hover,
+.faq-category:focus-visible {
+  background-color: var(--primary-50);
+  color: var(--primary);
+  border-color: var(--primary);
+}
+
+.faq-category.active {
+  background: linear-gradient(120deg, var(--primary) 0%, var(--primary-dark) 100%);
+  color: var(--neutral-100);
+  border-color: transparent;
+  box-shadow: 0 12px 24px rgba(11, 123, 179, 0.25);
+}
+
+.faq-accordion .accordion-item {
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 1rem;
+  overflow: hidden;
+  background-color: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 12px 40px rgba(15, 118, 194, 0.08);
+}
+
+.faq-accordion .accordion-item + .accordion-item {
+  margin-top: 1rem;
+}
+
+.faq-accordion .accordion-button {
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 1rem 1.25rem;
+  color: var(--neutral-700);
+  background-color: transparent;
+}
+
+.faq-accordion .accordion-button::after {
+  filter: invert(27%) sepia(51%) saturate(700%) hue-rotate(158deg) brightness(95%) contrast(94%);
+}
+
+.faq-accordion .accordion-button:not(.collapsed) {
+  color: var(--primary);
+  background-color: rgba(11, 123, 179, 0.08);
+  box-shadow: inset 0 -1px 0 rgba(148, 163, 184, 0.35);
+}
+
+.faq-accordion .accordion-body {
+  padding: 0 1.25rem 1.25rem;
+  color: var(--neutral-500);
+  line-height: 1.6;
+}
+
+.faq-empty-message {
+  margin: 0;
+  padding: 1rem 1.25rem;
+  border-radius: 0.75rem;
+  background-color: rgba(11, 123, 179, 0.12);
+  color: var(--primary-dark);
+  font-weight: 600;
+}
+
+.faq--empty .faq-accordion {
+  display: none;
+}
+
+@media (max-width: 575.98px) {
+  .faq {
+    padding: 1.25rem;
+  }
+
+  .faq-accordion .accordion-button {
+    padding: 0.9rem 1rem;
+  }
+
+  .faq-accordion .accordion-body {
+    padding: 0 1rem 1rem;
+  }
+}
+
 .chatbot {
   position: fixed;
   bottom: 2rem;
