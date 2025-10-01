@@ -21,10 +21,15 @@ using SysJaky_N.Middleware;
 using RazorLight;
 using Microsoft.Extensions.Hosting;
 using System.IO;
+using System.IO.Compression;
 using System.Security.Claims;
 using OfficeOpenXml;
 using Microsoft.Extensions.Logging.Abstractions; // kvůli NullLoggerFactory
 using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.Net.Http.Headers;
+using Serilog.Extensions.Logging;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
@@ -130,6 +135,28 @@ try
     builder.Services.AddDistributedMemoryCache();
     builder.Services.AddSession();
     builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+    builder.Services.AddResponseCompression(options =>
+    {
+        options.EnableForHttps = true;
+        options.Providers.Clear();
+        options.Providers.Add<GzipCompressionProvider>();
+        options.Providers.Add<BrotliCompressionProvider>();
+        options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[]
+        {
+            "text/css",
+            "application/javascript",
+            "application/json",
+            "image/svg+xml"
+        });
+    });
+    builder.Services.Configure<BrotliCompressionProviderOptions>(options =>
+    {
+        options.Level = CompressionLevel.SmallestSize;
+    });
+    builder.Services.Configure<GzipCompressionProviderOptions>(options =>
+    {
+        options.Level = CompressionLevel.SmallestSize;
+    });
     builder.Services
         .AddRazorPages()
         .AddViewLocalization()
@@ -250,6 +277,9 @@ try
         });
     });
 
+    using var bundlerLoggerFactory = new SerilogLoggerFactory(Log.Logger);
+    StaticAssetBundler.Build(builder.Environment, bundlerLoggerFactory.CreateLogger(nameof(StaticAssetBundler)));
+
     var app = builder.Build();
 
     // DB migrate + seed (bez rekurze – sink používá tichou továrnu ApplicationDbContext)
@@ -286,7 +316,32 @@ try
     }
 
     app.UseHttpsRedirection();
+    app.Use(async (context, next) =>
+    {
+        var pushFeature = context.Features.Get<IHttpPushPromiseFeature>();
+        if (pushFeature != null
+            && HttpMethods.IsGet(context.Request.Method)
+            && context.Request.Headers.TryGetValue(HeaderNames.Accept, out var accepted)
+            && accepted.Any(value => value.Contains("text/html", StringComparison.OrdinalIgnoreCase)))
+        {
+            try
+            {
+                pushFeature.PushPromise("/dist/styles.min.css", new HeaderDictionary
+                {
+                    [HeaderNames.Accept] = "text/css,*/*;q=0.1"
+                });
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Debug(ex, "HTTP/2 push failed");
+            }
+        }
+
+        await next();
+    });
+    app.UseResponseCompression();
     app.UseMiddleware<ContentSecurityPolicyMiddleware>();
+    app.UseMiddleware<ImageOptimizationMiddleware>();
     app.UseStaticFiles();
 
     app.UseRouting();

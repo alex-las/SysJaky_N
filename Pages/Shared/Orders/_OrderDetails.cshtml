@@ -71,7 +71,7 @@
 
 @if (!string.IsNullOrEmpty(Model.QrCodeImage))
 {
-    <img src="@Model.QrCodeImage" alt="@Model.QrCodeAltText" />
+    <img src="@Model.QrCodeImage" alt="@Model.QrCodeAltText" loading="lazy" decoding="async" />
 }
 
 @if (Model.PaymentEnabled && order.Status == OrderStatus.Pending)
