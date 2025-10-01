@@ -34,7 +34,7 @@
     @if (!string.IsNullOrEmpty(Model.Course.CoverImageUrl))
     {
         <div class="mb-3">
-            <img src="@Model.Course.CoverImageUrl" alt="Obálka kurzu @Model.Course.Title" class="img-fluid rounded" style="max-width: 240px;" />
+            <img src="@Model.Course.CoverImageUrl" alt="Obálka kurzu @Model.Course.Title" class="img-fluid rounded" style="max-width: 240px;" loading="lazy" decoding="async" />
         </div>
     }
 
