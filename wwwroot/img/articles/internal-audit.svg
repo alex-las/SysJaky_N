@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" role="img" aria-labelledby="title desc">
+  <title id="title">Internal audit illustration</title>
+  <desc id="desc">Stylized magnifying glass over documents and charts.</desc>
+  <defs>
+    <linearGradient id="bg3" x1="0%" x2="100%" y1="0%" y2="100%">
+      <stop offset="0%" stop-color="#0b5670" />
+      <stop offset="100%" stop-color="#1ca8d7" />
+    </linearGradient>
+  </defs>
+  <rect width="600" height="400" rx="24" fill="url(#bg3)" />
+  <rect x="120" y="80" width="360" height="240" rx="18" fill="#ffffff" opacity="0.95" />
+  <rect x="160" y="120" width="160" height="24" rx="12" fill="#1ca8d7" />
+  <rect x="160" y="160" width="220" height="16" rx="8" fill="#a5e3ff" />
+  <rect x="160" y="190" width="220" height="16" rx="8" fill="#a5e3ff" />
+  <rect x="160" y="220" width="220" height="16" rx="8" fill="#a5e3ff" />
+  <circle cx="370" cy="220" r="70" fill="none" stroke="#1ca8d7" stroke-width="10" />
+  <line x1="415" y1="265" x2="460" y2="310" stroke="#1ca8d7" stroke-width="12" stroke-linecap="round" />
+</svg>
