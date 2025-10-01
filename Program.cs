@@ -328,16 +328,25 @@ try
             && context.Request.Headers.TryGetValue(HeaderNames.Accept, out var accepted)
             && accepted.Any(value => value.Contains("text/html", StringComparison.OrdinalIgnoreCase)))
         {
-            try
+            var assetsToPush = new (string Path, string Accept)[]
             {
-                pushFeature.PushPromise("/dist/styles.min.css", new HeaderDictionary
+                ("/dist/styles.min.css", "text/css,*/*;q=0.1"),
+                ("/dist/scripts.min.js", "application/javascript,*/*;q=0.1")
+            };
+
+            foreach (var asset in assetsToPush)
+            {
+                try
                 {
-                    [HeaderNames.Accept] = "text/css,*/*;q=0.1"
-                });
-            }
-            catch (Exception ex)
-            {
-                Log.Logger.Debug(ex, "HTTP/2 push failed");
+                    pushFeature.PushPromise(asset.Path, new HeaderDictionary
+                    {
+                        [HeaderNames.Accept] = asset.Accept
+                    });
+                }
+                catch (Exception ex)
+                {
+                    Log.Logger.Debug(ex, "HTTP/2 push failed for {Asset}", asset.Path);
+                }
             }
         }
 

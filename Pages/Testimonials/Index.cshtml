@@ -24,7 +24,34 @@
                         <div class="d-flex align-items-center gap-3 mb-3">
                             @if (!string.IsNullOrWhiteSpace(testimonial.PhotoUrl))
                             {
-                                <img src="@testimonial.PhotoUrl" alt="@(!string.IsNullOrWhiteSpace(testimonial.PhotoAltText) ? testimonial.PhotoAltText : testimonial.FullName)" class="rounded-circle" style="width: 64px; height: 64px; object-fit: cover;" />
+                                var thumbAlt = !string.IsNullOrWhiteSpace(testimonial.PhotoAltText)
+                                    ? testimonial.PhotoAltText
+                                    : testimonial.FullName;
+                                var thumbWebp1x = testimonial.PhotoUrl.WithImageParameters(64, "webp");
+                                var thumbWebp2x = testimonial.PhotoUrl.WithImageParameters(128, "webp");
+                                var thumbJpeg1x = testimonial.PhotoUrl.WithImageParameters(64, "jpg");
+                                var thumbJpeg2x = testimonial.PhotoUrl.WithImageParameters(128, "jpg");
+                                var thumbJpegSources = new List<string>();
+                                if (!string.IsNullOrWhiteSpace(thumbJpeg1x))
+                                {
+                                    thumbJpegSources.Add($"{thumbJpeg1x} 64w");
+                                }
+                                if (!string.IsNullOrWhiteSpace(thumbJpeg2x))
+                                {
+                                    thumbJpegSources.Add($"{thumbJpeg2x} 128w");
+                                }
+                                var thumbJpegSrcSet = string.Join(", ", thumbJpegSources);
+                                <picture>
+                                    @if (!string.IsNullOrWhiteSpace(thumbWebp1x))
+                                    {
+                                        <source type="image/webp" srcset="@thumbWebp1x 64w@(string.IsNullOrWhiteSpace(thumbWebp2x) ? string.Empty : ", " + thumbWebp2x + " 128w")" sizes="64px" />
+                                    }
+                                    @if (!string.IsNullOrWhiteSpace(thumbJpegSrcSet))
+                                    {
+                                        <source type="image/jpeg" srcset="@thumbJpegSrcSet" sizes="64px" />
+                                    }
+                                    <img src="@(!string.IsNullOrWhiteSpace(thumbJpeg1x) ? thumbJpeg1x : testimonial.PhotoUrl)" alt="@thumbAlt" class="rounded-circle" width="64" height="64" loading="lazy" decoding="async" style="width: 64px; height: 64px; object-fit: cover;" />
+                                </picture>
                             }
                             else
                             {

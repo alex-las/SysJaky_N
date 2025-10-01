@@ -33,7 +33,34 @@
                                 <div class="col-md-4 text-center text-md-start">
                                     @if (!string.IsNullOrWhiteSpace(testimonial.PhotoUrl))
                                     {
-                                        <img src="@testimonial.PhotoUrl" alt="@(!string.IsNullOrWhiteSpace(testimonial.PhotoAltText) ? testimonial.PhotoAltText : testimonial.FullName)" class="rounded-circle shadow-sm" style="width: 120px; height: 120px; object-fit: cover;" />
+                                        var avatarAlt = !string.IsNullOrWhiteSpace(testimonial.PhotoAltText)
+                                            ? testimonial.PhotoAltText
+                                            : testimonial.FullName;
+                                        var avatarWebp1x = testimonial.PhotoUrl.WithImageParameters(120, "webp");
+                                        var avatarWebp2x = testimonial.PhotoUrl.WithImageParameters(240, "webp");
+                                        var avatarJpeg1x = testimonial.PhotoUrl.WithImageParameters(120, "jpg");
+                                        var avatarJpeg2x = testimonial.PhotoUrl.WithImageParameters(240, "jpg");
+                                        var jpegSources = new List<string>();
+                                        if (!string.IsNullOrWhiteSpace(avatarJpeg1x))
+                                        {
+                                            jpegSources.Add($"{avatarJpeg1x} 120w");
+                                        }
+                                        if (!string.IsNullOrWhiteSpace(avatarJpeg2x))
+                                        {
+                                            jpegSources.Add($"{avatarJpeg2x} 240w");
+                                        }
+                                        var jpegSrcSet = string.Join(", ", jpegSources);
+                                        <picture>
+                                            @if (!string.IsNullOrWhiteSpace(avatarWebp1x))
+                                            {
+                                                <source type="image/webp" srcset="@avatarWebp1x 120w@(string.IsNullOrWhiteSpace(avatarWebp2x) ? string.Empty : ", " + avatarWebp2x + " 240w")" sizes="120px" />
+                                            }
+                                            @if (!string.IsNullOrWhiteSpace(jpegSrcSet))
+                                            {
+                                                <source type="image/jpeg" srcset="@jpegSrcSet" sizes="120px" />
+                                            }
+                                            <img src="@(!string.IsNullOrWhiteSpace(avatarJpeg1x) ? avatarJpeg1x : testimonial.PhotoUrl)" alt="@avatarAlt" class="rounded-circle shadow-sm" width="120" height="120" loading="lazy" decoding="async" style="width: 120px; height: 120px; object-fit: cover;" />
+                                        </picture>
                                     }
                                     else
                                     {

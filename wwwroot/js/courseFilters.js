@@ -341,11 +341,71 @@ if (!dataElement) {
         return resources.countdownPast ?? 'Kurz probíhá';
     }
 
+    function isExternalUrl(url) {
+        return /^(?:https?:)?\/\//i.test(url);
+    }
+
+    function appendImageParams(url, params) {
+        if (!url || isExternalUrl(url) || (!params.width && !params.format)) {
+            return url || '';
+        }
+
+        const [path, query = ''] = url.split('?', 2);
+        const search = new URLSearchParams(query);
+        if (params.width && !search.has('w')) {
+            search.set('w', String(params.width));
+        }
+        if (params.format && !search.has('format')) {
+            search.set('format', params.format);
+        }
+        const queryString = search.toString();
+        return queryString ? `${path}?${queryString}` : path;
+    }
+
+    function buildCourseCardImage(baseUrl, altText) {
+        if (!baseUrl) {
+            return '';
+        }
+
+        const widths = [480, 768, 1200];
+        const webpSources = [];
+        const jpegSources = [];
+
+        widths.forEach((width) => {
+            const webpUrl = appendImageParams(baseUrl, { width, format: 'webp' });
+            if (webpUrl) {
+                webpSources.push(`${escapeAttribute(webpUrl)} ${width}w`);
+            }
+
+            const jpegUrl = appendImageParams(baseUrl, { width, format: 'jpg' });
+            if (jpegUrl) {
+                jpegSources.push(`${escapeAttribute(jpegUrl)} ${width}w`);
+            }
+        });
+
+        const fallback = appendImageParams(baseUrl, { width: 768, format: 'jpg' }) || baseUrl;
+        const fallbackAttr = escapeAttribute(fallback);
+        const altAttr = escapeAttribute(altText ?? '');
+        const webpHtml = webpSources.length
+            ? `<source type="image/webp" srcset="${webpSources.join(', ')}" sizes="(max-width: 768px) 100vw, 480px">`
+            : '';
+        const jpegHtml = jpegSources.length
+            ? `<source type="image/jpeg" srcset="${jpegSources.join(', ')}" sizes="(max-width: 768px) 100vw, 480px">`
+            : '';
+
+        return `<picture class="course-card__picture">
+            ${webpHtml}
+            ${jpegHtml}
+            <img class="course-card__image" src="${fallbackAttr}" alt="${altAttr}" loading="lazy" decoding="async" onload="this.dataset.loaded='true';">
+        </picture>`;
+    }
+
     function createCourseCard(course) {
         const wrapper = document.createElement('div');
         const id = Number(course.id);
         const checkboxId = `cmp_${id}`;
         const title = escapeHtml(course.title ?? '');
+        const titleAttr = escapeAttribute(course.title ?? '');
         const description = escapeHtml(course.description ?? '');
         const level = escapeHtml(course.level ?? '');
         const mode = escapeHtml(course.mode ?? '');
@@ -356,7 +416,7 @@ if (!dataElement) {
         const detailsUrl = escapeAttribute(course.detailsUrl ?? `#/course/${id}`);
         const addToCartUrl = escapeAttribute(course.addToCartUrl ?? '/Courses/Index?handler=AddToCart');
         const popoverHtml = course.popoverHtml ? escapeAttribute(course.popoverHtml) : null;
-        const coverImageUrl = course.coverImageUrl ? escapeAttribute(course.coverImageUrl) : null;
+        const rawCoverImageUrl = typeof course.coverImageUrl === 'string' ? course.coverImageUrl : null;
         const previewText = escapeHtml(course.previewContent ?? '');
         const isoBadges = Array.isArray(course.isoBadges) ? course.isoBadges : [];
         const daysUntilStart = typeof course.daysUntilStart === 'number' ? course.daysUntilStart : null;
@@ -379,8 +439,8 @@ if (!dataElement) {
             </li>`;
         }).join('');
 
-        const coverHtml = coverImageUrl
-            ? `<img class="course-card__image" src="${coverImageUrl}" alt="${title}" loading="lazy" decoding="async" onload="this.dataset.loaded='true';">`
+        const coverHtml = rawCoverImageUrl
+            ? buildCourseCardImage(rawCoverImageUrl, titleAttr)
             : '<div class="course-card__image course-card__image--placeholder" aria-hidden="true"></div>';
 
         const popoverLink = popoverHtml
