@@ -1,19 +1,20 @@
 @page
 @using System.Linq
 @model SysJaky_N.Pages.Admin.Vouchers.IndexModel
+@using SysJaky_N.Models
 @{
-    ViewData["Title"] = "Vouchers";
+    ViewData["Title"] = "Vouchery";
 }
 
-<h1>Vouchers</h1>
+<h1>Vouchery</h1>
 
 <p>
-    <a class="btn btn-primary" asp-page="Create">Create New</a>
+    <a class="btn btn-primary" asp-page="Create">Vytvořit nový</a>
 </p>
 
 @if (!Model.Vouchers.Any())
 {
-    <div class="alert alert-info" role="status">No vouchers available.</div>
+    <div class="alert alert-info" role="status">Žádné vouchery nejsou k dispozici.</div>
 }
 else
 {
@@ -21,13 +22,13 @@ else
         <table class="table table-striped align-middle">
     <thead>
         <tr>
-            <th>Code</th>
-            <th>Type</th>
-            <th>Value</th>
-            <th>Expires</th>
-            <th>Max Redemptions</th>
-            <th>Used</th>
-            <th>Applies To</th>
+            <th>Kód</th>
+            <th>Typ</th>
+            <th>Hodnota</th>
+            <th>Platnost</th>
+            <th>Max. uplatnění</th>
+            <th>Využito</th>
+            <th>Platí pro</th>
             <th></th>
         </tr>
     </thead>
@@ -36,9 +37,14 @@ else
     {
         <tr>
             <td>@item.Code</td>
-            <td>@item.Type</td>
+            <td>@(item.Type switch
+                {
+                    VoucherType.Percentage => "Procentuální sleva",
+                    VoucherType.FixedAmount => "Fixní částka",
+                    _ => item.Type.ToString()
+                })</td>
             <td>
-                @if (item.Type == SysJaky_N.Models.VoucherType.Percentage)
+                @if (item.Type == VoucherType.Percentage)
                 {
                     @string.Format("{0:0.##}%", item.Value)
                 }
@@ -54,15 +60,15 @@ else
                 }
                 else
                 {
-                    @:Never
+                    @:Nikdy
                 }
             </td>
-            <td>@(item.MaxRedemptions?.ToString() ?? "Unlimited")</td>
+            <td>@(item.MaxRedemptions?.ToString() ?? "Bez omezení")</td>
             <td>@item.UsedCount</td>
-            <td>@item.AppliesToCourse?.Title ?? "All courses"</td>
+            <td>@item.AppliesToCourse?.Title ?? "Všechny kurzy"</td>
             <td>
-                <a class="btn btn-sm btn-outline-secondary" asp-page="Edit" asp-route-id="@item.Id">Edit</a>
-                <a class="btn btn-sm btn-outline-danger" asp-page="Delete" asp-route-id="@item.Id">Delete</a>
+                <a class="btn btn-sm btn-outline-secondary" asp-page="Edit" asp-route-id="@item.Id">Upravit</a>
+                <a class="btn btn-sm btn-outline-danger" asp-page="Delete" asp-route-id="@item.Id">Smazat</a>
             </td>
         </tr>
     }
