@@ -18,6 +18,7 @@ public static class SharedResources
 
     public static string FieldRequired => GetString(nameof(FieldRequired));
     public static string StringLength => GetString(nameof(StringLength));
+    public static string Range => GetString(nameof(Range));
     public static string EmailAddressInvalid => GetString(nameof(EmailAddressInvalid));
     public static string ContactNameLabel => GetString(nameof(ContactNameLabel));
     public static string ContactEmailLabel => GetString(nameof(ContactEmailLabel));

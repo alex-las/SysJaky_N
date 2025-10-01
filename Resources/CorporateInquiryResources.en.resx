@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="TrainingTypesLabel" xml:space="preserve">
+    <value>Select desired ISO standards</value>
+  </data>
+  <data name="ParticipantCountLabel" xml:space="preserve">
+    <value>Number of participants</value>
+  </data>
+  <data name="PreferredDateLabel" xml:space="preserve">
+    <value>Preferred date</value>
+  </data>
+  <data name="ModeLabel" xml:space="preserve">
+    <value>Preferred training mode</value>
+  </data>
+  <data name="CompanyIdLabel" xml:space="preserve">
+    <value>Company ID</value>
+  </data>
+  <data name="CompanyNameLabel" xml:space="preserve">
+    <value>Company name</value>
+  </data>
+  <data name="ContactPersonLabel" xml:space="preserve">
+    <value>Contact person</value>
+  </data>
+  <data name="ContactEmailLabel" xml:space="preserve">
+    <value>E-mail</value>
+  </data>
+  <data name="ContactPhoneLabel" xml:space="preserve">
+    <value>Phone</value>
+  </data>
+  <data name="PhoneInvalid" xml:space="preserve">
+    <value>Please enter a valid phone number.</value>
+  </data>
+</root>

@@ -1,0 +1,501 @@
+@page
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model SysJaky_N.Pages.CorporateInquiryModel
+@{
+    ViewData["Title"] = Localizer["Title"];
+    var shouldResetStorage = TempData.Peek("Success") is string;
+    var modeLabels = new System.Collections.Generic.Dictionary<string, string>();
+    foreach (var option in Model.ModeOptions)
+    {
+        modeLabels[option] = Localizer[$"ModeOption_{option}"].Value;
+    }
+    var modeLabelsJson = System.Text.Json.JsonSerializer.Serialize(modeLabels);
+}
+
+<h1 class="mb-4">@Localizer["Title"]</h1>
+<p class="text-muted mb-5">@Localizer["Intro"]</p>
+
+<noscript>
+    <div class="alert alert-warning" role="alert">@Localizer["EnableJavaScriptWarning"]</div>
+</noscript>
+
+<div class="progress mb-4" aria-label="@Localizer["ProgressAriaLabel"]">
+    <div id="wizardProgressBar" class="progress-bar" role="progressbar" style="width:25%;" aria-valuenow="1" aria-valuemin="1" aria-valuemax="4">1 / 4</div>
+</div>
+
+@if (TempData["Success"] is string success && !string.IsNullOrEmpty(success))
+{
+    <div class="alert alert-success" role="alert" id="successAlert">@success</div>
+}
+
+<form method="post"
+      id="corporateInquiryForm"
+      data-initial-step="@Model.InitialStep"
+      data-reset-storage="@shouldResetStorage.ToString().ToLowerInvariant()"
+      data-base-price="@Model.BaseTrainingPrice"
+      data-participant-price="@Model.ParticipantPrice"
+      data-mode-multipliers='@Html.Raw(Model.ModeMultipliersJson)'
+      data-mode-labels='@Html.Raw(modeLabelsJson)'
+      data-summary-placeholder="@Localizer["SummaryPlaceholder"]"
+      data-price-unavailable="@Localizer["PriceUnavailable"]"
+      data-validation-step1="@Localizer["ValidationStep1"]"
+      data-validation-participant-required="@Localizer["ValidationParticipantRequired"]"
+      data-validation-participant-range="@Localizer["ValidationParticipantRange"]"
+      data-validation-date-required="@Localizer["ValidationDateRequired"]"
+      data-validation-mode-required="@Localizer["ValidationModeRequired"]"
+      data-validation-company-id-required="@Localizer["ValidationCompanyIdRequired"]"
+      data-validation-company-name-required="@Localizer["ValidationCompanyNameRequired"]"
+      data-validation-contact-person-required="@Localizer["ValidationContactPersonRequired"]"
+      data-validation-contact-email-required="@Localizer["ValidationContactEmailRequired"]"
+      data-validation-contact-email-invalid="@Localizer["ValidationContactEmailInvalid"]"
+      data-validation-contact-phone-required="@Localizer["ValidationContactPhoneRequired"]"
+      data-validation-contact-phone-invalid="@Localizer["ValidationContactPhoneInvalid"]"
+      novalidate>
+    <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+
+    <div class="wizard-step" data-step="1">
+        <partial name="CorporateInquiry/Partials/_StepTraining" model="Model" />
+    </div>
+
+    <div class="wizard-step d-none" data-step="2">
+        <partial name="CorporateInquiry/Partials/_StepDetails" model="Model" />
+    </div>
+
+    <div class="wizard-step d-none" data-step="3">
+        <partial name="CorporateInquiry/Partials/_StepCompany" model="Model" />
+    </div>
+
+    <div class="wizard-step d-none" data-step="4">
+        <partial name="CorporateInquiry/Partials/_StepSummary" model="Model" />
+    </div>
+
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mt-4">
+        <button type="button" class="btn btn-outline-secondary" id="wizardPrev">@Localizer["Back"]</button>
+        <div class="d-flex flex-column flex-md-row align-items-md-center gap-3 ms-md-auto">
+            <div class="fw-semibold" id="priceEstimateContainer">
+                @Localizer["EstimatedPriceLabel"]: <span id="priceEstimateValue">@Localizer["EstimatedPricePlaceholder"]</span>
+            </div>
+            <div class="d-flex gap-2">
+                <button type="button" class="btn btn-primary" id="wizardNext">@Localizer["Next"]</button>
+                <button type="submit" class="btn btn-success d-none" id="wizardSubmit">@Localizer["Submit"]</button>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        (function () {
+            const form = document.getElementById('corporateInquiryForm');
+            if (!form) {
+                return;
+            }
+
+            const steps = Array.from(document.querySelectorAll('.wizard-step'));
+            const progressBar = document.getElementById('wizardProgressBar');
+            const prevButton = document.getElementById('wizardPrev');
+            const nextButton = document.getElementById('wizardNext');
+            const submitButton = document.getElementById('wizardSubmit');
+            const priceValue = document.getElementById('priceEstimateValue');
+            const storageKey = 'corporateInquiryDraft';
+            const isoCheckboxes = Array.from(form.querySelectorAll('input[name="Input.TrainingTypes"]'));
+            const participantInput = form.querySelector('[name="Input.ParticipantCount"]');
+            const dateInput = form.querySelector('[name="Input.PreferredDate"]');
+            const modeSelect = form.querySelector('[name="Input.Mode"]');
+            const companyIdInput = form.querySelector('[name="Input.CompanyId"]');
+            const companyNameInput = form.querySelector('[name="Input.CompanyName"]');
+            const contactPersonInput = form.querySelector('[name="Input.ContactPerson"]');
+            const contactEmailInput = form.querySelector('[name="Input.ContactEmail"]');
+            const contactPhoneInput = form.querySelector('[name="Input.ContactPhone"]');
+            const step1Error = document.getElementById('step1-error');
+            const summaryElements = {
+                trainingTypes: document.getElementById('summary-training-types'),
+                participantCount: document.getElementById('summary-participant-count'),
+                preferredDate: document.getElementById('summary-preferred-date'),
+                mode: document.getElementById('summary-mode'),
+                companyId: document.getElementById('summary-company-id'),
+                companyName: document.getElementById('summary-company-name'),
+                contactPerson: document.getElementById('summary-contact-person'),
+                contactEmail: document.getElementById('summary-contact-email'),
+                contactPhone: document.getElementById('summary-contact-phone'),
+                price: document.getElementById('summary-price')
+            };
+
+            const validationMessages = {
+                step1: form.dataset.validationStep1,
+                participantCountRequired: form.dataset.validationParticipantRequired,
+                participantCountRange: form.dataset.validationParticipantRange,
+                preferredDateRequired: form.dataset.validationDateRequired,
+                modeRequired: form.dataset.validationModeRequired,
+                companyIdRequired: form.dataset.validationCompanyIdRequired,
+                companyNameRequired: form.dataset.validationCompanyNameRequired,
+                contactPersonRequired: form.dataset.validationContactPersonRequired,
+                contactEmailRequired: form.dataset.validationContactEmailRequired,
+                contactEmailInvalid: form.dataset.validationContactEmailInvalid,
+                contactPhoneRequired: form.dataset.validationContactPhoneRequired,
+                contactPhoneInvalid: form.dataset.validationContactPhoneInvalid
+            };
+
+            const modeLabels = JSON.parse(form.dataset.modeLabels || '{}');
+            const basePrice = Number(form.dataset.basePrice || 0);
+            const participantPrice = Number(form.dataset.participantPrice || 0);
+            const modeMultipliers = JSON.parse(form.dataset.modeMultipliers || '{}');
+            const totalSteps = steps.length;
+            const dateFormatter = new Intl.DateTimeFormat(document.documentElement.lang || undefined, { dateStyle: 'medium' });
+            const currencyFormatter = new Intl.NumberFormat(document.documentElement.lang || undefined, { style: 'currency', currency: 'CZK', maximumFractionDigits: 0 });
+
+            const initialStepFromServer = Number(form.dataset.initialStep || '1');
+            let currentStep = Number.isNaN(initialStepFromServer) || initialStepFromServer < 1 || initialStepFromServer > totalSteps
+                ? 1
+                : initialStepFromServer;
+
+            if (form.dataset.resetStorage === 'true') {
+                try {
+                    localStorage.removeItem(storageKey);
+                } catch (error) {
+                    console.warn('Unable to reset corporate inquiry draft', error);
+                }
+            }
+
+            const savedState = loadState();
+            if (savedState) {
+                applyState(savedState);
+                if (initialStepFromServer > 1) {
+                    currentStep = Math.min(Math.max(initialStepFromServer, 1), totalSteps);
+                } else if (savedState.currentStep) {
+                    currentStep = Math.min(Math.max(savedState.currentStep, 1), totalSteps);
+                }
+            }
+
+            updateStep(currentStep);
+            updateSummary();
+            updatePrice();
+
+            prevButton.addEventListener('click', () => {
+                if (currentStep > 1) {
+                    currentStep -= 1;
+                    updateStep(currentStep);
+                    persistState();
+                }
+            });
+
+            nextButton.addEventListener('click', () => {
+                if (validateStep(currentStep)) {
+                    currentStep += 1;
+                    updateStep(currentStep);
+                    updateSummary();
+                    updatePrice();
+                    persistState();
+                }
+            });
+
+            form.addEventListener('submit', (event) => {
+                if (!validateStep(currentStep) || !validateAllSteps()) {
+                    event.preventDefault();
+                    return;
+                }
+                persistState();
+            });
+
+            const trackedFields = [participantInput, dateInput, modeSelect, companyIdInput, companyNameInput, contactPersonInput, contactEmailInput, contactPhoneInput];
+            trackedFields.forEach(field => {
+                if (!field) {
+                    return;
+                }
+                field.addEventListener('input', () => {
+                    showFieldError(field.name, '');
+                    updatePrice();
+                    updateSummary();
+                    persistState();
+                });
+                field.addEventListener('change', () => {
+                    showFieldError(field.name, '');
+                    updatePrice();
+                    updateSummary();
+                    persistState();
+                });
+            });
+
+            isoCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', () => {
+                    if (step1Error) {
+                        step1Error.textContent = '';
+                        step1Error.classList.add('d-none');
+                    }
+                    updatePrice();
+                    updateSummary();
+                    persistState();
+                });
+            });
+
+            function collectFormState() {
+                return {
+                    trainingTypes: isoCheckboxes.filter(c => c.checked).map(c => c.value),
+                    participantCount: participantInput ? participantInput.value : '',
+                    preferredDate: dateInput ? dateInput.value : '',
+                    mode: modeSelect ? modeSelect.value : '',
+                    companyId: companyIdInput ? companyIdInput.value : '',
+                    companyName: companyNameInput ? companyNameInput.value : '',
+                    contactPerson: contactPersonInput ? contactPersonInput.value : '',
+                    contactEmail: contactEmailInput ? contactEmailInput.value : '',
+                    contactPhone: contactPhoneInput ? contactPhoneInput.value : '',
+                    currentStep
+                };
+            }
+
+            function applyState(state) {
+                isoCheckboxes.forEach(checkbox => {
+                    checkbox.checked = Array.isArray(state.trainingTypes) && state.trainingTypes.includes(checkbox.value);
+                });
+                if (participantInput && state.participantCount !== undefined) {
+                    participantInput.value = state.participantCount;
+                }
+                if (dateInput && state.preferredDate !== undefined) {
+                    dateInput.value = state.preferredDate;
+                }
+                if (modeSelect && state.mode !== undefined) {
+                    modeSelect.value = state.mode;
+                }
+                if (companyIdInput && state.companyId !== undefined) {
+                    companyIdInput.value = state.companyId;
+                }
+                if (companyNameInput && state.companyName !== undefined) {
+                    companyNameInput.value = state.companyName;
+                }
+                if (contactPersonInput && state.contactPerson !== undefined) {
+                    contactPersonInput.value = state.contactPerson;
+                }
+                if (contactEmailInput && state.contactEmail !== undefined) {
+                    contactEmailInput.value = state.contactEmail;
+                }
+                if (contactPhoneInput && state.contactPhone !== undefined) {
+                    contactPhoneInput.value = state.contactPhone;
+                }
+            }
+
+            function loadState() {
+                try {
+                    const raw = localStorage.getItem(storageKey);
+                    return raw ? JSON.parse(raw) : null;
+                } catch (error) {
+                    console.warn('Unable to load corporate inquiry draft', error);
+                    return null;
+                }
+            }
+
+            function persistState() {
+                const state = collectFormState();
+                try {
+                    localStorage.setItem(storageKey, JSON.stringify(state));
+                } catch (error) {
+                    console.warn('Unable to persist corporate inquiry draft', error);
+                }
+            }
+
+            function updateStep(step) {
+                steps.forEach((element, index) => {
+                    const isActive = index === step - 1;
+                    element.classList.toggle('d-none', !isActive);
+                    element.setAttribute('aria-hidden', isActive ? 'false' : 'true');
+                });
+
+                prevButton.classList.toggle('d-none', step === 1);
+                prevButton.disabled = step === 1;
+                nextButton.classList.toggle('d-none', step === totalSteps);
+                submitButton.classList.toggle('d-none', step !== totalSteps);
+
+                const progressPercent = Math.round((step / totalSteps) * 100);
+                progressBar.style.width = `${progressPercent}%`;
+                progressBar.setAttribute('aria-valuenow', String(step));
+                progressBar.textContent = `${step} / ${totalSteps}`;
+            }
+
+            function showFieldError(fieldName, message) {
+                const messageElement = form.querySelector(`[data-valmsg-for="${fieldName}"]`);
+                if (messageElement) {
+                    messageElement.textContent = message || '';
+                }
+                const field = form.querySelector(`[name="${fieldName}"]`);
+                if (field) {
+                    if (message) {
+                        field.classList.add('is-invalid');
+                        field.setAttribute('aria-invalid', 'true');
+                    } else {
+                        field.classList.remove('is-invalid');
+                        field.removeAttribute('aria-invalid');
+                    }
+                }
+            }
+
+            function validateStep(step) {
+                let isValid = true;
+                clearStepErrors(step);
+
+                if (step === 1) {
+                    const selected = isoCheckboxes.filter(c => c.checked);
+                    if (selected.length === 0) {
+                        isValid = false;
+                        const container = document.getElementById('step1-error');
+                        if (container) {
+                            container.textContent = validationMessages.step1 || '';
+                            container.classList.remove('d-none');
+                        }
+                    }
+                } else if (step === 2) {
+                    const participantValue = participantInput ? Number(participantInput.value) : 0;
+                    if (!participantInput || participantInput.value.trim() === '') {
+                        isValid = false;
+                        showFieldError('Input.ParticipantCount', validationMessages.participantCountRequired);
+                    } else if (Number.isNaN(participantValue) || participantValue < 1 || participantValue > 1000) {
+                        isValid = false;
+                        showFieldError('Input.ParticipantCount', validationMessages.participantCountRange);
+                    }
+
+                    if (!dateInput || dateInput.value.trim() === '') {
+                        isValid = false;
+                        showFieldError('Input.PreferredDate', validationMessages.preferredDateRequired);
+                    }
+
+                    if (!modeSelect || modeSelect.value.trim() === '') {
+                        isValid = false;
+                        showFieldError('Input.Mode', validationMessages.modeRequired);
+                    }
+                } else if (step === 3) {
+                    if (!companyIdInput || companyIdInput.value.trim() === '') {
+                        isValid = false;
+                        showFieldError('Input.CompanyId', validationMessages.companyIdRequired);
+                    }
+                    if (!companyNameInput || companyNameInput.value.trim() === '') {
+                        isValid = false;
+                        showFieldError('Input.CompanyName', validationMessages.companyNameRequired);
+                    }
+                    if (!contactPersonInput || contactPersonInput.value.trim() === '') {
+                        isValid = false;
+                        showFieldError('Input.ContactPerson', validationMessages.contactPersonRequired);
+                    }
+                    if (!contactEmailInput || contactEmailInput.value.trim() === '') {
+                        isValid = false;
+                        showFieldError('Input.ContactEmail', validationMessages.contactEmailRequired);
+                    } else if (!isValidEmail(contactEmailInput.value)) {
+                        isValid = false;
+                        showFieldError('Input.ContactEmail', validationMessages.contactEmailInvalid);
+                    }
+                    if (!contactPhoneInput || contactPhoneInput.value.trim() === '') {
+                        isValid = false;
+                        showFieldError('Input.ContactPhone', validationMessages.contactPhoneRequired);
+                    } else if (!isValidPhone(contactPhoneInput.value)) {
+                        isValid = false;
+                        showFieldError('Input.ContactPhone', validationMessages.contactPhoneInvalid);
+                    }
+                }
+
+                if (isValid && step === 1) {
+                    const container = document.getElementById('step1-error');
+                    if (container) {
+                        container.textContent = '';
+                        container.classList.add('d-none');
+                    }
+                }
+
+                return isValid;
+            }
+
+            function validateAllSteps() {
+                let valid = true;
+                for (let step = 1; step <= totalSteps - 1; step += 1) {
+                    if (!validateStep(step)) {
+                        valid = false;
+                        currentStep = step;
+                        updateStep(currentStep);
+                        updateSummary();
+                        updatePrice();
+                        break;
+                    }
+                }
+                return valid;
+            }
+
+            function clearStepErrors(step) {
+                if (step === 1) {
+                    const container = document.getElementById('step1-error');
+                    if (container) {
+                        container.textContent = '';
+                        container.classList.add('d-none');
+                    }
+                }
+
+                const fields = ['Input.ParticipantCount', 'Input.PreferredDate', 'Input.Mode', 'Input.CompanyId', 'Input.CompanyName', 'Input.ContactPerson', 'Input.ContactEmail', 'Input.ContactPhone'];
+                fields.forEach(fieldName => {
+                    showFieldError(fieldName, '');
+                });
+            }
+
+            function updateSummary() {
+                if (!summaryElements.trainingTypes) {
+                    return;
+                }
+                const selected = isoCheckboxes.filter(c => c.checked).map(checkbox => {
+                    const label = form.querySelector(`label[for="${checkbox.id}"]`);
+                    return label ? label.textContent.trim() : checkbox.value;
+                });
+                summaryElements.trainingTypes.textContent = selected.length ? selected.join(', ') : form.dataset.summaryPlaceholder;
+
+                summaryElements.participantCount.textContent = participantInput && participantInput.value ? participantInput.value : form.dataset.summaryPlaceholder;
+
+                if (dateInput && dateInput.value) {
+                    const date = new Date(dateInput.value);
+                    summaryElements.preferredDate.textContent = Number.isNaN(date.getTime()) ? form.dataset.summaryPlaceholder : dateFormatter.format(date);
+                } else {
+                    summaryElements.preferredDate.textContent = form.dataset.summaryPlaceholder;
+                }
+
+                const modeValue = modeSelect ? modeSelect.value : '';
+                summaryElements.mode.textContent = modeValue ? (modeLabels[modeValue] || modeValue) : form.dataset.summaryPlaceholder;
+
+                summaryElements.companyId.textContent = companyIdInput && companyIdInput.value ? companyIdInput.value : form.dataset.summaryPlaceholder;
+                summaryElements.companyName.textContent = companyNameInput && companyNameInput.value ? companyNameInput.value : form.dataset.summaryPlaceholder;
+                summaryElements.contactPerson.textContent = contactPersonInput && contactPersonInput.value ? contactPersonInput.value : form.dataset.summaryPlaceholder;
+                summaryElements.contactEmail.textContent = contactEmailInput && contactEmailInput.value ? contactEmailInput.value : form.dataset.summaryPlaceholder;
+                summaryElements.contactPhone.textContent = contactPhoneInput && contactPhoneInput.value ? contactPhoneInput.value : form.dataset.summaryPlaceholder;
+
+                const estimated = calculatePrice();
+                if (estimated > 0) {
+                    summaryElements.price.textContent = currencyFormatter.format(estimated);
+                } else {
+                    summaryElements.price.textContent = form.dataset.priceUnavailable;
+                }
+            }
+
+            function updatePrice() {
+                const estimated = calculatePrice();
+                if (estimated > 0) {
+                    priceValue.textContent = currencyFormatter.format(estimated);
+                } else {
+                    priceValue.textContent = form.dataset.priceUnavailable;
+                }
+            }
+
+            function calculatePrice() {
+                const trainingCount = isoCheckboxes.filter(c => c.checked).length;
+                const participants = participantInput ? Number(participantInput.value) : 0;
+                if (trainingCount === 0 || !participants) {
+                    return 0;
+                }
+                const baseTotal = basePrice * trainingCount;
+                const participantTotal = participantPrice * participants;
+                const multiplier = modeMultipliers[modeSelect ? modeSelect.value : ''] ?? 1;
+                return Math.round((baseTotal + participantTotal) * multiplier);
+            }
+
+            function isValidEmail(value) {
+                return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+            }
+
+            function isValidPhone(value) {
+                return /^\+?[0-9()\s-]{6,}$/.test(value.trim());
+            }
+        })();
+    </script>
+}

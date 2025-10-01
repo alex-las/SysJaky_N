@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="TrainingTypesLabel" xml:space="preserve">
+    <value>Vyberte požadované ISO normy</value>
+  </data>
+  <data name="ParticipantCountLabel" xml:space="preserve">
+    <value>Počet účastníků</value>
+  </data>
+  <data name="PreferredDateLabel" xml:space="preserve">
+    <value>Preferovaný termín</value>
+  </data>
+  <data name="ModeLabel" xml:space="preserve">
+    <value>Preferovaný režim školení</value>
+  </data>
+  <data name="CompanyIdLabel" xml:space="preserve">
+    <value>IČO</value>
+  </data>
+  <data name="CompanyNameLabel" xml:space="preserve">
+    <value>Název společnosti</value>
+  </data>
+  <data name="ContactPersonLabel" xml:space="preserve">
+    <value>Kontaktní osoba</value>
+  </data>
+  <data name="ContactEmailLabel" xml:space="preserve">
+    <value>E-mail</value>
+  </data>
+  <data name="ContactPhoneLabel" xml:space="preserve">
+    <value>Telefon</value>
+  </data>
+  <data name="PhoneInvalid" xml:space="preserve">
+    <value>Zadejte platné telefonní číslo.</value>
+  </data>
+</root>

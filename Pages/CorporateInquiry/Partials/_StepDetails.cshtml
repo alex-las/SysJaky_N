@@ -1,0 +1,29 @@
+@model SysJaky_N.Pages.CorporateInquiryModel
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+
+<h2 class="h4 mb-3">@Localizer["Step2Title"]</h2>
+<p class="text-muted mb-4">@Localizer["Step2Description"]</p>
+
+<div class="mb-3">
+    <label asp-for="Input.ParticipantCount" class="form-label"></label>
+    <input asp-for="Input.ParticipantCount" class="form-control" min="1" max="1000" />
+    <span asp-validation-for="Input.ParticipantCount" class="invalid-feedback"></span>
+</div>
+
+<div class="mb-3">
+    <label asp-for="Input.PreferredDate" class="form-label"></label>
+    <input asp-for="Input.PreferredDate" class="form-control" type="date" />
+    <span asp-validation-for="Input.PreferredDate" class="invalid-feedback"></span>
+</div>
+
+<div class="mb-3">
+    <label asp-for="Input.Mode" class="form-label"></label>
+    <select asp-for="Input.Mode" class="form-select">
+        <option value="">@Localizer["ModePlaceholder"]</option>
+        @foreach (var option in Model.ModeOptions)
+        {
+            <option value="@option" @(Model.Input.Mode == option ? "selected" : null)>@Localizer[$"ModeOption_{option}"]</option>
+        }
+    </select>
+    <span asp-validation-for="Input.Mode" class="invalid-feedback"></span>
+</div>
