@@ -13,8 +13,9 @@
     var returnUrl = string.Concat(Context.Request.Path, Context.Request.QueryString);
     var pushPublicKey = Configuration["PushNotifications:PublicKey"] ?? string.Empty;
     var toggleThemeLabel = Localizer["ToggleTheme"];
-    var themeToggleText = toggleThemeLabel.ResourceNotFound
-        ? (currentCulture.TwoLetterISOLanguageName == "cs" ? "Přepnout vzhled" : "Toggle theme")
+    var themeToggleFallback = currentCulture.TwoLetterISOLanguageName == "cs" ? "Přepnout vzhled" : "Toggle theme";
+    var themeToggleText = string.Equals(toggleThemeLabel.Name, toggleThemeLabel.Value, System.StringComparison.Ordinal)
+        ? themeToggleFallback
         : toggleThemeLabel.Value;
 }
 <!DOCTYPE html>
@@ -48,13 +49,13 @@
     <link rel="apple-touch-icon" sizes="512x512" href="~/img/icons/icon-512.png" />
     <script type="application/ld+json">
     {
-      "@context": "https://schema.org",
-      "@type": "EducationalOrganization",
+      "@@context": "https://schema.org",
+      "@@type": "EducationalOrganization",
       "name": "Systémy jakosti s.r.o.",
       "description": "Poskytovatel školení a poradenství v oblasti ISO norem",
       "url": "https://www.systemy-jakosti.cz",
       "address": {
-        "@type": "PostalAddress",
+        "@@type": "PostalAddress",
         "addressCountry": "CZ"
       }
     }

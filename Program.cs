@@ -22,15 +22,13 @@ using SysJaky_N.Middleware;
 using RazorLight;
 using Microsoft.Extensions.Hosting;
 using System.IO;
-using System.IO.Compression;
 using System.Security.Claims;
 using OfficeOpenXml;
 using Microsoft.Extensions.Logging.Abstractions; // kvůli NullLoggerFactory
 using Microsoft.Extensions.Options;
-using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.ResponseCompression;
-using Microsoft.Net.Http.Headers;
 using Serilog.Extensions.Logging;
+using CompressionLevel = System.IO.Compression.CompressionLevel;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
@@ -130,7 +128,7 @@ try
     {
         options.LoginPath = "/Account/Login";
         options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-        options.Cookie.SameSite = SameSiteMode.None;
+        options.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.None;
     });
 
     builder.Services.AddDistributedMemoryCache();
@@ -320,38 +318,6 @@ try
     }
 
     app.UseHttpsRedirection();
-    app.Use(async (context, next) =>
-    {
-        var pushFeature = context.Features.Get<IHttpPushPromiseFeature>();
-        if (pushFeature != null
-            && HttpMethods.IsGet(context.Request.Method)
-            && context.Request.Headers.TryGetValue(HeaderNames.Accept, out var accepted)
-            && accepted.Any(value => value.Contains("text/html", StringComparison.OrdinalIgnoreCase)))
-        {
-            var assetsToPush = new (string Path, string Accept)[]
-            {
-                ("/dist/styles.min.css", "text/css,*/*;q=0.1"),
-                ("/dist/scripts.min.js", "application/javascript,*/*;q=0.1")
-            };
-
-            foreach (var asset in assetsToPush)
-            {
-                try
-                {
-                    pushFeature.PushPromise(asset.Path, new HeaderDictionary
-                    {
-                        [HeaderNames.Accept] = asset.Accept
-                    });
-                }
-                catch (Exception ex)
-                {
-                    Log.Logger.Debug(ex, "HTTP/2 push failed for {Asset}", asset.Path);
-                }
-            }
-        }
-
-        await next();
-    });
     app.UseResponseCompression();
     app.UseMiddleware<ContentSecurityPolicyMiddleware>();
     app.UseMiddleware<ImageOptimizationMiddleware>();
