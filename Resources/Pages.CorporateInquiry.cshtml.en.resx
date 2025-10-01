@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Title" xml:space="preserve">
+    <value>Corporate training inquiry</value>
+  </data>
+  <data name="Intro" xml:space="preserve">
+    <value>Tell us which ISO standards you need to cover and we will prepare a tailored training offer for your company.</value>
+  </data>
+  <data name="EnableJavaScriptWarning" xml:space="preserve">
+    <value>JavaScript is required to submit this inquiry.</value>
+  </data>
+  <data name="ProgressAriaLabel" xml:space="preserve">
+    <value>Inquiry progress</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>Back</value>
+  </data>
+  <data name="Next" xml:space="preserve">
+    <value>Continue</value>
+  </data>
+  <data name="Submit" xml:space="preserve">
+    <value>Send inquiry</value>
+  </data>
+  <data name="EstimatedPriceLabel" xml:space="preserve">
+    <value>Estimated price</value>
+  </data>
+  <data name="EstimatedPricePlaceholder" xml:space="preserve">
+    <value>—</value>
+  </data>
+  <data name="Step1Title" xml:space="preserve">
+    <value>Select ISO standards</value>
+  </data>
+  <data name="Step1Description" xml:space="preserve">
+    <value>Choose which standards should be included in the training.</value>
+  </data>
+  <data name="Step2Title" xml:space="preserve">
+    <value>Training details</value>
+  </data>
+  <data name="Step2Description" xml:space="preserve">
+    <value>Provide the core details of the training you require.</value>
+  </data>
+  <data name="Step3Title" xml:space="preserve">
+    <value>Company information</value>
+  </data>
+  <data name="Step3Description" xml:space="preserve">
+    <value>Let us know who we will be working with.</value>
+  </data>
+  <data name="Step4Title" xml:space="preserve">
+    <value>Summary</value>
+  </data>
+  <data name="Step4Description" xml:space="preserve">
+    <value>Review your details before sending.</value>
+  </data>
+  <data name="SummaryTitle" xml:space="preserve">
+    <value>Inquiry summary</value>
+  </data>
+  <data name="SummaryTrainingTypes" xml:space="preserve">
+    <value>ISO standards</value>
+  </data>
+  <data name="SummaryParticipantCount" xml:space="preserve">
+    <value>Participants</value>
+  </data>
+  <data name="SummaryPreferredDate" xml:space="preserve">
+    <value>Preferred date</value>
+  </data>
+  <data name="SummaryMode" xml:space="preserve">
+    <value>Mode</value>
+  </data>
+  <data name="SummaryCompanyId" xml:space="preserve">
+    <value>Company ID</value>
+  </data>
+  <data name="SummaryCompanyName" xml:space="preserve">
+    <value>Company name</value>
+  </data>
+  <data name="SummaryContactPerson" xml:space="preserve">
+    <value>Contact person</value>
+  </data>
+  <data name="SummaryContactEmail" xml:space="preserve">
+    <value>Contact e-mail</value>
+  </data>
+  <data name="SummaryContactPhone" xml:space="preserve">
+    <value>Contact phone</value>
+  </data>
+  <data name="SummaryPrice" xml:space="preserve">
+    <value>Estimated price</value>
+  </data>
+  <data name="SummaryPlaceholder" xml:space="preserve">
+    <value>Not provided</value>
+  </data>
+  <data name="PriceUnavailable" xml:space="preserve">
+    <value>Enter details</value>
+  </data>
+  <data name="ModePlaceholder" xml:space="preserve">
+    <value>Select mode</value>
+  </data>
+  <data name="ModeOption_InPerson" xml:space="preserve">
+    <value>In person</value>
+  </data>
+  <data name="ModeOption_Online" xml:space="preserve">
+    <value>Online</value>
+  </data>
+  <data name="ModeOption_Hybrid" xml:space="preserve">
+    <value>Hybrid</value>
+  </data>
+  <data name="ISO9001" xml:space="preserve">
+    <value>ISO 9001 — Quality management</value>
+  </data>
+  <data name="ISO14001" xml:space="preserve">
+    <value>ISO 14001 — Environmental management</value>
+  </data>
+  <data name="ISO27001" xml:space="preserve">
+    <value>ISO/IEC 27001 — Information security</value>
+  </data>
+  <data name="ISO45001" xml:space="preserve">
+    <value>ISO 45001 — Occupational health &amp; safety</value>
+  </data>
+  <data name="ValidationStep1" xml:space="preserve">
+    <value>Select at least one ISO standard.</value>
+  </data>
+  <data name="ValidationParticipantRequired" xml:space="preserve">
+    <value>Please enter the number of participants.</value>
+  </data>
+  <data name="ValidationParticipantRange" xml:space="preserve">
+    <value>The number of participants must be between 1 and 1000.</value>
+  </data>
+  <data name="ValidationDateRequired" xml:space="preserve">
+    <value>Please select a preferred date.</value>
+  </data>
+  <data name="ValidationModeRequired" xml:space="preserve">
+    <value>Please choose your preferred training mode.</value>
+  </data>
+  <data name="ValidationCompanyIdRequired" xml:space="preserve">
+    <value>Please enter your company ID.</value>
+  </data>
+  <data name="ValidationCompanyNameRequired" xml:space="preserve">
+    <value>Please enter your company name.</value>
+  </data>
+  <data name="ValidationContactPersonRequired" xml:space="preserve">
+    <value>Please provide a contact person.</value>
+  </data>
+  <data name="ValidationContactEmailRequired" xml:space="preserve">
+    <value>Please provide a contact e-mail.</value>
+  </data>
+  <data name="ValidationContactEmailInvalid" xml:space="preserve">
+    <value>Please enter a valid e-mail address.</value>
+  </data>
+  <data name="ValidationContactPhoneRequired" xml:space="preserve">
+    <value>Please provide a contact phone number.</value>
+  </data>
+  <data name="ValidationContactPhoneInvalid" xml:space="preserve">
+    <value>Please enter a valid phone number.</value>
+  </data>
+</root>

@@ -1,0 +1,42 @@
+@model SysJaky_N.Pages.CorporateInquiryModel
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+
+<h2 class="h4 mb-3">@Localizer["Step4Title"]</h2>
+<p class="text-muted mb-4">@Localizer["Step4Description"]</p>
+
+<div class="card">
+    <div class="card-body">
+        <h3 class="h5 mb-3">@Localizer["SummaryTitle"]</h3>
+        <dl class="row mb-0">
+            <dt class="col-sm-4">@Localizer["SummaryTrainingTypes"]</dt>
+            <dd class="col-sm-8" id="summary-training-types">@Localizer["SummaryPlaceholder"]</dd>
+
+            <dt class="col-sm-4">@Localizer["SummaryParticipantCount"]</dt>
+            <dd class="col-sm-8" id="summary-participant-count">@Localizer["SummaryPlaceholder"]</dd>
+
+            <dt class="col-sm-4">@Localizer["SummaryPreferredDate"]</dt>
+            <dd class="col-sm-8" id="summary-preferred-date">@Localizer["SummaryPlaceholder"]</dd>
+
+            <dt class="col-sm-4">@Localizer["SummaryMode"]</dt>
+            <dd class="col-sm-8" id="summary-mode">@Localizer["SummaryPlaceholder"]</dd>
+
+            <dt class="col-sm-4">@Localizer["SummaryCompanyId"]</dt>
+            <dd class="col-sm-8" id="summary-company-id">@Localizer["SummaryPlaceholder"]</dd>
+
+            <dt class="col-sm-4">@Localizer["SummaryCompanyName"]</dt>
+            <dd class="col-sm-8" id="summary-company-name">@Localizer["SummaryPlaceholder"]</dd>
+
+            <dt class="col-sm-4">@Localizer["SummaryContactPerson"]</dt>
+            <dd class="col-sm-8" id="summary-contact-person">@Localizer["SummaryPlaceholder"]</dd>
+
+            <dt class="col-sm-4">@Localizer["SummaryContactEmail"]</dt>
+            <dd class="col-sm-8" id="summary-contact-email">@Localizer["SummaryPlaceholder"]</dd>
+
+            <dt class="col-sm-4">@Localizer["SummaryContactPhone"]</dt>
+            <dd class="col-sm-8" id="summary-contact-phone">@Localizer["SummaryPlaceholder"]</dd>
+
+            <dt class="col-sm-4">@Localizer["SummaryPrice"]</dt>
+            <dd class="col-sm-8" id="summary-price">@Localizer["PriceUnavailable"]</dd>
+        </dl>
+    </div>
+</div>

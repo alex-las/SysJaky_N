@@ -1,0 +1,33 @@
+@model SysJaky_N.Pages.CorporateInquiryModel
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+
+<h2 class="h4 mb-3">@Localizer["Step3Title"]</h2>
+<p class="text-muted mb-4">@Localizer["Step3Description"]</p>
+
+<div class="row g-3">
+    <div class="col-md-6">
+        <label asp-for="Input.CompanyId" class="form-label"></label>
+        <input asp-for="Input.CompanyId" class="form-control" />
+        <span asp-validation-for="Input.CompanyId" class="invalid-feedback"></span>
+    </div>
+    <div class="col-md-6">
+        <label asp-for="Input.CompanyName" class="form-label"></label>
+        <input asp-for="Input.CompanyName" class="form-control" />
+        <span asp-validation-for="Input.CompanyName" class="invalid-feedback"></span>
+    </div>
+    <div class="col-md-6">
+        <label asp-for="Input.ContactPerson" class="form-label"></label>
+        <input asp-for="Input.ContactPerson" class="form-control" />
+        <span asp-validation-for="Input.ContactPerson" class="invalid-feedback"></span>
+    </div>
+    <div class="col-md-6">
+        <label asp-for="Input.ContactEmail" class="form-label"></label>
+        <input asp-for="Input.ContactEmail" class="form-control" />
+        <span asp-validation-for="Input.ContactEmail" class="invalid-feedback"></span>
+    </div>
+    <div class="col-md-6">
+        <label asp-for="Input.ContactPhone" class="form-label"></label>
+        <input asp-for="Input.ContactPhone" class="form-control" />
+        <span asp-validation-for="Input.ContactPhone" class="invalid-feedback"></span>
+    </div>
+</div>

@@ -1,0 +1,25 @@
+@model SysJaky_N.Pages.CorporateInquiryModel
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+
+<h2 class="h4 mb-3">@Localizer["Step1Title"]</h2>
+<p class="text-muted mb-4">@Localizer["Step1Description"]</p>
+
+<div class="mb-3" role="group" aria-labelledby="trainingTypesLabel">
+    <span id="trainingTypesLabel" class="form-label d-block fw-semibold">@Localizer["TrainingTypesLabel"]</span>
+    @for (var index = 0; index < Model.IsoTrainingOptionKeys.Count; index++)
+    {
+        var key = Model.IsoTrainingOptionKeys[index];
+        var inputId = $"iso-option-{index}";
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="@inputId" name="Input.TrainingTypes" value="@key" @(Model.Input.TrainingTypes.Contains(key) ? "checked" : null) />
+            <label class="form-check-label" for="@inputId">@Localizer[key]</label>
+        </div>
+    }
+    @{
+        var trainingError = ViewData.ModelState.TryGetValue("Input.TrainingTypes", out var trainingState) && trainingState.Errors.Count > 0
+            ? trainingState.Errors[0].ErrorMessage
+            : null;
+        var errorClass = string.IsNullOrEmpty(trainingError) ? "d-none" : string.Empty;
+    }
+    <div id="step1-error" class="text-danger small mt-2 @errorClass">@trainingError</div>
+</div>

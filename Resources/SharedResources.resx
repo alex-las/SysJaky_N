@@ -30,4 +30,7 @@
   <data name="ContactMessageLabel" xml:space="preserve">
     <value>Zpráva</value>
   </data>
+  <data name="Range" xml:space="preserve">
+    <value>Pole {0} musí být mezi {1} a {2}.</value>
+  </data>
 </root>
