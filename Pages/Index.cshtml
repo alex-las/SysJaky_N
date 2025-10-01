@@ -6,12 +6,6 @@
 }
 
 <section class="py-5 gradient-hero text-white text-center rounded-4 mb-4 hero-section">
-    <div class="hero-background" aria-hidden="true">
-        <span class="hero-floating-icon hero-icon-1">ISO<br />9001</span>
-        <span class="hero-floating-icon hero-icon-2">ISO<br />14001</span>
-        <span class="hero-floating-icon hero-icon-3">ISO<br />45001</span>
-        <span class="hero-floating-icon hero-icon-4">ISO<br />27001</span>
-    </div>
     <div class="container-xl position-relative">
         <h1 class="display-5 fw-bold mb-2">@Localizer["HeroHeadingPrefix"] <span class="underline-accent"><span class="typewriter" data-typewriter-text="@Localizer["HeroHeadingAccent"]">@Localizer["HeroHeadingAccent"]</span></span></h1>
         <p class="lead mb-4 opacity-75">@Localizer["HeroSubheading"]</p>
@@ -107,7 +101,7 @@
                 if (index <= text.length) {
                     el.textContent = text.slice(0, index);
                     index += 1;
-                    window.setTimeout(step, 70);
+                    window.setTimeout(step, 100);
                 } else {
                     el.classList.remove('is-typing');
                     el.classList.add('typewriter-complete');
@@ -121,30 +115,54 @@
             const stats = document.querySelectorAll('.stat-number');
             if (!stats.length) return;
 
-            stats.forEach((el) => {
+            const duration = 2000;
+
+            const startAnimation = (el) => {
                 const target = Number(el.getAttribute('data-target')) || 0;
                 const decimals = Number(el.getAttribute('data-decimals')) || 0;
-                const duration = Number(el.getAttribute('data-duration')) || 1600;
                 const prefix = el.getAttribute('data-prefix') || '';
                 const suffix = el.getAttribute('data-suffix') || '';
 
                 const startTimestamp = performance.now();
 
-                const tick = (now) => {
-                    const progress = Math.min((now - startTimestamp) / duration, 1);
-                    const current = target * progress;
-                    const formatted = current.toLocaleString(locale, {
+                const renderValue = (value) => {
+                    const formatted = value.toLocaleString(locale, {
                         minimumFractionDigits: decimals,
                         maximumFractionDigits: decimals
                     });
                     el.textContent = `${prefix}${formatted}${suffix}`;
+                };
+
+                renderValue(0);
+
+                const tick = (now) => {
+                    const progress = Math.min((now - startTimestamp) / duration, 1);
+                    const current = target * progress;
+                    renderValue(current);
                     if (progress < 1) {
                         requestAnimationFrame(tick);
                     }
                 };
 
                 requestAnimationFrame(tick);
+            };
+
+            if (!('IntersectionObserver' in window)) {
+                stats.forEach(startAnimation);
+                return;
+            }
+
+            const observer = new IntersectionObserver((entries, obs) => {
+                entries.forEach((entry) => {
+                    if (!entry.isIntersecting) return;
+                    startAnimation(entry.target);
+                    obs.unobserve(entry.target);
+                });
+            }, {
+                threshold: 0.4
             });
+
+            stats.forEach((el) => observer.observe(el));
         };
 
         const init = () => {
