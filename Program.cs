@@ -285,13 +285,19 @@ try
     var app = builder.Build();
 
     // DB migrate + seed (bez rekurze – sink používá tichou továrnu ApplicationDbContext)
-    using (var scope = app.Services.CreateScope())
+    try
     {
+        using var scope = app.Services.CreateScope();
         var services = scope.ServiceProvider;
         var context = services.GetRequiredService<ApplicationDbContext>();
-        context.Database.Migrate();
+        await context.Database.MigrateAsync();
         var seeder = new AdminSeeder(services);
         await seeder.SeedAsync();
+    }
+    catch (Exception ex)
+    {
+        app.Logger.LogError(ex,
+            "Database migration or seeding failed during startup. Ensure the database is reachable and configured correctly.");
     }
 
     app.UseForwardedHeaders();
