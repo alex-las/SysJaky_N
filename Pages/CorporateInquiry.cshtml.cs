@@ -11,8 +11,47 @@ namespace SysJaky_N.Pages;
 
 public class CorporateInquiryModel : PageModel
 {
-    private static readonly string[] Step1TrainingKeys = new[] { "ISO9001", "ISO14001", "ISO27001", "ISO45001" };
+    private static readonly string[] Step1TrainingKeys =
+    {
+        "ISO9001",
+        "ISO14001",
+        "ISO17025",
+        "ISO15189",
+        "HACCP",
+        "ISO45001",
+        "ISO27001",
+        "IATF16949",
+        "ISO13485"
+    };
+
     private static readonly string[] ModeValues = new[] { "InPerson", "Online", "Hybrid" };
+
+    private static readonly string[] ServiceTypeKeys =
+    {
+        "CustomTraining",
+        "CertificationProject",
+        "PreAudit",
+        "InternalAudit",
+        "Consulting"
+    };
+
+    private static readonly string[] TrainingLevelKeys = { "Basic", "Advanced", "Certification" };
+
+    private static readonly Dictionary<string, decimal> ServiceTypeMultipliers = new()
+    {
+        ["CustomTraining"] = 1m,
+        ["CertificationProject"] = 1.6m,
+        ["PreAudit"] = 1.35m,
+        ["InternalAudit"] = 1.25m,
+        ["Consulting"] = 1.15m
+    };
+
+    private static readonly Dictionary<string, decimal> TrainingLevelMultipliers = new()
+    {
+        ["Basic"] = 1m,
+        ["Advanced"] = 1.2m,
+        ["Certification"] = 1.45m
+    };
     private readonly IStringLocalizer<CorporateInquiryModel> _localizer;
 
     public CorporateInquiryModel(IStringLocalizer<CorporateInquiryModel> localizer)
@@ -27,6 +66,10 @@ public class CorporateInquiryModel : PageModel
 
     public IReadOnlyList<string> IsoTrainingOptionKeys => Step1TrainingKeys;
 
+    public IReadOnlyList<string> ServiceTypeOptions => ServiceTypeKeys;
+
+    public IReadOnlyList<string> TrainingLevelOptions => TrainingLevelKeys;
+
     public IReadOnlyList<string> ModeOptions => ModeValues;
 
     public decimal BaseTrainingPrice => 8500m;
@@ -40,8 +83,16 @@ public class CorporateInquiryModel : PageModel
         ["Hybrid"] = 1.4m
     });
 
+    public string ServiceTypeMultipliersJson => JsonSerializer.Serialize(ServiceTypeMultipliers);
+
+    public string TrainingLevelMultipliersJson => JsonSerializer.Serialize(TrainingLevelMultipliers);
+
     public class InputModel
     {
+        [Display(Name = nameof(CorporateInquiryResources.ServiceTypeLabel), ResourceType = typeof(CorporateInquiryResources))]
+        [Required(ErrorMessageResourceType = typeof(SharedResources), ErrorMessageResourceName = nameof(SharedResources.FieldRequired))]
+        public string ServiceType { get; set; } = string.Empty;
+
         [Display(Name = nameof(CorporateInquiryResources.TrainingTypesLabel), ResourceType = typeof(CorporateInquiryResources))]
         public List<string> TrainingTypes { get; set; } = new();
 
@@ -58,6 +109,18 @@ public class CorporateInquiryModel : PageModel
         [Display(Name = nameof(CorporateInquiryResources.ModeLabel), ResourceType = typeof(CorporateInquiryResources))]
         [Required(ErrorMessageResourceType = typeof(SharedResources), ErrorMessageResourceName = nameof(SharedResources.FieldRequired))]
         public string Mode { get; set; } = string.Empty;
+
+        [Display(Name = nameof(CorporateInquiryResources.TrainingLevelLabel), ResourceType = typeof(CorporateInquiryResources))]
+        [Required(ErrorMessageResourceType = typeof(SharedResources), ErrorMessageResourceName = nameof(SharedResources.FieldRequired))]
+        public string TrainingLevel { get; set; } = string.Empty;
+
+        [Display(Name = nameof(CorporateInquiryResources.LocationLabel), ResourceType = typeof(CorporateInquiryResources))]
+        [StringLength(200, ErrorMessageResourceType = typeof(SharedResources), ErrorMessageResourceName = nameof(SharedResources.StringLength))]
+        public string Location { get; set; } = string.Empty;
+
+        [Display(Name = nameof(CorporateInquiryResources.SpecialRequirementsLabel), ResourceType = typeof(CorporateInquiryResources))]
+        [StringLength(1000, ErrorMessageResourceType = typeof(SharedResources), ErrorMessageResourceName = nameof(SharedResources.StringLength))]
+        public string SpecialRequirements { get; set; } = string.Empty;
 
         [Display(Name = nameof(CorporateInquiryResources.CompanyIdLabel), ResourceType = typeof(CorporateInquiryResources))]
         [Required(ErrorMessageResourceType = typeof(SharedResources), ErrorMessageResourceName = nameof(SharedResources.FieldRequired))]
@@ -97,7 +160,12 @@ public class CorporateInquiryModel : PageModel
 
         if (!Input.TrainingTypes.Any())
         {
-            ModelState.AddModelError("Input.TrainingTypes", _localizer["ValidationStep1"]);
+            ModelState.AddModelError("Input.TrainingTypes", _localizer["ValidationTrainingTypesRequired"]);
+        }
+
+        if (RequiresLocation(Input.Mode) && string.IsNullOrWhiteSpace(Input.Location))
+        {
+            ModelState.AddModelError("Input.Location", _localizer["ValidationLocationRequired"]);
         }
 
         if (!ModelState.IsValid)
@@ -120,15 +188,23 @@ public class CorporateInquiryModel : PageModel
                 continue;
             }
 
-            if (entry.Key.StartsWith("Input.TrainingTypes", StringComparison.Ordinal))
+            if (entry.Key.StartsWith("Input.ServiceType", StringComparison.Ordinal))
             {
                 return 1;
             }
-            if (entry.Key.StartsWith("Input.ParticipantCount", StringComparison.Ordinal) ||
-                entry.Key.StartsWith("Input.PreferredDate", StringComparison.Ordinal) ||
-                entry.Key.StartsWith("Input.Mode", StringComparison.Ordinal))
+
+            if (entry.Key.StartsWith("Input.TrainingTypes", StringComparison.Ordinal))
             {
                 return 2;
+            }
+
+            if (entry.Key.StartsWith("Input.ParticipantCount", StringComparison.Ordinal) ||
+                entry.Key.StartsWith("Input.PreferredDate", StringComparison.Ordinal) ||
+                entry.Key.StartsWith("Input.Mode", StringComparison.Ordinal) ||
+                entry.Key.StartsWith("Input.TrainingLevel", StringComparison.Ordinal) ||
+                entry.Key.StartsWith("Input.Location", StringComparison.Ordinal))
+            {
+                return 3;
             }
             if (entry.Key.StartsWith("Input.CompanyId", StringComparison.Ordinal) ||
                 entry.Key.StartsWith("Input.CompanyName", StringComparison.Ordinal) ||
@@ -136,10 +212,16 @@ public class CorporateInquiryModel : PageModel
                 entry.Key.StartsWith("Input.ContactEmail", StringComparison.Ordinal) ||
                 entry.Key.StartsWith("Input.ContactPhone", StringComparison.Ordinal))
             {
-                return 3;
+                return 4;
             }
         }
 
         return 1;
+    }
+
+    private static bool RequiresLocation(string mode)
+    {
+        return string.Equals(mode, "InPerson", StringComparison.Ordinal) ||
+               string.Equals(mode, "Hybrid", StringComparison.Ordinal);
     }
 }

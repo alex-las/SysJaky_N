@@ -4,9 +4,13 @@
 <h2 class="h4 mb-3">@Localizer["Step2Title"]</h2>
 <p class="text-muted mb-4">@Localizer["Step2Description"]</p>
 
-<div class="mb-3">
-    <label asp-for="Input.ParticipantCount" class="form-label"></label>
-    <input asp-for="Input.ParticipantCount" class="form-control" min="1" max="1000" />
+<div class="mb-4">
+    <label asp-for="Input.ParticipantCount" class="form-label d-flex justify-content-between align-items-center">
+        <span>@Html.DisplayNameFor(m => m.Input.ParticipantCount)</span>
+        <span id="participant-count-display" class="badge bg-primary-subtle text-primary-emphasis">@(Model.Input.ParticipantCount ?? 1)</span>
+    </label>
+    <input asp-for="Input.ParticipantCount" class="form-range" type="range" min="1" max="50" value="@(Model.Input.ParticipantCount ?? 1)" aria-describedby="participant-count-display" />
+    <div class="form-text">@Localizer["ParticipantCountHint"]</div>
     <span asp-validation-for="Input.ParticipantCount" class="invalid-feedback"></span>
 </div>
 
@@ -16,14 +20,46 @@
     <span asp-validation-for="Input.PreferredDate" class="invalid-feedback"></span>
 </div>
 
-<div class="mb-3">
-    <label asp-for="Input.Mode" class="form-label"></label>
-    <select asp-for="Input.Mode" class="form-select">
-        <option value="">@Localizer["ModePlaceholder"]</option>
-        @foreach (var option in Model.ModeOptions)
-        {
-            <option value="@option" selected="@(Model.Input.Mode == option ? "selected" : null)">@Localizer[$"ModeOption_{option}"]</option>
-        }
-    </select>
+<div class="mb-3" role="group" aria-labelledby="trainingLevelLabel">
+    <span id="trainingLevelLabel" class="form-label d-block fw-semibold">@Html.DisplayNameFor(m => m.Input.TrainingLevel)</span>
+    @for (var index = 0; index < Model.TrainingLevelOptions.Count; index++)
+    {
+        var option = Model.TrainingLevelOptions[index];
+        var inputId = $"training-level-{index}";
+        <div class="form-check">
+            <input class="form-check-input" type="radio" id="@inputId" name="Input.TrainingLevel" value="@option" @(Model.Input.TrainingLevel == option ? "checked" : null) />
+            <label class="form-check-label" for="@inputId">@Localizer[$"TrainingLevel_{option}"]</label>
+        </div>
+    }
+    <span asp-validation-for="Input.TrainingLevel" class="invalid-feedback"></span>
+</div>
+
+<div class="mb-3" role="group" aria-labelledby="modeLabel">
+    <span id="modeLabel" class="form-label d-block fw-semibold">@Html.DisplayNameFor(m => m.Input.Mode)</span>
+    @for (var index = 0; index < Model.ModeOptions.Count; index++)
+    {
+        var option = Model.ModeOptions[index];
+        var inputId = $"mode-option-{index}";
+        <div class="form-check">
+            <input class="form-check-input" type="radio" id="@inputId" name="Input.Mode" value="@option" @(Model.Input.Mode == option ? "checked" : null) />
+            <label class="form-check-label" for="@inputId">@Localizer[$"ModeOption_{option}"]</label>
+        </div>
+    }
     <span asp-validation-for="Input.Mode" class="invalid-feedback"></span>
+</div>
+
+@{
+    var showLocation = Model.Input.Mode == "InPerson" || Model.Input.Mode == "Hybrid";
+    var locationClasses = showLocation ? "mb-3" : "mb-3 d-none";
+}
+<div class="@locationClasses" data-location-container>
+    <label asp-for="Input.Location" class="form-label"></label>
+    <input asp-for="Input.Location" class="form-control" />
+    <span asp-validation-for="Input.Location" class="invalid-feedback"></span>
+</div>
+
+<div class="mb-3">
+    <label asp-for="Input.SpecialRequirements" class="form-label"></label>
+    <textarea asp-for="Input.SpecialRequirements" class="form-control" rows="4"></textarea>
+    <span asp-validation-for="Input.SpecialRequirements" class="invalid-feedback"></span>
 </div>
