@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using SysJaky_N.Models;
 using SysJaky_N.Services;
+using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 using System.Linq;
 
@@ -29,8 +30,16 @@ public class EditModel : PageModel
 
     public class InputModel
     {
+        [Required(ErrorMessage = "Pole {0} je povinné.")]
+        [EmailAddress(ErrorMessage = "Zadejte platnou e-mailovou adresu.")]
+        [Display(Name = "E-mail")]
         public string Email { get; set; } = string.Empty;
+
+        [Phone(ErrorMessage = "Zadejte platné telefonní číslo.")]
+        [Display(Name = "Telefonní číslo")]
         public string? PhoneNumber { get; set; }
+
+        [Display(Name = "Účet zablokován")]
         public bool IsLocked { get; set; }
         public List<RoleSelection> Roles { get; set; } = new();
     }
