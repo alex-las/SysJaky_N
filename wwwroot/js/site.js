@@ -148,6 +148,153 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    const wishlistStorageKey = 'courseWishlist';
+
+    const readWishlistState = () => {
+        try {
+            const raw = window.localStorage?.getItem(wishlistStorageKey);
+            if (!raw) {
+                return new Set();
+            }
+            const parsed = JSON.parse(raw);
+            if (Array.isArray(parsed)) {
+                return new Set(parsed.map((value) => value.toString()));
+            }
+        } catch (error) {
+            console.warn('Unable to read wishlist state', error);
+        }
+        return new Set();
+    };
+
+    const wishlistState = readWishlistState();
+
+    const persistWishlist = () => {
+        try {
+            window.localStorage?.setItem(wishlistStorageKey, JSON.stringify(Array.from(wishlistState)));
+        } catch (error) {
+            console.warn('Unable to persist wishlist state', error);
+        }
+    };
+
+    const syncWishlistButton = (button) => {
+        const courseId = button?.dataset?.courseId;
+        if (!courseId) {
+            return;
+        }
+
+        const isActive = wishlistState.has(courseId.toString());
+        const addLabel = button.dataset.wishlistLabelAdd ?? '';
+        const removeLabel = button.dataset.wishlistLabelRemove ?? addLabel;
+
+        button.classList.toggle('is-active', isActive);
+        button.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+        button.setAttribute('aria-label', isActive ? removeLabel : addLabel);
+    };
+
+    const animateWishlist = (button) => {
+        if (!button) {
+            return;
+        }
+
+        button.classList.remove('is-burst');
+        void button.offsetWidth; // trigger reflow
+        button.classList.add('is-burst');
+    };
+
+    document.addEventListener('click', (event) => {
+        const button = event.target.closest('[data-wishlist-button]');
+        if (!button) {
+            return;
+        }
+
+        event.preventDefault();
+
+        const courseId = button.dataset.courseId;
+        if (!courseId) {
+            return;
+        }
+
+        if (wishlistState.has(courseId.toString())) {
+            wishlistState.delete(courseId.toString());
+        } else {
+            wishlistState.add(courseId.toString());
+        }
+
+        persistWishlist();
+        syncWishlistButton(button);
+        animateWishlist(button);
+    });
+
+    const wishlistApi = {
+        syncAll(root = document) {
+            root.querySelectorAll('[data-wishlist-button]').forEach(syncWishlistButton);
+        }
+    };
+
+    wishlistApi.syncAll();
+    window.courseCardWishlist = wishlistApi;
+
+    const previewApi = (() => {
+        const bootstrapLib = window.bootstrap;
+        if (!bootstrapLib || typeof bootstrapLib.Tooltip !== 'function') {
+            return { register: () => undefined };
+        }
+
+        const mediaQuery = window.matchMedia('(hover: hover) and (pointer: fine)');
+        const tooltips = new Map();
+
+        const register = (root = document) => {
+            if (!mediaQuery.matches) {
+                return;
+            }
+
+            root.querySelectorAll('[data-course-preview]').forEach((element) => {
+                if (tooltips.has(element)) {
+                    return;
+                }
+
+                const text = element.getAttribute('data-course-preview');
+                if (!text) {
+                    return;
+                }
+
+                const tooltip = new bootstrapLib.Tooltip(element, {
+                    title: text,
+                    trigger: 'hover focus',
+                    placement: 'top',
+                    container: 'body',
+                    customClass: 'course-preview-tooltip'
+                });
+
+                tooltips.set(element, tooltip);
+            });
+        };
+
+        const disposeAll = () => {
+            tooltips.forEach((tooltip, element) => {
+                tooltip.dispose();
+                tooltips.delete(element);
+            });
+        };
+
+        if (typeof mediaQuery.addEventListener === 'function') {
+            mediaQuery.addEventListener('change', (event) => {
+                if (event.matches) {
+                    register();
+                } else {
+                    disposeAll();
+                }
+            });
+        }
+
+        register();
+
+        return { register };
+    })();
+
+    window.courseCardPreview = previewApi;
+    previewApi.register();
+
     const initCertificationTimeline = () => {
         const section = document.querySelector('.certification-timeline-section');
         if (!section) {

@@ -175,7 +175,7 @@
           @foreach (var c in Model.PicksForPersona)
           {
             <div class="col-12 col-md-6">
-              @await Html.PartialAsync("/Pages/Shared/Components/_CourseCard.cshtml", c)
+              @await Html.PartialAsync("/Pages/Shared/_CourseCard.cshtml", c)
             </div>
           }
           @if (!Model.PicksForPersona.Any())

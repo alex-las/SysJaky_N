@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using SysJaky_N.Data;
 using SysJaky_N.Services;
 using SysJaky_N.Models;
+using SysJaky_N.Extensions;
 using System.Globalization;
 
 namespace SysJaky_N.Pages.Courses;
@@ -21,7 +22,7 @@ public class IndexModel : PageModel
         _cacheService = cacheService;
     }
 
-    public IList<Course> Courses { get; set; } = new List<Course>();
+    public IList<CourseCardViewModel> Courses { get; set; } = new List<CourseCardViewModel>();
 
     [BindProperty(SupportsGet = true)]
     public int PageNumber { get; set; } = 1;
@@ -91,7 +92,7 @@ public class IndexModel : PageModel
 
         TotalPages = cacheEntry.TotalPages;
         TotalCount = cacheEntry.TotalCount;
-        Courses = cacheEntry.Courses.ToList();
+        Courses = BuildCourseCards(cacheEntry);
     }
 
     public async Task<IActionResult> OnGetCoursesAsync()
@@ -102,9 +103,7 @@ public class IndexModel : PageModel
         var cacheKey = BuildCourseListCacheKey(filterContext);
         var cacheEntry = await LoadCoursesAsync(filterContext, cacheKey);
 
-        var courseSummaries = cacheEntry.Courses
-            .Select(ToCourseSummary)
-            .ToList();
+        var courseSummaries = BuildCourseCards(cacheEntry);
 
         return new JsonResult(new CoursesResponse(
             new PaginationMetadata(filterContext.PageNumber, cacheEntry.TotalPages, cacheEntry.TotalCount),
@@ -341,7 +340,9 @@ public class IndexModel : PageModel
                 .Take(PageSize)
                 .ToListAsync();
 
-            return new CourseListCacheEntry(courses, totalPages, count);
+            var snapshots = await _context.LoadTermSnapshotsAsync(courses.Select(c => c.Id));
+
+            return new CourseListCacheEntry(courses, snapshots, totalPages, count);
         });
     }
 
@@ -358,32 +359,28 @@ public class IndexModel : PageModel
         return $"page={filterContext.PageNumber}|search={searchKey}|norms={normsKey}|cities={citiesKey}|levels={levelsKey}|types={typesKey}|minPrice={minKey}|maxPrice={maxKey}";
     }
 
-    private CourseSummary ToCourseSummary(Course course)
+    private List<CourseCardViewModel> BuildCourseCards(CourseListCacheEntry cacheEntry)
     {
         var culture = CultureInfo.CurrentCulture;
-        var dateDisplay = course.Date.ToString("d", culture);
-        var priceDisplay = course.Price.ToString("C", culture);
-        var durationDisplay = string.Format(culture, "{0} min", course.Duration);
-
-        var detailsUrl = Url.Page("/Courses/Details", new { id = course.Id }) ?? $"/Courses/Details/{course.Id}";
         var addToCartUrl = Url.Page("/Courses/Index", pageHandler: "AddToCart") ?? "/Courses/Index?handler=AddToCart";
 
-        return new CourseSummary(
-            course.Id,
-            course.Title,
-            course.Description,
-            course.Level.ToString(),
-            course.Mode.ToString(),
-            course.Type.ToString(),
-            course.Duration,
-            durationDisplay,
-            dateDisplay,
-            course.Price,
-            priceDisplay,
-            course.CoverImageUrl,
-            course.PopoverHtml,
-            detailsUrl,
-            addToCartUrl);
+        return cacheEntry.Courses
+            .Select(course =>
+            {
+                var detailsUrl = Url.Page("/Courses/Details", new { id = course.Id }) ?? $"/Courses/Details/{course.Id}";
+                var wishlistUrl = Url.Page("/Courses/Details", new { id = course.Id, handler = "AddToWishlist" })
+                    ?? $"/Courses/Details/{course.Id}?handler=AddToWishlist";
+
+                cacheEntry.TermSnapshots.TryGetValue(course.Id, out var snapshot);
+
+                return course.ToCourseCardViewModel(
+                    culture,
+                    detailsUrl,
+                    addToCartUrl,
+                    wishlistUrl,
+                    snapshot);
+            })
+            .ToList();
     }
 
     private record CourseFilterContext(
@@ -402,29 +399,12 @@ public class IndexModel : PageModel
 
     private record CoursesResponse(
         PaginationMetadata Pagination,
-        IReadOnlyList<CourseSummary> Courses,
+        IReadOnlyList<CourseCardViewModel> Courses,
         PriceRange PriceRange);
 
     private record PaginationMetadata(int PageNumber, int TotalPages, int TotalCount);
 
     private record PriceRange(decimal Min, decimal Max);
-
-    private record CourseSummary(
-        int Id,
-        string Title,
-        string? Description,
-        string Level,
-        string Mode,
-        string Type,
-        int Duration,
-        string DurationDisplay,
-        string DateDisplay,
-        decimal Price,
-        string PriceDisplay,
-        string? CoverImageUrl,
-        string? PopoverHtml,
-        string DetailsUrl,
-        string AddToCartUrl);
 
     public async Task<IActionResult> OnPostAddToCartAsync(int courseId)
     {

@@ -12,38 +12,8 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Title" xml:space="preserve">
-    <value>Kurzy a školení</value>
-  </data>
-  <data name="TabList" xml:space="preserve">
-    <value>Seznam</value>
-  </data>
-  <data name="TabCalendar" xml:space="preserve">
-    <value>Kalendář</value>
-  </data>
-  <data name="ResultCount" xml:space="preserve">
-    <value>{0} výsledků</value>
-  </data>
-  <data name="ResetFilters" xml:space="preserve">
-    <value>Zrušit filtry</value>
-  </data>
-  <data name="FiltersButton" xml:space="preserve">
-    <value>Filtry</value>
-  </data>
-  <data name="PaginationLabel" xml:space="preserve">
-    <value>Stránkování kurzů</value>
-  </data>
-  <data name="Previous" xml:space="preserve">
-    <value>Předchozí</value>
-  </data>
-  <data name="Next" xml:space="preserve">
-    <value>Další</value>
-  </data>
-  <data name="CompareBarCountFormat" xml:space="preserve">
-    <value>{0} vybráno</value>
-  </data>
-  <data name="CompareBarCta" xml:space="preserve">
-    <value>Porovnat</value>
+  <data name="CourseImageAlt" xml:space="preserve">
+    <value>Obrázek kurzu {0}</value>
   </data>
   <data name="StartsInDays" xml:space="preserve">
     <value>Začíná za {0} dní</value>
@@ -60,13 +30,10 @@
   <data name="OccupancyAria" xml:space="preserve">
     <value>Obsazenost {0}%</value>
   </data>
-  <data name="WishlistAdd" xml:space="preserve">
-    <value>Přidat do oblíbených</value>
-  </data>
-  <data name="WishlistRemove" xml:space="preserve">
-    <value>Odebrat z oblíbených</value>
-  </data>
   <data name="PreviewLabel" xml:space="preserve">
+    <value>Rychlý náhled</value>
+  </data>
+  <data name="PreviewFallback" xml:space="preserve">
     <value>Rychlý náhled</value>
   </data>
   <data name="IsoBadgeAria" xml:space="preserve">
@@ -75,11 +42,23 @@
   <data name="IsoBadgeListAria" xml:space="preserve">
     <value>ISO certifikace</value>
   </data>
+  <data name="WishlistAdd" xml:space="preserve">
+    <value>Přidat do oblíbených</value>
+  </data>
+  <data name="WishlistRemove" xml:space="preserve">
+    <value>Odebrat z oblíbených</value>
+  </data>
+  <data name="MetaInformation" xml:space="preserve">
+    <value>Parametry kurzu</value>
+  </data>
   <data name="ModeAria" xml:space="preserve">
     <value>Režim: {0}</value>
   </data>
   <data name="LevelAria" xml:space="preserve">
     <value>Úroveň: {0}</value>
+  </data>
+  <data name="TypeAria" xml:space="preserve">
+    <value>Typ: {0}</value>
   </data>
   <data name="CertificateAria" xml:space="preserve">
     <value>Informace o certifikátu</value>
@@ -90,19 +69,25 @@
   <data name="CertificateUnavailable" xml:space="preserve">
     <value>Bez certifikátu</value>
   </data>
-  <data name="AdditionalInfo" xml:space="preserve">
-    <value>Podrobnosti</value>
-  </data>
-  <data name="MetaInformation" xml:space="preserve">
-    <value>Parametry kurzu</value>
-  </data>
   <data name="CourseDateAria" xml:space="preserve">
     <value>Datum konání {0}</value>
   </data>
-  <data name="CourseDateLabel" xml:space="preserve">
-    <value>Datum</value>
+  <data name="CourseAdditionalInfoAria" xml:space="preserve">
+    <value>Další informace o kurzu {0}</value>
   </data>
-  <data name="TypeAria" xml:space="preserve">
-    <value>Typ: {0}</value>
+  <data name="AdditionalInfo" xml:space="preserve">
+    <value>Podrobnosti</value>
+  </data>
+  <data name="Compare" xml:space="preserve">
+    <value>Porovnat</value>
+  </data>
+  <data name="Details" xml:space="preserve">
+    <value>Detail</value>
+  </data>
+  <data name="Enroll" xml:space="preserve">
+    <value>Přihlásit se</value>
+  </data>
+  <data name="EnrollAriaLabel" xml:space="preserve">
+    <value>Přihlásit se na {0}</value>
   </data>
 </root>

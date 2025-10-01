@@ -49,7 +49,7 @@
         <div id="coursesGrid" class="courses-grid">
             @foreach (var c in Model.Courses)
             {
-                @await Html.PartialAsync("/Pages/Shared/Components/_CourseCard.cshtml", c)
+                @await Html.PartialAsync("/Pages/Shared/_CourseCard.cshtml", c)
             }
         </div>
 
@@ -107,18 +107,27 @@
                 id = c.Id,
                 title = c.Title,
                 description = c.Description,
-                level = c.Level.ToString(),
-                mode = c.Mode.ToString(),
-                type = c.Type.ToString(),
+                level = c.Level,
+                mode = c.Mode,
+                type = c.Type,
                 duration = c.Duration,
-                durationDisplay = string.Format(culture, "{0} min", c.Duration),
-                dateDisplay = c.Date.ToString("d", culture),
+                durationDisplay = c.DurationDisplay,
+                date = c.Date,
+                dateDisplay = c.DateDisplay,
                 price = c.Price,
-                priceDisplay = c.Price.ToString("C", culture),
+                priceDisplay = c.PriceDisplay,
                 coverImageUrl = c.CoverImageUrl,
                 popoverHtml = c.PopoverHtml,
-                detailsUrl = Url.Page("/Courses/Details", new { id = c.Id }) ?? $"/Courses/Details/{c.Id}",
-                addToCartUrl = Url.Page("/Courses/Index", pageHandler: "AddToCart") ?? "/Courses/Index?handler=AddToCart"
+                detailsUrl = c.DetailsUrl,
+                addToCartUrl = c.AddToCartUrl,
+                wishlistUrl = c.WishlistUrl,
+                isoBadges = c.IsoBadges.Select(b => new { label = b.Label, code = b.Code }),
+                daysUntilStart = c.DaysUntilStart,
+                capacity = c.Capacity,
+                seatsTaken = c.SeatsTaken,
+                occupancyPercent = c.OccupancyPercent,
+                hasCertificate = c.HasCertificate,
+                previewContent = c.PreviewContent
             })
         },
         filters = new
@@ -150,7 +159,27 @@
             fetchError = Localizer["FetchError"].Value ?? "Nepodařilo se načíst kurzy.",
             pageStatusTemplate = Localizer["PageStatus", "{0}", "{1}"].Value ?? "{0}/{1}",
             removeLabel = Localizer["RemoveFilter"].Value ?? "Odebrat filtr",
-            currencySymbol = culture.NumberFormat.CurrencySymbol
+            currencySymbol = culture.NumberFormat.CurrencySymbol,
+            countdownTemplate = Localizer["StartsInDays", "{0}"].Value ?? "Začíná za {0} dní",
+            countdownToday = Localizer["StartsToday"].Value ?? "Začíná dnes",
+            countdownPast = Localizer["AlreadyStarted"].Value ?? "Kurz probíhá",
+            occupancyLabel = Localizer["OccupancyLabel"].Value ?? "Obsazenost",
+            occupancyAria = Localizer["OccupancyAria", "{0}"].Value ?? "Obsazenost {0}%",
+            wishlistAdd = Localizer["WishlistAdd"].Value ?? "Přidat do seznamu přání",
+            wishlistRemove = Localizer["WishlistRemove"].Value ?? "Odebrat ze seznamu přání",
+            previewLabel = Localizer["PreviewLabel"].Value ?? "Rychlý náhled",
+            isoBadgeAria = Localizer["IsoBadgeAria", "{0}"].Value ?? "Certifikace {0}",
+            isoBadgeListAria = Localizer["IsoBadgeListAria"].Value ?? "Certifikace ISO",
+            modeAria = Localizer["ModeAria", "{0}"].Value ?? "Režim: {0}",
+            levelAria = Localizer["LevelAria", "{0}"].Value ?? "Úroveň: {0}",
+            certificateAria = Localizer["CertificateAria"].Value ?? "Certifikát",
+            certificateAvailable = Localizer["CertificateAvailable"].Value ?? "Certifikát",
+            certificateUnavailable = Localizer["CertificateUnavailable"].Value ?? "Bez certifikátu",
+            additionalInfo = Localizer["AdditionalInfo"].Value ?? "Více informací",
+            metaInformation = Localizer["MetaInformation"].Value ?? "Parametry kurzu",
+            courseDateAria = Localizer["CourseDateAria", "{0}"].Value ?? "Datum konání {0}",
+            courseDateLabel = Localizer["CourseDateLabel"].Value ?? "Datum",
+            typeAria = Localizer["TypeAria", "{0}"].Value ?? "Typ: {0}"
         },
         culture = new
         {

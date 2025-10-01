@@ -303,12 +303,50 @@ if (!dataElement) {
         });
     }
 
+    function getIsoColor(code) {
+        switch ((code ?? '').toString()) {
+            case '9001': return '#0d6efd';
+            case '14001': return '#198754';
+            case '45001': return '#dc3545';
+            case '27001': return '#6f42c1';
+            default: return '#0aa2c0';
+        }
+    }
+
+    function getIsoIconPath(code) {
+        switch ((code ?? '').toString()) {
+            case '9001':
+                return 'M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2Zm0 2a8 8 0 1 1 0 16 8 8 0 0 1 0-16Zm-.5 3.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3Zm3.5 2.5a2 2 0 0 0-2 2v3.5h1.75a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 1 1 0-1.5H10v-4a3.5 3.5 0 0 1 7 0v.25a.75.75 0 0 1-1.5 0V10a2 2 0 0 0-2-2Z';
+            case '14001':
+                return 'M12 3c.414 0 .75.336.75.75V6h2.25a.75.75 0 0 1 0 1.5H12a.75.75 0 0 1-.75-.75V3.75c0-.414.336-.75.75-.75Zm-4.5 4A1.5 1.5 0 0 1 9 8.5V18h8.25a.75.75 0 0 1 0 1.5H8.25A.75.75 0 0 1 7.5 18V8.5A1.5 1.5 0 0 1 9 7h1.5ZM6 10.5a.75.75 0 0 1 .75.75V18a3 3 0 0 0 3 3h7.5a.75.75 0 0 1 0 1.5h-7.5A4.5 4.5 0 0 1 5.25 18v-6.75A.75.75 0 0 1 6 10.5Z';
+            case '45001':
+                return 'M12 2a10 10 0 1 1 0 20 10 10 0 0 1 0-20Zm0 1.5a8.5 8.5 0 1 0 0 17 8.5 8.5 0 0 0 0-17ZM9.5 8a2.5 2.5 0 1 1 0 5h-.75v3.75a.75.75 0 1 1-1.5 0V8.75A.75.75 0 0 1 8 8h1.5Zm5 0A2.5 2.5 0 0 1 17 10.5v.25a.75.75 0 0 1-1.5 0v-.25a1 1 0 0 0-2 0v5.5a.75.75 0 0 1-1.5 0v-5.5A2.5 2.5 0 0 1 14.5 8Z';
+            case '27001':
+                return 'M11.25 4a3.75 3.75 0 0 1 7.5 0v4.25h.75a1.5 1.5 0 0 1 1.5 1.5v9A1.5 1.5 0 0 1 19.5 20h-15A1.5 1.5 0 0 1 3 18.75v-9A1.5 1.5 0 0 1 4.5 8.25H5.25V4a3.75 3.75 0 0 1 7.5 0v4.25h-1.5V4a2.25 2.25 0 0 0-4.5 0v4.25h9V4a2.25 2.25 0 0 0-4.5 0v4.25h-1.5ZM12 13.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5Zm0 1.5a1 1 0 1 1 0 2 1 1 0 0 1 0-2Z';
+            default:
+                return 'M12 2a10 10 0 1 1-7.07 2.93A10 10 0 0 1 12 2Zm0 1.5a8.5 8.5 0 1 0 6.01 14.51A8.5 8.5 0 0 0 12 3.5Zm0 4a1.5 1.5 0 1 1 0 3h-.25a.75.75 0 0 0-.75.75V15a.75.75 0 0 0 1.5 0v-2.25H13a2.25 2.25 0 1 0-1-4.25Z';
+        }
+    }
+
+    function buildCountdown(daysUntilStart) {
+        if (typeof daysUntilStart !== 'number' || Number.isNaN(daysUntilStart)) {
+            return '';
+        }
+        if (daysUntilStart > 0) {
+            return (resources.countdownTemplate ?? 'Začíná za {0} dní').replace('{0}', daysUntilStart);
+        }
+        if (daysUntilStart === 0) {
+            return resources.countdownToday ?? 'Začíná dnes';
+        }
+        return resources.countdownPast ?? 'Kurz probíhá';
+    }
+
     function createCourseCard(course) {
         const wrapper = document.createElement('div');
         const id = Number(course.id);
         const checkboxId = `cmp_${id}`;
-        const description = escapeHtml(course.description ?? '');
         const title = escapeHtml(course.title ?? '');
+        const description = escapeHtml(course.description ?? '');
         const level = escapeHtml(course.level ?? '');
         const mode = escapeHtml(course.mode ?? '');
         const type = escapeHtml(course.type ?? '');
@@ -317,59 +355,123 @@ if (!dataElement) {
         const priceDisplay = escapeHtml(course.priceDisplay ?? '');
         const detailsUrl = escapeAttribute(course.detailsUrl ?? `#/course/${id}`);
         const addToCartUrl = escapeAttribute(course.addToCartUrl ?? '/Courses/Index?handler=AddToCart');
-        const coverImageUrl = course.coverImageUrl ? escapeAttribute(course.coverImageUrl) : null;
         const popoverHtml = course.popoverHtml ? escapeAttribute(course.popoverHtml) : null;
+        const coverImageUrl = course.coverImageUrl ? escapeAttribute(course.coverImageUrl) : null;
+        const previewText = escapeHtml(course.previewContent ?? '');
+        const isoBadges = Array.isArray(course.isoBadges) ? course.isoBadges : [];
+        const daysUntilStart = typeof course.daysUntilStart === 'number' ? course.daysUntilStart : null;
+        const capacity = Number(course.capacity ?? 0);
+        const seatsTaken = Number(course.seatsTaken ?? 0);
+        const occupancyPercent = Math.max(0, Math.min(100, Math.round(Number(course.occupancyPercent ?? (capacity > 0 ? (seatsTaken / capacity) * 100 : 0)))));
+        const hasCertificate = Boolean(course.hasCertificate);
+        const countdownText = buildCountdown(daysUntilStart);
+        const isoList = isoBadges.map((badge) => {
+            const label = escapeHtml(badge.label ?? 'ISO');
+            const code = escapeHtml(badge.code ?? '');
+            const color = getIsoColor(badge.code);
+            const iconPath = getIsoIconPath(badge.code);
+            const aria = (resources.isoBadgeAria ?? 'Certifikace {0}').replace('{0}', label);
+            return `<li class="course-card__iso-badge" aria-label="${escapeAttribute(aria)}">
+                <span class="course-card__iso-icon" style="--iso-color:${color}">
+                    <svg viewBox="0 0 24 24" role="presentation" aria-hidden="true"><path d="${iconPath}"></path></svg>
+                </span>
+                <span class="course-card__iso-label">${label}</span>
+            </li>`;
+        }).join('');
 
         const coverHtml = coverImageUrl
-            ? `<img src="${coverImageUrl}" alt="${title}" class="img-fluid rounded mb-2" loading="lazy" decoding="async">`
-            : '';
+            ? `<img class="course-card__image" src="${coverImageUrl}" alt="${title}" loading="lazy" decoding="async" onload="this.dataset.loaded='true';">`
+            : '<div class="course-card__image course-card__image--placeholder" aria-hidden="true"></div>';
 
         const popoverLink = popoverHtml
-            ? `<a tabindex="0" role="button" class="ms-1 text-decoration-dotted" data-bs-toggle="popover" data-bs-html="true" data-bs-content="${popoverHtml}">
-                    <i class="bi bi-info-circle"></i>
+            ? `<a tabindex="0" role="button" class="course-card__info" data-bs-toggle="popover" data-bs-html="true" data-bs-content="${popoverHtml}">
+                    <i class="bi bi-info-circle" aria-hidden="true"></i> ${resources.additionalInfo ?? ''}
                </a>`
             : '';
 
+        const occupancyAria = (resources.occupancyAria ?? 'Obsazenost {0}%').replace('{0}', occupancyPercent);
+        const occupancyLabel = resources.occupancyLabel ?? 'Obsazenost';
+        const typeAria = (resources.typeAria ?? 'Typ: {0}').replace('{0}', type);
+        const certificateText = hasCertificate
+            ? resources.certificateAvailable ?? 'Certifikát'
+            : resources.certificateUnavailable ?? 'Bez certifikátu';
+        const modeAria = (resources.modeAria ?? 'Režim: {0}').replace('{0}', mode);
+        const levelAria = (resources.levelAria ?? 'Úroveň: {0}').replace('{0}', level);
+
         wrapper.innerHTML = `
-        <div class="feature-card h-100 p-3 d-flex flex-column justify-content-between">
-            <div class="d-flex flex-column gap-2">
+        <article class="course-card card-hover feature-card h-100 d-flex flex-column" role="article" aria-labelledby="course-card-title-${id}">
+            <div class="course-card__media position-relative">
                 ${coverHtml}
-                <h3 class="h5 mb-1">${title}</h3>
-                ${description ? `<p class="text-muted small mb-2">${description}</p>` : ''}
-                <div class="d-flex flex-wrap gap-2 align-items-center small">
-                    <span class="badge badge-soft-primary"><i class="bi bi-bar-chart me-1"></i>${level}</span>
-                    <span class="badge badge-soft-primary"><i class="bi bi-laptop me-1"></i>${mode}</span>
-                    <span class="badge badge-soft-accent"><i class="bi bi-geo-alt me-1"></i>${type}</span>
-                    <span class="badge badge-soft-accent"><i class="bi bi-clock me-1"></i>${durationDisplay}</span>
-                </div>
+                ${isoList ? `<ul class="course-card__iso-list" aria-label="${escapeAttribute(resources.isoBadgeListAria ?? '')}">${isoList}</ul>` : ''}
+                <button type="button"
+                        class="course-card__wishlist"
+                        data-wishlist-button
+                        data-course-id="${id}"
+                        data-wishlist-label-add="${escapeAttribute(resources.wishlistAdd ?? '')}"
+                        data-wishlist-label-remove="${escapeAttribute(resources.wishlistRemove ?? '')}"
+                        aria-pressed="false"
+                        aria-label="${escapeAttribute(resources.wishlistAdd ?? '')}">
+                    <svg viewBox="0 0 24 24" role="presentation" aria-hidden="true"><path d="M12 21s-6.716-4.418-9.193-7.368C.386 10.74.7 6.54 3.64 4.7 5.49 3.55 7.86 3.87 9.34 5.35L12 8.01l2.66-2.66c1.48-1.48 3.85-1.8 5.7-.65 2.94 1.84 3.25 6.04.83 8.93C18.72 16.58 12 21 12 21Z"></path></svg>
+                    <span class="visually-hidden">${escapeHtml(resources.wishlistAdd ?? '')}</span>
+                </button>
             </div>
-            <div class="d-flex justify-content-between align-items-end mt-3">
-                <div class="small text-muted">
-                    <div class="d-flex align-items-center">
-                        <i class="bi bi-calendar2 me-2"></i>
-                        <small class="text-muted">${dateDisplay}${popoverLink}</small>
-                    </div>
-                    <div class="fw-semibold">${priceDisplay}</div>
+            <div class="course-card__body d-flex flex-column flex-grow-1 gap-3 p-3">
+                <header>
+                    <h3 id="course-card-title-${id}" class="h5 mb-1 course-card__title">${title}</h3>
+                    ${description ? `<p class="course-card__excerpt text-muted mb-0">${description}</p>` : ''}
+                </header>
+                <div class="course-card__meta d-flex flex-wrap gap-2" aria-label="${escapeAttribute(resources.metaInformation ?? '')}">
+                    <span class="course-card__meta-item" aria-label="${escapeAttribute(modeAria)}">
+                        <i class="bi bi-broadcast" aria-hidden="true"></i><span>${mode}</span>
+                    </span>
+                    <span class="course-card__meta-item" aria-label="${escapeAttribute(levelAria)}">
+                        <i class="bi bi-bar-chart" aria-hidden="true"></i><span>${level}</span>
+                    </span>
+                    <span class="course-card__meta-item" aria-label="${escapeAttribute(typeAria)}">
+                        <i class="bi bi-geo-alt" aria-hidden="true"></i><span>${type}</span>
+                    </span>
+                    <span class="course-card__meta-item" aria-label="${escapeAttribute(resources.certificateAria ?? '')}">
+                        <i class="bi bi-patch-check" aria-hidden="true"></i><span>${escapeHtml(certificateText)}</span>
+                    </span>
+                    <button type="button" class="course-card__preview" data-course-preview="${previewText}" aria-label="${escapeAttribute(resources.previewLabel ?? '')}">
+                        <i class="bi bi-eye" aria-hidden="true"></i>
+                    </button>
                 </div>
-                <div class="d-flex flex-column align-items-end gap-2">
-                    <div class="form-check form-check-inline">
+                <div class="course-card__progress" aria-label="${escapeAttribute(occupancyAria)}">
+                    <div class="progress" role="progressbar" aria-valuenow="${occupancyPercent}" aria-valuemin="0" aria-valuemax="100">
+                        <div class="progress-bar" style="width:${occupancyPercent}%"></div>
+                    </div>
+                    <div class="course-card__progress-text">${occupancyLabel}: ${occupancyPercent}%</div>
+                </div>
+                <div class="course-card__schedule d-flex flex-wrap justify-content-between gap-2 align-items-center">
+                    <div class="d-flex flex-column">
+                        <span class="course-card__date" aria-label="${escapeAttribute((resources.courseDateAria ?? '').replace('{0}', dateDisplay))}">${dateDisplay}</span>
+                        ${countdownText ? `<span class="course-card__countdown">${escapeHtml(countdownText)}</span>` : ''}
+                    </div>
+                    <div class="course-card__price fw-semibold text-end">${priceDisplay}</div>
+                </div>
+                ${popoverLink}
+                <div class="course-card__footer mt-auto d-flex flex-wrap align-items-center justify-content-between gap-3">
+                    <div class="form-check form-check-inline m-0">
                         <input class="form-check-input cmp-check" type="checkbox" value="${id}" id="${checkboxId}">
                         <label class="form-check-label small" for="${checkboxId}">${resources.compareLabel ?? 'Porovnat'}</label>
                     </div>
-                    <div class="d-flex gap-2">
-                        <a class="btn btn-outline-secondary" href="${detailsUrl}">${resources.detailsLabel ?? 'Detail'}</a>
+                    <div class="course-card__actions d-flex flex-wrap gap-2">
+                        <a class="btn btn-outline-secondary btn-sm" href="${detailsUrl}">${resources.detailsLabel ?? 'Detail'}</a>
                         <form method="post" action="${addToCartUrl}" class="d-inline">
                             <input type="hidden" name="courseId" value="${id}">
-                            <button type="submit" class="btn btn-primary">${resources.enrollLabel ?? 'Přihlásit'}</button>
+                            <button type="submit" class="btn btn-primary btn-sm">${resources.enrollLabel ?? 'Přihlásit'}</button>
                         </form>
                     </div>
                 </div>
             </div>
-        </div>`;
+        </article>`;
 
         const card = wrapper.firstElementChild;
         if (card) {
             coursesGrid?.appendChild(card);
+            window.courseCardWishlist?.syncAll(card);
+            window.courseCardPreview?.register(card);
         }
     }
 
