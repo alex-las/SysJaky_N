@@ -1,0 +1,23 @@
+@page "{id:int}"
+@model SysJaky_N.Pages.Admin.Testimonials.DeleteModel
+@{
+    ViewData["Title"] = "Smazat referenci";
+    Layout = "/Pages/Admin/_Layout.cshtml";
+}
+
+<h1 class="h3 mb-3 text-danger">Smazat referenci</h1>
+<p>Opravdu chcete trvale odstranit tuto referenci? Operaci nelze vrátit.</p>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <h2 class="h5 mb-1">@Model.Testimonial.FullName</h2>
+        <p class="text-muted mb-2">@Model.Testimonial.Position, @Model.Testimonial.Company</p>
+        <blockquote class="blockquote mb-0"><q>@Model.Testimonial.Quote</q></blockquote>
+    </div>
+</div>
+
+<form method="post">
+    <input type="hidden" asp-for="Testimonial.Id" />
+    <button type="submit" class="btn btn-danger">Ano, smazat</button>
+    <a class="btn btn-outline-secondary" asp-page="Index">Zrušit</a>
+</form>

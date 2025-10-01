@@ -19,9 +19,10 @@ namespace SysJaky_N.Pages
             _context = context;
         }
 
-    public IList<CourseCardViewModel> PicksForPersona { get; set; } = new List<CourseCardViewModel>();
+        public IList<CourseCardViewModel> PicksForPersona { get; set; } = new List<CourseCardViewModel>();
         public IList<Course> FastSoonest { get; set; } = new List<Course>();
         public IList<Article> FreshNews { get; set; } = new List<Article>();
+        public IList<Testimonial> FeaturedTestimonials { get; set; } = new List<Testimonial>();
 
         public async Task OnGetAsync(string? persona, string? goal)
         {
@@ -104,6 +105,14 @@ namespace SysJaky_N.Pages
                 .AsNoTracking()
                 .OrderByDescending(a => a.CreatedAt)
                 .Take(6)
+                .ToListAsync();
+
+            FeaturedTestimonials = await _context.Testimonials
+                .AsNoTracking()
+                .Where(t => t.IsPublished && t.ConsentGranted)
+                .OrderByDescending(t => t.ConsentGrantedAtUtc ?? DateTime.MinValue)
+                .ThenBy(t => t.FullName)
+                .Take(8)
                 .ToListAsync();
         }
     }

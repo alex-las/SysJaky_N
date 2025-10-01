@@ -1,0 +1,24 @@
+@page
+@model SysJaky_N.Pages.Admin.Testimonials.CreateModel
+@{
+    ViewData["Title"] = "Nová reference";
+    Layout = "/Pages/Admin/_Layout.cshtml";
+}
+
+<h1 class="h3 mb-3">Nová reference</h1>
+<p class="text-muted">Vyplňte citaci absolventa a potvrďte, že máte uložený souhlas se zpracováním osobních údajů.</p>
+
+<form method="post" class="needs-validation" novalidate>
+    <partial name="~/Pages/Admin/Testimonials/_TestimonialForm.cshtml" model="Model.Testimonial" />
+
+    <div class="alert alert-info mt-4" role="note">
+        V rámci GDPR ukládejte pouze údaje, které jsou nezbytné pro prezentaci reference. Pokud absolvent odvolá souhlas,
+        deaktivujte publikaci a odstraňte citlivé údaje.
+    </div>
+
+    <partial name="~/Pages/Shared/_FormActions.cshtml" model='new SysJaky_N.Pages.Admin.Shared.FormActionsModel { SubmitText = "Uložit", CancelText = "Zpět na přehled", CancelPage = "Index" }' />
+</form>
+
+@section Scripts {
+    <partial name="~/Pages/Shared/_ValidationScriptsPartial.cshtml" />
+}

@@ -1,0 +1,24 @@
+@page "{id:int}"
+@model SysJaky_N.Pages.Admin.Testimonials.EditModel
+@{
+    ViewData["Title"] = "Upravit referenci";
+    Layout = "/Pages/Admin/_Layout.cshtml";
+}
+
+<h1 class="h3 mb-3">Upravit referenci</h1>
+<p class="text-muted">Aktualizujte údaje absolventa. Pokud souhlas již není platný, zrušte publikaci.</p>
+
+<form method="post" class="needs-validation" novalidate>
+    <input type="hidden" asp-for="Testimonial.Id" />
+    <partial name="~/Pages/Admin/Testimonials/_TestimonialForm.cshtml" model="Model.Testimonial" />
+
+    <div class="alert alert-warning mt-4" role="note">
+        Změníte-li stav souhlasu na uděleno, čas razítka se automaticky aktualizuje.
+    </div>
+
+    <partial name="~/Pages/Shared/_FormActions.cshtml" model='new SysJaky_N.Pages.Admin.Shared.FormActionsModel { SubmitText = "Uložit změny", CancelText = "Zpět na přehled", CancelPage = "Index" }' />
+</form>
+
+@section Scripts {
+    <partial name="~/Pages/Shared/_ValidationScriptsPartial.cshtml" />
+}
