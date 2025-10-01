@@ -74,6 +74,79 @@
         <span asp-validation-for="Course.Duration" class="text-danger"></span>
     </div>
 </div>
+<div class="row g-3">
+    <div class="col-md-4">
+        <label asp-for="Course.IsoStandard" class="form-label">@Localizer["IsoStandardLabel"]</label>
+        <input asp-for="Course.IsoStandard" class="form-control" placeholder="ISO 9001" />
+        <span asp-validation-for="Course.IsoStandard" class="text-danger"></span>
+    </div>
+    <div class="col-md-4">
+        <label asp-for="Course.DurationText" class="form-label">@Localizer["DurationTextLabel"]</label>
+        <input asp-for="Course.DurationText" class="form-control" placeholder="3 dny / 24 hodin" />
+        <span asp-validation-for="Course.DurationText" class="text-danger"></span>
+    </div>
+    <div class="col-md-4">
+        <label asp-for="Course.DeliveryForm" class="form-label">@Localizer["DeliveryFormLabel"]</label>
+        <input asp-for="Course.DeliveryForm" class="form-control" placeholder="Prezenční" />
+        <span asp-validation-for="Course.DeliveryForm" class="text-danger"></span>
+    </div>
+</div>
+<div class="mb-3">
+    <label asp-for="Course.TargetAudience" class="form-label">@Localizer["TargetAudienceLabel"]</label>
+    <textarea asp-for="Course.TargetAudience" class="form-control" rows="3" placeholder="manažeři kvality, vedoucí pracovníci"></textarea>
+    <span asp-validation-for="Course.TargetAudience" class="text-danger"></span>
+</div>
+<div class="row g-3">
+    <div class="col-md-4">
+        <label asp-for="Course.LearningOutcomes" class="form-label">@Localizer["LearningOutcomesLabel"]</label>
+        <textarea asp-for="Course.LearningOutcomes" class="form-control" rows="4" placeholder="Každý bod na nový řádek"></textarea>
+        <span asp-validation-for="Course.LearningOutcomes" class="text-danger"></span>
+    </div>
+    <div class="col-md-4">
+        <label asp-for="Course.CaseStudies" class="form-label">@Localizer["CaseStudiesLabel"]</label>
+        <textarea asp-for="Course.CaseStudies" class="form-control" rows="4" placeholder="Popis praktických cvičení"></textarea>
+        <span asp-validation-for="Course.CaseStudies" class="text-danger"></span>
+    </div>
+    <div class="col-md-4">
+        <label asp-for="Course.Certifications" class="form-label">@Localizer["CertificationsLabel"]</label>
+        <textarea asp-for="Course.Certifications" class="form-control" rows="4" placeholder="Získaná osvědčení"></textarea>
+        <span asp-validation-for="Course.Certifications" class="text-danger"></span>
+    </div>
+</div>
+<div class="mb-3">
+    <label asp-for="Course.CourseProgram" class="form-label">@Localizer["CourseProgramLabel"]</label>
+    <textarea asp-for="Course.CourseProgram" class="form-control" rows="6" placeholder="1. den (9:00-16:00): ..."></textarea>
+    <span asp-validation-for="Course.CourseProgram" class="text-danger"></span>
+</div>
+<div class="row g-3">
+    <div class="col-md-6">
+        <label asp-for="Course.InstructorName" class="form-label">@Localizer["InstructorNameLabel"]</label>
+        <input asp-for="Course.InstructorName" class="form-control" placeholder="Jméno lektora" />
+        <span asp-validation-for="Course.InstructorName" class="text-danger"></span>
+    </div>
+    <div class="col-md-6">
+        <label asp-for="Course.InstructorBio" class="form-label">@Localizer["InstructorBioLabel"]</label>
+        <textarea asp-for="Course.InstructorBio" class="form-control" rows="3" placeholder="Kvalifikace a zkušenosti"></textarea>
+        <span asp-validation-for="Course.InstructorBio" class="text-danger"></span>
+    </div>
+</div>
+<div class="row g-3">
+    <div class="col-md-4">
+        <label asp-for="Course.OrganizationalNotes" class="form-label">@Localizer["OrganizationalNotesLabel"]</label>
+        <textarea asp-for="Course.OrganizationalNotes" class="form-control" rows="4" placeholder="Každý pokyn na nový řádek"></textarea>
+        <span asp-validation-for="Course.OrganizationalNotes" class="text-danger"></span>
+    </div>
+    <div class="col-md-4">
+        <label asp-for="Course.FollowUpCourses" class="form-label">@Localizer["FollowUpCoursesLabel"]</label>
+        <textarea asp-for="Course.FollowUpCourses" class="form-control" rows="4" placeholder="Doporučené kurzy"></textarea>
+        <span asp-validation-for="Course.FollowUpCourses" class="text-danger"></span>
+    </div>
+    <div class="col-md-4">
+        <label asp-for="Course.CertificateInfo" class="form-label">@Localizer["CertificateInfoLabel"]</label>
+        <textarea asp-for="Course.CertificateInfo" class="form-control" rows="4" placeholder="Informace o certifikátu"></textarea>
+        <span asp-validation-for="Course.CertificateInfo" class="text-danger"></span>
+    </div>
+</div>
 @if (Model.ActionButtons is not null)
 {
     <div class="d-flex gap-2 mt-4">

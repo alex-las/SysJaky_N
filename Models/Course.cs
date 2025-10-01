@@ -38,6 +38,45 @@ public class Course
     [Range(0, int.MaxValue)]
     public int Duration { get; set; }
 
+    [StringLength(150)]
+    public string? IsoStandard { get; set; }
+
+    [StringLength(150)]
+    public string? DurationText { get; set; }
+
+    [StringLength(150)]
+    public string? DeliveryForm { get; set; }
+
+    [StringLength(1000)]
+    public string? TargetAudience { get; set; }
+
+    [StringLength(2000)]
+    public string? LearningOutcomes { get; set; }
+
+    [StringLength(2000)]
+    public string? CaseStudies { get; set; }
+
+    [StringLength(2000)]
+    public string? Certifications { get; set; }
+
+    [StringLength(4000)]
+    public string? CourseProgram { get; set; }
+
+    [StringLength(200)]
+    public string? InstructorName { get; set; }
+
+    [StringLength(2000)]
+    public string? InstructorBio { get; set; }
+
+    [StringLength(2000)]
+    public string? OrganizationalNotes { get; set; }
+
+    [StringLength(2000)]
+    public string? FollowUpCourses { get; set; }
+
+    [StringLength(2000)]
+    public string? CertificateInfo { get; set; }
+
 
     [Range(0, int.MaxValue)]
     public int ReminderDays { get; set; }

@@ -3,6 +3,7 @@
 @using Microsoft.AspNetCore.Mvc.Localization
 @using System.Collections.Generic
 @using System.Globalization
+@using System.Linq
 @using SysJaky_N.Models
 @inject IViewLocalizer Localizer
 @{
@@ -73,17 +74,89 @@
     </script>
 }
 
-<h1 class="mb-3">@Model.Course.Title</h1>
+@{
+    Func<string?, List<string>> splitToList = text =>
+    {
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            return new List<string>();
+        }
 
-@if (!string.IsNullOrEmpty(Model.Course.CoverImageUrl))
-{
-    <figure class="mb-4">
-        @{ var separator = Model.Course.CoverImageUrl.Contains('?') ? "&" : "?"; var baseUrl = Model.Course.CoverImageUrl + separator; }
-        <picture>
-            <source type="image/webp" srcset="@($"{baseUrl}w=640&format=webp 640w, {baseUrl}w=960&format=webp 960w, {baseUrl}w=1440&format=webp 1440w")" sizes="(max-width: 992px) 100vw, 640px" />
-            <img src="@($"{baseUrl}w=960&format=jpg")" srcset="@($"{baseUrl}w=640&format=jpg 640w, {baseUrl}w=960&format=jpg 960w, {baseUrl}w=1440&format=jpg 1440w")" sizes="(max-width: 992px) 100vw, 640px" alt="@Localizer["CourseImageAlt", Model.Course.Title]" class="img-fluid rounded" loading="lazy" decoding="async" />
-        </picture>
-    </figure>
+        return text
+            .Split(new[] { '\r', '\n' }, System.StringSplitOptions.RemoveEmptyEntries)
+            .Select(line => line.Trim())
+            .Where(line => !string.IsNullOrWhiteSpace(line))
+            .ToList();
+    };
+
+    var fallbackLearningOutcomes = Model.Course.CourseTags?
+        .Select(ct => ct.Tag?.Name)
+        .Where(name => !string.IsNullOrWhiteSpace(name))
+        .Distinct(System.StringComparer.OrdinalIgnoreCase)
+        .ToList() ?? new List<string>();
+
+    if (fallbackLearningOutcomes.Count == 0)
+    {
+        fallbackLearningOutcomes = new List<string>
+        {
+            Localizer["OutcomeFallback1"].Value,
+            Localizer["OutcomeFallback2"].Value,
+            Localizer["OutcomeFallback3"].Value
+        };
+    }
+
+    var learningOutcomes = splitToList(Model.Course.LearningOutcomes);
+    if (learningOutcomes.Count == 0)
+    {
+        learningOutcomes = fallbackLearningOutcomes;
+    }
+
+    var caseStudies = splitToList(Model.Course.CaseStudies);
+    var certifications = splitToList(Model.Course.Certifications);
+    var targetAudienceList = splitToList(Model.Course.TargetAudience);
+    if (targetAudienceList.Count == 0 && !string.IsNullOrWhiteSpace(Model.Course.TargetAudience))
+    {
+        targetAudienceList.Add(Model.Course.TargetAudience.Trim());
+    }
+
+    var fallbackDuration = Model.Course.Duration > 0
+        ? Localizer["MinutesValue", Model.Course.Duration].Value
+        : null;
+    var displayedDuration = !string.IsNullOrWhiteSpace(Model.Course.DurationText)
+        ? Model.Course.DurationText
+        : fallbackDuration;
+
+    var displayedDelivery = !string.IsNullOrWhiteSpace(Model.Course.DeliveryForm)
+        ? Model.Course.DeliveryForm
+        : Model.Course.Mode.ToString();
+
+    var programItems = splitToList(Model.Course.CourseProgram);
+    var organizationalNotes = splitToList(Model.Course.OrganizationalNotes);
+    var followUpCourses = splitToList(Model.Course.FollowUpCourses);
+    var certificateItems = splitToList(Model.Course.CertificateInfo);
+    if (certificateItems.Count == 0 && !string.IsNullOrWhiteSpace(Model.Course.CertificateInfo))
+    {
+        certificateItems.Add(Model.Course.CertificateInfo.Trim());
+    }
+
+    var nextTerm = Model.Terms.FirstOrDefault();
+    var nextTermText = nextTerm != null
+        ? nextTerm.StartsAt.ToString("d", CultureInfo.CurrentCulture)
+        : "Termíny budou brzy doplněny";
+
+    var tabs = new List<(string Id, string Title, bool HasContent)>
+    {
+        ("audience", "Pro koho je kurz určen", targetAudienceList.Count > 0),
+        ("learning", "Co se naučíte", learningOutcomes.Count > 0 || caseStudies.Count > 0 || certifications.Count > 0),
+        ("program", "Program kurzu", programItems.Count > 0),
+        ("instructor", "Lektor", !string.IsNullOrWhiteSpace(Model.Course.InstructorName) || !string.IsNullOrWhiteSpace(Model.Course.InstructorBio)),
+        ("organization", "Organizační pokyny", organizationalNotes.Count > 0),
+        ("follow-up", "Navazující kurzy", followUpCourses.Count > 0),
+        ("certificate", "Certifikát", certificateItems.Count > 0)
+    };
+    var activeTabCandidate = tabs.FirstOrDefault(t => t.HasContent);
+    var activeTabId = !string.IsNullOrEmpty(activeTabCandidate.Id) ? activeTabCandidate.Id : tabs[0].Id;
+    const string placeholderText = "Informace budou doplněny.";
 }
 
 @if (TempData["CartError"] is string cartError && !string.IsNullOrWhiteSpace(cartError))
@@ -91,109 +164,415 @@
     <div class="alert alert-danger" role="alert">@cartError</div>
 }
 
-<div class="row g-4">
+<div class="row g-4 align-items-start">
     <div class="col-lg-8">
-        @{
-            var outcomeTopics = Model.Course.CourseTags?
-                .Select(ct => ct.Tag?.Name)
-                .Where(name => !string.IsNullOrWhiteSpace(name))
-                .Distinct(System.StringComparer.OrdinalIgnoreCase)
-                .ToList() ?? new List<string>();
-
-            if (outcomeTopics.Count == 0)
-            {
-                outcomeTopics = new List<string>
-                {
-                    Localizer["OutcomeFallback1"].Value,
-                    Localizer["OutcomeFallback2"].Value,
-                    Localizer["OutcomeFallback3"].Value
-                };
-            }
-
-            string levelSummary = Model.Course.Level switch
-            {
-                CourseLevel.Beginner => Localizer["LevelSummaryBeginner"].Value,
-                CourseLevel.Intermediate => Localizer["LevelSummaryIntermediate"].Value,
-                CourseLevel.Advanced => Localizer["LevelSummaryAdvanced"].Value,
-                _ => Localizer["LevelSummaryDefault"].Value
-            };
-
-            string levelLimitation = Model.Course.Level switch
-            {
-                CourseLevel.Beginner => Localizer["LevelLimitationBeginner"].Value,
-                CourseLevel.Intermediate => Localizer["LevelLimitationIntermediate"].Value,
-                CourseLevel.Advanced => Localizer["LevelLimitationAdvanced"].Value,
-                _ => Localizer["LevelLimitationDefault"].Value
-            };
-
-            string modePreference = Model.Course.Mode switch
-            {
-                CourseMode.SelfPaced => Localizer["ModePreferenceSelfPaced"].Value,
-                CourseMode.InstructorLed => Localizer["ModePreferenceInstructorLed"].Value,
-                CourseMode.Blended => Localizer["ModePreferenceBlended"].Value,
-                _ => Localizer["ModePreferenceDefault"].Value
-            };
-
-            string modeLimitation = Model.Course.Mode switch
-            {
-                CourseMode.SelfPaced => Localizer["ModeLimitationSelfPaced"].Value,
-                CourseMode.InstructorLed => Localizer["ModeLimitationInstructorLed"].Value,
-                CourseMode.Blended => Localizer["ModeLimitationBlended"].Value,
-                _ => Localizer["ModeLimitationDefault"].Value
-            };
-
-            var audienceFor = new List<string> { levelSummary, modePreference };
-            if (Model.Course.CourseGroup is not null)
-            {
-                audienceFor.Add(Localizer["AudienceCourseGroup", Model.Course.CourseGroup.Name].Value);
-            }
-
-            var audienceNotFor = new List<string> { levelLimitation, modeLimitation };
-            if (!Model.Course.IsActive)
-            {
-                audienceNotFor.Add(Localizer["AudienceInactive"].Value);
-            }
-
-            audienceFor = audienceFor
-                .Where(item => !string.IsNullOrWhiteSpace(item))
-                .Distinct(System.StringComparer.OrdinalIgnoreCase)
-                .ToList();
-
-            audienceNotFor = audienceNotFor
-                .Where(item => !string.IsNullOrWhiteSpace(item))
-                .Distinct(System.StringComparer.OrdinalIgnoreCase)
-                .ToList();
-        }
-
-        @if (!string.IsNullOrWhiteSpace(Model.Course.Description))
-        {
-            <section class="mb-4">
-                <h2 class="h5">@Localizer["AboutCourse"]</h2>
-                <p>@Model.Course.Description</p>
-            </section>
-        }
-
-        @if (Model.Terms.Any())
-        {
-            <section class="mb-4">
-                <h2 class="h5">@Localizer["UpcomingTermsHeading"]</h2>
-                <div class="table-responsive">
-                    <table class="table align-middle">
-                        <thead><tr><th>@Localizer["TermDate"]</th><th>@Localizer["TermLocation"]</th><th>@Localizer["TermAvailability"]</th><th class="text-end"></th></tr></thead>
-                        <tbody>
-                            @foreach (var term in Model.Terms)
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-body p-4">
+                <div class="d-flex flex-column flex-lg-row gap-4 align-items-start">
+                    @if (!string.IsNullOrEmpty(Model.Course.CoverImageUrl))
+                    {
+                        var separator = Model.Course.CoverImageUrl.Contains('?') ? "&" : "?";
+                        var baseUrl = Model.Course.CoverImageUrl + separator;
+                        <div class="flex-shrink-0" style="max-width: 320px;">
+                            <picture>
+                                <source type="image/webp" srcset="@($"{baseUrl}w=640&format=webp 640w, {baseUrl}w=960&format=webp 960w, {baseUrl}w=1440&format=webp 1440w")" sizes="(max-width: 992px) 100vw, 320px" />
+                                <img src="@($"{baseUrl}w=960&format=jpg")" srcset="@($"{baseUrl}w=640&format=jpg 640w, {baseUrl}w=960&format=jpg 960w, {baseUrl}w=1440&format=jpg 1440w")" sizes="(max-width: 992px) 100vw, 320px" alt="@Localizer["CourseImageAlt", Model.Course.Title]" class="img-fluid rounded shadow-sm" loading="lazy" decoding="async" style="object-fit: cover;" />
+                            </picture>
+                        </div>
+                    }
+                    <div class="flex-grow-1">
+                        @if (!string.IsNullOrWhiteSpace(Model.Course.IsoStandard))
+                        {
+                            <span class="badge bg-primary mb-3">@Model.Course.IsoStandard</span>
+                        }
+                        <h1 class="mb-3">@Model.Course.Title</h1>
+                        @if (!string.IsNullOrWhiteSpace(Model.Course.Description))
+                        {
+                            <p class="lead text-muted mb-4">@Model.Course.Description</p>
+                        }
+                        <div class="d-flex flex-wrap gap-4 text-muted small">
+                            @if (!string.IsNullOrWhiteSpace(displayedDuration))
                             {
-                                var scarce = term.SeatsLeft <= 3 && term.SeatsLeft > 0;
-                                var scarcityText = term.SeatsLeft switch
+                                <div class="d-flex align-items-center gap-2">
+                                    <i class="bi bi-clock-history text-secondary"></i>
+                                    <span>@displayedDuration</span>
+                                </div>
+                            }
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="bi bi-geo-alt text-secondary"></i>
+                                <span>@displayedDelivery</span>
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="bi bi-calendar-event text-secondary"></i>
+                                <span>@nextTermText</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body pt-0">
+                <ul class="nav nav-tabs flex-nowrap overflow-auto pb-2" role="tablist">
+                    @for (var i = 0; i < tabs.Count; i++)
+                    {
+                        var tab = tabs[i];
+                        var isActive = tab.Id == activeTabId;
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link @(isActive ? "active" : string.Empty)" id="@(tab.Id + "-tab")" data-bs-toggle="tab" data-bs-target="@("#" + tab.Id)" type="button" role="tab" aria-controls="@tab.Id" aria-selected="@(isActive.ToString().ToLower())">@tab.Title</button>
+                        </li>
+                    }
+                </ul>
+                <div class="tab-content pt-4">
+                    <div class="tab-pane fade @(activeTabId == "audience" ? "show active" : string.Empty)" id="audience" role="tabpanel" aria-labelledby="audience-tab">
+                        <h2 class="h5 mb-3">Pro koho je kurz určen</h2>
+                        @if (targetAudienceList.Count > 0)
+                        {
+                            <ul class="list-unstyled mb-0">
+                                @foreach (var audience in targetAudienceList)
                                 {
-                                    1 => Localizer["ScarceSeatsOne", term.SeatsLeft].Value,
-                                    2 or 3 or 4 => Localizer["ScarceSeatsFew", term.SeatsLeft].Value,
-                                    _ => Localizer["ScarceSeatsMany", term.SeatsLeft].Value
-                                };
-                                <tr>
-                                    <td>@term.StartsAt.ToString("d", CultureInfo.CurrentCulture)</td>
-                                    <td>@(term.IsOnline ? Localizer["TermOnline"] : term.Location)</td>
-                                    <td>
+                                    <li class="d-flex align-items-start gap-2 mb-2">
+                                        <i class="bi bi-person-check text-secondary"></i>
+                                        <span>@audience</span>
+                                    </li>
+                                }
+                            </ul>
+                        }
+                        else
+                        {
+                            <p class="text-muted mb-0">@placeholderText</p>
+                        }
+                    </div>
+                    <div class="tab-pane fade @(activeTabId == "learning" ? "show active" : string.Empty)" id="learning" role="tabpanel" aria-labelledby="learning-tab">
+                        <h2 class="h5 mb-4">Co se naučíte</h2>
+                        <div class="row g-4">
+                            <div class="col-md-4">
+                                <h3 class="h6 text-uppercase text-muted">Klíčové znalosti</h3>
+                                @if (learningOutcomes.Count > 0)
+                                {
+                                    <ul class="list-unstyled mb-0">
+                                        @foreach (var item in learningOutcomes)
+                                        {
+                                            <li class="d-flex align-items-start gap-2 mb-2">
+                                                <i class="bi bi-check2-circle text-success"></i>
+                                                <span>@item</span>
+                                            </li>
+                                        }
+                                    </ul>
+                                }
+                                else
+                                {
+                                    <p class="text-muted mb-0">@placeholderText</p>
+                                }
+                            </div>
+                            <div class="col-md-4">
+                                <h3 class="h6 text-uppercase text-muted">Případové studie a cvičení</h3>
+                                @if (caseStudies.Count > 0)
+                                {
+                                    <ul class="list-unstyled mb-0">
+                                        @foreach (var item in caseStudies)
+                                        {
+                                            <li class="d-flex align-items-start gap-2 mb-2">
+                                                <i class="bi bi-journal-text text-secondary"></i>
+                                                <span>@item</span>
+                                            </li>
+                                        }
+                                    </ul>
+                                }
+                                else
+                                {
+                                    <p class="text-muted mb-0">@placeholderText</p>
+                                }
+                            </div>
+                            <div class="col-md-4">
+                                <h3 class="h6 text-uppercase text-muted">Certifikace</h3>
+                                @if (certifications.Count > 0)
+                                {
+                                    <ul class="list-unstyled mb-0">
+                                        @foreach (var item in certifications)
+                                        {
+                                            <li class="d-flex align-items-start gap-2 mb-2">
+                                                <i class="bi bi-award text-warning"></i>
+                                                <span>@item</span>
+                                            </li>
+                                        }
+                                    </ul>
+                                }
+                                else
+                                {
+                                    <p class="text-muted mb-0">@placeholderText</p>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade @(activeTabId == "program" ? "show active" : string.Empty)" id="program" role="tabpanel" aria-labelledby="program-tab">
+                        <h2 class="h5 mb-3">Program kurzu</h2>
+                        @if (programItems.Count > 0)
+                        {
+                            <ol class="list-group list-group-numbered">
+                                @foreach (var item in programItems)
+                                {
+                                    <li class="list-group-item">@item</li>
+                                }
+                            </ol>
+                        }
+                        else
+                        {
+                            <p class="text-muted mb-0">@placeholderText</p>
+                        }
+                    </div>
+                    <div class="tab-pane fade @(activeTabId == "instructor" ? "show active" : string.Empty)" id="instructor" role="tabpanel" aria-labelledby="instructor-tab">
+                        <h2 class="h5 mb-3">Lektor</h2>
+                        @if (!string.IsNullOrWhiteSpace(Model.Course.InstructorName))
+                        {
+                            <p class="fw-semibold mb-1">@Model.Course.InstructorName</p>
+                        }
+                        @if (!string.IsNullOrWhiteSpace(Model.Course.InstructorBio))
+                        {
+                            <p class="mb-0 text-muted">@Model.Course.InstructorBio</p>
+                        }
+                        else if (string.IsNullOrWhiteSpace(Model.Course.InstructorName))
+                        {
+                            <p class="text-muted mb-0">@placeholderText</p>
+                        }
+                    </div>
+                    <div class="tab-pane fade @(activeTabId == "organization" ? "show active" : string.Empty)" id="organization" role="tabpanel" aria-labelledby="organization-tab">
+                        <h2 class="h5 mb-3">Organizační pokyny</h2>
+                        @if (organizationalNotes.Count > 0)
+                        {
+                            <ul class="list-unstyled mb-0">
+                                @foreach (var note in organizationalNotes)
+                                {
+                                    <li class="d-flex align-items-start gap-2 mb-2">
+                                        <i class="bi bi-info-circle text-secondary"></i>
+                                        <span>@note</span>
+                                    </li>
+                                }
+                            </ul>
+                        }
+                        else
+                        {
+                            <p class="text-muted mb-0">@placeholderText</p>
+                        }
+                    </div>
+                    <div class="tab-pane fade @(activeTabId == "follow-up" ? "show active" : string.Empty)" id="follow-up" role="tabpanel" aria-labelledby="follow-up-tab">
+                        <h2 class="h5 mb-3">Navazující kurzy</h2>
+                        @if (followUpCourses.Count > 0)
+                        {
+                            <ul class="list-group list-group-flush">
+                                @foreach (var course in followUpCourses)
+                                {
+                                    <li class="list-group-item">@course</li>
+                                }
+                            </ul>
+                        }
+                        else
+                        {
+                            <p class="text-muted mb-0">@placeholderText</p>
+                        }
+                    </div>
+                    <div class="tab-pane fade @(activeTabId == "certificate" ? "show active" : string.Empty)" id="certificate" role="tabpanel" aria-labelledby="certificate-tab">
+                        <h2 class="h5 mb-3">Certifikát</h2>
+                        @if (certificateItems.Count > 0)
+                        {
+                            <ul class="list-unstyled mb-0">
+                                @foreach (var item in certificateItems)
+                                {
+                                    <li class="d-flex align-items-start gap-2 mb-2">
+                                        <i class="bi bi-patch-check text-success"></i>
+                                        <span>@item</span>
+                                    </li>
+                                }
+                            </ul>
+                        }
+                        else
+                        {
+                            <p class="text-muted mb-0">@placeholderText</p>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @if (Model.CourseBlock != null)
+        {
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body">
+                    <h2 class="h5 mb-3">@Localizer["BlockHeading"]</h2>
+                    <p class="mb-2">@Model.CourseBlock.Description</p>
+                    <dl class="row small mb-3">
+                        <dt class="col-sm-4">@Localizer["BlockNameLabel"]</dt>
+                        <dd class="col-sm-8">@Model.CourseBlock.Title</dd>
+                        <dt class="col-sm-4">@Localizer["BlockPriceLabel"]</dt>
+                        <dd class="col-sm-8">@Model.CourseBlock.Price.ToString("C")</dd>
+                    </dl>
+                    <form method="post" asp-page-handler="OrderBlock" class="d-inline">
+                        <input type="hidden" name="blockId" value="@Model.CourseBlock.Id" />
+                        <button type="submit" class="btn btn-outline-primary btn-sm">@Localizer["OrderBlockButton"]</button>
+                    </form>
+                </div>
+            </div>
+        }
+
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-body">
+                <h2 class="h5">@Localizer["LessonsHeading"]</h2>
+                @if (Model.Lessons.Any())
+                {
+                    <div class="list-group mt-3">
+                        @foreach (var lesson in Model.Lessons)
+                        {
+                            Model.ProgressByLessonId.TryGetValue(lesson.Id, out var progressInfo);
+                            var completion = progressInfo?.Progress ?? 0;
+                            <div class="list-group-item">
+                                <div class="d-flex flex-column gap-2">
+                                    <div class="d-flex justify-content-between flex-wrap gap-3">
+                                        <div>
+                                            <div class="fw-semibold">@Localizer["LessonOrderLabel", lesson.Order]</div>
+                                            <div class="text-muted">@Localizer["LessonTypeLabel"]: @lesson.Type</div>
+                                            @if (!string.IsNullOrWhiteSpace(lesson.ContentUrl))
+                                            {
+                                                <a class="link-primary" href="@lesson.ContentUrl" target="_blank" rel="noopener">@Localizer["LessonOpenContent"]</a>
+                                            }
+                                        </div>
+                                        <div class="text-end">
+                                            <div class="fw-semibold">@Localizer["LessonCompletion", completion]</div>
+                                            @if (progressInfo is not null)
+                                            {
+                                                <div class="text-muted small">@Localizer["LessonLastSeen", progressInfo.LastSeenUtc.ToLocalTime().ToString("g", CultureInfo.CurrentCulture)]</div>
+                                            }
+                                        </div>
+                                    </div>
+                                    @if (User.Identity?.IsAuthenticated ?? false)
+                                    {
+                                        <form method="post" asp-page-handler="UpdateProgress" asp-route-id="@Model.Course.Id" class="d-flex flex-column flex-sm-row align-items-sm-center gap-2">
+                                            <input type="hidden" name="lessonId" value="@lesson.Id" />
+                                            <div class="input-group input-group-sm" style="max-width: 220px;">
+                                                <span class="input-group-text">@Localizer["LessonProgressLabel"]</span>
+                                                <input type="number" class="form-control" name="progress" min="0" max="100" value="@completion" aria-label="@Localizer["LessonProgressAria", lesson.Order]" />
+                                                <span class="input-group-text">%</span>
+                                            </div>
+                                            <div class="d-flex gap-2 flex-wrap">
+                                                <button type="submit" class="btn btn-sm btn-primary">@Localizer["LessonSave"]</button>
+                                                <button type="submit" class="btn btn-sm btn-outline-success" onclick="this.form.querySelector('[name=progress]').value = 100;">@Localizer["LessonMarkDone"]</button>
+                                            </div>
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <p class="text-muted small mb-0">@Localizer["SignInToTrack"]</p>
+                                    }
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <p class="text-muted mb-0 mt-3">@Localizer["NoLessons"]</p>
+                }
+            </div>
+        </div>
+
+        @if (Model.Reviews.Any())
+        {
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body">
+                    <h2 class="h5">@Localizer["ReviewsHeading"]</h2>
+                    <ul class="list-unstyled mb-0">
+                        @foreach (var review in Model.Reviews)
+                        {
+                            <li class="mb-3">
+                                <div class="fw-semibold">@review.Rating/5 &ndash; @review.User?.UserName</div>
+                                <div class="text-muted small mb-1">@review.CreatedAt.ToShortDateString()</div>
+                                <div>@review.Comment</div>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        }
+
+        @if (User.Identity?.IsAuthenticated ?? false)
+        {
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body">
+                    <h3 class="h5">@Localizer["AddReviewHeading"]</h3>
+                    <form method="post" asp-page-handler="Review">
+                        <div class="mb-3">
+                            <label asp-for="NewReview.Rating" class="form-label"></label>
+                            <input asp-for="NewReview.Rating" class="form-control" min="1" max="5" />
+                            <span asp-validation-for="NewReview.Rating" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="NewReview.Comment" class="form-label"></label>
+                            <textarea asp-for="NewReview.Comment" class="form-control"></textarea>
+                            <span asp-validation-for="NewReview.Comment" class="text-danger"></span>
+                        </div>
+                        <button type="submit" class="btn btn-success">@Localizer["SubmitReviewButton"]</button>
+                    </form>
+                </div>
+            </div>
+        }
+        else
+        {
+            <p class="mt-4"><a asp-page="/Account/Login">@Localizer["SignInLinkText"]</a> @Localizer["ReviewSignInSuffix"]</p>
+        }
+    </div>
+    <div class="col-lg-4">
+        <div class="position-sticky" style="top: 5rem;">
+            <div class="card border-0 shadow-sm mb-3">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div>
+                            <div class="text-muted small">Cena kurzu</div>
+                            <div class="fs-5 fw-bold">@Model.Course.Price.ToString("C")</div>
+                        </div>
+                        <span class="badge bg-light text-dark">@displayedDelivery</span>
+                    </div>
+                    <ul class="list-unstyled small text-muted mb-4">
+                        <li class="d-flex align-items-center gap-2 mb-1">
+                            <i class="bi bi-check-circle text-success"></i>
+                            <span>@Localizer["PriceBenefitCertificate"]</span>
+                        </li>
+                        <li class="d-flex align-items-center gap-2 mb-1">
+                            <i class="bi bi-check-circle text-success"></i>
+                            <span>@Localizer["PriceBenefitMaterials"]</span>
+                        </li>
+                        <li class="d-flex align-items-center gap-2 mb-0">
+                            <i class="bi bi-check-circle text-success"></i>
+                            <span>@Localizer["PriceBenefitCancellation"]</span>
+                        </li>
+                    </ul>
+                    <div class="d-grid gap-2">
+                        <form method="post">
+                            <button type="submit" class="btn btn-primary">Přihlásit se</button>
+                        </form>
+                        <a class="btn btn-outline-secondary" asp-page="/Contact" asp-route-subject="@Localizer["ContactSubject", Model.Course.Title]">@Localizer["TeamButton"]</a>
+                    </div>
+                </div>
+            </div>
+            <div class="card border-0 shadow-sm mb-3">
+                <div class="card-header bg-transparent border-bottom-0">
+                    <h2 class="h6 mb-0">Dostupné termíny</h2>
+                </div>
+                <div class="list-group list-group-flush">
+                    @if (Model.Terms.Any())
+                    {
+                        foreach (var term in Model.Terms)
+                        {
+                            var scarce = term.SeatsLeft <= 3 && term.SeatsLeft > 0;
+                            var scarcityText = term.SeatsLeft switch
+                            {
+                                1 => Localizer["ScarceSeatsOne", term.SeatsLeft].Value,
+                                2 or 3 or 4 => Localizer["ScarceSeatsFew", term.SeatsLeft].Value,
+                                _ => Localizer["ScarceSeatsMany", term.SeatsLeft].Value
+                            };
+                            <div class="list-group-item">
+                                <div class="d-flex justify-content-between gap-3">
+                                    <div>
+                                        <div class="fw-semibold">@term.StartsAt.ToString("d", CultureInfo.CurrentCulture)</div>
+                                        <div class="text-muted small">@(term.IsOnline ? Localizer["TermOnline"] : term.Location)</div>
+                                    </div>
+                                    <div class="text-end">
                                         @if (term.SeatsLeft == 0)
                                         {
                                             <span class="badge bg-secondary">@Localizer["TermFull"]</span>
@@ -206,211 +585,33 @@
                                         {
                                             <span class="badge bg-success">@Localizer["TermAvailable"]</span>
                                         }
-                                    </td>
-                                    <td class="text-end">
-                                        <a class="btn btn-outline-secondary btn-sm" asp-page="/CourseTerms/Details" asp-route-id="@term.Id">@Localizer["TermDetailButton"]</a>
-                                        <a class="btn btn-secondary btn-sm" href="/CourseTerms/ICS/@term.Id">@Localizer["TermIcsButton"]</a>
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
-            </section>
-        }
-
-        <section class="mb-4">
-            <h2 class="h5 mb-3">@Localizer["LearningHeading"]</h2>
-            <ul class="list-unstyled mb-0">
-                @foreach (var topic in outcomeTopics)
-                {
-                    <li class="d-flex align-items-start gap-2 mb-2">
-                        <i class="bi bi-check2 text-success"></i>
-                        <span>@topic</span>
-                    </li>
-                }
-            </ul>
-        </section>
-
-        <section class="mb-4">
-            <div class="row g-4">
-                <div class="col-md-6">
-                    <h3 class="h6 text-uppercase text-muted mb-2">@Localizer["AudienceForHeading"]</h3>
-                    <ul class="small text-muted mb-0">
-                        @foreach (var item in audienceFor)
-                        {
-                            <li class="mb-1">@item</li>
-                        }
-                    </ul>
-                </div>
-                <div class="col-md-6">
-                    <h3 class="h6 text-uppercase text-muted mb-2">@Localizer["AudienceNotForHeading"]</h3>
-                    <ul class="small text-muted mb-0">
-                        @foreach (var item in audienceNotFor)
-                        {
-                            <li class="mb-1">@item</li>
-                        }
-                    </ul>
-                </div>
-            </div>
-        </section>
-
-        <section class="mb-4">
-            <h2 class="h5">@Localizer["DetailsHeading"]</h2>
-            <ul class="list-unstyled small">
-                <li><i class="bi bi-calendar2 me-2"></i>@Localizer["DetailDateLabel"]: @Model.Course.Date.ToString("d", CultureInfo.CurrentCulture)</li>
-                <li><i class="bi bi-clock me-2"></i>@Localizer["DetailDurationLabel"]: @Localizer["MinutesValue", Model.Course.Duration]</li>
-                <li><i class="bi bi-bar-chart me-2"></i>@Localizer["DetailLevelLabel"]: @Model.Course.Level</li>
-                <li><i class="bi bi-laptop me-2"></i>@Localizer["DetailModeLabel"]: @Model.Course.Mode</li>
-            </ul>
-        </section>
-
-        @if (Model.CourseBlock != null)
-        {
-            <section class="mb-4">
-                <h2 class="h5">@Localizer["BlockHeading"]</h2>
-                <p class="mb-2">@Model.CourseBlock.Description</p>
-                <dl class="row small mb-3">
-                    <dt class="col-sm-4">@Localizer["BlockNameLabel"]</dt>
-                    <dd class="col-sm-8">@Model.CourseBlock.Title</dd>
-                    <dt class="col-sm-4">@Localizer["BlockPriceLabel"]</dt>
-                    <dd class="col-sm-8">@Model.CourseBlock.Price.ToString("C")</dd>
-                </dl>
-                <form method="post" asp-page-handler="OrderBlock" class="d-inline">
-                    <input type="hidden" name="blockId" value="@Model.CourseBlock.Id" />
-                    <button type="submit" class="btn btn-outline-primary btn-sm">@Localizer["OrderBlockButton"]</button>
-                </form>
-            </section>
-        }
-
-        <section class="mt-4">
-            <h2 class="h5">@Localizer["LessonsHeading"]</h2>
-            @if (Model.Lessons.Any())
-            {
-                <div class="list-group">
-                    @foreach (var lesson in Model.Lessons)
-                    {
-                        Model.ProgressByLessonId.TryGetValue(lesson.Id, out var progressInfo);
-                        var completion = progressInfo?.Progress ?? 0;
-                        <div class="list-group-item">
-                            <div class="d-flex flex-column gap-2">
-                                <div class="d-flex justify-content-between flex-wrap gap-3">
-                                    <div>
-                                        <div class="fw-semibold">@Localizer["LessonOrderLabel", lesson.Order]</div>
-                                        <div class="text-muted">@Localizer["LessonTypeLabel"]: @lesson.Type</div>
-                                        @if (!string.IsNullOrWhiteSpace(lesson.ContentUrl))
-                                        {
-                                            <a class="link-primary" href="@lesson.ContentUrl" target="_blank" rel="noopener">@Localizer["LessonOpenContent"]</a>
-                                        }
-                                    </div>
-                                    <div class="text-end">
-                                        <div class="fw-semibold">@Localizer["LessonCompletion", completion]</div>
-                                        @if (progressInfo is not null)
-                                        {
-                                            <div class="text-muted small">@Localizer["LessonLastSeen", progressInfo.LastSeenUtc.ToLocalTime().ToString("g", CultureInfo.CurrentCulture)]</div>
-                                        }
                                     </div>
                                 </div>
-                                @if (User.Identity?.IsAuthenticated ?? false)
-                                {
-                                    <form method="post" asp-page-handler="UpdateProgress" asp-route-id="@Model.Course.Id" class="d-flex flex-column flex-sm-row align-items-sm-center gap-2">
-                                        <input type="hidden" name="lessonId" value="@lesson.Id" />
-                                        <div class="input-group input-group-sm" style="max-width: 220px;">
-                                            <span class="input-group-text">@Localizer["LessonProgressLabel"]</span>
-                                            <input type="number" class="form-control" name="progress" min="0" max="100" value="@completion" aria-label="@Localizer["LessonProgressAria", lesson.Order]" />
-                                            <span class="input-group-text">%</span>
-                                        </div>
-                                        <div class="d-flex gap-2 flex-wrap">
-                                            <button type="submit" class="btn btn-sm btn-primary">@Localizer["LessonSave"]</button>
-                                            <button type="submit" class="btn btn-sm btn-outline-success" onclick="this.form.querySelector('[name=progress]').value = 100;">@Localizer["LessonMarkDone"]</button>
-                                        </div>
-                                    </form>
-                                }
-                                else
-                                {
-                                    <p class="text-muted small mb-0">@Localizer["SignInToTrack"]</p>
-                                }
+                                <div class="d-flex flex-wrap gap-2 mt-3">
+                                    <a class="btn btn-outline-secondary btn-sm" asp-page="/CourseTerms/Details" asp-route-id="@term.Id">@Localizer["TermDetailButton"]</a>
+                                    <a class="btn btn-secondary btn-sm" href="/CourseTerms/ICS/@term.Id">@Localizer["TermIcsButton"]</a>
+                                </div>
                             </div>
-                        </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="list-group-item text-muted">Termíny budou doplněny.</div>
                     }
                 </div>
-            }
-            else
+            </div>
+            @if (User.Identity?.IsAuthenticated ?? false)
             {
-                <p class="text-muted">@Localizer["NoLessons"]</p>
-            }
-        </section>
-    </div>
-    <div class="col-lg-4">
-        <div class="p-3 border rounded-3 position-sticky top-0">
-            <div class="d-flex justify-content-between align-items-center mb-2">
-                <strong>@Localizer["PriceHeading"]</strong>
-                <div class="fs-5 fw-bold">@Model.Course.Price.ToString("C")</div>
-            </div>
-            <ul class="list-unstyled small text-muted mb-3">
-                <li><i class="bi bi-check-circle"></i> @Localizer["PriceBenefitCertificate"]</li>
-                <li><i class="bi bi-check-circle"></i> @Localizer["PriceBenefitMaterials"]</li>
-                <li><i class="bi bi-check-circle"></i> @Localizer["PriceBenefitCancellation"]</li>
-            </ul>
-            <div class="d-grid gap-2">
-                <form method="post">
-                    <button type="submit" class="btn btn-primary">@Localizer["EnrollButton"]</button>
+                <form method="post" asp-page-handler="AddToWishlist" class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <button type="submit" class="btn btn-outline-secondary w-100">@Localizer["WishlistButton"]</button>
+                    </div>
                 </form>
-                <a class="btn btn-outline-secondary" asp-page="/Contact" asp-route-subject="@Localizer["ContactSubject", Model.Course.Title]">@Localizer["TeamButton"]</a>
-            </div>
+            }
         </div>
-
-        @if (User.Identity?.IsAuthenticated ?? false)
-        {
-            <form method="post" asp-page-handler="AddToWishlist" class="mt-3">
-                <button type="submit" class="btn btn-outline-secondary w-100">@Localizer["WishlistButton"]</button>
-            </form>
-        }
     </div>
 </div>
-
-@if (Model.Reviews.Any())
-{
-    <section class="mt-5">
-        <h2 class="h5">@Localizer["ReviewsHeading"]</h2>
-        <ul class="list-unstyled">
-            @foreach (var review in Model.Reviews)
-            {
-                <li class="mb-3">
-                    <div class="fw-semibold">@review.Rating/5 &ndash; @review.User?.UserName</div>
-                    <div class="text-muted small mb-1">@review.CreatedAt.ToShortDateString()</div>
-                    <div>@review.Comment</div>
-                </li>
-            }
-        </ul>
-    </section>
-}
-
-@if (User.Identity?.IsAuthenticated ?? false)
-{
-    <section class="mt-4">
-        <h3 class="h5">@Localizer["AddReviewHeading"]</h3>
-        <form method="post" asp-page-handler="Review">
-            <div class="mb-3">
-                <label asp-for="NewReview.Rating" class="form-label"></label>
-                <input asp-for="NewReview.Rating" class="form-control" min="1" max="5" />
-                <span asp-validation-for="NewReview.Rating" class="text-danger"></span>
-            </div>
-            <div class="mb-3">
-                <label asp-for="NewReview.Comment" class="form-label"></label>
-                <textarea asp-for="NewReview.Comment" class="form-control"></textarea>
-                <span asp-validation-for="NewReview.Comment" class="text-danger"></span>
-            </div>
-            <button type="submit" class="btn btn-success">@Localizer["SubmitReviewButton"]</button>
-        </form>
-    </section>
-}
-else
-{
-    <p class="mt-4"><a asp-page="/Account/Login">@Localizer["SignInLinkText"]</a> @Localizer["ReviewSignInSuffix"]</p>
-}
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
-
