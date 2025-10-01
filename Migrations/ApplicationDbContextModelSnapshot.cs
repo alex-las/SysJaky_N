@@ -464,27 +464,11 @@ namespace SysJaky_N.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<string>("CaseStudies")
-                        .HasMaxLength(2000)
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("CertificateInfo")
-                        .HasMaxLength(2000)
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Certifications")
-                        .HasMaxLength(2000)
-                        .HasColumnType("longtext");
-
                     b.Property<int?>("CourseBlockId")
                         .HasColumnType("int");
 
                     b.Property<int?>("CourseGroupId")
                         .HasColumnType("int");
-
-                    b.Property<string>("CourseProgram")
-                        .HasMaxLength(4000)
-                        .HasColumnType("longtext");
 
                     b.Property<string>("CoverImageUrl")
                         .HasMaxLength(2048)
@@ -493,10 +477,6 @@ namespace SysJaky_N.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<string>("DeliveryForm")
-                        .HasMaxLength(150)
-                        .HasColumnType("varchar(150)");
-
                     b.Property<string>("Description")
                         .HasMaxLength(1000)
                         .HasColumnType("varchar(1000)");
@@ -504,32 +484,8 @@ namespace SysJaky_N.Migrations
                     b.Property<int>("Duration")
                         .HasColumnType("int");
 
-                    b.Property<string>("DurationText")
-                        .HasMaxLength(150)
-                        .HasColumnType("varchar(150)");
-
-                    b.Property<string>("FollowUpCourses")
-                        .HasMaxLength(2000)
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("InstructorBio")
-                        .HasMaxLength(2000)
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("InstructorName")
-                        .HasMaxLength(200)
-                        .HasColumnType("varchar(200)");
-
                     b.Property<bool>("IsActive")
                         .HasColumnType("tinyint(1)");
-
-                    b.Property<string>("IsoStandard")
-                        .HasMaxLength(150)
-                        .HasColumnType("varchar(150)");
-
-                    b.Property<string>("LearningOutcomes")
-                        .HasMaxLength(2000)
-                        .HasColumnType("longtext");
 
                     b.Property<int>("Level")
                         .HasColumnType("int");
@@ -549,10 +505,6 @@ namespace SysJaky_N.Migrations
                         .HasMaxLength(2048)
                         .HasColumnType("varchar(2048)");
 
-                    b.Property<string>("OrganizationalNotes")
-                        .HasMaxLength(2000)
-                        .HasColumnType("varchar(2000)");
-
                     b.Property<string>("PopoverHtml")
                         .HasMaxLength(1000)
                         .HasColumnType("varchar(1000)");
@@ -564,13 +516,6 @@ namespace SysJaky_N.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("ReminderMessage")
-                        .HasMaxLength(1000)
-                        .HasColumnType("varchar(1000)");
-
-                    b.Property<string>("OrganizationalNotes")
-                        .HasMaxLength(2000)
-                        .HasColumnType("longtext");
-                    b.Property<string>("TargetAudience")
                         .HasMaxLength(1000)
                         .HasColumnType("varchar(1000)");
 
