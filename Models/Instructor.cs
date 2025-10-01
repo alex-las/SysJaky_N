@@ -7,21 +7,23 @@ public class Instructor
 {
     public int Id { get; set; }
 
-    [Required]
-    [StringLength(200)]
-    [Display(Name = "Full name")]
+    [Required(ErrorMessage = "Pole {0} je povinné.")]
+    [StringLength(200, ErrorMessage = "Pole {0} může mít maximálně {1} znaků.")]
+    [Display(Name = "Celé jméno")]
     public string FullName { get; set; } = string.Empty;
 
-    [EmailAddress]
-    [StringLength(200)]
+    [EmailAddress(ErrorMessage = "Zadejte platnou e-mailovou adresu.")]
+    [StringLength(200, ErrorMessage = "Pole {0} může mít maximálně {1} znaků.")]
+    [Display(Name = "E-mail")]
     public string? Email { get; set; }
 
-    [Phone]
-    [Display(Name = "Phone number")]
-    [StringLength(50)]
+    [Phone(ErrorMessage = "Zadejte platné telefonní číslo.")]
+    [Display(Name = "Telefon")]
+    [StringLength(50, ErrorMessage = "Pole {0} může mít maximálně {1} znaků.")]
     public string? PhoneNumber { get; set; }
 
-    [StringLength(4000)]
+    [StringLength(4000, ErrorMessage = "Pole {0} může mít maximálně {1} znaků.")]
+    [Display(Name = "Životopis")]
     [DataType(DataType.MultilineText)]
     public string? Bio { get; set; }
 

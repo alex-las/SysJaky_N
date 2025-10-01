@@ -1,6 +1,9 @@
 @page
 @model SysJaky_N.Pages.Admin.Companies.IndexModel
-<h1>Companies</h1>
+@{
+    ViewData["Title"] = "Společnosti";
+}
+<h1>Společnosti</h1>
 
 <form method="post">
     <div class="mb-3">
@@ -15,12 +18,12 @@
         <label asp-for="NewCompany.ManagerId"></label>
         <input asp-for="NewCompany.ManagerId" class="form-control" />
     </div>
-    <button type="submit" class="btn btn-primary">Create</button>
+    <button type="submit" class="btn btn-primary">Vytvořit</button>
 </form>
 
 <table class="table mt-3">
     <thead>
-        <tr><th>Name</th><th>Reference Code</th><th>Manager</th></tr>
+        <tr><th>Název</th><th>Referenční kód</th><th>Správce</th></tr>
     </thead>
     <tbody>
     @foreach (var company in Model.Companies)
