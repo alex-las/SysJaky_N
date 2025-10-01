@@ -1,10 +1,10 @@
 @page "{id:int}"
 @model SysJaky_N.Pages.Admin.CourseTerms.EditModel
 @{
-    ViewData["Title"] = "Edit Course Term";
+    ViewData["Title"] = "Upravit termín kurzu";
 }
 
-<h1>Edit Course Term</h1>
+<h1>Upravit termín kurzu</h1>
 
 <form method="post" class="mt-4">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -13,13 +13,13 @@
 
     <div class="row g-3 mt-1">
         <div class="col-md-4">
-            <label class="form-label">Seats taken</label>
+            <label class="form-label">Obsazeno</label>
             <input class="form-control" value="@Model.SeatsTaken" readonly />
         </div>
     </div>
 
     <div class="mt-4">
-        <partial name="~/Pages/Shared/_FormActions.cshtml" model='new SysJaky_N.Pages.Admin.Shared.FormActionsModel { SubmitText = "Save changes", CancelText = "Cancel" }' />
+        <partial name="~/Pages/Shared/_FormActions.cshtml" model='new SysJaky_N.Pages.Admin.Shared.FormActionsModel { SubmitText = "Uložit změny", CancelText = "Zrušit" }' />
     </div>
 </form>
 

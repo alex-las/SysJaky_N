@@ -4,18 +4,18 @@
 @using Microsoft.AspNetCore.Mvc.Rendering
 @using SysJaky_N.Pages.Courses
 @{
-    ViewData["Title"] = "Edit Course";
+    ViewData["Title"] = "Upravit kurz";
     var actions = new HtmlContentBuilder();
     var submitButton = new TagBuilder("button");
     submitButton.Attributes["type"] = "submit";
     submitButton.AddCssClass("btn btn-primary");
-    submitButton.InnerHtml.Append("Save");
+    submitButton.InnerHtml.Append("Uložit");
     actions.AppendHtml(submitButton);
 
     var backLink = new TagBuilder("a");
     backLink.AddCssClass("btn btn-secondary");
     backLink.Attributes["href"] = Url.Page("Index");
-    backLink.InnerHtml.Append("Back to List");
+    backLink.InnerHtml.Append("Zpět na přehled");
     actions.AppendHtml(backLink);
 
     var formModel = new CourseFormModel
@@ -27,14 +27,14 @@
     };
 }
 
-<h1>Edit Course</h1>
+<h1>Upravit kurz</h1>
 
 <form method="post" enctype="multipart/form-data">
     <input type="hidden" asp-for="Course.Id" />
     @if (!string.IsNullOrEmpty(Model.Course.CoverImageUrl))
     {
         <div class="mb-3">
-            <img src="@Model.Course.CoverImageUrl" alt="Cover for @Model.Course.Title" class="img-fluid rounded" style="max-width: 240px;" />
+            <img src="@Model.Course.CoverImageUrl" alt="Obálka kurzu @Model.Course.Title" class="img-fluid rounded" style="max-width: 240px;" />
         </div>
     }
 

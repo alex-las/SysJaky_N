@@ -52,7 +52,7 @@ public class DeleteModel : PageModel
 
         if (term.SeatsTaken > 0)
         {
-            ErrorMessage = "The term cannot be deleted while seats are already taken.";
+            ErrorMessage = "Termín nelze smazat, pokud jsou již obsazena místa.";
             Term = term;
             return Page();
         }

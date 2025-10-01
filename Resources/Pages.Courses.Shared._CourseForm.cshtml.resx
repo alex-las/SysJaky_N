@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="TitlePlaceholder" xml:space="preserve">
+    <value>Název kurzu</value>
+  </data>
+  <data name="CourseTitleLabel" xml:space="preserve">
+    <value>Název</value>
+  </data>
+  <data name="DescriptionPlaceholder" xml:space="preserve">
+    <value>Stručně popište obsah kurzu</value>
+  </data>
+  <data name="CourseDescriptionLabel" xml:space="preserve">
+    <value>Popis</value>
+  </data>
+  <data name="MetaTitlePlaceholder" xml:space="preserve">
+    <value>Meta titulek pro vyhledávače</value>
+  </data>
+  <data name="MetaTitleLabel" xml:space="preserve">
+    <value>Meta titulek</value>
+  </data>
+  <data name="MetaDescriptionPlaceholder" xml:space="preserve">
+    <value>Krátký popis pro SEO</value>
+  </data>
+  <data name="MetaDescriptionLabel" xml:space="preserve">
+    <value>Meta popis</value>
+  </data>
+  <data name="OpenGraphImagePlaceholder" xml:space="preserve">
+    <value>URL obrázku pro sdílení na sociálních sítích</value>
+  </data>
+  <data name="OpenGraphImageLabel" xml:space="preserve">
+    <value>Open Graph obrázek</value>
+  </data>
+  <data name="SelectGroup" xml:space="preserve">
+    <value>Vyberte skupinu</value>
+  </data>
+  <data name="CourseGroupLabel" xml:space="preserve">
+    <value>Skupina</value>
+  </data>
+  <data name="PricePlaceholder" xml:space="preserve">
+    <value>Zadejte cenu</value>
+  </data>
+  <data name="PriceLabel" xml:space="preserve">
+    <value>Cena</value>
+  </data>
+  <data name="DatePlaceholder" xml:space="preserve">
+    <value>Datum zahájení</value>
+  </data>
+  <data name="DateLabel" xml:space="preserve">
+    <value>Datum</value>
+  </data>
+  <data name="SelectLevel" xml:space="preserve">
+    <value>Zvolte úroveň</value>
+  </data>
+  <data name="LevelLabel" xml:space="preserve">
+    <value>Úroveň</value>
+  </data>
+  <data name="SelectMode" xml:space="preserve">
+    <value>Zvolte formu</value>
+  </data>
+  <data name="ModeLabel" xml:space="preserve">
+    <value>Forma</value>
+  </data>
+  <data name="DurationPlaceholder" xml:space="preserve">
+    <value>Délka v hodinách</value>
+  </data>
+  <data name="DurationLabel" xml:space="preserve">
+    <value>Délka</value>
+  </data>
+  <data name="CoverImageLabel" xml:space="preserve">
+    <value>Úvodní obrázek</value>
+  </data>
+</root>

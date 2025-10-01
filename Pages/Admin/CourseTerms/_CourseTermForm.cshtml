@@ -1,19 +1,19 @@
 @model SysJaky_N.Pages.Admin.CourseTerms.CourseTermFormModel
 
 <div class="mb-3">
-    <label asp-for="Input.CourseId" class="form-label"></label>
+    <label asp-for="Input.CourseId" class="form-label">Kurz</label>
     <select asp-for="Input.CourseId" class="form-select" asp-items="Model.CourseOptions"></select>
     <span asp-validation-for="Input.CourseId" class="text-danger"></span>
 </div>
 
 <div class="row g-3">
     <div class="col-md-6">
-        <label asp-for="Input.StartUtc" class="form-label"></label>
+        <label asp-for="Input.StartUtc" class="form-label">Začátek</label>
         <input asp-for="Input.StartUtc" type="datetime-local" class="form-control" />
         <span asp-validation-for="Input.StartUtc" class="text-danger"></span>
     </div>
     <div class="col-md-6">
-        <label asp-for="Input.EndUtc" class="form-label"></label>
+        <label asp-for="Input.EndUtc" class="form-label">Konec</label>
         <input asp-for="Input.EndUtc" type="datetime-local" class="form-control" />
         <span asp-validation-for="Input.EndUtc" class="text-danger"></span>
     </div>
@@ -21,19 +21,19 @@
 
 <div class="row g-3 mt-1">
     <div class="col-md-4">
-        <label asp-for="Input.Capacity" class="form-label"></label>
+        <label asp-for="Input.Capacity" class="form-label">Kapacita</label>
         <input asp-for="Input.Capacity" class="form-control" type="number" min="1" />
         <span asp-validation-for="Input.Capacity" class="text-danger"></span>
     </div>
     <div class="col-md-4">
-        <label asp-for="Input.InstructorId" class="form-label"></label>
+        <label asp-for="Input.InstructorId" class="form-label">Lektor</label>
         <select asp-for="Input.InstructorId" class="form-select" asp-items="Model.InstructorOptions"></select>
         <span asp-validation-for="Input.InstructorId" class="text-danger"></span>
     </div>
     <div class="col-md-4 d-flex align-items-center">
         <div class="form-check mt-3">
             <input class="form-check-input" asp-for="Input.IsActive" />
-            <label class="form-check-label" asp-for="Input.IsActive"></label>
+            <label class="form-check-label" asp-for="Input.IsActive">Aktivní</label>
         </div>
     </div>
 </div>

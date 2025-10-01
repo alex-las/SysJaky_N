@@ -1,28 +1,28 @@
 @page "{id:int}"
 @model SysJaky_N.Pages.Admin.PriceSchedules.DeleteModel
 @{
-    ViewData["Title"] = "Delete Price Schedule";
+    ViewData["Title"] = "Smazat cenový plán";
 }
 
-<h1>Delete Price Schedule</h1>
+<h1>Smazat cenový plán</h1>
 
-<h3>Are you sure you want to delete this price schedule?</h3>
+<h3>Opravdu chcete tento cenový plán odstranit?</h3>
 
 <div>
     <dl class="row">
-        <dt class="col-sm-3">Course</dt>
+        <dt class="col-sm-3">Kurz</dt>
         <dd class="col-sm-9">@Model.PriceSchedule.Course?.Title</dd>
-        <dt class="col-sm-3">Valid From</dt>
+        <dt class="col-sm-3">Platí od</dt>
         <dd class="col-sm-9">@DateTime.SpecifyKind(Model.PriceSchedule.FromUtc, DateTimeKind.Utc).ToLocalTime().ToString("g")</dd>
-        <dt class="col-sm-3">Valid To</dt>
+        <dt class="col-sm-3">Platí do</dt>
         <dd class="col-sm-9">@DateTime.SpecifyKind(Model.PriceSchedule.ToUtc, DateTimeKind.Utc).ToLocalTime().ToString("g")</dd>
-        <dt class="col-sm-3">New Price (excl. VAT)</dt>
+        <dt class="col-sm-3">Nová cena (bez DPH)</dt>
         <dd class="col-sm-9">@Model.PriceSchedule.NewPriceExcl.ToString("C")</dd>
     </dl>
 
     <form method="post">
         <input type="hidden" asp-for="PriceSchedule.Id" />
-        <button type="submit" class="btn btn-danger">Delete</button>
-        <a asp-page="Index" class="btn btn-secondary">Cancel</a>
+        <button type="submit" class="btn btn-danger">Smazat</button>
+        <a asp-page="Index" class="btn btn-secondary">Zrušit</a>
     </form>
 </div>

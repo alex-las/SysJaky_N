@@ -1,10 +1,10 @@
 @page "{id:int}"
 @model SysJaky_N.Pages.Admin.PriceSchedules.EditModel
 @{
-    ViewData["Title"] = "Edit Price Schedule";
+    ViewData["Title"] = "Upravit cenový plán";
 }
 
-<h1>Edit Price Schedule</h1>
+<h1>Upravit cenový plán</h1>
 
 <form method="post" class="mt-4">
     <input type="hidden" asp-for="PriceSchedule.Id" />
@@ -13,7 +13,7 @@
     <partial name="_PriceScheduleForm" model="new SysJaky_N.Pages.Admin.PriceSchedules.PriceScheduleFormModel(Model.PriceSchedule, Model.Courses)" />
 
     <div class="mt-4">
-        <partial name="~/Pages/Shared/_FormActions.cshtml" model='new SysJaky_N.Pages.Admin.Shared.FormActionsModel { SubmitText = "Save", CancelText = "Cancel" }' />
+        <partial name="~/Pages/Shared/_FormActions.cshtml" model='new SysJaky_N.Pages.Admin.Shared.FormActionsModel { SubmitText = "Uložit", CancelText = "Zrušit" }' />
     </div>
 </form>
 

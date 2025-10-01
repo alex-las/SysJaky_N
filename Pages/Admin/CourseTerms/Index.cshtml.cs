@@ -124,7 +124,7 @@ public class IndexModel : PageModel
             worksheet.Cells[worksheet.Dimension.Address].AutoFitColumns();
         }
 
-        var courseTitle = term.Course?.Title ?? $"Course_{term.CourseId}";
+        var courseTitle = term.Course?.Title ?? $"Kurz_{term.CourseId}";
         var safeCourseTitle = SanitizeForFileName(courseTitle);
         var fileName = $"{safeCourseTitle}_term_{term.Id}_enrollments.xlsx";
         var content = package.GetAsByteArray();
@@ -136,16 +136,16 @@ public class IndexModel : PageModel
     {
         if (ImportFile == null || ImportFile.Length == 0)
         {
-            ModelState.AddModelError(nameof(ImportFile), "Please select an XLSX file to import.");
-            ErrorMessage = "Import failed. Please review the highlighted issues.";
+            ModelState.AddModelError(nameof(ImportFile), "Vyberte XLSX soubor pro import.");
+            ErrorMessage = "Import se nezdařil. Zkontrolujte zvýrazněné problémy.";
             await LoadPageDataAsync();
             return Page();
         }
 
         if (!string.Equals(Path.GetExtension(ImportFile.FileName), ".xlsx", StringComparison.OrdinalIgnoreCase))
         {
-            ModelState.AddModelError(nameof(ImportFile), "Only XLSX files are supported.");
-            ErrorMessage = "Import failed. Please review the highlighted issues.";
+            ModelState.AddModelError(nameof(ImportFile), "Podporovány jsou pouze soubory XLSX.");
+            ErrorMessage = "Import se nezdařil. Zkontrolujte zvýrazněné problémy.";
             await LoadPageDataAsync();
             return Page();
         }
@@ -163,8 +163,8 @@ public class IndexModel : PageModel
             var worksheet = package.Workbook.Worksheets.FirstOrDefault();
             if (worksheet == null || worksheet.Dimension == null)
             {
-                ModelState.AddModelError(nameof(ImportFile), "The uploaded file does not contain any data.");
-                ErrorMessage = "Import failed. Please review the highlighted issues.";
+                ModelState.AddModelError(nameof(ImportFile), "Nahraný soubor neobsahuje žádná data.");
+                ErrorMessage = "Import se nezdařil. Zkontrolujte zvýrazněné problémy.";
                 await LoadPageDataAsync();
                 return Page();
             }
@@ -175,13 +175,13 @@ public class IndexModel : PageModel
             {
                 if (!headerMap.ContainsKey(header))
                 {
-                    ModelState.AddModelError(nameof(ImportFile), $"Missing required column '{header}'.");
+                    ModelState.AddModelError(nameof(ImportFile), $"Chybí povinný sloupec '{header}'.");
                 }
             }
 
             if (!ModelState.IsValid)
             {
-                ErrorMessage = "Import failed. Please review the highlighted issues.";
+                ErrorMessage = "Import se nezdařil. Zkontrolujte zvýrazněné problémy.";
                 await LoadPageDataAsync();
                 return Page();
             }
@@ -201,13 +201,13 @@ public class IndexModel : PageModel
                 {
                     if (!TryGetNullableInt(worksheet.Cells[row, idColumn], out id))
                     {
-                        rowErrors.Add("Invalid value for Id.");
+                        rowErrors.Add("Neplatná hodnota ve sloupci Id.");
                     }
                 }
 
                 if (!TryGetInt(worksheet.Cells[row, headerMap["CourseId"]], out var courseId))
                 {
-                    rowErrors.Add("CourseId is required and must be a number.");
+                    rowErrors.Add("CourseId je povinný a musí být číslo.");
                 }
                 else
                 {
@@ -216,21 +216,21 @@ public class IndexModel : PageModel
 
                 if (!TryGetDateTime(worksheet.Cells[row, headerMap["StartUtc"]], out var startUtc))
                 {
-                    rowErrors.Add("StartUtc is required and must be a valid date/time.");
+                    rowErrors.Add("StartUtc je povinný a musí být platné datum a čas.");
                 }
 
                 if (!TryGetDateTime(worksheet.Cells[row, headerMap["EndUtc"]], out var endUtc))
                 {
-                    rowErrors.Add("EndUtc is required and must be a valid date/time.");
+                    rowErrors.Add("EndUtc je povinný a musí být platné datum a čas.");
                 }
 
                 if (!TryGetInt(worksheet.Cells[row, headerMap["Capacity"]], out var capacity))
                 {
-                    rowErrors.Add("Capacity is required and must be a number.");
+                    rowErrors.Add("Capacity je povinná a musí být číslo.");
                 }
                 else if (capacity < 1)
                 {
-                    rowErrors.Add("Capacity must be at least 1.");
+                    rowErrors.Add("Kapacita musí být alespoň 1.");
                 }
 
                 bool? isActive = null;
@@ -238,7 +238,7 @@ public class IndexModel : PageModel
                 {
                     if (!TryGetNullableBool(worksheet.Cells[row, isActiveColumn], out isActive))
                     {
-                        rowErrors.Add("IsActive must be a boolean value.");
+                        rowErrors.Add("IsActive musí být logická hodnota.");
                     }
                 }
 
@@ -247,7 +247,7 @@ public class IndexModel : PageModel
                 {
                     if (!TryGetNullableInt(worksheet.Cells[row, instructorColumn], out instructorId))
                     {
-                        rowErrors.Add("InstructorId must be a number.");
+                        rowErrors.Add("InstructorId musí být číslo.");
                     }
                     else if (instructorId.HasValue)
                     {
@@ -257,7 +257,7 @@ public class IndexModel : PageModel
 
                 if (!rowErrors.Any() && EnsureUtc(startUtc) >= EnsureUtc(endUtc))
                 {
-                    rowErrors.Add("StartUtc must be earlier than EndUtc.");
+                    rowErrors.Add("StartUtc musí být dříve než EndUtc.");
                 }
 
                 if (rowErrors.Count > 0)
@@ -282,14 +282,14 @@ public class IndexModel : PageModel
 
         if (!ModelState.IsValid)
         {
-            ErrorMessage = "Import failed. Please review the highlighted issues.";
+            ErrorMessage = "Import se nezdařil. Zkontrolujte zvýrazněné problémy.";
             await LoadPageDataAsync();
             return Page();
         }
 
         if (parsedRows.Count == 0)
         {
-            StatusMessage = "No course terms were found in the uploaded file.";
+            StatusMessage = "V nahraném souboru nebyly nalezeny žádné termíny.";
             return RedirectToPage(new { CourseId, OnlyActive });
         }
 
@@ -300,7 +300,7 @@ public class IndexModel : PageModel
 
         foreach (var missingCourseId in courseIds.Except(existingCourseIds))
         {
-            ModelState.AddModelError(nameof(ImportFile), $"Course with ID {missingCourseId} does not exist.");
+            ModelState.AddModelError(nameof(ImportFile), $"Kurz s ID {missingCourseId} neexistuje.");
         }
 
         if (instructorIds.Count > 0)
@@ -312,13 +312,13 @@ public class IndexModel : PageModel
 
             foreach (var missingInstructorId in instructorIds.Except(existingInstructorIds))
             {
-                ModelState.AddModelError(nameof(ImportFile), $"Instructor with ID {missingInstructorId} does not exist.");
+                ModelState.AddModelError(nameof(ImportFile), $"Lektor s ID {missingInstructorId} neexistuje.");
             }
         }
 
         if (!ModelState.IsValid)
         {
-            ErrorMessage = "Import failed. Please review the highlighted issues.";
+            ErrorMessage = "Import se nezdařil. Zkontrolujte zvýrazněné problémy.";
             await LoadPageDataAsync();
             return Page();
         }
@@ -335,12 +335,12 @@ public class IndexModel : PageModel
 
             foreach (var missingTermId in termIds.Except(termsToUpdate.Keys))
             {
-                ModelState.AddModelError(nameof(ImportFile), $"Course term with ID {missingTermId} does not exist.");
+                ModelState.AddModelError(nameof(ImportFile), $"Termín s ID {missingTermId} neexistuje.");
             }
 
             if (!ModelState.IsValid)
             {
-                ErrorMessage = "Import failed. Please review the highlighted issues.";
+                ErrorMessage = "Import se nezdařil. Zkontrolujte zvýrazněné problémy.";
                 await LoadPageDataAsync();
                 return Page();
             }
@@ -359,7 +359,7 @@ public class IndexModel : PageModel
                 term = termsToUpdate[row.Id.Value];
                 if (term.SeatsTaken > row.Capacity)
                 {
-                    ModelState.AddModelError(nameof(ImportFile), $"Row {row.RowNumber}: Capacity {row.Capacity} is smaller than the current number of seats taken ({term.SeatsTaken}).");
+                    ModelState.AddModelError(nameof(ImportFile), $"Řádek {row.RowNumber}: Kapacita {row.Capacity} je menší než aktuálně obsazená místa ({term.SeatsTaken}).");
                     continue;
                 }
 
@@ -397,7 +397,7 @@ public class IndexModel : PageModel
 
         if (!ModelState.IsValid)
         {
-            ErrorMessage = "Import failed. Please review the highlighted issues.";
+            ErrorMessage = "Import se nezdařil. Zkontrolujte zvýrazněné problémy.";
             await LoadPageDataAsync();
             return Page();
         }
@@ -410,7 +410,7 @@ public class IndexModel : PageModel
             _cacheService.InvalidateCourseDetail(courseId);
         }
 
-        StatusMessage = $"Imported {created} new term(s) and updated {updated} existing term(s).";
+        StatusMessage = $"Importováno {created} nových termínů a aktualizováno {updated} stávajících termínů.";
         return RedirectToPage(new { CourseId, OnlyActive });
     }
 

@@ -1,18 +1,18 @@
 @page
 @model SysJaky_N.Pages.Admin.PriceSchedules.IndexModel
 @{
-    ViewData["Title"] = "Price Schedules";
+    ViewData["Title"] = "Cenové plány";
 }
 
-<h1>Price Schedules</h1>
+<h1>Cenové plány</h1>
 
 <p>
-    <a class="btn btn-primary" asp-page="Create">Create New</a>
+    <a class="btn btn-primary" asp-page="Create">Vytvořit nový</a>
 </p>
 
 @if (Model.PriceSchedules.Count == 0)
 {
-    <p>No price schedules found.</p>
+    <p>Nebyly nalezeny žádné cenové plány.</p>
 }
 else
 {
@@ -20,10 +20,10 @@ else
         <table class="table table-striped align-middle">
         <thead>
             <tr>
-                <th>Course</th>
-                <th>Valid From</th>
-                <th>Valid To</th>
-                <th>New Price (excl. VAT)</th>
+                <th>Kurz</th>
+                <th>Platí od</th>
+                <th>Platí do</th>
+                <th>Nová cena (bez DPH)</th>
                 <th></th>
             </tr>
         </thead>
@@ -36,8 +36,8 @@ else
                 <td>@DateTime.SpecifyKind(schedule.ToUtc, DateTimeKind.Utc).ToLocalTime().ToString("g")</td>
                 <td>@schedule.NewPriceExcl.ToString("C")</td>
                 <td>
-                    <a class="btn btn-sm btn-secondary" asp-page="Edit" asp-route-id="@schedule.Id">Edit</a>
-                    <a class="btn btn-sm btn-danger" asp-page="Delete" asp-route-id="@schedule.Id">Delete</a>
+                    <a class="btn btn-sm btn-secondary" asp-page="Edit" asp-route-id="@schedule.Id">Upravit</a>
+                    <a class="btn btn-sm btn-danger" asp-page="Delete" asp-route-id="@schedule.Id">Smazat</a>
                 </td>
             </tr>
         }

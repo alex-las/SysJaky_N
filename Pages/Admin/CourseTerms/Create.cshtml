@@ -1,10 +1,10 @@
 @page
 @model SysJaky_N.Pages.Admin.CourseTerms.CreateModel
 @{
-    ViewData["Title"] = "Create Course Term";
+    ViewData["Title"] = "Vytvořit termín kurzu";
 }
 
-<h1>Create Course Term</h1>
+<h1>Vytvořit termín kurzu</h1>
 
 <form method="post" class="mt-4">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -12,7 +12,7 @@
     <partial name="_CourseTermForm" model="new SysJaky_N.Pages.Admin.CourseTerms.CourseTermFormModel(Model.Input, Model.CourseOptions, Model.InstructorOptions)" />
 
     <div class="mt-4">
-        <partial name="~/Pages/Shared/_FormActions.cshtml" model='new SysJaky_N.Pages.Admin.Shared.FormActionsModel { SubmitText = "Create", CancelText = "Cancel" }' />
+        <partial name="~/Pages/Shared/_FormActions.cshtml" model='new SysJaky_N.Pages.Admin.Shared.FormActionsModel { SubmitText = "Vytvořit", CancelText = "Zrušit" }' />
     </div>
 </form>
 

@@ -1,12 +1,12 @@
 @page
 @model SysJaky_N.Pages.Admin.CourseTerms.IndexModel
 @{
-    ViewData["Title"] = "Course Terms";
+    ViewData["Title"] = "Termíny kurzů";
 }
 
 <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
-    <h1 class="mb-0">Course Terms</h1>
-    <a class="btn btn-primary" asp-page="Create">Create term</a>
+    <h1 class="mb-0">Termíny kurzů</h1>
+    <a class="btn btn-primary" asp-page="Create">Vytvořit termín</a>
 </div>
 
 @if (!string.IsNullOrEmpty(Model.StatusMessage))
@@ -25,34 +25,34 @@
 
 <form method="get" class="row g-3 align-items-end mb-4">
     <div class="col-md-4">
-        <label asp-for="CourseId" class="form-label">Course</label>
+        <label asp-for="CourseId" class="form-label">Kurz</label>
         <select asp-for="CourseId" class="form-select" asp-items="Model.CourseOptions">
-            <option value="">All courses</option>
+            <option value="">Všechny kurzy</option>
         </select>
     </div>
     <div class="col-md-3">
         <div class="form-check mt-md-4">
             <input class="form-check-input" asp-for="OnlyActive" />
-            <label class="form-check-label" asp-for="OnlyActive">Active only</label>
+            <label class="form-check-label" asp-for="OnlyActive">Jen aktivní</label>
         </div>
     </div>
     <div class="col-auto">
-        <button type="submit" class="btn btn-primary">Filter</button>
+        <button type="submit" class="btn btn-primary">Filtrovat</button>
     </div>
     <div class="col-auto">
-        <a asp-page="Index" class="btn btn-outline-secondary">Clear</a>
+        <a asp-page="Index" class="btn btn-outline-secondary">Vymazat</a>
     </div>
 </form>
 
 <form method="post" asp-page-handler="Import" enctype="multipart/form-data" class="row g-3 align-items-end mb-4">
     <div class="col-md-5 col-lg-4">
-        <label asp-for="ImportFile" class="form-label">Import terms from Excel</label>
+        <label asp-for="ImportFile" class="form-label">Importovat termíny z Excelu</label>
         <input asp-for="ImportFile" class="form-control" type="file" accept=".xlsx" />
-        <div class="form-text">Required columns: CourseId, StartUtc, EndUtc, Capacity. Optional columns: Id, IsActive, InstructorId.</div>
+        <div class="form-text">Povinné sloupce: CourseId, StartUtc, EndUtc, Capacity. Volitelné sloupce: Id, IsActive, InstructorId.</div>
         <span asp-validation-for="ImportFile" class="text-danger"></span>
     </div>
     <div class="col-auto">
-        <button type="submit" class="btn btn-outline-primary">Import XLSX</button>
+        <button type="submit" class="btn btn-outline-primary">Importovat XLSX</button>
     </div>
     <div class="col-12">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -62,7 +62,7 @@
 @if (Model.Terms.Count == 0)
 {
     <div class="alert alert-info" role="status">
-        No course terms found.
+        Nebyly nalezeny žádné termíny kurzů.
     </div>
 }
 else
@@ -71,13 +71,13 @@ else
         <table class="table table-striped align-middle">
             <thead>
                 <tr>
-                    <th>Course</th>
-                    <th>Instructor</th>
-                    <th>Start</th>
-                    <th>End</th>
-                    <th class="text-center">Capacity</th>
-                    <th class="text-center">Seats taken</th>
-                    <th>Status</th>
+                    <th>Kurz</th>
+                    <th>Lektor</th>
+                    <th>Začátek</th>
+                    <th>Konec</th>
+                    <th class="text-center">Kapacita</th>
+                    <th class="text-center">Obsazeno</th>
+                    <th>Stav</th>
                     <th></th>
                 </tr>
             </thead>
@@ -88,7 +88,7 @@ else
                 var endLocal = DateTime.SpecifyKind(term.EndUtc, DateTimeKind.Utc).ToLocalTime();
                 <tr>
                     <td>@term.Course?.Title</td>
-                    <td>@(term.Instructor?.FullName ?? "Unassigned")</td>
+                    <td>@(term.Instructor?.FullName ?? "Nepřiřazeno")</td>
                     <td>@startLocal.ToString("g")</td>
                     <td>@endLocal.ToString("g")</td>
                     <td class="text-center">@term.Capacity</td>
@@ -96,21 +96,21 @@ else
                     <td>
                         @if (term.IsActive)
                         {
-                            <span class="badge bg-success">Active</span>
+                            <span class="badge bg-success">Aktivní</span>
                         }
                         else
                         {
-                            <span class="badge bg-secondary">Inactive</span>
+                            <span class="badge bg-secondary">Neaktivní</span>
                         }
                     </td>
                     <td class="text-end">
                         <div class="d-flex flex-wrap justify-content-end gap-2">
-                            <div class="btn-group btn-group-sm" role="group" aria-label="Actions for @term.Course?.Title term">
-                                <a class="btn btn-outline-secondary" asp-page="Edit" asp-route-id="@term.Id">Edit</a>
-                                <a class="btn btn-outline-danger" asp-page="Delete" asp-route-id="@term.Id">Delete</a>
+                            <div class="btn-group btn-group-sm" role="group" aria-label="Akce pro termín kurzu @term.Course?.Title">
+                                <a class="btn btn-outline-secondary" asp-page="Edit" asp-route-id="@term.Id">Upravit</a>
+                                <a class="btn btn-outline-danger" asp-page="Delete" asp-route-id="@term.Id">Smazat</a>
                             </div>
                             <form method="post" asp-page-handler="ExportEnrollments" asp-route-id="@term.Id" class="d-inline">
-                                <button type="submit" class="btn btn-sm btn-outline-primary">Export XLSX</button>
+                                <button type="submit" class="btn btn-sm btn-outline-primary">Exportovat XLSX</button>
                             </form>
                         </div>
                     </td>

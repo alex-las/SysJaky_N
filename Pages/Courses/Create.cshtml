@@ -4,18 +4,18 @@
 @using Microsoft.AspNetCore.Mvc.Rendering
 @using SysJaky_N.Pages.Courses
 @{
-    ViewData["Title"] = "Create Course";
+    ViewData["Title"] = "Vytvořit kurz";
     var actions = new HtmlContentBuilder();
     var submitButton = new TagBuilder("button");
     submitButton.Attributes["type"] = "submit";
     submitButton.AddCssClass("btn btn-primary");
-    submitButton.InnerHtml.Append("Create");
+    submitButton.InnerHtml.Append("Vytvořit");
     actions.AppendHtml(submitButton);
 
     var backLink = new TagBuilder("a");
     backLink.AddCssClass("btn btn-secondary");
     backLink.Attributes["href"] = Url.Page("Index");
-    backLink.InnerHtml.Append("Back to List");
+    backLink.InnerHtml.Append("Zpět na přehled");
     actions.AppendHtml(backLink);
 
     var formModel = new CourseFormModel
@@ -27,7 +27,7 @@
     };
 }
 
-<h1>Create Course</h1>
+<h1>Vytvořit kurz</h1>
 
 <form method="post" enctype="multipart/form-data">
     <partial name="Courses/Shared/_CourseForm" model="formModel" />

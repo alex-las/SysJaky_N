@@ -2,22 +2,22 @@
 @using System.Linq
 
 <div class="mb-3">
-    <label asp-for="CourseBlock.Title" class="form-label"></label>
+    <label asp-for="CourseBlock.Title" class="form-label">Název</label>
     <input asp-for="CourseBlock.Title" class="form-control" />
     <span asp-validation-for="CourseBlock.Title" class="text-danger"></span>
 </div>
 <div class="mb-3">
-    <label asp-for="CourseBlock.Description" class="form-label"></label>
+    <label asp-for="CourseBlock.Description" class="form-label">Popis</label>
     <textarea asp-for="CourseBlock.Description" class="form-control"></textarea>
     <span asp-validation-for="CourseBlock.Description" class="text-danger"></span>
 </div>
 <div class="mb-3">
-    <label asp-for="CourseBlock.Price" class="form-label"></label>
+    <label asp-for="CourseBlock.Price" class="form-label">Cena</label>
     <input asp-for="CourseBlock.Price" class="form-control" />
     <span asp-validation-for="CourseBlock.Price" class="text-danger"></span>
 </div>
 <div class="mb-3">
-    <label>Modules</label>
+    <label>Moduly</label>
     @foreach (var course in Model.AvailableCourses)
     {
         var isChecked = Model.SelectedCourseIds?.Contains(course.Id) == true;
