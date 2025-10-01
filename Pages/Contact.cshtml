@@ -8,12 +8,12 @@
 
 <h1>@Localizer["Title"]</h1>
 
-<div class="row">
+<div class="row" role="region" aria-label="@Localizer["ContactDetailsRegionLabel"]">
     <div class="col-md-6">
-        <p class="mb-3 text-muted">
+        <p class="mb-3 text-muted" id="contactIntro">
             @Localizer["Intro"]
         </p>
-        <form method="post">
+        <form method="post" aria-describedby="contactIntro">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="mb-3">
                 <label asp-for="Input.Name" class="form-label"></label>
@@ -34,11 +34,11 @@
         </form>
         @if (TempData["Success"] is string success && !string.IsNullOrEmpty(success))
         {
-            <div class="alert alert-success mt-3">@success</div>
+            <div class="alert alert-success mt-3" role="alert">@success</div>
         }
     </div>
     <div class="col-md-6">
-        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d10254.995911868303!2d14.42076!3d50.08804!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x470b94b49155b5d3%3A0x6f1234567890abcd!2sPrague%2C%20Czechia!5e0!3m2!1sen!2scz!4v1700000000000!5m2!1sen!2scz" width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d10254.995911868303!2d14.42076!3d50.08804!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x470b94b49155b5d3%3A0x6f1234567890abcd!2sPrague%2C%20Czechia!5e0!3m2!1sen!2scz!4v1700000000000!5m2!1sen!2scz" width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="@Localizer["MapTitle"]"></iframe>
     </div>
 </div>
 

@@ -29,16 +29,18 @@
     @await RenderSectionAsync("Head", required: false)
 </head>
 <body class="app-body">
-    <a class="visually-hidden-focusable" href="#main-content">@Localizer["SkipToContent"]</a>
-    <header class="app-header">
-        <nav class="navbar navbar-expand-lg navbar-toggleable-lg navbar-dark app-navbar" role="navigation" style="background-color: #1ca8d7;">
+    <a class="skip-link" href="#main-content">@Localizer["SkipToContent"]</a>
+    <div id="accessibility-live-region" class="visually-hidden" aria-live="polite" aria-atomic="true"></div>
+    <div id="accessibility-assertive-region" class="visually-hidden" aria-live="assertive" aria-atomic="true"></div>
+    <header class="app-header" role="banner">
+        <nav class="navbar navbar-expand-lg navbar-toggleable-lg navbar-dark app-navbar" role="navigation" aria-label='@Localizer["PrimaryNavigation"]' style="background-color: #1ca8d7;">
             <div class="container-xl">
                 <a class="navbar-brand" asp-area="" asp-page="/Index">@Localizer["BrandName"]</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#primaryNavigation" aria-controls="primaryNavigation"
                         aria-expanded="false" aria-label='@Localizer["ToggleNavigation"]'>
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-lg-inline-flex justify-content-between">
+                <div id="primaryNavigation" class="navbar-collapse collapse d-lg-inline-flex justify-content-between">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0 gap-lg-1">
                         <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-page="/Index" aria-current="@(currentPage == "/Index" ? "page" : null)">@Localizer["NavHome"]</a>
@@ -67,30 +69,30 @@
                             </li>
                         }
                         <li class="nav-item">
-                            <a class="btn btn-outline-light ms-2" data-bs-toggle="offcanvas" href="#advisor" role="button">
+                            <a class="btn btn-outline-light ms-2" data-bs-toggle="offcanvas" href="#advisor" role="button" aria-controls="advisor" aria-haspopup="dialog">
                                 <i class="bi bi-magic"></i> @Localizer["AdvisorButton"]
                             </a>
                         </li>
                         <li class="nav-item dropdown">
-                            <button class="btn btn-outline-light dropdown-toggle d-flex align-items-center gap-1" data-bs-toggle="dropdown">
+                            <button class="btn btn-outline-light dropdown-toggle d-flex align-items-center gap-1" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" type="button">
                                 <i class="bi bi-translate"></i>
                                 <span>@currentLanguageLabel</span>
                             </button>
-                            <ul class="dropdown-menu dropdown-menu-end">
+                            <ul class="dropdown-menu dropdown-menu-end" role="menu" aria-label='@Localizer["LanguageMenuLabel"]'>
                                 <li>
-                                    <form method="post" asp-controller="Localization" asp-action="SetLanguage" class="px-3 py-1">
+                                    <form method="post" asp-controller="Localization" asp-action="SetLanguage" class="px-3 py-1" aria-label='@Localizer["ChangeLanguageFormLabel"]'>
                                         @Html.AntiForgeryToken()
                                         <input type="hidden" name="returnUrl" value="@returnUrl" />
-                                        <button type="submit" name="culture" value="cs" class="dropdown-item w-100 text-start @(currentCulture.TwoLetterISOLanguageName == "cs" ? "active" : string.Empty)">
+                                        <button type="submit" name="culture" value="cs" class="dropdown-item w-100 text-start @(currentCulture.TwoLetterISOLanguageName == "cs" ? "active" : string.Empty)" role="menuitem">
                                             @Localizer["LanguageNameCs"]
                                         </button>
                                     </form>
                                 </li>
                                 <li>
-                                    <form method="post" asp-controller="Localization" asp-action="SetLanguage" class="px-3 py-1">
+                                    <form method="post" asp-controller="Localization" asp-action="SetLanguage" class="px-3 py-1" aria-label='@Localizer["ChangeLanguageFormLabel"]'>
                                         @Html.AntiForgeryToken()
                                         <input type="hidden" name="returnUrl" value="@returnUrl" />
-                                        <button type="submit" name="culture" value="en" class="dropdown-item w-100 text-start @(currentCulture.TwoLetterISOLanguageName == "en" ? "active" : string.Empty)">
+                                        <button type="submit" name="culture" value="en" class="dropdown-item w-100 text-start @(currentCulture.TwoLetterISOLanguageName == "en" ? "active" : string.Empty)" role="menuitem">
                                             @Localizer["LanguageNameEn"]
                                         </button>
                                     </form>
@@ -106,16 +108,16 @@
                         else
                         {
                             <li class="nav-item dropdown">
-                                <a class="btn btn-outline-light dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                                <a class="btn btn-outline-light dropdown-toggle" href="#" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
                                     @User.Identity?.Name
                                 </a>
-                                <ul class="dropdown-menu dropdown-menu-end">
-                                    <li><a class="dropdown-item" asp-page="/Account/Manage">@Localizer["ProfileOverview"]</a></li>
-                                    <li><a class="dropdown-item" href="/Account/Manage#upcoming-courses">@Localizer["UpcomingCourses"]</a></li>
-                                    <li><a class="dropdown-item" href="/Account/Manage#wishlist">@Localizer["Wishlist"]</a></li>
-                                    <li><a class="dropdown-item" href="/Account/Manage#orders">@Localizer["Orders"]</a></li>
+                                <ul class="dropdown-menu dropdown-menu-end" role="menu" aria-label='@Localizer["AccountMenuLabel"]'>
+                                    <li role="none"><a class="dropdown-item" asp-page="/Account/Manage" role="menuitem">@Localizer["ProfileOverview"]</a></li>
+                                    <li role="none"><a class="dropdown-item" href="/Account/Manage#upcoming-courses" role="menuitem">@Localizer["UpcomingCourses"]</a></li>
+                                    <li role="none"><a class="dropdown-item" href="/Account/Manage#wishlist" role="menuitem">@Localizer["Wishlist"]</a></li>
+                                    <li role="none"><a class="dropdown-item" href="/Account/Manage#orders" role="menuitem">@Localizer["Orders"]</a></li>
                                     <li><hr class="dropdown-divider" /></li>
-                                    <li><a class="dropdown-item" asp-page="/Cart">@Localizer["Cart"]</a></li>
+                                    <li role="none"><a class="dropdown-item" asp-page="/Cart" role="menuitem">@Localizer["Cart"]</a></li>
                                 </ul>
                             </li>
                         }
@@ -131,12 +133,12 @@
         </nav>
     </header>
     <div class="app-content container-xl px-3 px-md-4">
-        <main id="main-content" role="main" class="app-main">
+        <main id="main-content" role="main" class="app-main" tabindex="-1">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="footer app-footer text-muted mt-5">
+    <footer class="footer app-footer text-muted mt-5" role="contentinfo">
         <div class="container-xl">
             &copy; 2025 - SysJaky_N - <a asp-area="" asp-page="/Privacy">@Localizer["FooterPrivacy"]</a>
         </div>
@@ -185,7 +187,7 @@
             Input = new RegisterModel.InputModel()
         };
 
-        <div class="modal fade" id="authModal" tabindex="-1" aria-labelledby="authModalLabel" aria-hidden="true">
+        <div class="modal fade" id="authModal" tabindex="-1" aria-labelledby="authModalLabel" aria-hidden="true" role="dialog" aria-modal="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">

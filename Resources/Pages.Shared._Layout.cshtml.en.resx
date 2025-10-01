@@ -69,6 +69,18 @@
   <data name="CartAriaLabel" xml:space="preserve">
     <value>Shopping cart</value>
   </data>
+  <data name="PrimaryNavigation" xml:space="preserve">
+    <value>Primary navigation</value>
+  </data>
+  <data name="LanguageMenuLabel" xml:space="preserve">
+    <value>Language selection</value>
+  </data>
+  <data name="ChangeLanguageFormLabel" xml:space="preserve">
+    <value>Select language</value>
+  </data>
+  <data name="AccountMenuLabel" xml:space="preserve">
+    <value>Account menu</value>
+  </data>
   <data name="FooterPrivacy" xml:space="preserve">
     <value>Privacy</value>
   </data>

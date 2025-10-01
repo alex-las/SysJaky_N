@@ -6,9 +6,15 @@
 }
 
 <h1>@Localizer["Heading"]</h1>
-<form method="get" class="mb-3" role="search" aria-label="@Localizer["SearchAriaLabel"]">
-    <input type="text" asp-for="SearchString" placeholder="@Localizer["SearchPlaceholder"]" class="form-control" style="width:auto;display:inline-block" aria-label="@Localizer["SearchInputAriaLabel"]" />
-    <button type="submit" class="btn btn-primary">@Localizer["SearchButton"]</button>
+<form method="get" class="mb-3 d-flex flex-column flex-sm-row gap-2" role="search" aria-label="@Localizer["SearchAriaLabel"]">
+    <div>
+        <label class="form-label visually-hidden" for="articleSearch">@Localizer["SearchInputAriaLabel"]</label>
+        <input type="text" id="articleSearch" asp-for="SearchString" placeholder="@Localizer["SearchPlaceholder"]" class="form-control" aria-describedby="articleSearchHelp" />
+        <div id="articleSearchHelp" class="visually-hidden">@Localizer["SearchHelpText"]</div>
+    </div>
+    <div>
+        <button type="submit" class="btn btn-primary">@Localizer["SearchButton"]</button>
+    </div>
 </form>
 
 <ul>
@@ -24,11 +30,14 @@
 {
     <nav aria-label="@Localizer["PaginationAriaLabel"]">
         <ul class="pagination">
-            <li class="page-item @(Model.PageNumber <= 1 ? "disabled" : "")">
-                <a class="page-link" asp-route-PageNumber="@(Model.PageNumber - 1)" asp-route-SearchString="@Model.SearchString">@Localizer["Previous"]</a>
+            <li class="page-item @(Model.PageNumber <= 1 ? "disabled" : string.Empty)">
+                <a class="page-link" asp-route-PageNumber="@(Model.PageNumber - 1)" asp-route-SearchString="@Model.SearchString" aria-disabled="@(Model.PageNumber <= 1)">@Localizer["Previous"]</a>
             </li>
-            <li class="page-item @(Model.PageNumber >= Model.TotalPages ? "disabled" : "")">
-                <a class="page-link" asp-route-PageNumber="@(Model.PageNumber + 1)" asp-route-SearchString="@Model.SearchString">@Localizer["Next"]</a>
+            <li class="page-item disabled">
+                <span class="page-link" aria-current="page">@Localizer["PageStatus", Model.PageNumber, Model.TotalPages]</span>
+            </li>
+            <li class="page-item @(Model.PageNumber >= Model.TotalPages ? "disabled" : string.Empty)">
+                <a class="page-link" asp-route-PageNumber="@(Model.PageNumber + 1)" asp-route-SearchString="@Model.SearchString" aria-disabled="@(Model.PageNumber >= Model.TotalPages)">@Localizer["Next"]</a>
             </li>
         </ul>
     </nav>

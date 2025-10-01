@@ -24,4 +24,22 @@
   <data name="Tip" xml:space="preserve">
     <value>Tip: We will remember your choice for next time.</value>
   </data>
+  <data name="PersonaLabel" xml:space="preserve">
+    <value>Choose your role</value>
+  </data>
+  <data name="PersonaHelp" xml:space="preserve">
+    <value>Helps us tailor course recommendations.</value>
+  </data>
+  <data name="GoalLabel" xml:space="preserve">
+    <value>Choose your goal</value>
+  </data>
+  <data name="GoalHelp" xml:space="preserve">
+    <value>Tell us what you want to achieve with training.</value>
+  </data>
+  <data name="CityLabel" xml:space="preserve">
+    <value>City</value>
+  </data>
+  <data name="CityHelp" xml:space="preserve">
+    <value>Optional: preferred training location.</value>
+  </data>
 </root>

@@ -1,6 +1,6 @@
 @model SysJaky_N.Pages.Admin.Shared.FormActionsModel
 
-<div class="d-flex gap-2">
+<div class="d-flex gap-2" role="group" aria-label="@Model.ActionsAriaLabel">
     <button type="submit" class="@Model.SubmitCssClass">@Model.SubmitText</button>
     @if (Model.ShowCancel)
     {

@@ -24,4 +24,22 @@
   <data name="Tip" xml:space="preserve">
     <value>Tip: Vaši volbu si zapamatujeme pro příště.</value>
   </data>
+  <data name="PersonaLabel" xml:space="preserve">
+    <value>Vyberte svoji roli</value>
+  </data>
+  <data name="PersonaHelp" xml:space="preserve">
+    <value>Pomůže nám lépe doporučit vhodné kurzy.</value>
+  </data>
+  <data name="GoalLabel" xml:space="preserve">
+    <value>Vyberte cíl</value>
+  </data>
+  <data name="GoalHelp" xml:space="preserve">
+    <value>Řekněte nám, čeho chcete školením dosáhnout.</value>
+  </data>
+  <data name="CityLabel" xml:space="preserve">
+    <value>Město</value>
+  </data>
+  <data name="CityHelp" xml:space="preserve">
+    <value>Volitelné: preferované místo konání.</value>
+  </data>
 </root>

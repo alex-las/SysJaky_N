@@ -21,6 +21,9 @@
   <data name="CourseHeader" xml:space="preserve">
     <value>Course</value>
   </data>
+  <data name="CartTableCaption" xml:space="preserve">
+    <value>Items in your shopping cart</value>
+  </data>
   <data name="QuantityHeader" xml:space="preserve">
     <value>Quantity</value>
   </data>
@@ -39,6 +42,9 @@
   <data name="ApplyBundle" xml:space="preserve">
     <value>Apply bundle</value>
   </data>
+  <data name="ApplyBundleAria" xml:space="preserve">
+    <value>Apply bundle {0}</value>
+  </data>
   <data name="AppliedBundles" xml:space="preserve">
     <value>Applied bundles</value>
   </data>
@@ -48,11 +54,23 @@
   <data name="Apply" xml:space="preserve">
     <value>Apply</value>
   </data>
+  <data name="VoucherFormLabel" xml:space="preserve">
+    <value>Voucher code form</value>
+  </data>
+  <data name="VoucherCodeLabel" xml:space="preserve">
+    <value>Voucher code</value>
+  </data>
+  <data name="VoucherHelpText" xml:space="preserve">
+    <value>Enter your discount voucher code and confirm.</value>
+  </data>
   <data name="VoucherApplied" xml:space="preserve">
     <value>Voucher applied: {0} ({1})</value>
   </data>
   <data name="TotalLine" xml:space="preserve">
     <value>Total: {0}</value>
+  </data>
+  <data name="CheckoutFormLabel" xml:space="preserve">
+    <value>Create order</value>
   </data>
   <data name="CreateOrder" xml:space="preserve">
     <value>Create order</value>
