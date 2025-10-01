@@ -1,0 +1,168 @@
+<section class="iso-standards py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">Přehled klíčových norem ISO a IATF</h2>
+            <p class="text-muted mb-0">Vyberte si normu a objevte doporučené kurzy, které vám pomohou splnit požadavky na kvalitu, bezpečnost a compliance.</p>
+        </div>
+        <div class="row g-4">
+            @{
+                var standards = new[]
+                {
+                    new
+                    {
+                        Title = "ISO 9001 - Systém managementu kvality",
+                        Icon = "bi-patch-check-fill",
+                        Description = "Pro všechny typy organizací usilujících o zvyšování kvality výrobků a služeb. Zaměření na procesní řízení, management rizik, spokojenost zákazníků a kontinuální zlepšování.",
+                        Courses = new (string Name, string Url)[]
+                        {
+                            ("Úvod do ISO 9001", "/Courses/Index?search=ISO%209001"),
+                            ("Manažer kvality", "/Courses/Index?search=Mana%C5%BEer%20kvality"),
+                            ("Interní auditor kvality", "/Courses/Index?search=Intern%C3%AD%20auditor%20kvality")
+                        }
+                    },
+                    new
+                    {
+                        Title = "ISO 14001 - Environmentální management",
+                        Icon = "bi-globe2",
+                        Description = "Pro organizace, které chtějí systematicky řídit environmentální dopady své činnosti. Snižování ekologické stopy, compliance s legislativou, šetrné hospodaření se zdroji.",
+                        Courses = new (string Name, string Url)[]
+                        {
+                            ("Interní auditor EMS", "/Courses/Index?search=Intern%C3%AD%20auditor%20EMS"),
+                            ("Manažer integrovaného systému", "/Courses/Index?search=Mana%C5%BEer%20integrovan%C3%A9ho%20syst%C3%A9mu")
+                        }
+                    },
+                    new
+                    {
+                        Title = "ISO/IEC 17025 - Akreditace laboratoří",
+                        Icon = "bi-diagram-3",
+                        Description = "Mezinárodně uznávaný standard pro zkušební a kalibrační laboratoře. Zajišťuje technickou způsobilost, validitu výsledků a srovnatelnost měření.",
+                        Courses = new (string Name, string Url)[]
+                        {
+                            ("Manažer kvality laboratoře", "/Courses/Index?search=Mana%C5%BEer%20kvality%20laborato%C5%99e"),
+                            ("Interní auditor laboratoře", "/Courses/Index?search=Intern%C3%AD%20auditor%20laborato%C5%99e"),
+                            ("Metrolog", "/Courses/Index?search=Metrolog")
+                        }
+                    },
+                    new
+                    {
+                        Title = "ISO 15189 - Zdravotnické laboratoře",
+                        Icon = "bi-hospital",
+                        Description = "Specifické požadavky pro zdravotnické laboratoře. Kombinuje technické požadavky s managementem kvality zaměřeným na bezpečnost pacientů.",
+                        Courses = new (string Name, string Url)[]
+                        {
+                            ("Manažer kvality zdravotnické laboratoře", "/Courses/Index?search=Mana%C5%BEer%20kvality%20zdravotnick%C3%A9%20laborato%C5%99e"),
+                            ("Interní auditor zdravotnické laboratoře", "/Courses/Index?search=Intern%C3%AD%20auditor%20zdravotnick%C3%A9%20laborato%C5%99e")
+                        }
+                    },
+                    new
+                    {
+                        Title = "ISO 45001 - BOZP",
+                        Icon = "bi-shield-plus",
+                        Description = "Systém managementu bezpečnosti a ochrany zdraví při práci. Prevence pracovních úrazů, identifikace rizik, zapojení zaměstnanců.",
+                        Courses = new (string Name, string Url)[]
+                        {
+                            ("Interní auditor BOZP", "/Courses/Index?search=Intern%C3%AD%20auditor%20BOZP"),
+                            ("Manažer integrovaného systému", "/Courses/Index?search=Mana%C5%BEer%20integrovan%C3%A9ho%20syst%C3%A9mu")
+                        }
+                    },
+                    new
+                    {
+                        Title = "ISO 27001 - Informační bezpečnost",
+                        Icon = "bi-shield-lock-fill",
+                        Description = "Ochrana citlivých informací, řízení kybernetických rizik, compliance s GDPR a dalšími předpisy o ochraně dat.",
+                        Courses = new (string Name, string Url)[]
+                        {
+                            ("Úvod do ISO 27001", "/Courses/Index?search=ISO%2027001"),
+                            ("Interní auditor ISMS", "/Courses/Index?search=Intern%C3%AD%20auditor%20ISMS")
+                        }
+                    },
+                    new
+                    {
+                        Title = "IATF 16949 - Automobilový průmysl",
+                        Icon = "bi-gear-wide-connected",
+                        Description = "Specifický standard kvality pro dodavatele automobilového průmyslu. Nástroje jako APQP, PPAP, FMEA, SPC.",
+                        Courses = new (string Name, string Url)[]
+                        {
+                            ("Manažer kvality automotive", "/Courses/Index?search=Mana%C5%BEer%20kvality%20automotive"),
+                            ("APQP a PPAP", "/Courses/Index?search=APQP%20PPAP"),
+                            ("Core Tools", "/Courses/Index?search=Core%20Tools")
+                        }
+                    },
+                    new
+                    {
+                        Title = "ISO 13485 - Zdravotnické prostředky",
+                        Icon = "bi-heart-pulse-fill",
+                        Description = "Pro výrobce a distributory zdravotnických prostředků. Zaměření na bezpečnost, regulatory compliance a řízení rizik.",
+                        Courses = new (string Name, string Url)[]
+                        {
+                            ("Úvod do ISO 13485", "/Courses/Index?search=ISO%2013485"),
+                            ("Manažer kvality zdravotnických prostředků", "/Courses/Index?search=Mana%C5%BEer%20kvality%20zdravotnick%C3%BDch%20prost%C5%99edk%C5%AF")
+                        }
+                    }
+                };
+            }
+
+            @foreach (var standard in standards)
+            {
+                <div class="col-12 col-md-6 col-xl-3 d-flex">
+                    <article class="card shadow-sm border-0 w-100 h-100 iso-standard-card">
+                        <div class="card-body d-flex flex-column">
+                            <div class="d-flex align-items-center gap-3 mb-3">
+                                <span class="iso-icon rounded-circle d-inline-flex align-items-center justify-content-center">
+                                    <i class="bi @standard.Icon" aria-hidden="true"></i>
+                                </span>
+                                <h3 class="h5 mb-0">@standard.Title</h3>
+                            </div>
+                            <p class="text-muted flex-grow-1">@standard.Description</p>
+                            <div>
+                                <h4 class="h6 text-uppercase text-primary mb-2">Doporučené kurzy</h4>
+                                <ul class="list-unstyled mb-0">
+                                    @foreach (var course in standard.Courses)
+                                    {
+                                        <li class="mb-1">
+                                            <a class="link-underline link-underline-opacity-0 link-primary" href="@course.Url">
+                                                <i class="bi bi-arrow-up-right-square me-1" aria-hidden="true"></i>@course.Name
+                                            </a>
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+<style>
+    .iso-standards {
+        background: linear-gradient(180deg, rgba(13, 110, 253, 0.05) 0%, rgba(13, 110, 253, 0) 100%);
+    }
+
+    .iso-standard-card {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        border-radius: 1rem;
+    }
+
+    .iso-standard-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 0.5rem 1.5rem rgba(13, 110, 253, 0.15);
+    }
+
+    .iso-standard-card .iso-icon {
+        width: 3rem;
+        height: 3rem;
+        background: rgba(13, 110, 253, 0.1);
+        color: var(--bs-primary);
+        font-size: 1.5rem;
+    }
+
+    .iso-standard-card h3 {
+        font-weight: 600;
+    }
+
+    .iso-standard-card p {
+        font-size: 0.95rem;
+    }
+</style>
