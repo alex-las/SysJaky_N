@@ -60,7 +60,7 @@ public class EditModel : PageModel
 
         if (toUtc <= fromUtc)
         {
-            ModelState.AddModelError("PriceSchedule.ToUtc", "End time must be after start time.");
+            ModelState.AddModelError("PriceSchedule.ToUtc", "Koncový čas musí následovat po začátku.");
         }
 
         if (!ModelState.IsValid)

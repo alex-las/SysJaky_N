@@ -1,71 +1,76 @@
 @model SysJaky_N.Pages.Courses.CourseFormModel
 @using SysJaky_N.Models
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
 
 <div class="mb-3">
-    <label asp-for="Course.Title" class="form-label"></label>
-    <input asp-for="Course.Title" class="form-control" />
+    <label asp-for="Course.Title" class="form-label">@Localizer["CourseTitleLabel"]</label>
+    <input asp-for="Course.Title" class="form-control" placeholder="@Localizer["TitlePlaceholder"]" />
     <span asp-validation-for="Course.Title" class="text-danger"></span>
 </div>
 <div class="mb-3">
-    <label asp-for="Course.Description" class="form-label"></label>
-    <textarea asp-for="Course.Description" class="form-control" rows="4"></textarea>
+    <label asp-for="Course.Description" class="form-label">@Localizer["CourseDescriptionLabel"]</label>
+    <textarea asp-for="Course.Description" class="form-control" rows="4" placeholder="@Localizer["DescriptionPlaceholder"]"></textarea>
     <span asp-validation-for="Course.Description" class="text-danger"></span>
 </div>
 <div class="row g-3">
     <div class="col-md-6">
-        <label asp-for="Course.MetaTitle" class="form-label"></label>
-        <input asp-for="Course.MetaTitle" class="form-control" />
+        <label asp-for="Course.MetaTitle" class="form-label">@Localizer["MetaTitleLabel"]</label>
+        <input asp-for="Course.MetaTitle" class="form-control" placeholder="@Localizer["MetaTitlePlaceholder"]" />
         <span asp-validation-for="Course.MetaTitle" class="text-danger"></span>
     </div>
     <div class="col-md-6">
-        <label asp-for="Course.MetaDescription" class="form-label"></label>
-        <textarea asp-for="Course.MetaDescription" class="form-control" rows="2"></textarea>
+        <label asp-for="Course.MetaDescription" class="form-label">@Localizer["MetaDescriptionLabel"]</label>
+        <textarea asp-for="Course.MetaDescription" class="form-control" rows="2" placeholder="@Localizer["MetaDescriptionPlaceholder"]"></textarea>
         <span asp-validation-for="Course.MetaDescription" class="text-danger"></span>
     </div>
 </div>
 <div class="mb-3">
-    <label asp-for="Course.OpenGraphImage" class="form-label"></label>
-    <input asp-for="Course.OpenGraphImage" class="form-control" />
+    <label asp-for="Course.OpenGraphImage" class="form-label">@Localizer["OpenGraphImageLabel"]</label>
+    <input asp-for="Course.OpenGraphImage" class="form-control" placeholder="@Localizer["OpenGraphImagePlaceholder"]" />
     <span asp-validation-for="Course.OpenGraphImage" class="text-danger"></span>
 </div>
 <div class="row g-3">
     <div class="col-md-6">
-        <label asp-for="Course.CourseGroupId" class="form-label"></label>
+        <label asp-for="Course.CourseGroupId" class="form-label">@Localizer["CourseGroupLabel"]</label>
         <select asp-for="Course.CourseGroupId" asp-items="Model.CourseGroups" class="form-select">
-            <option value="">-- Select Group --</option>
+            <option value="">@Localizer["SelectGroup"]</option>
         </select>
         <span asp-validation-for="Course.CourseGroupId" class="text-danger"></span>
     </div>
     <div class="col-md-3">
-        <label asp-for="Course.Price" class="form-label"></label>
-        <input asp-for="Course.Price" class="form-control" />
+        <label asp-for="Course.Price" class="form-label">@Localizer["PriceLabel"]</label>
+        <input asp-for="Course.Price" class="form-control" placeholder="@Localizer["PricePlaceholder"]" />
         <span asp-validation-for="Course.Price" class="text-danger"></span>
     </div>
     <div class="col-md-3">
-        <label asp-for="Course.Date" class="form-label"></label>
-        <input asp-for="Course.Date" class="form-control" />
+        <label asp-for="Course.Date" class="form-label">@Localizer["DateLabel"]</label>
+        <input asp-for="Course.Date" class="form-control" placeholder="@Localizer["DatePlaceholder"]" />
         <span asp-validation-for="Course.Date" class="text-danger"></span>
     </div>
 </div>
 <div class="mb-3">
-    <label asp-for="CoverImage" class="form-label"></label>
+    <label asp-for="CoverImage" class="form-label">@Localizer["CoverImageLabel"]</label>
     <input asp-for="CoverImage" type="file" class="form-control" accept="image/jpeg" />
     <span asp-validation-for="CoverImage" class="text-danger"></span>
 </div>
 <div class="row g-3">
     <div class="col-md-4">
-        <label asp-for="Course.Level" class="form-label"></label>
-        <select asp-for="Course.Level" class="form-select" asp-items="Html.GetEnumSelectList<CourseLevel>()"></select>
+        <label asp-for="Course.Level" class="form-label">@Localizer["LevelLabel"]</label>
+        <select asp-for="Course.Level" class="form-select" asp-items="Html.GetEnumSelectList<CourseLevel>()">
+            <option value="">@Localizer["SelectLevel"]</option>
+        </select>
         <span asp-validation-for="Course.Level" class="text-danger"></span>
     </div>
     <div class="col-md-4">
-        <label asp-for="Course.Mode" class="form-label"></label>
-        <select asp-for="Course.Mode" class="form-select" asp-items="Html.GetEnumSelectList<CourseMode>()"></select>
+        <label asp-for="Course.Mode" class="form-label">@Localizer["ModeLabel"]</label>
+        <select asp-for="Course.Mode" class="form-select" asp-items="Html.GetEnumSelectList<CourseMode>()">
+            <option value="">@Localizer["SelectMode"]</option>
+        </select>
         <span asp-validation-for="Course.Mode" class="text-danger"></span>
     </div>
     <div class="col-md-4">
-        <label asp-for="Course.Duration" class="form-label"></label>
-        <input asp-for="Course.Duration" class="form-control" min="0" />
+        <label asp-for="Course.Duration" class="form-label">@Localizer["DurationLabel"]</label>
+        <input asp-for="Course.Duration" class="form-control" min="0" placeholder="@Localizer["DurationPlaceholder"]" />
         <span asp-validation-for="Course.Duration" class="text-danger"></span>
     </div>
 </div>

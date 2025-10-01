@@ -59,7 +59,7 @@ public class CreateModel : PageModel
 
         if (endUtc <= startUtc)
         {
-            ModelState.AddModelError("Input.EndUtc", "End time must be after start time.");
+            ModelState.AddModelError("Input.EndUtc", "Koncový čas musí následovat po začátku.");
         }
 
         if (!ModelState.IsValid)
@@ -73,7 +73,7 @@ public class CreateModel : PageModel
 
         if (course == null)
         {
-            ModelState.AddModelError("Input.CourseId", "Selected course was not found.");
+            ModelState.AddModelError("Input.CourseId", "Zvolený kurz nebyl nalezen.");
             return Page();
         }
 
@@ -187,7 +187,7 @@ public class CreateModel : PageModel
 
         InstructorOptions = new List<SelectListItem>
         {
-            new("Unassigned", string.Empty, Input.InstructorId == null)
+            new("Nepřiřazeno", string.Empty, Input.InstructorId == null)
         };
         InstructorOptions.AddRange(instructorItems);
     }

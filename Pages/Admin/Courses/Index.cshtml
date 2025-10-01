@@ -1,31 +1,31 @@
 @page
 @model SysJaky_N.Pages.Admin.Courses.IndexModel
 @{
-    ViewData["Title"] = "Courses";
+    ViewData["Title"] = "Kurzy";
 }
 
-<h1>Courses</h1>
+<h1>Kurzy</h1>
 
 <form method="get" class="mb-3" role="search" aria-label="Filtr kurzů">
-    <input type="text" asp-for="SearchString" placeholder="Search..." class="form-control" style="width:auto;display:inline-block" aria-label="Hledat kurzy" />
+    <input type="text" asp-for="SearchString" placeholder="Hledat..." class="form-control" style="width:auto;display:inline-block" aria-label="Hledat kurzy" />
     <select asp-for="CourseGroupId" asp-items="Model.CourseGroups" class="form-control" style="width:auto;display:inline-block" aria-label="Filtrovat podle skupiny">
-        <option value="">All Groups</option>
+        <option value="">Všechny skupiny</option>
     </select>
-    <button type="submit" class="btn btn-primary">Filter</button>
-    <a class="btn btn-secondary" asp-page="/Admin/Courses/Index">Reset</a>
+    <button type="submit" class="btn btn-primary">Filtrovat</button>
+    <a class="btn btn-secondary" asp-page="/Admin/Courses/Index">Resetovat</a>
 </form>
 
 <p>
-    <a asp-page="/Courses/Create">Create New</a>
+    <a asp-page="/Courses/Create">Vytvořit kurz</a>
 </p>
 
 <table class="table">
     <thead>
         <tr>
-            <th>Title</th>
-            <th>Group</th>
-            <th>Price</th>
-            <th>Date</th>
+            <th>Název</th>
+            <th>Skupina</th>
+            <th>Cena</th>
+            <th>Datum</th>
             <th></th>
         </tr>
     </thead>
@@ -38,8 +38,8 @@
             <td>@item.Price</td>
             <td>@item.Date.ToString("d")</td>
             <td>
-                <a asp-page="/Courses/Edit" asp-route-id="@item.Id">Edit</a>
-                <a asp-page="/Courses/Delete" asp-route-id="@item.Id">Delete</a>
+                <a asp-page="/Courses/Edit" asp-route-id="@item.Id">Upravit</a>
+                <a asp-page="/Courses/Delete" asp-route-id="@item.Id">Smazat</a>
             </td>
         </tr>
     }
@@ -51,10 +51,10 @@
     <nav aria-label="Stránkování kurzů">
         <ul class="pagination">
             <li class="page-item @(Model.PageNumber <= 1 ? "disabled" : "")">
-                <a class="page-link" asp-route-PageNumber="@(Model.PageNumber - 1)" asp-route-CourseGroupId="@Model.CourseGroupId" asp-route-SearchString="@Model.SearchString">Previous</a>
+                <a class="page-link" asp-route-PageNumber="@(Model.PageNumber - 1)" asp-route-CourseGroupId="@Model.CourseGroupId" asp-route-SearchString="@Model.SearchString">Předchozí</a>
             </li>
             <li class="page-item @(Model.PageNumber >= Model.TotalPages ? "disabled" : "")">
-                <a class="page-link" asp-route-PageNumber="@(Model.PageNumber + 1)" asp-route-CourseGroupId="@Model.CourseGroupId" asp-route-SearchString="@Model.SearchString">Next</a>
+                <a class="page-link" asp-route-PageNumber="@(Model.PageNumber + 1)" asp-route-CourseGroupId="@Model.CourseGroupId" asp-route-SearchString="@Model.SearchString">Další</a>
             </li>
         </ul>
     </nav>

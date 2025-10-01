@@ -1,12 +1,12 @@
 @page
 @model SysJaky_N.Pages.Admin.CourseBlocks.CreateModel
 @{
-    ViewData["Title"] = "Create Course Block";
+    ViewData["Title"] = "Vytvořit blok kurzů";
 }
-<h1>Create Course Block</h1>
+<h1>Vytvořit blok kurzů</h1>
 <form method="post">
     <partial name="_CourseBlockForm" model="new SysJaky_N.Pages.Admin.CourseBlocks.CourseBlockFormModel(Model.CourseBlock, Model.AvailableCourses, Model.SelectedCourseIds)" />
-    <partial name="~/Pages/Shared/_FormActions.cshtml" model='new SysJaky_N.Pages.Admin.Shared.FormActionsModel { SubmitText = "Create", ShowCancel = false }' />
+    <partial name="~/Pages/Shared/_FormActions.cshtml" model='new SysJaky_N.Pages.Admin.Shared.FormActionsModel { SubmitText = "Vytvořit", ShowCancel = false }' />
 </form>
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

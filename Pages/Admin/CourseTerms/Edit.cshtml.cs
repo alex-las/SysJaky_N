@@ -80,12 +80,12 @@ public class EditModel : PageModel
 
         if (endUtc <= startUtc)
         {
-            ModelState.AddModelError("Input.EndUtc", "End time must be after start time.");
+            ModelState.AddModelError("Input.EndUtc", "Koncový čas musí následovat po začátku.");
         }
 
         if (Input.Capacity < term.SeatsTaken)
         {
-            ModelState.AddModelError("Input.Capacity", $"Capacity cannot be less than the current seats taken ({term.SeatsTaken}).");
+            ModelState.AddModelError("Input.Capacity", $"Kapacita nesmí být menší než aktuálně obsazená místa ({term.SeatsTaken}).");
         }
 
         if (!ModelState.IsValid)
@@ -128,7 +128,7 @@ public class EditModel : PageModel
 
         InstructorOptions = new List<SelectListItem>
         {
-            new("Unassigned", string.Empty, Input.InstructorId == null)
+            new("Nepřiřazeno", string.Empty, Input.InstructorId == null)
         };
         InstructorOptions.AddRange(instructorItems);
     }

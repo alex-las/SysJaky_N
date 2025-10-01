@@ -1,15 +1,15 @@
 @page "{id:int}"
 @model SysJaky_N.Pages.Admin.CourseBlocks.DeleteModel
 @{
-    ViewData["Title"] = "Delete Course Block";
+    ViewData["Title"] = "Smazat blok kurzů";
 }
-<h1>Delete Course Block</h1>
-<h3>Are you sure you want to delete this block?</h3>
+<h1>Smazat blok kurzů</h1>
+<h3>Opravdu chcete tento blok odstranit?</h3>
 <div>
     <h4>@Model.CourseBlock.Title</h4>
     <p>@Model.CourseBlock.Description</p>
-    <p>Price: @Model.CourseBlock.Price</p>
-    <h5>Modules:</h5>
+    <p>Cena: @Model.CourseBlock.Price</p>
+    <h5>Moduly:</h5>
     <ul>
     @foreach (var course in Model.CourseBlock.Modules)
     {
@@ -18,6 +18,6 @@
     </ul>
 </div>
 <form method="post">
-    <button type="submit" class="btn btn-danger">Delete</button>
-    <a asp-page="Index" class="btn btn-secondary">Cancel</a>
+    <button type="submit" class="btn btn-danger">Smazat</button>
+    <a asp-page="Index" class="btn btn-secondary">Zrušit</a>
 </form>

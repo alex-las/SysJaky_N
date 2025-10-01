@@ -6,22 +6,22 @@ public class PriceSchedule
 {
     public int Id { get; set; }
 
-    [Required]
-    [Display(Name = "Course")]
+    [Required(ErrorMessage = "Kurz je povinný.")]
+    [Display(Name = "Kurz")]
     public int CourseId { get; set; }
 
     public Course? Course { get; set; }
 
     [DataType(DataType.DateTime)]
-    [Display(Name = "Valid From")]
+    [Display(Name = "Platí od")]
     public DateTime FromUtc { get; set; }
 
     [DataType(DataType.DateTime)]
-    [Display(Name = "Valid To")]
+    [Display(Name = "Platí do")]
     public DateTime ToUtc { get; set; }
 
-    [Range(0.01, double.MaxValue, ErrorMessage = "The new price must be greater than zero.")]
+    [Range(0.01, double.MaxValue, ErrorMessage = "Nová cena musí být větší než nula.")]
     [DataType(DataType.Currency)]
-    [Display(Name = "New Price (excl. VAT)")]
+    [Display(Name = "Nová cena (bez DPH)")]
     public decimal NewPriceExcl { get; set; }
 }

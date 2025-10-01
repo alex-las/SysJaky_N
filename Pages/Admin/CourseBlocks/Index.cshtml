@@ -1,16 +1,16 @@
 @page
 @model SysJaky_N.Pages.Admin.CourseBlocks.IndexModel
 @{
-    ViewData["Title"] = "Course Blocks";
+    ViewData["Title"] = "Bloky kurzů";
 }
-<h1>Course Blocks</h1>
-<p><a asp-page="Create">Create New</a></p>
+<h1>Bloky kurzů</h1>
+<p><a asp-page="Create">Vytvořit nový</a></p>
 <table class="table">
     <thead>
         <tr>
-            <th>Title</th>
-            <th>Price</th>
-            <th>Modules</th>
+            <th>Název</th>
+            <th>Cena</th>
+            <th>Moduly</th>
             <th></th>
         </tr>
     </thead>
@@ -22,9 +22,9 @@
             <td>@block.Price</td>
             <td>@block.Modules.Count</td>
             <td>
-                <a asp-page="Edit" asp-route-id="@block.Id">Edit</a> |
-                <a asp-page="Details" asp-route-id="@block.Id">Details</a> |
-                <a asp-page="Delete" asp-route-id="@block.Id">Delete</a>
+                <a asp-page="Edit" asp-route-id="@block.Id">Upravit</a> |
+                <a asp-page="Details" asp-route-id="@block.Id">Detail</a> |
+                <a asp-page="Delete" asp-route-id="@block.Id">Smazat</a>
             </td>
         </tr>
     }
