@@ -58,6 +58,7 @@ if (!dataElement) {
     };
 
     const compareSelection = new Set();
+    let errorTimer = null;
 
     const resultCountElement = document.getElementById('resultCount');
     const activeFiltersElement = document.getElementById('activeFilters');
@@ -292,7 +293,14 @@ if (!dataElement) {
     }
 
     function escapeAttribute(value) {
-        return (value ?? '').replace(/[&"]g, ch => (ch == '&' ? '&amp;' : '&quot;'));
+        return (value ?? '').replace(/[&"']/g, ch => {
+            switch (ch) {
+                case '&': return '&amp;';
+                case '"': return '&quot;';
+                case "'": return '&#39;';
+                default: return ch;
+            }
+        });
     }
 
     function createCourseCard(course) {
@@ -375,6 +383,35 @@ if (!dataElement) {
         });
     }
 
+    function showCourseError(message, { autoHide = false } = {}) {
+        if (!courseErrorElement) {
+            return;
+        }
+
+        if (errorTimer) {
+            clearTimeout(errorTimer);
+            errorTimer = null;
+        }
+
+        if (!message) {
+            courseErrorElement.classList.add('d-none');
+            courseErrorElement.textContent = '';
+            return;
+        }
+
+        courseErrorElement.textContent = message;
+        courseErrorElement.classList.remove('d-none');
+
+        if (autoHide) {
+            errorTimer = setTimeout(() => {
+                if (courseErrorElement.textContent === message) {
+                    courseErrorElement.classList.add('d-none');
+                    courseErrorElement.textContent = '';
+                }
+            }, 4000);
+        }
+    }
+
     function renderCourses(courses) {
         if (!coursesGrid) {
             return;
@@ -384,11 +421,18 @@ if (!dataElement) {
 
         const checkboxes = coursesGrid.querySelectorAll('.cmp-check');
         checkboxes.forEach(checkbox => {
-            const value = checkbox.value;
+            const value = String(checkbox.value);
             checkbox.checked = compareSelection.has(value);
             checkbox.addEventListener('change', () => {
                 if (checkbox.checked) {
                     compareSelection.add(value);
+                    if (compareSelection.size > 3) {
+                        compareSelection.delete(value);
+                        checkbox.checked = false;
+                        showCourseError(resources.compareLimit ?? 'Můžete porovnat maximálně 3 kurzy.', { autoHide: true });
+                        updateCompareBar();
+                        return;
+                    }
                 } else {
                     compareSelection.delete(value);
                 }
@@ -640,10 +684,7 @@ if (!dataElement) {
         const signal = currentRequest.signal;
         const url = `/Courses/Index?handler=Courses&${params.toString()}`;
         try {
-            if (courseErrorElement) {
-                courseErrorElement.classList.add('d-none');
-                courseErrorElement.textContent = '';
-            }
+            showCourseError('');
             const response = await fetch(url, {
                 headers: { 'Accept': 'application/json' },
                 signal
@@ -661,10 +702,9 @@ if (!dataElement) {
                 return;
             }
             console.error('courseFilters: fetch failed', error);
-            if (courseErrorElement) {
-                courseErrorElement.textContent = resources.fetchError ?? resources.noResults ?? 'Nepodařilo se načíst kurzy.';
-                courseErrorElement.classList.remove('d-none');
-            }
+            showCourseError(resources.fetchError ?? resources.noResults ?? 'Nepodařilo se načíst kurzy.');
+        } finally {
+            currentRequest = null;
         }
     }
 
