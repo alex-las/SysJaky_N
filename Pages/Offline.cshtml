@@ -1,0 +1,21 @@
+@page "/Offline"
+@model Microsoft.AspNetCore.Mvc.RazorPages.PageModel
+@{
+    ViewData["Title"] = "Jste offline";
+}
+
+<section class="pwa-offline">
+    <div class="pwa-offline__content">
+        <h1>Jste offline</h1>
+        <p>
+            Vypadá to, že nemáte připojení k internetu. Nejnovější uložené informace o kurzech jsou stále dostupné,
+            ale některé funkce, jako je nákup nebo přihlášení na kurz, budou dostupné po opětovném připojení.
+        </p>
+        <ul>
+            <li>Prohlížejte si dříve otevřené kurzy a články.</li>
+            <li>Vyplněné formuláře odešleme automaticky, jakmile budete online.</li>
+            <li>Pro plnohodnotný zážitek zkuste obnovit stránku po obnovení připojení.</li>
+        </ul>
+        <a class="btn btn-primary" href="/">Zpět na úvodní stránku</a>
+    </div>
+</section>

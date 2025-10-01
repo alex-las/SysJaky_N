@@ -84,6 +84,12 @@
 
             const data = await response.json().catch(() => null);
 
+            if (response.status === 202 && data?.offline) {
+                form.reset();
+                setMessage('success', data.message || 'Uložili jsme formulář a odešleme ho po připojení.');
+                return;
+            }
+
             if (!response.ok) {
                 let errorMessage = 'Něco se pokazilo. Zkuste to prosím znovu.';
 

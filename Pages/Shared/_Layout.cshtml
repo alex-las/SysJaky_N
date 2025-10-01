@@ -1,20 +1,26 @@
 @using System.Globalization
+@using System.Text.Encodings.Web
 @using SysJaky_N.Authorization
 @using SysJaky_N.Models.ViewModels
 @using SysJaky_N.Pages.Account
 @inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
-@{
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
+@{ 
     var currentCulture = CultureInfo.CurrentUICulture;
     var currentLanguageLabel = Localizer[currentCulture.TwoLetterISOLanguageName == "en" ? "LanguageNameEn" : "LanguageNameCs"];
     var currentPage = ViewContext.RouteData.Values["page"]?.ToString();
     var canAccessAdmin = ApplicationRoles.AdminDashboardRoles.Any(role => User.IsInRole(role));
     var returnUrl = string.Concat(Context.Request.Path, Context.Request.QueryString);
+    var pushPublicKey = Configuration["PushNotifications:PublicKey"] ?? string.Empty;
 }
 <!DOCTYPE html>
 <html lang="@currentCulture.TwoLetterISOLanguageName">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0b7bb3" />
+    <meta name="application-name" content="SysJaky" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
     <title>@ViewData["Title"] - SysJaky_N</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -26,6 +32,9 @@
     <link rel="stylesheet" href="~/dist/styles.min.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/SysJaky_N.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/lib/altcha/altcha.min.css" />
+    <link rel="manifest" href="~/manifest.json" crossorigin="use-credentials" />
+    <link rel="apple-touch-icon" sizes="192x192" href="~/img/icons/icon-192.png" />
+    <link rel="apple-touch-icon" sizes="512x512" href="~/img/icons/icon-512.png" />
     @await RenderSectionAsync("Head", required: false)
 </head>
 <body class="app-body">
@@ -160,8 +169,13 @@
         </div>
     </footer>
 
+    <script>
+        window.__appConfig = window.__appConfig || {};
+        window.__appConfig.pushPublicKey = '@JavaScriptEncoder.Default.Encode(pushPublicKey)';
+    </script>
     <script src="~/dist/scripts.min.js" asp-append-version="true" defer></script>
     <script type="module" src='@Url.Content("~/lib/altcha/altcha.min.js")' defer></script>
+    <script src="~/js/pwa.js" asp-append-version="true" defer></script>
     <script src="~/js/newsletter.js" asp-append-version="true" defer></script>
 
     @await Html.PartialAsync("/Pages/Shared/_AdvisorOffcanvas.cshtml")
