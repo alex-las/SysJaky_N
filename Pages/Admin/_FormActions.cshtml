@@ -1,9 +1,0 @@
-@model SysJaky_N.Pages.Admin.Shared.FormActionsModel
-
-<div class="d-flex gap-2">
-    <button type="submit" class="@Model.SubmitCssClass">@Model.SubmitText</button>
-    @if (Model.ShowCancel)
-    {
-        <a asp-page="@Model.CancelPage" class="@Model.CancelCssClass">@Model.CancelText</a>
-    }
-</div>
