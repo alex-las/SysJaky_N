@@ -148,4 +148,134 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    const initCertificationTimeline = () => {
+        const section = document.querySelector('.certification-timeline-section');
+        if (!section) {
+            return;
+        }
+
+        const steps = Array.from(section.querySelectorAll('.certification-step'));
+        const progressItems = Array.from(section.querySelectorAll('.timeline-progress-item'));
+        const progressButtons = Array.from(section.querySelectorAll('.timeline-progress-button'));
+        const stepToggles = steps.map((step) => step.querySelector('.certification-step-toggle'));
+        const detailPanels = steps.map((step) => step.querySelector('.certification-step-detail'));
+
+        if (!steps.length || !progressItems.length) {
+            return;
+        }
+
+        let activeIndex = 0;
+        const prefersReducedMotion = typeof window.matchMedia === 'function'
+            ? window.matchMedia('(prefers-reduced-motion: reduce)').matches
+            : false;
+
+        const activateStep = (index, options = {}) => {
+            const { userInitiated = false } = options;
+            if (index < 0 || index >= steps.length) {
+                return;
+            }
+
+            activeIndex = index;
+
+            steps.forEach((step, stepIndex) => {
+                const toggle = stepToggles[stepIndex];
+                const panel = detailPanels[stepIndex];
+                const isCurrent = stepIndex === index;
+                const isComplete = stepIndex < index;
+
+                step.classList.toggle('is-current', isCurrent);
+                step.classList.toggle('is-complete', isComplete);
+                step.classList.toggle('is-open', isCurrent);
+
+                if (toggle && panel) {
+                    toggle.setAttribute('aria-expanded', isCurrent ? 'true' : 'false');
+                    panel.hidden = !isCurrent;
+                }
+
+                if (isCurrent) {
+                    step.classList.add('is-visible');
+                }
+            });
+
+            progressItems.forEach((item, itemIndex) => {
+                item.classList.toggle('is-active', itemIndex === index);
+                item.classList.toggle('is-complete', itemIndex < index);
+            });
+
+            if (userInitiated) {
+                const targetStep = steps[index];
+                if (targetStep) {
+                    targetStep.scrollIntoView({
+                        behavior: prefersReducedMotion ? 'auto' : 'smooth',
+                        block: 'nearest',
+                        inline: 'center'
+                    });
+                }
+            }
+        };
+
+        progressButtons.forEach((button) => {
+            button.addEventListener('click', () => {
+                const value = button.dataset.stepIndex;
+                const index = Number.parseInt(value ?? '', 10);
+                if (!Number.isNaN(index)) {
+                    activateStep(index, { userInitiated: true });
+                }
+            });
+        });
+
+        stepToggles.forEach((toggle, index) => {
+            if (!toggle || !detailPanels[index]) {
+                return;
+            }
+
+            toggle.addEventListener('click', () => {
+                activateStep(index, { userInitiated: true });
+            });
+        });
+
+        const progressObserver = new IntersectionObserver(
+            (entries) => {
+                const visibleEntry = entries
+                    .filter((entry) => entry.isIntersecting)
+                    .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+
+                if (!visibleEntry) {
+                    return;
+                }
+
+                const index = steps.indexOf(visibleEntry.target);
+                if (index !== -1 && index !== activeIndex) {
+                    activateStep(index);
+                }
+            },
+            {
+                threshold: [0.25, 0.5, 0.75],
+                rootMargin: '-12% 0px -12% 0px'
+            }
+        );
+
+        steps.forEach((step) => {
+            progressObserver.observe(step);
+        });
+
+        const visibilityObserver = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                    }
+                });
+            },
+            { threshold: 0.35 }
+        );
+
+        steps.forEach((step) => {
+            visibilityObserver.observe(step);
+        });
+
+        activateStep(activeIndex);
+    };
+
+    initCertificationTimeline();
 });
