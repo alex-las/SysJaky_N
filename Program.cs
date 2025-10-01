@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.HttpOverrides;
 using Serilog;
 using Serilog.Events;
 using SysJaky_N.Logging;
+using SysJaky_N.Hubs;
 using SysJaky_N.Middleware;
 using RazorLight;
 using Microsoft.Extensions.Hosting;
@@ -166,6 +167,7 @@ try
                 factory.Create(typeof(SysJaky_N.Resources.SharedResources));
         });
     builder.Services.AddControllers();
+    builder.Services.AddSignalR();
     builder.Services.Configure<RequestLocalizationOptions>(options =>
     {
         var supportedCultures = new[] { "cs", "en" };
@@ -362,6 +364,7 @@ try
         name: "default",
         pattern: "{controller}/{action=Index}/{id?}");
     app.MapControllers();
+    app.MapHub<DashboardHub>("/hubs/dashboard");
     // Přesměrování na jednotné místo „Můj účet“
     app.MapGet("/Account/Dashboard", () => Results.Redirect("/Account/Manage", true));
     app.MapGet("/Orders", () => Results.Redirect("/Account/Manage#orders", true));
