@@ -78,7 +78,11 @@
 @if (!string.IsNullOrEmpty(Model.Course.CoverImageUrl))
 {
     <figure class="mb-4">
-        <img src="@Model.Course.CoverImageUrl" alt="@Localizer["CourseImageAlt", Model.Course.Title]" class="img-fluid rounded" loading="lazy" decoding="async" />
+        @{ var separator = Model.Course.CoverImageUrl.Contains('?') ? "&" : "?"; var baseUrl = Model.Course.CoverImageUrl + separator; }
+        <picture>
+            <source type="image/webp" srcset="@($"{baseUrl}w=640&format=webp 640w, {baseUrl}w=960&format=webp 960w, {baseUrl}w=1440&format=webp 1440w")" sizes="(max-width: 992px) 100vw, 640px" />
+            <img src="@($"{baseUrl}w=960&format=jpg")" srcset="@($"{baseUrl}w=640&format=jpg 640w, {baseUrl}w=960&format=jpg 960w, {baseUrl}w=1440&format=jpg 1440w")" sizes="(max-width: 992px) 100vw, 640px" alt="@Localizer["CourseImageAlt", Model.Course.Title]" class="img-fluid rounded" loading="lazy" decoding="async" />
+        </picture>
     </figure>
 }
 
