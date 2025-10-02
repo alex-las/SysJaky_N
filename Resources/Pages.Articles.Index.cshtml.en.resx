@@ -84,6 +84,12 @@
   <data name="PreviewLink" xml:space="preserve">
     <value>Read preview</value>
   </data>
+  <data name="LiveRegionSingular" xml:space="preserve">
+    <value>Showing 1 article.</value>
+  </data>
+  <data name="LiveRegionPlural" xml:space="preserve">
+    <value>Showing {0} articles.</value>
+  </data>
   <data name="EmptyState" xml:space="preserve">
     <value>We couldn't find any articles for the selected search and filter combination. Please adjust the criteria and try again.</value>
   </data>

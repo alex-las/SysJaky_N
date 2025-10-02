@@ -84,6 +84,12 @@
   <data name="PreviewLink" xml:space="preserve">
     <value>Číst náhled</value>
   </data>
+  <data name="LiveRegionSingular" xml:space="preserve">
+    <value>Zobrazuje se 1 článek.</value>
+  </data>
+  <data name="LiveRegionPlural" xml:space="preserve">
+    <value>Zobrazuje se {0} článků.</value>
+  </data>
   <data name="EmptyState" xml:space="preserve">
     <value>Nenašli jsme žádné články pro zadanou kombinaci vyhledávání a filtrů. Upravte prosím podmínky a zkuste to znovu.</value>
   </data>
