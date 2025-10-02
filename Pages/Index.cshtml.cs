@@ -26,6 +26,10 @@ namespace SysJaky_N.Pages
 
         public async Task OnGetAsync(string? persona, string? goal)
         {
+            _logger.LogInformation("CurrentCulture={culture}, CurrentUICulture={ui}",
+                CultureInfo.CurrentCulture.Name,
+                CultureInfo.CurrentUICulture.Name);
+
             var today = DateTime.Today;
 
             FastSoonest = await _context.Courses
