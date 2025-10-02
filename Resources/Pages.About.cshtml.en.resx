@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Title" xml:space="preserve">
+    <value>About the Company</value>
+  </data>
+  <data name="CompanyBadge" xml:space="preserve">
+    <value>ABOUT SYSTÉMY JAKOSTI S.R.O.</value>
+  </data>
+  <data name="CompanyHeading" xml:space="preserve">
+    <value>ABOUT SYSTÉMY JAKOSTI S.R.O.</value>
+  </data>
+  <data name="CompanyLead" xml:space="preserve">
+    <value>Our services help organizations grow, meet regulatory requirements, and develop employee competencies.</value>
+  </data>
+  <data name="MissionHeading" xml:space="preserve">
+    <value>Our Mission</value>
+  </data>
+  <data name="MissionDescription" xml:space="preserve">
+    <value>Delivering comprehensive consultancy and training that supports clients with boosting competitiveness, complying with legislation, and strengthening the expertise of their teams.</value>
+  </data>
+  <data name="ServicesHeading" xml:space="preserve">
+    <value>Services</value>
+  </data>
+  <data name="ServiceCertificationPreparation" xml:space="preserve">
+    <value>Preparing organizations for certification to ISO standards</value>
+  </data>
+  <data name="ServiceLabAccreditation" xml:space="preserve">
+    <value>Preparing laboratories for accreditation (ISO/IEC 17025, ISO 15189)</value>
+  </data>
+  <data name="ServiceTraining" xml:space="preserve">
+    <value>Specialized training and courses for both management and operations</value>
+  </data>
+  <data name="ServiceAudits" xml:space="preserve">
+    <value>Internal audits and pre-audits before certification</value>
+  </data>
+  <data name="ServiceTailoredTraining" xml:space="preserve">
+    <value>Bespoke in-company training</value>
+  </data>
+  <data name="ExpertiseBadge" xml:space="preserve">
+    <value>Areas of Expertise</value>
+  </data>
+  <data name="ExpertiseHeading" xml:space="preserve">
+    <value>A Broad Portfolio of Expertise</value>
+  </data>
+  <data name="ExpertiseDescription" xml:space="preserve">
+    <value>We support certifications and accreditations across key standards and industries.</value>
+  </data>
+  <data name="ISO9001Title" xml:space="preserve">
+    <value>ISO 9001</value>
+  </data>
+  <data name="ISO9001Description" xml:space="preserve">
+    <value>Quality management systems</value>
+  </data>
+  <data name="ISO14001Title" xml:space="preserve">
+    <value>ISO 14001</value>
+  </data>
+  <data name="ISO14001Description" xml:space="preserve">
+    <value>Environmental management</value>
+  </data>
+  <data name="ISOIEC17025Title" xml:space="preserve">
+    <value>ISO/IEC 17025</value>
+  </data>
+  <data name="ISOIEC17025Description" xml:space="preserve">
+    <value>Testing laboratory accreditation</value>
+  </data>
+  <data name="ISO15189Title" xml:space="preserve">
+    <value>ISO 15189</value>
+  </data>
+  <data name="ISO15189Description" xml:space="preserve">
+    <value>Medical laboratory accreditation</value>
+  </data>
+  <data name="HACCPTitle" xml:space="preserve">
+    <value>HACCP</value>
+  </data>
+  <data name="HACCPDescription" xml:space="preserve">
+    <value>Food safety</value>
+  </data>
+  <data name="ISO45001Title" xml:space="preserve">
+    <value>ISO 45001</value>
+  </data>
+  <data name="ISO45001Description" xml:space="preserve">
+    <value>Occupational health and safety</value>
+  </data>
+  <data name="ISO27001Title" xml:space="preserve">
+    <value>ISO 27001</value>
+  </data>
+  <data name="ISO27001Description" xml:space="preserve">
+    <value>Information security</value>
+  </data>
+  <data name="IATF16949Title" xml:space="preserve">
+    <value>IATF 16949</value>
+  </data>
+  <data name="IATF16949Description" xml:space="preserve">
+    <value>Automotive industry</value>
+  </data>
+  <data name="ISO13485Title" xml:space="preserve">
+    <value>ISO 13485</value>
+  </data>
+  <data name="ISO13485Description" xml:space="preserve">
+    <value>Medical devices</value>
+  </data>
+</root>
