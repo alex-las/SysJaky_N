@@ -5,26 +5,26 @@ namespace SysJaky_N.Pages.Admin.CourseTerms;
 
 public class CourseTermInputModel
 {
-    [Required]
-    [Display(Name = "Course")]
+    [Required(ErrorMessage = "Validation.Required")]
+    [Display(Name = "Pages.Admin.CourseTerms.Input.CourseId.DisplayName")]
     public int CourseId { get; set; }
 
-    [Required]
+    [Required(ErrorMessage = "Validation.Required")]
     [DataType(DataType.DateTime)]
-    [Display(Name = "Start time")]
+    [Display(Name = "Pages.Admin.CourseTerms.Input.StartUtc.DisplayName")]
     public DateTime StartUtc { get; set; }
 
-    [Required]
+    [Required(ErrorMessage = "Validation.Required")]
     [DataType(DataType.DateTime)]
-    [Display(Name = "End time")]
+    [Display(Name = "Pages.Admin.CourseTerms.Input.EndUtc.DisplayName")]
     public DateTime EndUtc { get; set; }
 
-    [Range(1, int.MaxValue, ErrorMessage = "Capacity must be at least 1.")]
+    [Range(1, int.MaxValue, ErrorMessage = "Validation.PositiveInteger")]
     public int Capacity { get; set; } = 1;
 
-    [Display(Name = "Active")]
+    [Display(Name = "Pages.Admin.CourseTerms.Input.IsActive.DisplayName")]
     public bool IsActive { get; set; } = true;
 
-    [Display(Name = "Instructor")]
+    [Display(Name = "Pages.Admin.CourseTerms.Input.InstructorId.DisplayName")]
     public int? InstructorId { get; set; }
 }

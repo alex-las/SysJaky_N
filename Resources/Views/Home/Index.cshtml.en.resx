@@ -175,19 +175,19 @@
     <value>ISO 13485 — Medical Devices</value>
   </data>
   <data name="Home.Hero.Title" xml:space="preserve">
-    <value>ISO training, courses and certifications for your organization</value>
+    <value>Find the ideal training</value>
   </data>
   <data name="Home.Hero.Subtitle" xml:space="preserve">
-    <value>Comprehensive preparation for certification and accreditation according to ISO 9001, ISO 14001, ISO/IEC 17025, ISO 15189, HACCP, ISO 45001, ISO 27001, IATF 16949 and ISO 13485</value>
+    <value>Courses, consulting and auditing in one place</value>
   </data>
   <data name="Home.Hero.PrimaryCta" xml:space="preserve">
-    <value>View all courses</value>
+    <value>Course overview</value>
   </data>
   <data name="Home.Hero.SecondaryCta" xml:space="preserve">
-    <value>Request in-company training</value>
+    <value>Request a quote</value>
   </data>
   <data name="Home.Hero.SearchPlaceholder" xml:space="preserve">
-    <value>Search for a course, tool, or skill…</value>
+    <value>Search for a course, standard or city…</value>
   </data>
   <data name="Home.Hero.Search.Placeholder" xml:space="preserve">
     <value>Search for a course, tool, or skill…</value>
@@ -232,10 +232,10 @@
     <value>Online</value>
   </data>
   <data name="Home.Hero.Chip.Retraining" xml:space="preserve">
-    <value>Retraining</value>
+    <value>Re-examination</value>
   </data>
   <data name="Home.Hero.Chip.Certificate" xml:space="preserve">
-    <value>With certificate</value>
+    <value>Certification</value>
   </data>
   <data name="Home.Hero.Chip.Accreditation" xml:space="preserve">
     <value>Accreditation preparation</value>

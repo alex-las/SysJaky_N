@@ -49,21 +49,21 @@
         searchPlaceholder = GetString("Home.Hero.SearchPlaceholder", "Home.Hero.Search.Placeholder");
     }
 
-    var fallbackChipDefinitions = new List<(string Url, string Label)>
-    {
-        ("/Courses/Index?Mode=Online", GetString("Home.Hero.Chip.Online", "Home.Hero.Chips.Online")),
-        ("/Courses/Index?CourseGroupId=REKVAL", GetString("Home.Hero.Chip.Retraining", "Home.Hero.Chips.Retraining")),
-        ("/Courses/Index?Level=Beginner", GetString("Home.Hero.Chip.Beginner", "Home.Hero.Chips.Beginner")),
-        ("/Courses/Index?City=Praha", GetString("Home.Hero.Chip.Prague", "Home.Hero.Chips.Prague")),
-        ("/Courses/Index?HasCertificate=true", GetString("Home.Hero.Chip.Certificate", "Home.Hero.Chips.Certificate")),
-        ("/Courses/Index?q=akreditace", GetString("Home.Hero.Chip.Accreditation", "Home.Hero.Chips.Accreditation")),
-        ("/Courses/Index?q=intern%C3%AD%20audit", GetString("Home.Hero.Chip.InternalAudits", "Home.Hero.Chips.InternalAudits")),
-    };
-
     var chips = new List<(string Url, string Label)>();
 
     if (Model?.Chips?.Count > 0)
     {
+        var fallbackChipDefinitions = new List<(string Url, string Label)>
+        {
+            ("/Courses/Index?Mode=Online", GetString("Home.Hero.Chip.Online", "Home.Hero.Chips.Online")),
+            ("/Courses/Index?CourseGroupId=REKVAL", GetString("Home.Hero.Chip.Retraining", "Home.Hero.Chips.Retraining")),
+            ("/Courses/Index?Level=Beginner", GetString("Home.Hero.Chip.Beginner", "Home.Hero.Chips.Beginner")),
+            ("/Courses/Index?City=Praha", GetString("Home.Hero.Chip.Prague", "Home.Hero.Chips.Prague")),
+            ("/Courses/Index?HasCertificate=true", GetString("Home.Hero.Chip.Certificate", "Home.Hero.Chips.Certificate")),
+            ("/Courses/Index?q=akreditace", GetString("Home.Hero.Chip.Accreditation", "Home.Hero.Chips.Accreditation")),
+            ("/Courses/Index?q=intern%C3%AD%20audit", GetString("Home.Hero.Chip.InternalAudits", "Home.Hero.Chips.InternalAudits")),
+        };
+
         var lookup = fallbackChipDefinitions.ToDictionary(c => c.Label, c => c.Url, StringComparer.OrdinalIgnoreCase);
 
         foreach (var chip in Model.Chips)
@@ -93,11 +93,6 @@
 
             chips.Add((url, label));
         }
-    }
-
-    if (chips.Count == 0)
-    {
-        chips = fallbackChipDefinitions;
     }
 }
 
