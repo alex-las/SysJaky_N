@@ -31,23 +31,23 @@ public class RegisterModel : PageModel
 
     public class InputModel
     {
-        [Required]
-        [EmailAddress]
+        [Required(ErrorMessage = "Validation.Required")]
+        [EmailAddress(ErrorMessage = "Validation.EmailAddress")]
         public string Email { get; set; } = string.Empty;
 
-        [Required]
+        [Required(ErrorMessage = "Validation.Required")]
         [DataType(DataType.Password)]
-        [StringLength(100, MinimumLength = 6)]
-        [RegularExpression("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).+$", ErrorMessage = "Password must contain upper and lower case letters and numbers.")]
+        [StringLength(100, MinimumLength = 6, ErrorMessage = "Validation.StringLengthRange")]
+        [RegularExpression("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).+$", ErrorMessage = "Validation.PasswordComplexity")]
         public string Password { get; set; } = string.Empty;
 
         [DataType(DataType.Password)]
-        [Display(Name = "Confirm password")]
-        [Compare(nameof(Password))]
+        [Display(Name = "Pages.Account.Register.Input.ConfirmPassword.DisplayName")]
+        [Compare(nameof(Password), ErrorMessage = "Validation.PasswordMismatch")]
         public string ConfirmPassword { get; set; } = string.Empty;
         public string Captcha { get; set; } = string.Empty;
 
-        [Display(Name = "Referral code")]
+        [Display(Name = "Pages.Account.Register.Input.ReferralCode.DisplayName")]
         public string? ReferralCode { get; set; }
     }
 

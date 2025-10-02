@@ -7,23 +7,23 @@ public class Instructor
 {
     public int Id { get; set; }
 
-    [Required(ErrorMessage = "Pole {0} je povinné.")]
-    [StringLength(200, ErrorMessage = "Pole {0} může mít maximálně {1} znaků.")]
-    [Display(Name = "Celé jméno")]
+    [Required(ErrorMessage = "Validation.Required")]
+    [StringLength(200, ErrorMessage = "Validation.StringLength")]
+    [Display(Name = "Models.Instructor.FullName.DisplayName")]
     public string FullName { get; set; } = string.Empty;
 
-    [EmailAddress(ErrorMessage = "Zadejte platnou e-mailovou adresu.")]
-    [StringLength(200, ErrorMessage = "Pole {0} může mít maximálně {1} znaků.")]
-    [Display(Name = "E-mail")]
+    [EmailAddress(ErrorMessage = "Validation.EmailAddress")]
+    [StringLength(200, ErrorMessage = "Validation.StringLength")]
+    [Display(Name = "Models.Instructor.Email.DisplayName")]
     public string? Email { get; set; }
 
-    [Phone(ErrorMessage = "Zadejte platné telefonní číslo.")]
-    [Display(Name = "Telefon")]
-    [StringLength(50, ErrorMessage = "Pole {0} může mít maximálně {1} znaků.")]
+    [Phone(ErrorMessage = "Validation.Phone")]
+    [Display(Name = "Models.Instructor.PhoneNumber.DisplayName")]
+    [StringLength(50, ErrorMessage = "Validation.StringLength")]
     public string? PhoneNumber { get; set; }
 
-    [StringLength(4000, ErrorMessage = "Pole {0} může mít maximálně {1} znaků.")]
-    [Display(Name = "Životopis")]
+    [StringLength(4000, ErrorMessage = "Validation.StringLength")]
+    [Display(Name = "Models.Instructor.Bio.DisplayName")]
     [DataType(DataType.MultilineText)]
     public string? Bio { get; set; }
 

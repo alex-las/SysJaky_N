@@ -163,10 +163,10 @@ public class NewsletterModel : PageModel
 
     public class InputModel
     {
-        [Display(Name = "email")]
+        [Display(Name = "Pages.Api.Newsletter.Input.Email.DisplayName")]
         public string Email { get; set; } = string.Empty;
 
-        [Display(Name = "consent")]
+        [Display(Name = "Pages.Api.Newsletter.Input.Consent.DisplayName")]
         public bool Consent { get; set; }
     }
 }
