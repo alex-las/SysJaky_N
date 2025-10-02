@@ -376,7 +376,10 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
 
-        if (revealElements.length) {
+        const supportsIntersectionObserver = typeof window !== 'undefined'
+            && typeof window.IntersectionObserver === 'function';
+
+        if (supportsIntersectionObserver && revealElements.length) {
             const revealObserver = new IntersectionObserver(
                 (entries, observer) => {
                     entries.forEach((entry) => {
@@ -395,47 +398,59 @@ document.addEventListener('DOMContentLoaded', () => {
             revealElements.forEach((element) => {
                 revealObserver.observe(element);
             });
+        } else if (!supportsIntersectionObserver) {
+            revealElements.forEach((element) => {
+                element.classList.add('is-revealed');
+            });
         }
 
-        const progressObserver = new IntersectionObserver(
-            (entries) => {
-                const visibleEntry = entries
-                    .filter((entry) => entry.isIntersecting)
-                    .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        if (supportsIntersectionObserver) {
+            const progressObserver = new IntersectionObserver(
+                (entries) => {
+                    const visibleEntry = entries
+                        .filter((entry) => entry.isIntersecting)
+                        .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
 
-                if (!visibleEntry) {
-                    return;
-                }
-
-                const index = steps.indexOf(visibleEntry.target);
-                if (index !== -1 && index !== activeIndex) {
-                    activateStep(index);
-                }
-            },
-            {
-                threshold: [0.25, 0.5, 0.75],
-                rootMargin: '-12% 0px -12% 0px'
-            }
-        );
-
-        steps.forEach((step) => {
-            progressObserver.observe(step);
-        });
-
-        const visibilityObserver = new IntersectionObserver(
-            (entries) => {
-                entries.forEach((entry) => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('is-visible');
+                    if (!visibleEntry) {
+                        return;
                     }
-                });
-            },
-            { threshold: 0.35 }
-        );
 
-        steps.forEach((step) => {
-            visibilityObserver.observe(step);
-        });
+                    const index = steps.indexOf(visibleEntry.target);
+                    if (index !== -1 && index !== activeIndex) {
+                        activateStep(index);
+                    }
+                },
+                {
+                    threshold: [0.25, 0.5, 0.75],
+                    rootMargin: '-12% 0px -12% 0px'
+                }
+            );
+
+            steps.forEach((step) => {
+                progressObserver.observe(step);
+            });
+        }
+
+        if (supportsIntersectionObserver) {
+            const visibilityObserver = new IntersectionObserver(
+                (entries) => {
+                    entries.forEach((entry) => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('is-visible');
+                        }
+                    });
+                },
+                { threshold: 0.35 }
+            );
+
+            steps.forEach((step) => {
+                visibilityObserver.observe(step);
+            });
+        } else {
+            steps.forEach((step) => {
+                step.classList.add('is-visible');
+            });
+        }
 
         activateStep(activeIndex);
     };
