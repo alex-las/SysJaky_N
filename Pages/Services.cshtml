@@ -1,0 +1,170 @@
+@page
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@{
+    ViewData["Title"] = Localizer["Title"];
+}
+
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <span class="text-uppercase text-primary fw-semibold">@Localizer["HeroBadge"]</span>
+            <h1 class="display-5 fw-bold mt-3">@Localizer["HeroHeading"]</h1>
+            <p class="lead text-muted">@Localizer["HeroDescription"]</p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-12 col-lg-6">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="card-body p-4 p-lg-5">
+                        <div class="d-flex align-items-center gap-3 mb-4">
+                            <div class="icon-circle bg-primary-subtle text-primary">
+                                <i class="bi bi-clipboard-check fs-3" aria-hidden="true"></i>
+                            </div>
+                            <h2 class="h4 mb-0">@Localizer["ServiceCard1Title"]</h2>
+                        </div>
+                        <p class="mb-0">@Localizer["ServiceCard1Description"]</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-lg-6">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="card-body p-4 p-lg-5">
+                        <div class="d-flex align-items-center gap-3 mb-4">
+                            <div class="icon-circle bg-success-subtle text-success">
+                                <i class="bi bi-diagram-3 fs-3" aria-hidden="true"></i>
+                            </div>
+                            <h2 class="h4 mb-0">@Localizer["ServiceCard2Title"]</h2>
+                        </div>
+                        <p class="mb-0">@Localizer["ServiceCard2Description"]</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-lg-6">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="card-body p-4 p-lg-5">
+                        <div class="d-flex align-items-center gap-3 mb-4">
+                            <div class="icon-circle bg-warning-subtle text-warning">
+                                <i class="bi bi-mortarboard fs-3" aria-hidden="true"></i>
+                            </div>
+                            <h2 class="h4 mb-0">@Localizer["ServiceCard3Title"]</h2>
+                        </div>
+                        <p class="mb-0">@Localizer["ServiceCard3Description"]</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-lg-6">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="card-body p-4 p-lg-5">
+                        <div class="d-flex align-items-center gap-3 mb-4">
+                            <div class="icon-circle bg-info-subtle text-info">
+                                <i class="bi bi-shield-lock fs-3" aria-hidden="true"></i>
+                            </div>
+                            <h2 class="h4 mb-0">@Localizer["ServiceCard4Title"]</h2>
+                        </div>
+                        <p class="mb-0">@Localizer["ServiceCard4Description"]</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5 bg-light rounded-4">
+    <div class="container py-4">
+        <div class="text-center mb-5">
+            <div class="d-inline-flex align-items-center gap-2 px-3 py-1 bg-white shadow-sm rounded-pill">
+                <i class="bi bi-stars text-warning" aria-hidden="true"></i>
+                <span class="fw-semibold text-uppercase small">@Localizer["HighlightsBadge"]</span>
+            </div>
+            <h2 class="mt-3">@Localizer["HighlightsHeading"]</h2>
+            <p class="text-muted mb-0">@Localizer["HighlightsDescription"]</p>
+        </div>
+
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-4">
+            <div class="col">
+                <div class="h-100 p-4 bg-white rounded-3 shadow-sm text-center">
+                    <i class="bi bi-graph-up-arrow text-primary fs-1" aria-hidden="true"></i>
+                    <h3 class="h5 mt-3">@Localizer["Highlight1Title"]</h3>
+                    <p class="text-muted mb-0">@Localizer["Highlight1Description"]</p>
+                </div>
+            </div>
+            <div class="col">
+                <div class="h-100 p-4 bg-white rounded-3 shadow-sm text-center">
+                    <i class="bi bi-people text-success fs-1" aria-hidden="true"></i>
+                    <h3 class="h5 mt-3">@Localizer["Highlight2Title"]</h3>
+                    <p class="text-muted mb-0">@Localizer["Highlight2Description"]</p>
+                </div>
+            </div>
+            <div class="col">
+                <div class="h-100 p-4 bg-white rounded-3 shadow-sm text-center">
+                    <i class="bi bi-tools text-warning fs-1" aria-hidden="true"></i>
+                    <h3 class="h5 mt-3">@Localizer["Highlight3Title"]</h3>
+                    <p class="text-muted mb-0">@Localizer["Highlight3Description"]</p>
+                </div>
+            </div>
+            <div class="col">
+                <div class="h-100 p-4 bg-white rounded-3 shadow-sm text-center">
+                    <i class="bi bi-calendar-check text-info fs-1" aria-hidden="true"></i>
+                    <h3 class="h5 mt-3">@Localizer["Highlight4Title"]</h3>
+                    <p class="text-muted mb-0">@Localizer["Highlight4Description"]</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5">
+    <div class="container">
+        <div class="row g-4 align-items-center">
+            <div class="col-12 col-lg-7">
+                <h2 class="h3 mb-3">@Localizer["ProcessHeading"]</h2>
+                <p class="text-muted">@Localizer["ProcessDescription"]</p>
+                <ol class="list-unstyled d-grid gap-3 mb-0">
+                    <li class="d-flex align-items-start gap-3">
+                        <span class="badge rounded-pill bg-primary">1</span>
+                        <div>
+                            <h3 class="h5 mb-1">@Localizer["ProcessStep1Title"]</h3>
+                            <p class="mb-0 text-muted">@Localizer["ProcessStep1Description"]</p>
+                        </div>
+                    </li>
+                    <li class="d-flex align-items-start gap-3">
+                        <span class="badge rounded-pill bg-primary">2</span>
+                        <div>
+                            <h3 class="h5 mb-1">@Localizer["ProcessStep2Title"]</h3>
+                            <p class="mb-0 text-muted">@Localizer["ProcessStep2Description"]</p>
+                        </div>
+                    </li>
+                    <li class="d-flex align-items-start gap-3">
+                        <span class="badge rounded-pill bg-primary">3</span>
+                        <div>
+                            <h3 class="h5 mb-1">@Localizer["ProcessStep3Title"]</h3>
+                            <p class="mb-0 text-muted">@Localizer["ProcessStep3Description"]</p>
+                        </div>
+                    </li>
+                </ol>
+            </div>
+            <div class="col-12 col-lg-5">
+                <div class="p-4 p-lg-5 bg-primary text-white rounded-4 shadow-sm">
+                    <h3 class="h4 mb-3">@Localizer["CtaHeading"]</h3>
+                    <p class="mb-4">@Localizer["CtaDescription"]</p>
+                    <div class="d-grid gap-2">
+                        <a class="btn btn-light" asp-page="/CorporateInquiry">@Localizer["CtaPrimaryButton"]</a>
+                        <a class="btn btn-outline-light" asp-page="/Contact">@Localizer["CtaSecondaryButton"]</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .icon-circle {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+</style>
