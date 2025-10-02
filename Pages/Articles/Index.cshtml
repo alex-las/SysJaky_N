@@ -205,10 +205,10 @@
                     @Localizer["Previous"]
                 </a>
             </li>
-            @for (var page = 1; page <= totalPages; page++)
+            @for (var pageNumber = 1; pageNumber <= totalPages; pageNumber++)
             {
-                <li class="page-item @(page == currentPage ? "active" : string.Empty)">
-                    <a class="page-link" asp-page="./Index" asp-route-PageNumber="@page" asp-route-SearchString="@searchRouteValue">@page</a>
+                <li class="page-item @(pageNumber == currentPage ? "active" : string.Empty)">
+                    <a class="page-link" asp-page="./Index" asp-route-PageNumber="@pageNumber" asp-route-SearchString="@searchRouteValue">@pageNumber</a>
                 </li>
             }
             <li class="page-item @(currentPage >= totalPages ? "disabled" : string.Empty)">
@@ -388,7 +388,7 @@
             text-align: center;
         }
 
-        @media (max-width: 767.98px) {
+        @@media (max-width: 767.98px) {
             .article-card__title {
                 font-size: 1.25rem;
             }
