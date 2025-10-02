@@ -197,13 +197,13 @@
                 </div>
                 <form id="newsletter-form" class="newsletter-form d-flex flex-column flex-sm-row align-items-stretch gap-2" asp-page="/Api/Newsletter" method="post" novalidate>
                     <div class="d-flex flex-column flex-sm-row gap-2 w-100">
-                        <label class="visually-hidden" for="newsletter-email">E-mail</label>
-                        <input id="newsletter-email" name="Email" type="email" class="form-control form-control-sm" placeholder="Váš e-mail" autocomplete="email" required />
-                        <button type="submit" class="btn btn-primary btn-sm flex-shrink-0">Odebírat</button>
+                        <label class="visually-hidden" for="newsletter-email">@Localizer["NewsletterEmailLabel"]</label>
+                        <input id="newsletter-email" name="Email" type="email" class="form-control form-control-sm" placeholder='@Localizer["NewsletterPlaceholder"]' autocomplete="email" required />
+                        <button type="submit" class="btn btn-primary btn-sm flex-shrink-0">@Localizer["NewsletterButtonText"]</button>
                     </div>
                     <div class="form-check small mb-0">
                         <input class="form-check-input" type="checkbox" value="true" id="newsletter-consent" name="Consent" />
-                        <label class="form-check-label" for="newsletter-consent">Souhlasím se zpracováním</label>
+                        <label class="form-check-label" for="newsletter-consent">@Localizer["NewsletterConsentText"]</label>
                     </div>
                     <div class="newsletter-message small" role="status" aria-live="polite"></div>
                 </form>

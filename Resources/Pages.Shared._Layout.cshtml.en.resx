@@ -93,6 +93,18 @@
   <data name="FooterPrivacy" xml:space="preserve">
     <value>Privacy</value>
   </data>
+  <data name="NewsletterEmailLabel" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="NewsletterPlaceholder" xml:space="preserve">
+    <value>Your email</value>
+  </data>
+  <data name="NewsletterButtonText" xml:space="preserve">
+    <value>Subscribe</value>
+  </data>
+  <data name="NewsletterConsentText" xml:space="preserve">
+    <value>I agree with data processing</value>
+  </data>
   <data name="LoginTitle" xml:space="preserve">
     <value>Login</value>
   </data>

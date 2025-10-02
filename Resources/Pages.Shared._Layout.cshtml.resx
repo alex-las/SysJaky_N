@@ -93,6 +93,18 @@
   <data name="FooterPrivacy" xml:space="preserve">
     <value>Ochrana soukromí</value>
   </data>
+  <data name="NewsletterEmailLabel" xml:space="preserve">
+    <value>E-mail</value>
+  </data>
+  <data name="NewsletterPlaceholder" xml:space="preserve">
+    <value>Váš e-mail</value>
+  </data>
+  <data name="NewsletterButtonText" xml:space="preserve">
+    <value>Odebírat</value>
+  </data>
+  <data name="NewsletterConsentText" xml:space="preserve">
+    <value>Souhlasím se zpracováním</value>
+  </data>
   <data name="LoginTitle" xml:space="preserve">
     <value>Přihlášení</value>
   </data>
