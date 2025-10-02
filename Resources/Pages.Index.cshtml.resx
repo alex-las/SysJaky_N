@@ -19,7 +19,7 @@
     <value>Profesionální kurzy a školení pro vaši firmu.</value>
   </data>
   <data name="HeroMainHeading" xml:space="preserve">
-    <value>Školení, kurzy a certifikace ISO pro vaši organizaci</value>
+    <value>Implementace, audity a školení systémů jakosti</value>
   </data>
   <data name="HeroSearchPlaceholder" xml:space="preserve">
     <value>Hledat kurz, nástroj nebo dovednost…</value>
@@ -31,25 +31,25 @@
     <value>Vyhledávání</value>
   </data>
   <data name="HeroSubheading" xml:space="preserve">
-    <value>Komplexní příprava k certifikaci a akreditaci podle ISO 9001, ISO 14001, ISO/IEC 17025, ISO 15189, HACCP, ISO 45001, ISO 27001, IATF 16949 a ISO 13485</value>
+    <value>Provázíme organizace celým cyklem ISO 9001, ISO 14001, ISO/IEC 17025, ISO 15189, HACCP, ISO 45001, ISO 27001, IATF 16949 a ISO 13485 – od analýzy po certifikaci.</value>
   </data>
   <data name="HeroSubmit" xml:space="preserve">
     <value>Navrhnout kurzy</value>
   </data>
   <data name="HeroPrimaryCTA" xml:space="preserve">
-    <value>Zobrazit všechny kurzy</value>
+    <value>Prohlédnout nabídku kurzů ISO</value>
   </data>
   <data name="HeroSecondaryCTA" xml:space="preserve">
-    <value>Poptávka na firemní školení</value>
+    <value>Nechat si připravit firemní řešení</value>
   </data>
   <data name="HeroUSP1" xml:space="preserve">
-    <value>20+ let zkušeností v oblasti systémů managementu</value>
+    <value>Dlouholeté zkušenosti auditorů a konzultantů</value>
   </data>
   <data name="HeroUSP2" xml:space="preserve">
-    <value>Certifikované kurzy s uznávanými osvědčeními</value>
+    <value>Praktické know-how získané z reálných auditů</value>
   </data>
   <data name="HeroUSP3" xml:space="preserve">
-    <value>Školení prezenčně, online i ve vaší firmě</value>
+    <value>Možnost interních workshopů přímo u vás</value>
   </data>
   <data name="HowItWorksTitle" xml:space="preserve">
     <value>Jak to funguje</value>
