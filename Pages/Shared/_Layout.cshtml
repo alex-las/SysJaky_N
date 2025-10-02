@@ -4,7 +4,7 @@
 @using SysJaky_N.Pages.Account
 @inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
 @inject Microsoft.Extensions.Configuration.IConfiguration Configuration
-@inject Microsoft.Extensions.Localization.IStringLocalizer<SysJaky_N.SharedResource> T
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer T
 @{ 
     var currentCulture = CultureInfo.CurrentUICulture;
     var isCzech = string.Equals(currentCulture.TwoLetterISOLanguageName, "cs", System.StringComparison.OrdinalIgnoreCase);
@@ -74,25 +74,25 @@
                 <div id="primaryNavigation" class="navbar-collapse collapse d-lg-inline-flex justify-content-between">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0 gap-lg-1">
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-page="/Index" aria-current="@(currentPage == "/Index" ? "page" : null)">@T["NavHome"]</a>
+                            <a class="nav-link" asp-area="" asp-page="/Index" aria-current="@(currentPage == "/Index" ? "page" : null)">@T["Nav.Home"]</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-page="/About" aria-current="@(currentPage == "/About" ? "page" : null)">@T["NavAbout"]</a>
+                            <a class="nav-link" asp-area="" asp-page="/About" aria-current="@(currentPage == "/About" ? "page" : null)">@T["Nav.About"]</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-page="/Services" aria-current="@(currentPage == "/Services" ? "page" : null)">@T["NavServices"]</a>
+                            <a class="nav-link" asp-area="" asp-page="/Services" aria-current="@(currentPage == "/Services" ? "page" : null)">@T["Nav.Services"]</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-page="/Courses/Index" aria-current="@(currentPage == "/Courses/Index" ? "page" : null)">@T["NavCourses"]</a>
+                            <a class="nav-link" asp-area="" asp-page="/Courses/Index" aria-current="@(currentPage == "/Courses/Index" ? "page" : null)">@T["Nav.Courses"]</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-page="/Articles/Index" aria-current="@(currentPage == "/Articles/Index" ? "page" : null)">@T["NavArticles"]</a>
+                            <a class="nav-link" asp-area="" asp-page="/Articles/Index" aria-current="@(currentPage == "/Articles/Index" ? "page" : null)">@T["Nav.Articles"]</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-page="/CorporateInquiry" aria-current="@(currentPage == "/CorporateInquiry" ? "page" : null)">@T["NavCorporateInquiry"]</a>
+                            <a class="nav-link" asp-area="" asp-page="/CorporateInquiry" aria-current="@(currentPage == "/CorporateInquiry" ? "page" : null)">@T["Nav.CorporateInquiry"]</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-page="/Privacy" aria-current="@(currentPage == "/Privacy" ? "page" : null)">@T["NavPrivacy"]</a>
+                            <a class="nav-link" asp-area="" asp-page="/Privacy" aria-current="@(currentPage == "/Privacy" ? "page" : null)">@T["Nav.Privacy"]</a>
                         </li>
                     </ul>
                     <ul class="navbar-nav ms-auto align-items-center gap-3 mb-2 mb-lg-0">
@@ -153,13 +153,13 @@
                         </li>
                 <div id="primaryNavigation" class="collapse navbar-collapse">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item"><a class="nav-link" asp-page="/Index">@T["NavHome"]</a></li>
-                        <li class="nav-item"><a class="nav-link" asp-page="/About">@T["NavAbout"]</a></li>
-                        <li class="nav-item"><a class="nav-link" asp-page="/Services">@T["NavServices"]</a></li>
-                        <li class="nav-item"><a class="nav-link" asp-page="/Courses/Index">@T["NavCourses"]</a></li>
-                        <li class="nav-item"><a class="nav-link" asp-page="/Articles/Index">@T["NavArticles"]</a></li>
-                        <li class="nav-item"><a class="nav-link" asp-page="/CorporateInquiry">@T["NavCorporateInquiry"]</a></li>
-                        <li class="nav-item"><a class="nav-link" asp-page="/Privacy">@T["NavPrivacy"]</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-page="/Index">@T["Nav.Home"]</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-page="/About">@T["Nav.About"]</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-page="/Services">@T["Nav.Services"]</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-page="/Courses/Index">@T["Nav.Courses"]</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-page="/Articles/Index">@T["Nav.Articles"]</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-page="/CorporateInquiry">@T["Nav.CorporateInquiry"]</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-page="/Privacy">@T["Nav.Privacy"]</a></li>
                     </ul>
                     <div class="d-flex align-items-center gap-3">
                         <partial name="_LanguageSwitcher" />
