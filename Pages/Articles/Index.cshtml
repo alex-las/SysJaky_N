@@ -3,6 +3,8 @@
 @using System.Collections.Generic
 @using System.Globalization
 @using System.Linq
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 @functions {
     public record ArticleCard(
         int Id,
@@ -23,7 +25,7 @@
     public record CategoryOption(string Name, string Key);
 }
 @{
-    ViewData["Title"] = "Články a inspirace";
+    ViewData["Title"] = Localizer["PageTitle"];
     var culture = CultureInfo.CurrentUICulture;
 
     var sampleArticles = new List<ArticleCard>
@@ -114,22 +116,22 @@
 
 <section class="articles-hero">
     <div class="articles-hero__content">
-        <p class="text-uppercase fw-semibold text-primary mb-2">Inspirační knihovna</p>
-        <h1 class="display-5 fw-bold mb-3">Články, které zefektivní vaše systémy řízení</h1>
-        <p class="lead text-muted mb-0">Vyberte si z kurátorovaného výběru článků o ISO normách, auditech i procesním řízení. Filtrujte podle kategorií, vyhledávejte klíčová témata a přepínejte mezi dlaždicovým a seznamovým zobrazením.</p>
+        <p class="text-uppercase fw-semibold text-primary mb-2">@Localizer["HeroBadge"]</p>
+        <h1 class="display-5 fw-bold mb-3">@Localizer["HeroHeadline"]</h1>
+        <p class="lead text-muted mb-0">@Localizer["HeroSubheadline"]</p>
     </div>
 </section>
 
-<section class="articles-toolbar" aria-label="Ovládací panel článků">
+<section class="articles-toolbar" aria-label="@Localizer["ToolbarAriaLabel"]">
     <div class="toolbar-group toolbar-group--search" role="search">
-        <label for="articleSearch" class="form-label fw-semibold">Hledat články</label>
-        <input type="search" id="articleSearch" class="form-control" placeholder="Zadejte název, téma nebo tag" data-articles-search aria-describedby="articleSearchHelp" />
-        <div id="articleSearchHelp" class="form-text">Vyhledáváme v názvu, perexu i značkách článků.</div>
+        <label for="articleSearch" class="form-label fw-semibold">@Localizer["SearchLabel"]</label>
+        <input type="search" id="articleSearch" class="form-control" placeholder="@Localizer["SearchPlaceholder"]" data-articles-search aria-describedby="articleSearchHelp" />
+        <div id="articleSearchHelp" class="form-text">@Localizer["SearchHelpText"]</div>
     </div>
     <div class="toolbar-group toolbar-group--filters" role="group" aria-labelledby="articleFiltersLabel">
         <div class="d-flex align-items-center gap-2 mb-2">
             <i class="bi bi-filter fs-5 text-primary" aria-hidden="true"></i>
-            <span id="articleFiltersLabel" class="fw-semibold">Filtrovat podle kategorií</span>
+            <span id="articleFiltersLabel" class="fw-semibold">@Localizer["FilterLabel"]</span>
         </div>
         <div class="toolbar-filters" data-filter-checkboxes>
             @foreach (var category in categories)
@@ -141,14 +143,14 @@
             }
         </div>
     </div>
-    <div class="toolbar-group toolbar-group--view" role="group" aria-label="Přepnout zobrazení">
+    <div class="toolbar-group toolbar-group--view" role="group" aria-label="@Localizer["ViewToggleAriaLabel"]">
         <button type="button" class="btn btn-outline-primary active" data-view-toggle="grid" aria-pressed="true">
             <i class="bi bi-grid" aria-hidden="true"></i>
-            <span class="ms-2">Dlaždice</span>
+            <span class="ms-2">@Localizer["GridView"]</span>
         </button>
         <button type="button" class="btn btn-outline-primary" data-view-toggle="list" aria-pressed="false">
             <i class="bi bi-list" aria-hidden="true"></i>
-            <span class="ms-2">Seznam</span>
+            <span class="ms-2">@Localizer["ListView"]</span>
         </button>
     </div>
 </section>
@@ -185,7 +187,7 @@
                             <time datetime="@article.PublishedAt:yyyy-MM-dd">@article.PublishedAt.ToString("d. MMMM yyyy", culture)</time>
                         </div>
                     </div>
-                    <div class="article-card__tags" aria-label="Tagy článku">
+                    <div class="article-card__tags" aria-label="@Localizer["TagsAriaLabel"]">
                         @foreach (var tag in article.Tags)
                         {
                             <span class="badge rounded-pill bg-primary-subtle text-primary">@tag</span>
@@ -195,8 +197,8 @@
                 <footer class="article-card__footer">
                     <div class="d-flex flex-wrap align-items-center gap-3">
                         <a class="btn btn-primary" href="@article.CtaUrl">@article.CtaText</a>
-                        <a class="link-primary d-flex align-items-center gap-1" href="#" role="button" aria-label="Zobrazit více o článku @article.Title">
-                            Číst náhled
+                        <a class="link-primary d-flex align-items-center gap-1" href="#" role="button" aria-label="@Localizer["PreviewAriaLabel", article.Title]">
+                            @Localizer["PreviewLink"]
                             <i class="bi bi-arrow-right" aria-hidden="true"></i>
                         </a>
                     </div>
@@ -206,7 +208,7 @@
     </div>
     <div class="articles-empty alert alert-info d-none" data-empty-state role="status">
         <i class="bi bi-info-circle" aria-hidden="true"></i>
-        <span>Nenašli jsme žádné články pro zadanou kombinaci vyhledávání a filtrů. Upravte prosím podmínky a zkuste to znovu.</span>
+        <span>@Localizer["EmptyState"]</span>
     </div>
 </section>
 
@@ -214,16 +216,16 @@
     <div class="card border-0 shadow-sm overflow-hidden">
         <div class="row g-0 align-items-center">
             <div class="col-lg-7 p-4 p-lg-5">
-                <h2 id="relatedCourses" class="h3 fw-bold mb-3">Posuňte znalosti díky navazujícím kurzům</h2>
-                <p class="mb-4 text-muted">Každý článek navazuje na praktické kurzy, které vás provedou implementací standardů krok za krokem. Získejte přístup k bonusovým materiálům, Q&A se specialisty i komunitním workshopům.</p>
+                <h2 id="relatedCourses" class="h3 fw-bold mb-3">@Localizer["CtaHeading"]</h2>
+                <p class="mb-4 text-muted">@Localizer["CtaDescription"]</p>
                 <div class="d-flex flex-wrap gap-3">
-                    <a class="btn btn-outline-primary" href="/Courses/Index?search=ISO">Prozkoumat všechny kurzy</a>
-                    <a class="btn btn-outline-secondary" href="/Contact">Spojit se s konzultantem</a>
+                    <a class="btn btn-outline-primary" href="/Courses/Index?search=ISO">@Localizer["CtaPrimaryButton"]</a>
+                    <a class="btn btn-outline-secondary" href="/Contact">@Localizer["CtaSecondaryButton"]</a>
                 </div>
             </div>
             <div class="col-lg-5 bg-primary-subtle p-4 text-center">
                 <i class="bi bi-mortarboard fs-1 text-primary" aria-hidden="true"></i>
-                <p class="mt-3 mb-0 fw-semibold text-primary">Certifikovaní lektoři a aktuální sylaby</p>
+                <p class="mt-3 mb-0 fw-semibold text-primary">@Localizer["CtaHighlight"]</p>
             </div>
         </div>
     </div>
