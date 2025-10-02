@@ -11,8 +11,8 @@ using SysJaky_N.Data;
 namespace SysJaky_N.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-[Migration("20251010120000_AddTestimonials")]
-partial class AddTestimonials
+    [Migration("20251002053049_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -332,6 +332,30 @@ partial class AddTestimonials
                     b.ToTable("Certificates");
                 });
 
+            modelBuilder.Entity("SysJaky_N.Models.ChatbotSettings", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<bool>("AutoInitialize")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(true);
+
+                    b.Property<bool>("IsEnabled")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(true);
+
+                    b.Property<DateTime>("UpdatedAtUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ChatbotSettings");
+                });
+
             modelBuilder.Entity("SysJaky_N.Models.Company", b =>
                 {
                     b.Property<int>("Id")
@@ -367,11 +391,13 @@ partial class AddTestimonials
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(200)
+                        .HasColumnType("varchar(200)");
 
                     b.Property<string>("ReferenceCode")
                         .IsRequired()
-                        .HasColumnType("varchar(255)");
+                        .HasMaxLength(64)
+                        .HasColumnType("varchar(64)");
 
                     b.HasKey("Id");
 
@@ -443,11 +469,27 @@ partial class AddTestimonials
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    b.Property<string>("CaseStudies")
+                        .HasMaxLength(2000)
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("CertificateInfo")
+                        .HasMaxLength(2000)
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Certifications")
+                        .HasMaxLength(2000)
+                        .HasColumnType("longtext");
+
                     b.Property<int?>("CourseBlockId")
                         .HasColumnType("int");
 
                     b.Property<int?>("CourseGroupId")
                         .HasColumnType("int");
+
+                    b.Property<string>("CourseProgram")
+                        .HasMaxLength(4000)
+                        .HasColumnType("longtext");
 
                     b.Property<string>("CoverImageUrl")
                         .HasMaxLength(2048)
@@ -456,6 +498,10 @@ partial class AddTestimonials
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime(6)");
 
+                    b.Property<string>("DeliveryForm")
+                        .HasMaxLength(150)
+                        .HasColumnType("varchar(150)");
+
                     b.Property<string>("Description")
                         .HasMaxLength(1000)
                         .HasColumnType("varchar(1000)");
@@ -463,8 +509,32 @@ partial class AddTestimonials
                     b.Property<int>("Duration")
                         .HasColumnType("int");
 
+                    b.Property<string>("DurationText")
+                        .HasMaxLength(150)
+                        .HasColumnType("varchar(150)");
+
+                    b.Property<string>("FollowUpCourses")
+                        .HasMaxLength(2000)
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("InstructorBio")
+                        .HasMaxLength(2000)
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("InstructorName")
+                        .HasMaxLength(200)
+                        .HasColumnType("varchar(200)");
+
                     b.Property<bool>("IsActive")
                         .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("IsoStandard")
+                        .HasMaxLength(150)
+                        .HasColumnType("varchar(150)");
+
+                    b.Property<string>("LearningOutcomes")
+                        .HasMaxLength(2000)
+                        .HasColumnType("longtext");
 
                     b.Property<int>("Level")
                         .HasColumnType("int");
@@ -484,6 +554,10 @@ partial class AddTestimonials
                         .HasMaxLength(2048)
                         .HasColumnType("varchar(2048)");
 
+                    b.Property<string>("OrganizationalNotes")
+                        .HasMaxLength(2000)
+                        .HasColumnType("longtext");
+
                     b.Property<string>("PopoverHtml")
                         .HasMaxLength(1000)
                         .HasColumnType("varchar(1000)");
@@ -495,6 +569,10 @@ partial class AddTestimonials
                         .HasColumnType("int");
 
                     b.Property<string>("ReminderMessage")
+                        .HasMaxLength(1000)
+                        .HasColumnType("varchar(1000)");
+
+                    b.Property<string>("TargetAudience")
                         .HasMaxLength(1000)
                         .HasColumnType("varchar(1000)");
 
@@ -821,6 +899,45 @@ partial class AddTestimonials
                     b.ToTable("LogEntries");
                 });
 
+            modelBuilder.Entity("SysJaky_N.Models.NewsletterSubscriber", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("ConfirmationToken")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("varchar(64)");
+
+                    b.Property<DateTime?>("ConfirmedAtUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<bool>("ConsentGiven")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<DateTime?>("ConsentGivenAtUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(320)
+                        .HasColumnType("varchar(320)");
+
+                    b.Property<DateTime>("SubscribedAtUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ConfirmationToken")
+                        .IsUnique();
+
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.ToTable("NewsletterSubscribers");
+                });
+
             modelBuilder.Entity("SysJaky_N.Models.Order", b =>
                 {
                     b.Property<int>("Id")
@@ -989,22 +1106,41 @@ partial class AddTestimonials
                     b.ToTable("SeatTokens");
                 });
 
+            modelBuilder.Entity("SysJaky_N.Models.Tag", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("Tags");
+                });
+
             modelBuilder.Entity("SysJaky_N.Models.Testimonial", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    b.Property<string>("Company")
+                        .IsRequired()
+                        .HasMaxLength(120)
+                        .HasColumnType("varchar(120)");
+
                     b.Property<bool>("ConsentGranted")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<DateTime?>("ConsentGrantedAtUtc")
                         .HasColumnType("datetime(6)");
-
-                    b.Property<string>("Company")
-                        .IsRequired()
-                        .HasMaxLength(120)
-                        .HasColumnType("varchar(120)");
 
                     b.Property<string>("FullName")
                         .IsRequired()
@@ -1038,25 +1174,6 @@ partial class AddTestimonials
                     b.HasKey("Id");
 
                     b.ToTable("Testimonials");
-                });
-
-            modelBuilder.Entity("SysJaky_N.Models.Tag", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Name")
-                        .IsUnique();
-
-                    b.ToTable("Tags");
                 });
 
             modelBuilder.Entity("SysJaky_N.Models.Voucher", b =>

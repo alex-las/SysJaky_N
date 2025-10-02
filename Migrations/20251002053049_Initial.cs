@@ -167,6 +167,22 @@ namespace SysJaky_N.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
+                name: "ChatbotSettings",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    IsEnabled = table.Column<bool>(type: "tinyint(1)", nullable: false, defaultValue: true),
+                    AutoInitialize = table.Column<bool>(type: "tinyint(1)", nullable: false, defaultValue: true),
+                    UpdatedAtUtc = table.Column<DateTime>(type: "datetime(6)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ChatbotSettings", x => x.Id);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
                 name: "Instructors",
                 columns: table => new
                 {
@@ -214,6 +230,27 @@ namespace SysJaky_N.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
+                name: "NewsletterSubscribers",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Email = table.Column<string>(type: "varchar(320)", maxLength: 320, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    SubscribedAtUtc = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    ConfirmedAtUtc = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    ConfirmationToken = table.Column<string>(type: "varchar(64)", maxLength: 64, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    ConsentGiven = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    ConsentGivenAtUtc = table.Column<DateTime>(type: "datetime(6)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_NewsletterSubscribers", x => x.Id);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
                 name: "PaymentIds",
                 columns: table => new
                 {
@@ -254,6 +291,35 @@ namespace SysJaky_N.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Tags", x => x.Id);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "Testimonials",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    FullName = table.Column<string>(type: "varchar(120)", maxLength: 120, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Position = table.Column<string>(type: "varchar(80)", maxLength: 80, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Company = table.Column<string>(type: "varchar(120)", maxLength: 120, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    PhotoUrl = table.Column<string>(type: "varchar(256)", maxLength: 256, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Quote = table.Column<string>(type: "varchar(150)", maxLength: 150, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Rating = table.Column<int>(type: "int", nullable: false),
+                    IsPublished = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    ConsentGranted = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    ConsentGrantedAtUtc = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    PhotoAltText = table.Column<string>(type: "varchar(180)", maxLength: 180, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Testimonials", x => x.Id);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -305,6 +371,32 @@ namespace SysJaky_N.Migrations
                     Level = table.Column<int>(type: "int", nullable: false),
                     Mode = table.Column<int>(type: "int", nullable: false),
                     Duration = table.Column<int>(type: "int", nullable: false),
+                    IsoStandard = table.Column<string>(type: "varchar(150)", maxLength: 150, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    DurationText = table.Column<string>(type: "varchar(150)", maxLength: 150, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    DeliveryForm = table.Column<string>(type: "varchar(150)", maxLength: 150, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    TargetAudience = table.Column<string>(type: "varchar(1000)", maxLength: 1000, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    LearningOutcomes = table.Column<string>(type: "longtext", maxLength: 2000, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    CaseStudies = table.Column<string>(type: "longtext", maxLength: 2000, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Certifications = table.Column<string>(type: "longtext", maxLength: 2000, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    CourseProgram = table.Column<string>(type: "longtext", maxLength: 4000, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    InstructorName = table.Column<string>(type: "varchar(200)", maxLength: 200, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    InstructorBio = table.Column<string>(type: "longtext", maxLength: 2000, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    OrganizationalNotes = table.Column<string>(type: "longtext", maxLength: 2000, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    FollowUpCourses = table.Column<string>(type: "longtext", maxLength: 2000, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    CertificateInfo = table.Column<string>(type: "longtext", maxLength: 2000, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                     ReminderDays = table.Column<int>(type: "int", nullable: false),
                     ReminderMessage = table.Column<string>(type: "varchar(1000)", maxLength: 1000, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
@@ -590,9 +682,9 @@ namespace SysJaky_N.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(type: "longtext", nullable: false)
+                    Name = table.Column<string>(type: "varchar(200)", maxLength: 200, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    ReferenceCode = table.Column<string>(type: "varchar(255)", nullable: false)
+                    ReferenceCode = table.Column<string>(type: "varchar(64)", maxLength: 64, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     ManagerId = table.Column<string>(type: "varchar(255)", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4")
@@ -1097,6 +1189,18 @@ namespace SysJaky_N.Migrations
                 column: "Timestamp");
 
             migrationBuilder.CreateIndex(
+                name: "IX_NewsletterSubscribers_ConfirmationToken",
+                table: "NewsletterSubscribers",
+                column: "ConfirmationToken",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_NewsletterSubscribers_Email",
+                table: "NewsletterSubscribers",
+                column: "Email",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_OrderItems_CourseId",
                 table: "OrderItems",
                 column: "CourseId");
@@ -1252,10 +1356,16 @@ namespace SysJaky_N.Migrations
                 name: "EmailLogs");
 
             migrationBuilder.DropTable(
+                name: "ChatbotSettings");
+
+            migrationBuilder.DropTable(
                 name: "LessonProgresses");
 
             migrationBuilder.DropTable(
                 name: "LogEntries");
+
+            migrationBuilder.DropTable(
+                name: "NewsletterSubscribers");
 
             migrationBuilder.DropTable(
                 name: "PaymentIds");
@@ -1268,6 +1378,9 @@ namespace SysJaky_N.Migrations
 
             migrationBuilder.DropTable(
                 name: "SeatTokens");
+
+            migrationBuilder.DropTable(
+                name: "Testimonials");
 
             migrationBuilder.DropTable(
                 name: "WaitlistEntries");
