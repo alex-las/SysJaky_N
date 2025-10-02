@@ -394,9 +394,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 },
                 {
                     threshold: 0.2,
-<<<<<<< HEAD
+
                     rootMargin: revealRootMargin
-=======
+
                     rootMargin: '-12% 0px -12% 0px'
                     const marginTop = '-12%';
                     const marginRight = '0px';
@@ -409,7 +409,7 @@ document.addEventListener('DOMContentLoaded', () => {
                       threshold: [0.25, 0.5, 0.75],
                       rootMargin: rootMargin // napø. '-12% 0px -12% 0px'
                     });
->>>>>>> OK
+
                 }
             );
 
