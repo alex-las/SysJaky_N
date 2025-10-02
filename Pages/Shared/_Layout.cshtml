@@ -8,11 +8,8 @@
 @{ 
     var currentCulture = CultureInfo.CurrentUICulture;
     var isCzech = string.Equals(currentCulture.TwoLetterISOLanguageName, "cs", System.StringComparison.OrdinalIgnoreCase);
-    var isEnglish = !isCzech;
-    var currentLanguageLabel = Localizer[isCzech ? "LanguageNameCs" : "LanguageNameEn"];
     var currentPage = ViewContext.RouteData.Values["page"]?.ToString();
     var canAccessAdmin = ApplicationRoles.AdminDashboardRoles.Any(role => User.IsInRole(role));
-    var returnUrl = string.Concat(Context.Request.Path, Context.Request.QueryString);
     var pushPublicKey = Configuration["PushNotifications:PublicKey"] ?? string.Empty;
     var toggleThemeLabel = Localizer["ToggleTheme"];
     var themeToggleFallback = isCzech ? "Přepnout vzhled" : "Toggle theme";
@@ -124,31 +121,9 @@
                                 <i class="bi bi-magic"></i> @Localizer["AdvisorButton"]
                             </a>
                         </li>
-                        <li class="nav-item dropdown">
-                            <button class="btn btn-outline-light dropdown-toggle d-flex align-items-center gap-1" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" type="button">
-                                <i class="bi bi-translate"></i>
-                                <span>@currentLanguageLabel</span>
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end" role="menu" aria-label='@Localizer["LanguageMenuLabel"]'>
-                                <li>
-                                    <form method="post" asp-controller="Localization" asp-action="SetLanguage" class="px-3 py-1" aria-label='@Localizer["ChangeLanguageFormLabel"]'>
-                                        @Html.AntiForgeryToken()
-                                        <input type="hidden" name="returnUrl" value="@returnUrl" />
-                                        <button type="submit" name="culture" value="cs" class="dropdown-item w-100 text-start @(isCzech ? "active" : string.Empty)" role="menuitem">
-                                            @Localizer["LanguageNameCs"]
-                                        </button>
-                                    </form>
-                                </li>
-                                <li>
-                                    <form method="post" asp-controller="Localization" asp-action="SetLanguage" class="px-3 py-1" aria-label='@Localizer["ChangeLanguageFormLabel"]'>
-                                        @Html.AntiForgeryToken()
-                                        <input type="hidden" name="returnUrl" value="@returnUrl" />
-                                        <button type="submit" name="culture" value="en" class="dropdown-item w-100 text-start @(isEnglish ? "active" : string.Empty)" role="menuitem">
-                                            @Localizer["LanguageNameEn"]
-                                        </button>
-                                    </form>
-                                </li>
-                            </ul>
+                        <li class="nav-item d-flex align-items-center">
+                            <i class="bi bi-translate text-white me-2" aria-hidden="true"></i>
+                            @await Html.PartialAsync("~/Views/Shared/_LanguageSwitcher.cshtml")
                         </li>
                         @if (!User.Identity.IsAuthenticated)
                         {
