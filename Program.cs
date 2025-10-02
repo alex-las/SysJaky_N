@@ -12,6 +12,7 @@ using DinkToPdf.Contracts;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.Razor;
+using Microsoft.AspNetCore.Mvc.DataAnnotations;
 using Microsoft.AspNetCore.RateLimiting;
 using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.Http;
@@ -46,18 +47,32 @@ try
     }
 
     // --- Connection string ---
-    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-    if (string.IsNullOrWhiteSpace(connectionString))
-    {
-        throw new InvalidOperationException(
-            "Connection string 'DefaultConnection' not found. Configure it using secrets or KeyVault.");
-    }
+    var useInMemoryDatabase = builder.Configuration.GetValue("UseInMemoryDatabase", false);
 
-    var serverVersion = new MySqlServerVersion(new Version(8, 0, 36));
+    string? connectionString = null;
+    MySqlServerVersion? serverVersion = null;
+
+    if (!useInMemoryDatabase)
+    {
+        connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+        if (string.IsNullOrWhiteSpace(connectionString))
+        {
+            throw new InvalidOperationException(
+                "Connection string 'DefaultConnection' not found. Configure it using secrets or KeyVault.");
+        }
+
+        serverVersion = new MySqlServerVersion(new Version(8, 0, 36));
+    }
 
     void ConfigureApplicationDbContext(DbContextOptionsBuilder options, bool quietLogging = false)
     {
-        options.UseMySql(connectionString, serverVersion);
+        if (useInMemoryDatabase)
+        {
+            options.UseInMemoryDatabase("SysJaky_N");
+            return;
+        }
+
+        options.UseMySql(connectionString!, serverVersion);
         if (quietLogging)
         {
             options.UseLoggerFactory(NullLoggerFactory.Instance); // vypne EF logování z tohoto contextu
@@ -300,19 +315,22 @@ try
     var app = builder.Build();
 
     // DB migrate + seed (bez rekurze – sink používá tichou továrnu ApplicationDbContext)
-    try
+    if (!useInMemoryDatabase)
     {
-        using var scope = app.Services.CreateScope();
-        var services = scope.ServiceProvider;
-        var context = services.GetRequiredService<ApplicationDbContext>();
-        await context.Database.MigrateAsync();
-        var seeder = new AdminSeeder(services);
-        await seeder.SeedAsync();
-    }
-    catch (Exception ex)
-    {
-        app.Logger.LogError(ex,
-            "Database migration or seeding failed during startup. Ensure the database is reachable and configured correctly.");
+        try
+        {
+            using var scope = app.Services.CreateScope();
+            var services = scope.ServiceProvider;
+            var context = services.GetRequiredService<ApplicationDbContext>();
+            await context.Database.MigrateAsync();
+            var seeder = new AdminSeeder(services);
+            await seeder.SeedAsync();
+        }
+        catch (Exception ex)
+        {
+            app.Logger.LogError(ex,
+                "Database migration or seeding failed during startup. Ensure the database is reachable and configured correctly.");
+        }
     }
 
     app.UseForwardedHeaders();
