@@ -7,6 +7,10 @@
 @inject Microsoft.Extensions.Localization.IStringLocalizer<SysJaky_N.SharedResource> T
 @{
     var currentCulture = CultureInfo.CurrentUICulture;
+    var isCzech = string.Equals(currentCulture.TwoLetterISOLanguageName, "cs", System.StringComparison.OrdinalIgnoreCase);
+    var currentPage = ViewContext.RouteData.Values["page"]?.ToString();
+    var canAccessAdmin = ApplicationRoles.AdminDashboardRoles.Any(role => User.IsInRole(role));
+
     var pushPublicKey = Configuration["PushNotifications:PublicKey"] ?? string.Empty;
 }
 <!DOCTYPE html>
@@ -65,6 +69,86 @@
                         aria-expanded="false" aria-label='@Localizer["ToggleNavigation"]'>
                     <span class="navbar-toggler-icon"></span>
                 </button>
+                <div id="primaryNavigation" class="navbar-collapse collapse d-lg-inline-flex justify-content-between">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 gap-lg-1">
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-page="/Index" aria-current="@(currentPage == "/Index" ? "page" : null)">@Localizer["NavHome"]</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-page="/About" aria-current="@(currentPage == "/About" ? "page" : null)">@Localizer["NavAbout"]</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-page="/Services" aria-current="@(currentPage == "/Services" ? "page" : null)">@Localizer["NavServices"]</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-page="/Courses/Index" aria-current="@(currentPage == "/Courses/Index" ? "page" : null)">@Localizer["NavCourses"]</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-page="/Articles/Index" aria-current="@(currentPage == "/Articles/Index" ? "page" : null)">@Localizer["NavArticles"]</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-page="/CorporateInquiry" aria-current="@(currentPage == "/CorporateInquiry" ? "page" : null)">@Localizer["NavCorporateInquiry"]</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-page="/Privacy" aria-current="@(currentPage == "/Privacy" ? "page" : null)">@Localizer["NavPrivacy"]</a>
+                        </li>
+                    </ul>
+                    <ul class="navbar-nav ms-auto align-items-center gap-3 mb-2 mb-lg-0">
+                        @if (canAccessAdmin)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link d-flex align-items-center gap-1" asp-page="/Admin/Dashboard/Index">
+                                    <i class="bi bi-speedometer2"></i>
+                                    <span>@Localizer["AdminDashboard"]</span>
+                                </a>
+                            </li>
+                        }
+                        <li class="nav-item">
+                            <button type="button" class="btn btn-outline-light d-flex align-items-center justify-content-center gap-2 theme-toggle"
+                                    data-theme-toggle aria-pressed="false" aria-label='@themeToggleText'
+                                    title='@themeToggleText'>
+                                <i class="bi bi-sun-fill" data-theme-icon="light" aria-hidden="true"></i>
+                                <i class="bi bi-moon-stars-fill d-none" data-theme-icon="dark" aria-hidden="true"></i>
+                                <span class="visually-hidden">@themeToggleText</span>
+                            </button>
+                        </li>
+                        <li class="nav-item">
+                            <a class="btn btn-outline-light ms-2" data-bs-toggle="offcanvas" href="#advisor" role="button" aria-controls="advisor" aria-haspopup="dialog">
+                                <i class="bi bi-magic"></i> @Localizer["AdvisorButton"]
+                            </a>
+                        </li>
+                        <li class="nav-item d-flex align-items-center">
+                            <i class="bi bi-translate text-white me-2" aria-hidden="true"></i>
+                            @await Html.PartialAsync("~/Views/Shared/_LanguageSwitcher.cshtml")
+                        </li>
+                        @if (!User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <a class="btn btn-outline-light" data-bs-toggle="modal" data-bs-target="#authModal">@Localizer["LoginRegister"]</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="btn btn-outline-light dropdown-toggle" href="#" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                                    @User.Identity?.Name
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end" role="menu" aria-label='@Localizer["AccountMenuLabel"]'>
+                                    <li role="none"><a class="dropdown-item" asp-page="/Account/Manage" role="menuitem">@Localizer["ProfileOverview"]</a></li>
+                                    <li role="none"><a class="dropdown-item" href="/Account/Manage#upcoming-courses" role="menuitem">@Localizer["UpcomingCourses"]</a></li>
+                                    <li role="none"><a class="dropdown-item" href="/Account/Manage#wishlist" role="menuitem">@Localizer["Wishlist"]</a></li>
+                                    <li role="none"><a class="dropdown-item" href="/Account/Manage#orders" role="menuitem">@Localizer["Orders"]</a></li>
+                                    <li><hr class="dropdown-divider" /></li>
+                                    <li role="none"><a class="dropdown-item" asp-page="/Cart" role="menuitem">@Localizer["Cart"]</a></li>
+                                </ul>
+                            </li>
+                        }
+                        <li class="nav-item">
+                            <a class="nav-link position-relative @(currentPage == "/Cart" ? "active" : null)" asp-area="" asp-page="/Cart" aria-label='@Localizer["CartAriaLabel"]'>
+                                <i class="bi bi-cart fs-5"></i>
+                                <span class="visually-hidden">@Localizer["Cart"]</span>
+                            </a>
+                        </li>
                 <div id="primaryNavigation" class="collapse navbar-collapse">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item"><a class="nav-link" asp-page="/Index">@T["NavHome"]</a></li>

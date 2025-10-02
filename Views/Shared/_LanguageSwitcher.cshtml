@@ -1,0 +1,17 @@
+@using Microsoft.AspNetCore.Localization
+@inject IHttpContextAccessor Http
+@inject Microsoft.Extensions.Localization.IStringLocalizer<SysJaky_N.SharedResource> T
+
+@{
+    var feat = Http.HttpContext?.Features.Get<IRequestCultureFeature>();
+    var ui = feat?.RequestCulture.UICulture.Name ?? "cs-CZ";
+    var back = Context.Request.Path + Context.Request.QueryString;
+}
+
+<form asp-controller="Culture" asp-action="Set" method="post" class="d-inline">
+    <input type="hidden" name="returnUrl" value="@back" />
+    <select name="culture" class="form-select form-select-sm" style="width:auto" onchange="this.form.submit()">
+        <option value="cs-CZ" selected="@(ui.StartsWith("cs"))">@T["LanguageNameCs"]</option>
+        <option value="en-US" selected="@(ui.StartsWith("en"))">@T["LanguageNameEn"]</option>
+    </select>
+</form>
