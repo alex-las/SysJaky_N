@@ -473,18 +473,24 @@ public class IndexModel : PageModel
         var endColumn = range?.LastColumn().ColumnNumber() ?? 0;
         for (var column = 1; column <= endColumn; column++)
         {
-            var value = worksheet.Cell(row, column).Value;
-            if (value is string stringValue)
+            var cell = worksheet.Cell(row, column);
+
+            if (cell.IsEmpty())
             {
-                if (!string.IsNullOrWhiteSpace(stringValue))
+                continue;
+            }
+
+            if (cell.DataType == XLDataType.Text)
+            {
+                if (!string.IsNullOrWhiteSpace(cell.GetString()))
                 {
                     return false;
                 }
+
+                continue;
             }
-            else if (value != null)
-            {
-                return false;
-            }
+
+            return false;
         }
 
         return true;
@@ -505,34 +511,16 @@ public class IndexModel : PageModel
 
     private static bool TryGetNullableInt(IXLCell cell, out int? value)
     {
-        var raw = cell.Value;
-
-        if (raw == null)
+        if (cell.IsEmpty())
         {
             value = null;
             return true;
         }
 
-        if (raw is string stringValue && string.IsNullOrWhiteSpace(stringValue))
+        if (cell.DataType == XLDataType.Number)
         {
-            value = null;
-            return true;
-        }
+            var doubleValue = cell.GetValue<double>();
 
-        if (raw is int intValue)
-        {
-            value = intValue;
-            return true;
-        }
-
-        if (raw is long longValue)
-        {
-            value = Convert.ToInt32(longValue);
-            return true;
-        }
-
-        if (raw is double doubleValue)
-        {
             if (Math.Abs(doubleValue % 1d) > double.Epsilon)
             {
                 value = null;
@@ -543,29 +531,25 @@ public class IndexModel : PageModel
             return true;
         }
 
-        if (raw is decimal decimalValue)
+        if (cell.DataType == XLDataType.Boolean)
         {
-            if (decimalValue % 1m != 0m)
-            {
-                value = null;
-                return false;
-            }
-
-            value = (int)decimalValue;
+            value = cell.GetValue<bool>() ? 1 : 0;
             return true;
         }
 
-        if (raw is string stringNumber)
-        {
-            if (int.TryParse(stringNumber, NumberStyles.Integer, CultureInfo.InvariantCulture, out var parsed) ||
-                int.TryParse(stringNumber, NumberStyles.Integer, CultureInfo.CurrentCulture, out parsed))
-            {
-                value = parsed;
-                return true;
-            }
+        var stringNumber = cell.GetString();
 
+        if (string.IsNullOrWhiteSpace(stringNumber))
+        {
             value = null;
-            return false;
+            return true;
+        }
+
+        if (int.TryParse(stringNumber, NumberStyles.Integer, CultureInfo.InvariantCulture, out var parsed) ||
+            int.TryParse(stringNumber, NumberStyles.Integer, CultureInfo.CurrentCulture, out parsed))
+        {
+            value = parsed;
+            return true;
         }
 
         value = null;
@@ -574,40 +558,38 @@ public class IndexModel : PageModel
 
     private static bool TryGetDateTime(IXLCell cell, out DateTime value)
     {
-        var raw = cell.Value;
-
-        if (raw == null)
+        if (cell.IsEmpty())
         {
             value = default;
             return false;
         }
 
-        if (raw is DateTime dateTime)
+        if (cell.DataType == XLDataType.DateTime)
         {
-            value = dateTime;
+            value = cell.GetValue<DateTime>();
             return true;
         }
 
-        if (raw is double doubleValue)
+        if (cell.DataType == XLDataType.Number)
         {
+            var doubleValue = cell.GetValue<double>();
             value = DateTime.FromOADate(doubleValue);
             return true;
         }
 
-        if (raw is string stringValue)
-        {
-            if (string.IsNullOrWhiteSpace(stringValue))
-            {
-                value = default;
-                return false;
-            }
+        var stringValue = cell.GetString();
 
-            if (DateTime.TryParse(stringValue, CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsed) ||
-                DateTime.TryParse(stringValue, CultureInfo.CurrentCulture, DateTimeStyles.None, out parsed))
-            {
-                value = parsed;
-                return true;
-            }
+        if (string.IsNullOrWhiteSpace(stringValue))
+        {
+            value = default;
+            return false;
+        }
+
+        if (DateTime.TryParse(stringValue, CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsed) ||
+            DateTime.TryParse(stringValue, CultureInfo.CurrentCulture, DateTimeStyles.None, out parsed))
+        {
+            value = parsed;
+            return true;
         }
 
         value = default;
@@ -616,58 +598,22 @@ public class IndexModel : PageModel
 
     private static bool TryGetNullableBool(IXLCell cell, out bool? value)
     {
-        var raw = cell.Value;
-
-        if (raw == null)
+        if (cell.IsEmpty())
         {
             value = null;
             return true;
         }
 
-        if (raw is string stringValue)
+        if (cell.DataType == XLDataType.Boolean)
         {
-            if (string.IsNullOrWhiteSpace(stringValue))
-            {
-                value = null;
-                return true;
-            }
-
-            var normalized = stringValue.Trim();
-
-            if (bool.TryParse(normalized, out var parsedBool))
-            {
-                value = parsedBool;
-                return true;
-            }
-
-            if (string.Equals(normalized, "1", StringComparison.OrdinalIgnoreCase) ||
-                string.Equals(normalized, "ano", StringComparison.OrdinalIgnoreCase) ||
-                string.Equals(normalized, "yes", StringComparison.OrdinalIgnoreCase))
-            {
-                value = true;
-                return true;
-            }
-
-            if (string.Equals(normalized, "0", StringComparison.OrdinalIgnoreCase) ||
-                string.Equals(normalized, "ne", StringComparison.OrdinalIgnoreCase) ||
-                string.Equals(normalized, "no", StringComparison.OrdinalIgnoreCase))
-            {
-                value = false;
-                return true;
-            }
-
-            value = null;
-            return false;
-        }
-
-        if (raw is bool boolValue)
-        {
-            value = boolValue;
+            value = cell.GetValue<bool>();
             return true;
         }
 
-        if (raw is double doubleValue)
+        if (cell.DataType == XLDataType.Number)
         {
+            var doubleValue = cell.GetValue<double>();
+
             if (Math.Abs(doubleValue) < double.Epsilon)
             {
                 value = false;
@@ -679,6 +625,38 @@ public class IndexModel : PageModel
                 value = true;
                 return true;
             }
+        }
+
+        var stringValue = cell.GetString();
+
+        if (string.IsNullOrWhiteSpace(stringValue))
+        {
+            value = null;
+            return true;
+        }
+
+        var normalized = stringValue.Trim();
+
+        if (bool.TryParse(normalized, out var parsedBool))
+        {
+            value = parsedBool;
+            return true;
+        }
+
+        if (string.Equals(normalized, "1", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(normalized, "ano", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(normalized, "yes", StringComparison.OrdinalIgnoreCase))
+        {
+            value = true;
+            return true;
+        }
+
+        if (string.Equals(normalized, "0", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(normalized, "ne", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(normalized, "no", StringComparison.OrdinalIgnoreCase))
+        {
+            value = false;
+            return true;
         }
 
         value = null;
