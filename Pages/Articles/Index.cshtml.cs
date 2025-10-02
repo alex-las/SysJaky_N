@@ -32,14 +32,32 @@ public class IndexModel : PageModel
 
         if (!string.IsNullOrWhiteSpace(SearchString))
         {
-            var pattern = $"%{SearchString.Trim()}%";
-            query = query.Where(a => EF.Functions.Like(a.Title, pattern));
+            SearchString = SearchString.Trim();
+            var pattern = $"%{SearchString}%";
+            query = query.Where(a =>
+                EF.Functions.Like(a.Title, pattern) ||
+                EF.Functions.Like(a.Content, pattern));
         }
 
         query = query.OrderByDescending(a => a.CreatedAt);
 
         var count = await query.CountAsync();
         TotalPages = (int)Math.Ceiling(count / (double)pageSize);
-        Articles = await query.Skip((PageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
+
+        if (TotalPages == 0)
+        {
+            PageNumber = 1;
+        }
+        else if (PageNumber < 1)
+        {
+            PageNumber = 1;
+        }
+        else if (PageNumber > TotalPages)
+        {
+            PageNumber = TotalPages;
+        }
+
+        var skip = (PageNumber - 1) * pageSize;
+        Articles = await query.Skip(skip).Take(pageSize).ToListAsync();
     }
 }
