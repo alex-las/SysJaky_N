@@ -4,13 +4,8 @@
 @using System.Collections.Generic
 @{
     ViewData["Title"] = Localizer["Title"].Value;
-    var orderStatusTexts = new Dictionary<OrderStatus, string>
-    {
-        [OrderStatus.Pending] = Localizer["OrderStatusPending"].Value,
-        [OrderStatus.Paid] = Localizer["OrderStatusPaid"].Value,
-        [OrderStatus.Cancelled] = Localizer["OrderStatusCancelled"].Value,
-        [OrderStatus.Refunded] = Localizer["OrderStatusRefunded"].Value,
-    };
+    var orderStatusTexts = OrderStatusExtensions.CreateTranslationMap(
+        status => Localizer[$"OrderStatus{status.GetLocalizationKeySuffix()}"].Value);
 }
 
 <h1 class="mb-4">@Localizer["Title"]</h1>

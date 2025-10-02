@@ -26,13 +26,8 @@
         QrCodeAltText = Localizer["QrCodeAltText"].Value,
         PayButtonText = Localizer["PayButtonText"].Value,
         DownloadInvoiceText = Localizer["DownloadInvoiceText"].Value,
-        StatusTranslations = new Dictionary<OrderStatus, string>
-        {
-            [OrderStatus.Pending] = Localizer["StatusPending"].Value,
-            [OrderStatus.Paid] = Localizer["StatusPaid"].Value,
-            [OrderStatus.Cancelled] = Localizer["StatusCancelled"].Value,
-            [OrderStatus.Refunded] = Localizer["StatusRefunded"].Value,
-        }
+        StatusTranslations = OrderStatusExtensions.CreateTranslationMap(
+            status => Localizer[$"Status{status.GetLocalizationKeySuffix()}"].Value)
     };
 }
 
