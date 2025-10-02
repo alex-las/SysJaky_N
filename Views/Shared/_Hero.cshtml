@@ -96,61 +96,62 @@
     }
 }
 
-<section class="py-5 gradient-hero text-white text-center rounded-4 mb-4 hero-section">
-    <div class="container-xl position-relative">
-        <h1 class="display-5 fw-bold mb-3">@title</h1>
-        <p class="lead mb-4 opacity-75 mx-auto" style="max-width: 56rem;">@subtitle</p>
+<section class="hero-section py-5 mb-4">
+    <div class="container-xl">
+        <div class="hero-wrapper">
+            <h1 class="hero-title display-5 fw-bold">@title</h1>
+            <p class="hero-subtitle lead">@subtitle</p>
 
-        <ul class="list-unstyled d-flex flex-column flex-lg-row justify-content-center align-items-lg-center gap-3 mb-4">
-            <li class="d-flex align-items-center gap-2">
-                <span class="badge rounded-pill text-bg-light text-primary-emphasis"><i class="bi bi-patch-check-fill"></i></span>
-                <span class="fw-semibold">@T["Home.Hero.Usp1"]</span>
-            </li>
-            <li class="d-flex align-items-center gap-2">
-                <span class="badge rounded-pill text-bg-light text-primary-emphasis"><i class="bi bi-award-fill"></i></span>
-                <span class="fw-semibold">@T["Home.Hero.Usp2"]</span>
-            </li>
-            <li class="d-flex align-items-center gap-2">
-                <span class="badge rounded-pill text-bg-light text-primary-emphasis"><i class="bi bi-people-fill"></i></span>
-                <span class="fw-semibold">@T["Home.Hero.Usp3"]</span>
-            </li>
-        </ul>
+            <ul class="hero-highlights list-unstyled d-flex flex-column flex-lg-row justify-content-center align-items-lg-center">
+                <li class="d-flex align-items-center gap-2">
+                    <span class="badge rounded-pill text-bg-light text-primary-emphasis"><i class="bi bi-patch-check-fill"></i></span>
+                    <span class="fw-semibold">@T["Home.Hero.Usp1"]</span>
+                </li>
+                <li class="d-flex align-items-center gap-2">
+                    <span class="badge rounded-pill text-bg-light text-primary-emphasis"><i class="bi bi-award-fill"></i></span>
+                    <span class="fw-semibold">@T["Home.Hero.Usp2"]</span>
+                </li>
+                <li class="d-flex align-items-center gap-2">
+                    <span class="badge rounded-pill text-bg-light text-primary-emphasis"><i class="bi bi-people-fill"></i></span>
+                    <span class="fw-semibold">@T["Home.Hero.Usp3"]</span>
+                </li>
+            </ul>
 
-        <div class="d-flex flex-column flex-sm-row justify-content-center gap-2 mb-4">
-            <a href="/Courses/Index" class="btn btn-light fw-semibold px-4">@primaryCta</a>
-            <a href="/CorporateInquiry" class="btn btn-outline-light fw-semibold px-4">@secondaryCta</a>
+            <div class="hero-actions d-flex flex-column flex-sm-row justify-content-center">
+                <a href="/Courses/Index" class="btn btn-primary fw-semibold px-4">@primaryCta</a>
+                <a href="/CorporateInquiry" class="btn btn-outline-primary fw-semibold px-4">@secondaryCta</a>
+            </div>
         </div>
 
-        <form method="get" action="/Courses/Index" class="row g-2 justify-content-center" id="heroForm" role="search" aria-label="@T["Home.Hero.Search.AriaLabel"]">
-            <div class="col-12 col-md-3">
-                <label class="form-label visually-hidden" for="heroPersona">@T["Home.Hero.Persona.Label"]</label>
-                <select id="heroPersona" name="persona" class="form-select filter-select" aria-describedby="heroPersonaHelp" persona-options></select>
-                <div id="heroPersonaHelp" class="visually-hidden">@T["Home.Hero.Persona.Help"]</div>
-            </div>
-            <div class="col-12 col-md-3">
-                <label class="form-label visually-hidden" for="heroGoal">@T["Home.Hero.Goal.Label"]</label>
-                <select id="heroGoal" name="goal" class="form-select filter-select" aria-describedby="heroGoalHelp" goal-options></select>
-                <div id="heroGoalHelp" class="visually-hidden">@T["Home.Hero.Goal.Help"]</div>
-            </div>
-            <div class="col-12 col-md-4">
-                <div class="input-group">
-                    <span class="input-group-text" id="heroSearchLabel"><i class="bi bi-search" aria-hidden="true"></i><span class="visually-hidden">@T["Home.Hero.Search.Label"]</span></span>
-                    <input name="q" class="form-control" placeholder="@searchPlaceholder" aria-labelledby="heroSearchLabel" />
+        <div class="hero-search">
+            <form method="get" action="/Courses/Index" class="row g-2 g-md-3 justify-content-center" id="heroForm" role="search" aria-label="@T["Home.Hero.Search.AriaLabel"]">
+                <div class="col-12 col-md-3">
+                    <label class="form-label visually-hidden" for="heroPersona">@T["Home.Hero.Persona.Label"]</label>
+                    <select id="heroPersona" name="persona" class="form-select filter-select" aria-describedby="heroPersonaHelp" persona-options></select>
+                    <div id="heroPersonaHelp" class="visually-hidden">@T["Home.Hero.Persona.Help"]</div>
                 </div>
-            </div>
-            <div class="col-12 col-md-2 d-grid">
-                <button class="btn btn-light fw-semibold" type="submit">@T["Home.Hero.Search.Submit"]</button>
-            </div>
-        </form>
+                <div class="col-12 col-md-3">
+                    <label class="form-label visually-hidden" for="heroGoal">@T["Home.Hero.Goal.Label"]</label>
+                    <select id="heroGoal" name="goal" class="form-select filter-select" aria-describedby="heroGoalHelp" goal-options></select>
+                    <div id="heroGoalHelp" class="visually-hidden">@T["Home.Hero.Goal.Help"]</div>
+                </div>
+                <div class="col-12 col-md-4">
+                    <div class="input-group">
+                        <span class="input-group-text" id="heroSearchLabel"><i class="bi bi-search" aria-hidden="true"></i><span class="visually-hidden">@T["Home.Hero.Search.Label"]</span></span>
+                        <input name="q" class="form-control" placeholder="@searchPlaceholder" aria-labelledby="heroSearchLabel" />
+                    </div>
+                </div>
+                <div class="col-12 col-md-2 d-grid">
+                    <button class="btn btn-primary fw-semibold" type="submit">@T["Home.Hero.Search.Submit"]</button>
+                </div>
+            </form>
+        </div>
 
-        @if (Model?.Chips?.Any() == true && chips.Count > 0)
-        {
-            <div class="d-flex flex-wrap gap-2 justify-content-center mt-3">
-                @foreach (var chip in chips)
-                {
-                    <a class="chip chip-light" href="@chip.Url">@chip.Label</a>
-                }
-            </div>
-        }
+        <div class="hero-chips chips justify-content-center">
+            @foreach (var chip in chips)
+            {
+                <a class="chip chip-light" href="@chip.Url">@chip.Label</a>
+            }
+        </div>
     </div>
 </section>
