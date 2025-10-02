@@ -24,25 +24,25 @@
   <data name="ToggleTheme" xml:space="preserve">
     <value>Přepnout vzhled</value>
   </data>
-  <data name="NavHome" xml:space="preserve">
+  <data name="Nav.Home" xml:space="preserve">
     <value>Úvod – poradenství systémů jakosti</value>
   </data>
-  <data name="NavAbout" xml:space="preserve">
+  <data name="Nav.About" xml:space="preserve">
     <value>O společnosti Systémy jakosti</value>
   </data>
-  <data name="NavCourses" xml:space="preserve">
+  <data name="Nav.Courses" xml:space="preserve">
     <value>Kurzy a školení ISO</value>
   </data>
-  <data name="NavArticles" xml:space="preserve">
+  <data name="Nav.Articles" xml:space="preserve">
     <value>Články a případové studie</value>
   </data>
-  <data name="NavCorporateInquiry" xml:space="preserve">
+  <data name="Nav.CorporateInquiry" xml:space="preserve">
     <value>Firemní poptávka / audit na míru</value>
   </data>
-  <data name="NavServices" xml:space="preserve">
+  <data name="Nav.Services" xml:space="preserve">
     <value>Služby a poradenství</value>
   </data>
-  <data name="NavPrivacy" xml:space="preserve">
+  <data name="Nav.Privacy" xml:space="preserve">
     <value>Ochrana soukromí</value>
   </data>
   <data name="AdminDashboard" xml:space="preserve">
