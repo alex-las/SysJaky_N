@@ -64,22 +64,22 @@
     <value>Pomůže nám lépe doporučit kurzy. Například manažer kvality, interní auditor.</value>
   </data>
   <data name="StepSelectTitle" xml:space="preserve">
-    <value>Vyberte kurz</value>
+    <value>Analyzujte aktuální stav</value>
   </data>
   <data name="StepSelectDescription" xml:space="preserve">
-    <value>Prohlédněte si naši nabídku a zvolte si ten správný kurz.</value>
+    <value>Proveďte gap analýzu, zmapujte procesy a určete oblasti vyžadující doplnění.</value>
   </data>
   <data name="StepRegisterTitle" xml:space="preserve">
-    <value>Přihlaste se</value>
+    <value>Naplánujte školení a audity</value>
   </data>
   <data name="StepRegisterDescription" xml:space="preserve">
-    <value>Jednoduše se zaregistrujte a vytvořte si účet.</value>
+    <value>Sestavte plán školení týmu, naplánujte interní audit a rozdělte odpovědnosti.</value>
   </data>
   <data name="StepPayTitle" xml:space="preserve">
-    <value>Zaplaťte</value>
+    <value>Získejte certifikaci bez stresu</value>
   </data>
   <data name="StepPayDescription" xml:space="preserve">
-    <value>Bezpečná online platba zajistí vaše místo na kurzu.</value>
+    <value>Připravte dokumentaci, koordinujte certifikační audit a projděte celým procesem s jistotou.</value>
   </data>
   <data name="CalendarButton" xml:space="preserve">
     <value>Kalendář termínů</value>
