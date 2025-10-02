@@ -58,10 +58,10 @@
     <value>I am</value>
   </data>
   <data name="PersonaLabel" xml:space="preserve">
-    <value>Choose your role</value>
+    <value>Select your role in the quality system</value>
   </data>
   <data name="PersonaHelp" xml:space="preserve">
-    <value>Helps us tailor course suggestions.</value>
+    <value>Helps us tailor course suggestions. For example, quality manager or internal auditor.</value>
   </data>
   <data name="StepSelectTitle" xml:space="preserve">
     <value>Select a course</value>
@@ -90,6 +90,12 @@
   <data name="ChipCertificate" xml:space="preserve">
     <value>With certificate</value>
   </data>
+  <data name="ChipAccreditation" xml:space="preserve">
+    <value>Accreditation preparation</value>
+  </data>
+  <data name="ChipInternalAudits" xml:space="preserve">
+    <value>Internal audits</value>
+  </data>
   <data name="ChipOnline" xml:space="preserve">
     <value>Online</value>
   </data>
@@ -103,10 +109,10 @@
     <value>I want to</value>
   </data>
   <data name="GoalLabel" xml:space="preserve">
-    <value>Choose your goal</value>
+    <value>Which goal do you want to achieve by meeting the standards?</value>
   </data>
   <data name="GoalHelp" xml:space="preserve">
-    <value>Tell us what you want to achieve with the training.</value>
+    <value>Tell us what you want to achieve with the training. For example, process improvement or accreditation preparation.</value>
   </data>
   <data name="NewsHeading" xml:space="preserve">
     <value>News</value>
