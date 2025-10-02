@@ -1,41 +1,44 @@
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
 <section id="certification-path" class="certification-timeline-section py-5">
     <div class="container-xl">
         <div class="timeline-intro text-center text-md-start mb-5" data-scroll-reveal="fade-up">
-            <span class="timeline-eyebrow">Cesta k certifikaci</span>
-            <h2 class="timeline-heading">Zorientujte se v procesu získání certifikace</h2>
-            <p class="mb-0 text-muted">Od prvního kontaktu až po závěrečný certifikát vás provedeme pěti navazujícími kroky a zajistíme, aby váš tým měl jistotu v každé fázi.</p>
+            <span class="timeline-eyebrow">@Localizer["TimelineEyebrow"]</span>
+            <h2 class="timeline-heading">@Localizer["TimelineHeading"]</h2>
+            <p class="mb-0 text-muted">@Localizer["TimelineIntroDescription"]</p>
         </div>
         <div class="certification-timeline">
-            <aside class="timeline-progress" aria-label="Postup certifikace" data-scroll-reveal="fade-up">
+            <aside class="timeline-progress" aria-label="@Localizer["TimelineProgressAriaLabel"]" data-scroll-reveal="fade-up">
                 <ol class="timeline-progress-list">
                     <li class="timeline-progress-item is-active">
                         <button type="button" class="timeline-progress-button" data-step-index="0">
                             <span class="progress-step-number">1</span>
-                            <span class="progress-step-label">Úvodní konzultace</span>
+                            <span class="progress-step-label">@Localizer["ProgressStep1Label"]</span>
                         </button>
                     </li>
                     <li class="timeline-progress-item">
                         <button type="button" class="timeline-progress-button" data-step-index="1">
                             <span class="progress-step-number">2</span>
-                            <span class="progress-step-label">Školení</span>
+                            <span class="progress-step-label">@Localizer["ProgressStep2Label"]</span>
                         </button>
                     </li>
                     <li class="timeline-progress-item">
                         <button type="button" class="timeline-progress-button" data-step-index="2">
                             <span class="progress-step-number">3</span>
-                            <span class="progress-step-label">Implementace</span>
+                            <span class="progress-step-label">@Localizer["ProgressStep3Label"]</span>
                         </button>
                     </li>
                     <li class="timeline-progress-item">
                         <button type="button" class="timeline-progress-button" data-step-index="3">
                             <span class="progress-step-number">4</span>
-                            <span class="progress-step-label">Pre-audit</span>
+                            <span class="progress-step-label">@Localizer["ProgressStep4Label"]</span>
                         </button>
                     </li>
                     <li class="timeline-progress-item">
                         <button type="button" class="timeline-progress-button" data-step-index="4">
                             <span class="progress-step-number">5</span>
-                            <span class="progress-step-label">Certifikace</span>
+                            <span class="progress-step-label">@Localizer["ProgressStep5Label"]</span>
                         </button>
                     </li>
                 </ol>
@@ -52,19 +55,19 @@
                             </svg>
                         </span>
                         <span class="certification-step-copy">
-                            <span class="step-title">Úvodní konzultace a analýza</span>
-                            <span class="step-summary">Společně zmapujeme aktuální stav a nastavíme cíle projektu.</span>
+                            <span class="step-title">@Localizer["Step1Title"]</span>
+                            <span class="step-summary">@Localizer["Step1Summary"]</span>
                         </span>
                         <span class="step-indicator" aria-hidden="true"></span>
                     </button>
                     <div class="certification-step-detail" id="certification-step-panel-1">
-                        <p>V úvodní konzultaci si ujasníme rozsah projektu, legislativní a normativní požadavky i očekávání vedení. Výstupem je jasná strategie a plán další spolupráce.</p>
+                        <p>@Localizer["Step1Description"]</p>
                         <ul>
-                            <li>Analýza současného stavu organizace (gap analysis)</li>
-                            <li>Identifikace požadavků normy a legislativy</li>
-                            <li>Výběr vhodného certifikačního orgánu</li>
-                            <li>Stanovení realistického harmonogramu projektu</li>
-                            <li>Odhad nákladů a zdrojů</li>
+                            <li>@Localizer["Step1Point1"]</li>
+                            <li>@Localizer["Step1Point2"]</li>
+                            <li>@Localizer["Step1Point3"]</li>
+                            <li>@Localizer["Step1Point4"]</li>
+                            <li>@Localizer["Step1Point5"]</li>
                         </ul>
                     </div>
                 </article>
@@ -80,19 +83,19 @@
                             </svg>
                         </span>
                         <span class="certification-step-copy">
-                            <span class="step-title">Odborná školení pro váš tým</span>
-                            <span class="step-summary">Vybereme cílené kurzy pro management, auditory i operativu.</span>
+                            <span class="step-title">@Localizer["Step2Title"]</span>
+                            <span class="step-summary">@Localizer["Step2Summary"]</span>
                         </span>
                         <span class="step-indicator" aria-hidden="true"></span>
                     </button>
                     <div class="certification-step-detail" id="certification-step-panel-2" hidden>
-                        <p>Na základě domluvené strategie vybereme kombinaci kurzů na míru. Propojíme teoretické požadavky s praktickými ukázkami, aby každý člen týmu přesně věděl, co má dělat.</p>
+                        <p>@Localizer["Step2Description"]</p>
                         <ul>
-                            <li>Úvodní školení k požadavkům normy pro všechny zaměstnance</li>
-                            <li>Specializované kurzy pro manažera kvality</li>
-                            <li>Školení interních auditorů</li>
-                            <li>Workshop implementačního týmu</li>
-                            <li>Pracovní materiály, check-listy a šablony dokumentů</li>
+                            <li>@Localizer["Step2Point1"]</li>
+                            <li>@Localizer["Step2Point2"]</li>
+                            <li>@Localizer["Step2Point3"]</li>
+                            <li>@Localizer["Step2Point4"]</li>
+                            <li>@Localizer["Step2Point5"]</li>
                         </ul>
                     </div>
                 </article>
@@ -110,19 +113,19 @@
                             </svg>
                         </span>
                         <span class="certification-step-copy">
-                            <span class="step-title">Implementace systému managementu</span>
-                            <span class="step-summary">Nastavíme procesy, dokumentaci i zapojení lidí do změn.</span>
+                            <span class="step-title">@Localizer["Step3Title"]</span>
+                            <span class="step-summary">@Localizer["Step3Summary"]</span>
                         </span>
                         <span class="step-indicator" aria-hidden="true"></span>
                     </button>
                     <div class="certification-step-detail" id="certification-step-panel-3" hidden>
-                        <p>Po školení společně nastavíme potřebné procesy, strukturu dokumentace a způsob komunikace změn. Zapojíme zaměstnance a nastavíme metriky pro dlouhodobé zlepšování.</p>
+                        <p>@Localizer["Step3Description"]</p>
                         <ul>
-                            <li>Tvorba/revize politiky a cílů</li>
-                            <li>Mapování a nastavení procesů</li>
-                            <li>Vytvoření/aktualizace řízené dokumentace</li>
-                            <li>Management rizik a příležitostí</li>
-                            <li>Školení pracovníků na nové postupy</li>
+                            <li>@Localizer["Step3Point1"]</li>
+                            <li>@Localizer["Step3Point2"]</li>
+                            <li>@Localizer["Step3Point3"]</li>
+                            <li>@Localizer["Step3Point4"]</li>
+                            <li>@Localizer["Step3Point5"]</li>
                         </ul>
                     </div>
                 </article>
@@ -140,19 +143,19 @@
                             </svg>
                         </span>
                         <span class="certification-step-copy">
-                            <span class="step-title">Interní audit a pre-audit</span>
-                            <span class="step-summary">Prověříme připravenost organizace a nasimulujeme auditní situace.</span>
+                            <span class="step-title">@Localizer["Step4Title"]</span>
+                            <span class="step-summary">@Localizer["Step4Summary"]</span>
                         </span>
                         <span class="step-indicator" aria-hidden="true"></span>
                     </button>
                     <div class="certification-step-detail" id="certification-step-panel-4" hidden>
-                        <p>Před ostrým auditem provedeme kompletní interní prověrku a modelové situace, které tým připraví na reálné otázky certifikačního orgánu.</p>
+                        <p>@Localizer["Step4Description"]</p>
                         <ul>
-                            <li>Provedení kompletního interního auditu</li>
-                            <li>Identifikace neshod a oblastí ke zlepšení</li>
-                            <li>Modelové rozhovory s pracovníky</li>
-                            <li>Kontrola dokumentace a záznamů</li>
-                            <li>Akční plán pro odstranění zjištěných neshod</li>
+                            <li>@Localizer["Step4Point1"]</li>
+                            <li>@Localizer["Step4Point2"]</li>
+                            <li>@Localizer["Step4Point3"]</li>
+                            <li>@Localizer["Step4Point4"]</li>
+                            <li>@Localizer["Step4Point5"]</li>
                         </ul>
                     </div>
                 </article>
@@ -169,19 +172,19 @@
                             </svg>
                         </span>
                         <span class="certification-step-copy">
-                            <span class="step-title">Certifikační audit a získání certifikátu</span>
-                            <span class="step-summary">Doprovodíme vás u certifikačního auditu a nastavíme následnou péči.</span>
+                            <span class="step-title">@Localizer["Step5Title"]</span>
+                            <span class="step-summary">@Localizer["Step5Summary"]</span>
                         </span>
                         <span class="step-indicator" aria-hidden="true"></span>
                     </button>
                     <div class="certification-step-detail" id="certification-step-panel-5" hidden>
-                        <p>Společně zvládneme certifikační audit, pomůžeme odstranit případné neshody a nastavíme plán dozorových auditů, aby certifikace dlouhodobě vydržela.</p>
+                        <p>@Localizer["Step5Description"]</p>
                         <ul>
-                            <li>Koordinace s certifikačním orgánem</li>
-                            <li>Asistence při průběhu auditu</li>
-                            <li>Podpora při odstranění případných neshod</li>
-                            <li>Získání certifikátu</li>
-                            <li>Plán dozorových auditů a refresher školení</li>
+                            <li>@Localizer["Step5Point1"]</li>
+                            <li>@Localizer["Step5Point2"]</li>
+                            <li>@Localizer["Step5Point3"]</li>
+                            <li>@Localizer["Step5Point4"]</li>
+                            <li>@Localizer["Step5Point5"]</li>
                         </ul>
                     </div>
                 </article>
@@ -189,8 +192,8 @@
         </div>
         <div class="timeline-cta text-center text-md-start mt-5" data-scroll-reveal="fade-up">
             <div class="d-flex flex-column flex-md-row gap-3">
-                <a class="btn btn-primary btn-lg" href="/Contact">Domluvit konzultaci</a>
-                <a class="btn btn-accent btn-lg" href="/Courses/Index?HasCertificate=true">Zobrazit relevantní kurzy</a>
+                <a class="btn btn-primary btn-lg" href="/Contact">@Localizer["PrimaryCta"]</a>
+                <a class="btn btn-accent btn-lg" href="/Courses/Index?HasCertificate=true">@Localizer["SecondaryCta"]</a>
             </div>
         </div>
     </div>
