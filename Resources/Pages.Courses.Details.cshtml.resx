@@ -138,11 +138,47 @@
   <data name="MinutesValue" xml:space="preserve">
     <value>{0} min</value>
   </data>
+  <data name="NextTermPlaceholder" xml:space="preserve">
+    <value>Termíny budou brzy doplněny.</value>
+  </data>
   <data name="DetailLevelLabel" xml:space="preserve">
     <value>Úroveň</value>
   </data>
   <data name="DetailModeLabel" xml:space="preserve">
     <value>Forma</value>
+  </data>
+  <data name="PlaceholderText" xml:space="preserve">
+    <value>Informace budou doplněny.</value>
+  </data>
+  <data name="TabAudienceTitle" xml:space="preserve">
+    <value>Pro koho je kurz určen</value>
+  </data>
+  <data name="TabLearningTitle" xml:space="preserve">
+    <value>Co se naučíte</value>
+  </data>
+  <data name="TabProgramTitle" xml:space="preserve">
+    <value>Program kurzu</value>
+  </data>
+  <data name="TabInstructorTitle" xml:space="preserve">
+    <value>Lektor</value>
+  </data>
+  <data name="TabOrganizationTitle" xml:space="preserve">
+    <value>Organizační pokyny</value>
+  </data>
+  <data name="TabFollowUpTitle" xml:space="preserve">
+    <value>Navazující kurzy</value>
+  </data>
+  <data name="TabCertificateTitle" xml:space="preserve">
+    <value>Certifikát</value>
+  </data>
+  <data name="LearningKeyKnowledgeTitle" xml:space="preserve">
+    <value>Klíčové znalosti</value>
+  </data>
+  <data name="LearningCaseStudiesTitle" xml:space="preserve">
+    <value>Případové studie a cvičení</value>
+  </data>
+  <data name="LearningCertificationsTitle" xml:space="preserve">
+    <value>Certifikace</value>
   </data>
   <data name="BlockHeading" xml:space="preserve">
     <value>Součást vzdělávacího bloku</value>
@@ -195,6 +231,9 @@
   <data name="PriceHeading" xml:space="preserve">
     <value>Cena</value>
   </data>
+  <data name="CoursePriceLabel" xml:space="preserve">
+    <value>Cena kurzu</value>
+  </data>
   <data name="PriceBenefitCertificate" xml:space="preserve">
     <value>Certifikát v ceně (pokud je u termínu uvedeno)</value>
   </data>
@@ -215,6 +254,12 @@
   </data>
   <data name="WishlistButton" xml:space="preserve">
     <value>Přidat do wishlistu</value>
+  </data>
+  <data name="AvailableTermsHeading" xml:space="preserve">
+    <value>Dostupné termíny</value>
+  </data>
+  <data name="TermsComingSoon" xml:space="preserve">
+    <value>Termíny budou doplněny.</value>
   </data>
   <data name="ReviewsHeading" xml:space="preserve">
     <value>Hodnocení</value>

@@ -138,11 +138,47 @@
   <data name="MinutesValue" xml:space="preserve">
     <value>{0} min</value>
   </data>
+  <data name="NextTermPlaceholder" xml:space="preserve">
+    <value>Dates will be announced soon.</value>
+  </data>
   <data name="DetailLevelLabel" xml:space="preserve">
     <value>Level</value>
   </data>
   <data name="DetailModeLabel" xml:space="preserve">
     <value>Format</value>
+  </data>
+  <data name="PlaceholderText" xml:space="preserve">
+    <value>Information will be added soon.</value>
+  </data>
+  <data name="TabAudienceTitle" xml:space="preserve">
+    <value>Who the course is for</value>
+  </data>
+  <data name="TabLearningTitle" xml:space="preserve">
+    <value>What you will learn</value>
+  </data>
+  <data name="TabProgramTitle" xml:space="preserve">
+    <value>Course program</value>
+  </data>
+  <data name="TabInstructorTitle" xml:space="preserve">
+    <value>Instructor</value>
+  </data>
+  <data name="TabOrganizationTitle" xml:space="preserve">
+    <value>Organizational guidelines</value>
+  </data>
+  <data name="TabFollowUpTitle" xml:space="preserve">
+    <value>Follow-up courses</value>
+  </data>
+  <data name="TabCertificateTitle" xml:space="preserve">
+    <value>Certificate</value>
+  </data>
+  <data name="LearningKeyKnowledgeTitle" xml:space="preserve">
+    <value>Key knowledge</value>
+  </data>
+  <data name="LearningCaseStudiesTitle" xml:space="preserve">
+    <value>Case studies and exercises</value>
+  </data>
+  <data name="LearningCertificationsTitle" xml:space="preserve">
+    <value>Certifications</value>
   </data>
   <data name="BlockHeading" xml:space="preserve">
     <value>Part of a learning block</value>
@@ -195,6 +231,9 @@
   <data name="PriceHeading" xml:space="preserve">
     <value>Price</value>
   </data>
+  <data name="CoursePriceLabel" xml:space="preserve">
+    <value>Course price</value>
+  </data>
   <data name="PriceBenefitCertificate" xml:space="preserve">
     <value>Certificate included (where available)</value>
   </data>
@@ -215,6 +254,12 @@
   </data>
   <data name="WishlistButton" xml:space="preserve">
     <value>Add to wishlist</value>
+  </data>
+  <data name="AvailableTermsHeading" xml:space="preserve">
+    <value>Available dates</value>
+  </data>
+  <data name="TermsComingSoon" xml:space="preserve">
+    <value>Dates will be added soon.</value>
   </data>
   <data name="ReviewsHeading" xml:space="preserve">
     <value>Reviews</value>

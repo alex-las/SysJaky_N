@@ -142,21 +142,21 @@
     var nextTerm = Model.Terms.FirstOrDefault();
     var nextTermText = nextTerm != null
         ? nextTerm.StartsAt.ToString("d", CultureInfo.CurrentCulture)
-        : "Termíny budou brzy doplněny";
+        : Localizer["NextTermPlaceholder"].Value;
 
     var tabs = new List<(string Id, string Title, bool HasContent)>
     {
-        ("audience", "Pro koho je kurz určen", targetAudienceList.Count > 0),
-        ("learning", "Co se naučíte", learningOutcomes.Count > 0 || caseStudies.Count > 0 || certifications.Count > 0),
-        ("program", "Program kurzu", programItems.Count > 0),
-        ("instructor", "Lektor", !string.IsNullOrWhiteSpace(Model.Course.InstructorName) || !string.IsNullOrWhiteSpace(Model.Course.InstructorBio)),
-        ("organization", "Organizační pokyny", organizationalNotes.Count > 0),
-        ("follow-up", "Navazující kurzy", followUpCourses.Count > 0),
-        ("certificate", "Certifikát", certificateItems.Count > 0)
+        ("audience", Localizer["TabAudienceTitle"].Value, targetAudienceList.Count > 0),
+        ("learning", Localizer["TabLearningTitle"].Value, learningOutcomes.Count > 0 || caseStudies.Count > 0 || certifications.Count > 0),
+        ("program", Localizer["TabProgramTitle"].Value, programItems.Count > 0),
+        ("instructor", Localizer["TabInstructorTitle"].Value, !string.IsNullOrWhiteSpace(Model.Course.InstructorName) || !string.IsNullOrWhiteSpace(Model.Course.InstructorBio)),
+        ("organization", Localizer["TabOrganizationTitle"].Value, organizationalNotes.Count > 0),
+        ("follow-up", Localizer["TabFollowUpTitle"].Value, followUpCourses.Count > 0),
+        ("certificate", Localizer["TabCertificateTitle"].Value, certificateItems.Count > 0)
     };
     var activeTabCandidate = tabs.FirstOrDefault(t => t.HasContent);
     var activeTabId = !string.IsNullOrEmpty(activeTabCandidate.Id) ? activeTabCandidate.Id : tabs[0].Id;
-    const string placeholderText = "Informace budou doplněny.";
+    var placeholderText = Localizer["PlaceholderText"].Value;
 }
 
 @if (TempData["CartError"] is string cartError && !string.IsNullOrWhiteSpace(cartError))
@@ -223,7 +223,7 @@
                 </ul>
                 <div class="tab-content pt-4">
                     <div class="tab-pane fade @(activeTabId == "audience" ? "show active" : string.Empty)" id="audience" role="tabpanel" aria-labelledby="audience-tab">
-                        <h2 class="h5 mb-3">Pro koho je kurz určen</h2>
+                        <h2 class="h5 mb-3">@Localizer["TabAudienceTitle"]</h2>
                         @if (targetAudienceList.Count > 0)
                         {
                             <ul class="list-unstyled mb-0">
@@ -242,10 +242,10 @@
                         }
                     </div>
                     <div class="tab-pane fade @(activeTabId == "learning" ? "show active" : string.Empty)" id="learning" role="tabpanel" aria-labelledby="learning-tab">
-                        <h2 class="h5 mb-4">Co se naučíte</h2>
+                        <h2 class="h5 mb-4">@Localizer["TabLearningTitle"]</h2>
                         <div class="row g-4">
                             <div class="col-md-4">
-                                <h3 class="h6 text-uppercase text-muted">Klíčové znalosti</h3>
+                                <h3 class="h6 text-uppercase text-muted">@Localizer["LearningKeyKnowledgeTitle"]</h3>
                                 @if (learningOutcomes.Count > 0)
                                 {
                                     <ul class="list-unstyled mb-0">
@@ -264,7 +264,7 @@
                                 }
                             </div>
                             <div class="col-md-4">
-                                <h3 class="h6 text-uppercase text-muted">Případové studie a cvičení</h3>
+                                <h3 class="h6 text-uppercase text-muted">@Localizer["LearningCaseStudiesTitle"]</h3>
                                 @if (caseStudies.Count > 0)
                                 {
                                     <ul class="list-unstyled mb-0">
@@ -283,7 +283,7 @@
                                 }
                             </div>
                             <div class="col-md-4">
-                                <h3 class="h6 text-uppercase text-muted">Certifikace</h3>
+                                <h3 class="h6 text-uppercase text-muted">@Localizer["LearningCertificationsTitle"]</h3>
                                 @if (certifications.Count > 0)
                                 {
                                     <ul class="list-unstyled mb-0">
@@ -304,7 +304,7 @@
                         </div>
                     </div>
                     <div class="tab-pane fade @(activeTabId == "program" ? "show active" : string.Empty)" id="program" role="tabpanel" aria-labelledby="program-tab">
-                        <h2 class="h5 mb-3">Program kurzu</h2>
+                        <h2 class="h5 mb-3">@Localizer["TabProgramTitle"]</h2>
                         @if (programItems.Count > 0)
                         {
                             <ol class="list-group list-group-numbered">
@@ -320,7 +320,7 @@
                         }
                     </div>
                     <div class="tab-pane fade @(activeTabId == "instructor" ? "show active" : string.Empty)" id="instructor" role="tabpanel" aria-labelledby="instructor-tab">
-                        <h2 class="h5 mb-3">Lektor</h2>
+                        <h2 class="h5 mb-3">@Localizer["TabInstructorTitle"]</h2>
                         @if (!string.IsNullOrWhiteSpace(Model.Course.InstructorName))
                         {
                             <p class="fw-semibold mb-1">@Model.Course.InstructorName</p>
@@ -335,7 +335,7 @@
                         }
                     </div>
                     <div class="tab-pane fade @(activeTabId == "organization" ? "show active" : string.Empty)" id="organization" role="tabpanel" aria-labelledby="organization-tab">
-                        <h2 class="h5 mb-3">Organizační pokyny</h2>
+                        <h2 class="h5 mb-3">@Localizer["TabOrganizationTitle"]</h2>
                         @if (organizationalNotes.Count > 0)
                         {
                             <ul class="list-unstyled mb-0">
@@ -354,7 +354,7 @@
                         }
                     </div>
                     <div class="tab-pane fade @(activeTabId == "follow-up" ? "show active" : string.Empty)" id="follow-up" role="tabpanel" aria-labelledby="follow-up-tab">
-                        <h2 class="h5 mb-3">Navazující kurzy</h2>
+                        <h2 class="h5 mb-3">@Localizer["TabFollowUpTitle"]</h2>
                         @if (followUpCourses.Count > 0)
                         {
                             <ul class="list-group list-group-flush">
@@ -370,7 +370,7 @@
                         }
                     </div>
                     <div class="tab-pane fade @(activeTabId == "certificate" ? "show active" : string.Empty)" id="certificate" role="tabpanel" aria-labelledby="certificate-tab">
-                        <h2 class="h5 mb-3">Certifikát</h2>
+                        <h2 class="h5 mb-3">@Localizer["TabCertificateTitle"]</h2>
                         @if (certificateItems.Count > 0)
                         {
                             <ul class="list-unstyled mb-0">
@@ -523,7 +523,7 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <div>
-                            <div class="text-muted small">Cena kurzu</div>
+                            <div class="text-muted small">@Localizer["CoursePriceLabel"]</div>
                             <div class="fs-5 fw-bold">@Model.Course.Price.ToString("C")</div>
                         </div>
                         <span class="badge bg-light text-dark">@displayedDelivery</span>
@@ -544,7 +544,7 @@
                     </ul>
                     <div class="d-grid gap-2">
                         <form method="post">
-                            <button type="submit" class="btn btn-primary">Přihlásit se</button>
+                            <button type="submit" class="btn btn-primary">@Localizer["EnrollButton"]</button>
                         </form>
                         <a class="btn btn-outline-secondary" asp-page="/Contact" asp-route-subject="@Localizer["ContactSubject", Model.Course.Title]">@Localizer["TeamButton"]</a>
                     </div>
@@ -552,7 +552,7 @@
             </div>
             <div class="card border-0 shadow-sm mb-3">
                 <div class="card-header bg-transparent border-bottom-0">
-                    <h2 class="h6 mb-0">Dostupné termíny</h2>
+                    <h2 class="h6 mb-0">@Localizer["AvailableTermsHeading"]</h2>
                 </div>
                 <div class="list-group list-group-flush">
                     @if (Model.Terms.Any())
@@ -596,7 +596,7 @@
                     }
                     else
                     {
-                        <div class="list-group-item text-muted">Termíny budou doplněny.</div>
+                        <div class="list-group-item text-muted">@Localizer["TermsComingSoon"]</div>
                     }
                 </div>
             </div>
