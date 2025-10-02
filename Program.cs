@@ -498,10 +498,19 @@ static void ConfigureEpplusLicense()
     }
 
     // Fallback to the direct static property which is available on all supported EPPlus versions.
-    ExcelPackage.LicenseContext = desiredContext;
-    if (ExcelPackage.LicenseContext == desiredContext)
+    try
     {
-        return;
+        ExcelPackage.LicenseContext = desiredContext;
+        if (ExcelPackage.LicenseContext == desiredContext)
+        {
+            return;
+        }
+    }
+    catch (TargetInvocationException ex) when (ex.InnerException?.GetType().Name == "LicenseContextPropertyObsoleteException")
+    {
+        throw new InvalidOperationException(
+            "EPPlus rejected the legacy LicenseContext setter. Please update ConfigureEpplusLicense to support the current licensing API.",
+            ex.InnerException);
     }
 
     throw new InvalidOperationException(
@@ -549,8 +558,10 @@ static bool TryAssignContextValue(PropertyInfo licenseProperty, LicenseContext d
         }
     }
 
-    var instance = CreateLicenseInstance(propertyType, desiredContext, licenseContextType)
-        ?? FindAssignableLicenseInstance(propertyType, desiredContext, licenseContextType);
+    var instance = CreateLicenseInstance(propertyType, ConvertContextValue)
+        ?? FindAssignableLicenseInstance(propertyType, ConvertContextValue)
+        ?? FindPreconfiguredLicenseValue(propertyType, desiredContext, ConvertContextValue);
+
 
     if (instance == null)
     {
@@ -562,7 +573,8 @@ static bool TryAssignContextValue(PropertyInfo licenseProperty, LicenseContext d
                 return false;
             }
 
-            ApplyContext(existingInstance, desiredContext, licenseContextType);
+            ApplyContext(existingInstance, ConvertContextValue);
+
             return true;
         }
 
@@ -572,7 +584,9 @@ static bool TryAssignContextValue(PropertyInfo licenseProperty, LicenseContext d
     return TryAssign(instance);
 }
 
-static object? FindAssignableLicenseInstance(Type propertyType, LicenseContext desiredContext, Type licenseContextType)
+static object? FindAssignableLicenseInstance(
+    Type propertyType,
+    Func<Type, object?> convertContext)
 {
     var assembly = propertyType.Assembly;
     var candidates = assembly.GetTypes()
@@ -580,7 +594,7 @@ static object? FindAssignableLicenseInstance(Type propertyType, LicenseContext d
 
     foreach (var candidate in candidates.OrderByDescending(t => t.Name.Contains("NonCommercial", StringComparison.OrdinalIgnoreCase)))
     {
-        var instance = CreateLicenseInstance(candidate, desiredContext, licenseContextType);
+        var instance = CreateLicenseInstance(candidate, convertContext);
         if (instance != null)
         {
             return instance;
@@ -590,94 +604,143 @@ static object? FindAssignableLicenseInstance(Type propertyType, LicenseContext d
     return null;
 }
 
-static object? CreateLicenseInstance(Type type, LicenseContext desiredContext, Type licenseContextType)
+static object? CreateLicenseInstance(
+    Type type,
+    Func<Type, object?> convertContext)
 {
     if (type.IsInterface || type.IsAbstract)
     {
         return null;
     }
 
-    foreach (var ctor in type.GetConstructors(BindingFlags.Public | BindingFlags.Instance))
+    foreach (var ctor in type.GetConstructors(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance))
     {
         var parameters = ctor.GetParameters();
         if (parameters.Length == 1)
         {
             var parameterType = parameters[0].ParameterType;
-            if (parameterType == licenseContextType)
+            var argument = convertContext(parameterType);
+            if (argument != null)
             {
-                return ctor.Invoke(new object[] { desiredContext });
-            }
-
-            if (parameterType.IsEnum && parameterType.Name.Contains("LicenseContext", StringComparison.OrdinalIgnoreCase))
-            {
-                var enumValue = Enum.Parse(parameterType, desiredContext.ToString());
-                return ctor.Invoke(new[] { enumValue });
+                return ctor.Invoke(new[] { argument });
             }
         }
         else if (parameters.Length == 0)
         {
             var instance = ctor.Invoke(null);
-            ApplyContext(instance, desiredContext, licenseContextType);
+            ApplyContext(instance, convertContext);
             return instance;
         }
-    }
-
-    if (type.GetConstructor(Type.EmptyTypes) is { } defaultCtor)
-    {
-        var instance = defaultCtor.Invoke(null);
-        ApplyContext(instance, desiredContext, licenseContextType);
-        return instance;
     }
 
     return null;
 }
 
-static void ApplyContext(object instance, LicenseContext desiredContext, Type licenseContextType)
+static object? FindPreconfiguredLicenseValue(
+    Type propertyType,
+    LicenseContext desiredContext,
+    Func<Type, object?> convertContext)
+{
+    var targetName = desiredContext.ToString();
+    var comparison = StringComparison.OrdinalIgnoreCase;
+
+    static IEnumerable<Type> EnumerateCandidateTypes(Type propertyType)
+    {
+        yield return propertyType;
+
+        foreach (var type in propertyType.Assembly.GetTypes())
+        {
+            if (!type.IsAbstract && propertyType.IsAssignableFrom(type))
+            {
+                yield return type;
+            }
+        }
+    }
+
+    foreach (var type in EnumerateCandidateTypes(propertyType))
+    {
+        foreach (var member in type.GetMembers(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static))
+        {
+            if (member is PropertyInfo { CanRead: true } property && property.GetIndexParameters().Length == 0)
+            {
+                if (property.PropertyType != null && propertyType.IsAssignableFrom(property.PropertyType) &&
+                    property.Name.Contains(targetName, comparison))
+                {
+                    if (property.GetValue(null) is { } value)
+                    {
+                        ApplyContext(value, convertContext);
+                        return value;
+                    }
+                }
+            }
+            else if (member is FieldInfo field && propertyType.IsAssignableFrom(field.FieldType) &&
+                     field.Name.Contains(targetName, comparison))
+            {
+                if (field.GetValue(null) is { } value)
+                {
+                    ApplyContext(value, convertContext);
+                    return value;
+                }
+            }
+            else if (member is MethodInfo method && method.GetParameters().Length == 0 &&
+                     propertyType.IsAssignableFrom(method.ReturnType) &&
+                     method.Name.Contains(targetName, comparison))
+            {
+                if (method.Invoke(null, null) is { } value)
+                {
+                    ApplyContext(value, convertContext);
+                    return value;
+                }
+            }
+        }
+    }
+
+    return null;
+}
+
+static void ApplyContext(
+    object instance,
+    Func<Type, object?> convertContext)
 {
     var instanceType = instance.GetType();
 
-    var contextProperty = instanceType.GetProperty("Context", BindingFlags.Public | BindingFlags.Instance);
-    if (contextProperty != null && contextProperty.CanWrite)
+    var contextProperty = instanceType.GetProperty(
+        "Context",
+        BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+    if (contextProperty != null && contextProperty.SetMethod != null)
     {
         var propertyType = contextProperty.PropertyType;
-        if (propertyType == licenseContextType)
+        var converted = convertContext(propertyType);
+        if (converted != null)
         {
-            contextProperty.SetValue(instance, desiredContext);
-            return;
-        }
-
-        if (propertyType.IsEnum && propertyType.Name.Contains("LicenseContext", StringComparison.OrdinalIgnoreCase))
-        {
-            var enumValue = Enum.Parse(propertyType, desiredContext.ToString());
-            contextProperty.SetValue(instance, enumValue);
+            contextProperty.SetValue(instance, converted);
             return;
         }
     }
 
-    var setContextMethod = instanceType.GetMethods(BindingFlags.Public | BindingFlags.Instance)
+    var setContextMethod = instanceType.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
         .FirstOrDefault(m => m.GetParameters().Length == 1 &&
                              (m.Name.Equals("SetContext", StringComparison.OrdinalIgnoreCase)
                               || m.Name.Equals("SetLicenseContext", StringComparison.OrdinalIgnoreCase)));
 
-    if (setContextMethod == null)
+    if (setContextMethod != null)
     {
-        return;
+        var parameterType = setContextMethod.GetParameters()[0].ParameterType;
+        var converted = convertContext(parameterType);
+        if (converted != null)
+        {
+            setContextMethod.Invoke(instance, new[] { converted });
+            return;
+        }
     }
 
-    var parameterType = setContextMethod.GetParameters()[0].ParameterType;
-    object? value = null;
-
-    if (parameterType == licenseContextType)
+    var contextField = instanceType.GetField("_context", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+    if (contextField != null && !contextField.IsInitOnly)
     {
-        value = desiredContext;
-    }
-    else if (parameterType.IsEnum && parameterType.Name.Contains("LicenseContext", StringComparison.OrdinalIgnoreCase))
-    {
-        value = Enum.Parse(parameterType, desiredContext.ToString());
-    }
-
-    if (value != null)
-    {
-        setContextMethod.Invoke(instance, new[] { value });
+        var converted = convertContext(contextField.FieldType);
+        if (converted != null)
+        {
+            contextField.SetValue(instance, converted);
+        }
     }
 }
