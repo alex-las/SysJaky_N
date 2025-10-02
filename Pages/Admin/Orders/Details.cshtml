@@ -5,6 +5,14 @@
 @using SysJaky_N.Models.ViewModels
 @{
     ViewData["Title"] = $"Objednávka {Model.Order.Id}";
+    var statusTexts = new Dictionary<string, string>
+    {
+        ["Pending"] = "Čeká na platbu",
+        ["Paid"] = "Zaplaceno",
+        ["Cancelled"] = "Zrušeno",
+        ["Refunded"] = "Vráceno"
+    };
+
     var orderResources = new OrderDetailsViewModel
     {
         Order = Model.Order,
@@ -27,13 +35,10 @@
         QrCodeAltText = "QR kód",
         PayButtonText = "Spustit platbu",
         DownloadInvoiceText = "Stáhnout fakturu",
-        StatusTranslations = new Dictionary<OrderStatus, string>
-        {
-            [OrderStatus.Pending] = "Čeká na platbu",
-            [OrderStatus.Paid] = "Zaplaceno",
-            [OrderStatus.Cancelled] = "Zrušeno",
-            [OrderStatus.Refunded] = "Vráceno"
-        }
+        StatusTranslations = OrderStatusExtensions.CreateTranslationMap(status =>
+            statusTexts.TryGetValue(status.GetLocalizationKeySuffix(), out var text)
+                ? text
+                : status.ToString())
     };
 }
 

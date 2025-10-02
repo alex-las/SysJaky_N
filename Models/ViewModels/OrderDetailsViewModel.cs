@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using SysJaky_N.Extensions;
 using SysJaky_N.Models;
 
 namespace SysJaky_N.Models.ViewModels;
@@ -22,7 +24,8 @@ public class OrderDetailsViewModel
     public string VatLabel { get; init; } = string.Empty;
     public string TotalLabel { get; init; } = string.Empty;
 
-    public IDictionary<OrderStatus, string> StatusTranslations { get; init; } = new Dictionary<OrderStatus, string>();
+    public IReadOnlyDictionary<OrderStatus, string> StatusTranslations { get; init; }
+        = OrderStatusExtensions.CreateTranslationMap(static _ => string.Empty);
 
     public string SeatTokensHeading { get; init; } = string.Empty;
     public string CourseFallbackFormat { get; init; } = "Course {0}";
