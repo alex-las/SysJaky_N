@@ -21,6 +21,9 @@
   <data name="ToggleNavigation" xml:space="preserve">
     <value>Toggle navigation</value>
   </data>
+  <data name="ToggleTheme" xml:space="preserve">
+    <value>Toggle theme</value>
+  </data>
   <data name="NavHome" xml:space="preserve">
     <value>Home</value>
   </data>
@@ -32,6 +35,9 @@
   </data>
   <data name="NavArticles" xml:space="preserve">
     <value>Articles</value>
+  </data>
+  <data name="NavServices" xml:space="preserve">
+    <value>Consulting &amp; audits</value>
   </data>
   <data name="NavCorporateInquiry" xml:space="preserve">
     <value>Corporate inquiry</value>

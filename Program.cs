@@ -169,14 +169,33 @@ try
     builder.Services.Configure<RequestLocalizationOptions>(options =>
     {
         var supportedCultures = new[] { "cs", "en" };
-        options.SetDefaultCulture("cs");
+        options.SetDefaultCulture("en");
         options.AddSupportedCultures(supportedCultures);
         options.AddSupportedUICultures(supportedCultures);
 
-        options.RequestCultureProviders.Insert(0, new CookieRequestCultureProvider
+        // Prefer a persisted user preference, otherwise respect the browser language header
+        var cookieProvider = new CookieRequestCultureProvider
         {
             CookieName = CookieRequestCultureProvider.DefaultCookieName
-        });
+        };
+
+        var acceptLanguageProvider = options.RequestCultureProviders
+            .OfType<AcceptLanguageHeaderRequestCultureProvider>()
+            .FirstOrDefault();
+
+        options.RequestCultureProviders.Clear();
+
+        // 1) Explicit query string override
+        options.RequestCultureProviders.Add(new QueryStringRequestCultureProvider());
+
+        // 2) Persisted user preference via cookie
+        options.RequestCultureProviders.Add(cookieProvider);
+
+        // 3) Browser language headers
+        if (acceptLanguageProvider is not null)
+        {
+            options.RequestCultureProviders.Add(acceptLanguageProvider);
+        }
     });
     builder.Services.Configure<PaymentGatewayOptions>(builder.Configuration.GetSection("PaymentGateway"));
     builder.Services.AddScoped<PaymentService>();

@@ -21,6 +21,9 @@
   <data name="ToggleNavigation" xml:space="preserve">
     <value>Přepnout navigaci</value>
   </data>
+  <data name="ToggleTheme" xml:space="preserve">
+    <value>Přepnout vzhled</value>
+  </data>
   <data name="NavHome" xml:space="preserve">
     <value>Úvod – poradenství systémů jakosti</value>
   </data>
