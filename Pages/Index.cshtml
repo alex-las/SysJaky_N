@@ -1,11 +1,60 @@
 @page
 @model IndexModel
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+
 @inject Microsoft.Extensions.Localization.IStringLocalizer<SysJaky_N.SharedResource> T
 @{
     ViewData["Title"] = T["Title"];
 }
 
 <section class="py-5 gradient-hero text-white text-center rounded-4 mb-4 hero-section">
+    <div class="container-xl position-relative">
+        <h1 class="display-5 fw-bold mb-3">@T["HeroMainHeading"]</h1>
+        <p class="lead mb-4 opacity-75 mx-auto" style="max-width: 56rem;">@T["HeroSubheading"]</p>
+
+        <ul class="list-unstyled d-flex flex-column flex-lg-row justify-content-center align-items-lg-center gap-3 mb-4">
+            <li class="d-flex align-items-center gap-2">
+                <span class="badge rounded-pill text-bg-light text-primary-emphasis"><i class="bi bi-patch-check-fill"></i></span>
+                <span class="fw-semibold">@T["HeroUSP1"]</span>
+            </li>
+            <li class="d-flex align-items-center gap-2">
+                <span class="badge rounded-pill text-bg-light text-primary-emphasis"><i class="bi bi-award-fill"></i></span>
+                <span class="fw-semibold">@T["HeroUSP2"]</span>
+            </li>
+            <li class="d-flex align-items-center gap-2">
+                <span class="badge rounded-pill text-bg-light text-primary-emphasis"><i class="bi bi-people-fill"></i></span>
+                <span class="fw-semibold">@T["HeroUSP3"]</span>
+            </li>
+        </ul>
+
+        <div class="d-flex flex-column flex-sm-row justify-content-center gap-2 mb-4">
+            <a href="/Courses/Index" class="btn btn-light fw-semibold px-4">@T["HeroPrimaryCTA"]</a>
+            <a href="/CorporateInquiry" class="btn btn-outline-light fw-semibold px-4">@T["HeroSecondaryCTA"]</a>
+        </div>
+
+        <form method="get" action="/Courses/Index" class="row g-2 justify-content-center" id="heroForm" role="search" aria-label="@T["HeroSearchAriaLabel"]">
+            <div class="col-12 col-md-3">
+                <label class="form-label visually-hidden" for="heroPersona">@T["PersonaLabel"]</label>
+                <select id="heroPersona" name="persona" class="form-select filter-select" aria-describedby="heroPersonaHelp" persona-options></select>
+                <div id="heroPersonaHelp" class="visually-hidden">@T["PersonaHelp"]</div>
+            </div>
+            <div class="col-12 col-md-3">
+                <label class="form-label visually-hidden" for="heroGoal">@T["GoalLabel"]</label>
+                <select id="heroGoal" name="goal" class="form-select filter-select" aria-describedby="heroGoalHelp" goal-options></select>
+                <div id="heroGoalHelp" class="visually-hidden">@T["GoalHelp"]</div>
+            </div>
+            <div class="col-12 col-md-4">
+                <div class="input-group">
+                    <span class="input-group-text" id="heroSearchLabel"><i class="bi bi-search" aria-hidden="true"></i><span class="visually-hidden">@T["HeroSearchLabel"]</span></span>
+                    <input name="q" class="form-control" placeholder="@T["HeroSearchPlaceholder"]" aria-labelledby="heroSearchLabel" />
+                </div>
+            </div>
+            <div class="col-12 col-md-2 d-grid">
+                <button class="btn btn-light fw-semibold" type="submit">@T["HeroSubmit"]</button>
+            </div>
+        </form>
+
+        <div class="d-flex flex-wrap gap-2 justify-content-center mt-3">
     <div class="container-xl">
         <h1 class="display-5 fw-bold mb-2">@T["HeroMainHeading"]</h1>
         <p class="lead mb-4 opacity-75 mx-auto" style="max-width: 42rem;">@T["HeroSubheading"]</p>
