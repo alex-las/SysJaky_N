@@ -1,0 +1,34 @@
+@using System.Globalization
+@inject Microsoft.Extensions.Localization.IStringLocalizer<SysJaky_N.SharedResource> T
+@{
+    var currentCulture = CultureInfo.CurrentUICulture;
+    var returnUrl = string.Concat(Context.Request.Path, Context.Request.QueryString);
+    var isCzech = string.Equals(currentCulture.TwoLetterISOLanguageName, "cs", System.StringComparison.OrdinalIgnoreCase);
+    var currentLanguageLabel = isCzech ? T["LanguageNameCs"] : T["LanguageNameEn"];
+}
+<div class="dropdown">
+    <button class="btn btn-outline-light dropdown-toggle d-flex align-items-center gap-1" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" type="button">
+        <i class="bi bi-translate" aria-hidden="true"></i>
+        <span>@currentLanguageLabel</span>
+    </button>
+    <ul class="dropdown-menu dropdown-menu-end" role="menu" aria-label='@T["LanguageMenuLabel"]'>
+        <li>
+            <form method="post" asp-controller="Localization" asp-action="SetLanguage" class="px-3 py-1" aria-label='@T["ChangeLanguageFormLabel"]'>
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="returnUrl" value="@returnUrl" />
+                <button type="submit" name="culture" value="cs" class="dropdown-item w-100 text-start @(isCzech ? "active" : string.Empty)" role="menuitem">
+                    @T["LanguageNameCs"]
+                </button>
+            </form>
+        </li>
+        <li>
+            <form method="post" asp-controller="Localization" asp-action="SetLanguage" class="px-3 py-1" aria-label='@T["ChangeLanguageFormLabel"]'>
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="returnUrl" value="@returnUrl" />
+                <button type="submit" name="culture" value="en" class="dropdown-item w-100 text-start @(!isCzech ? "active" : string.Empty)" role="menuitem">
+                    @T["LanguageNameEn"]
+                </button>
+            </form>
+        </li>
+    </ul>
+</div>
