@@ -174,4 +174,101 @@
   <data name="ISO13485" xml:space="preserve">
     <value>ISO 13485 — Zdravotnické prostředky</value>
   </data>
+
+  <data name="Home.Hero.Title" xml:space="preserve">
+    <value>Implementace, audity a školení systémů jakosti</value>
+  </data>
+  <data name="Home.Hero.Subtitle" xml:space="preserve">
+    <value>Provázíme organizace celým cyklem ISO 9001, ISO 14001, ISO/IEC 17025, ISO 15189, HACCP, ISO 45001, ISO 27001, IATF 16949 a ISO 13485 – od analýzy po certifikaci.</value>
+  </data>
+  <data name="Home.Hero.PrimaryCta" xml:space="preserve">
+    <value>Prohlédnout nabídku kurzů ISO</value>
+  </data>
+  <data name="Home.Hero.SecondaryCta" xml:space="preserve">
+    <value>Nechat si připravit firemní řešení</value>
+  </data>
+  <data name="Home.Hero.SearchPlaceholder" xml:space="preserve">
+    <value>Hledat kurz, nástroj nebo dovednost…</value>
+  </data>
+  <data name="Home.Hero.Search.Placeholder" xml:space="preserve">
+    <value>Hledat kurz, nástroj nebo dovednost…</value>
+  </data>
+  <data name="Home.Hero.Search.AriaLabel" xml:space="preserve">
+    <value>Vyhledávání kurzů</value>
+  </data>
+  <data name="Home.Hero.Search.Label" xml:space="preserve">
+    <value>Vyhledávání</value>
+  </data>
+  <data name="Home.Hero.Search.Submit" xml:space="preserve">
+    <value>Navrhnout kurzy</value>
+  </data>
+  <data name="Home.Hero.Usp1" xml:space="preserve">
+    <value>Dlouholeté zkušenosti auditorů a konzultantů</value>
+  </data>
+  <data name="Home.Hero.Usp2" xml:space="preserve">
+    <value>Praktické know-how získané z reálných auditů</value>
+  </data>
+  <data name="Home.Hero.Usp3" xml:space="preserve">
+    <value>Možnost interních workshopů přímo u vás</value>
+  </data>
+  <data name="Home.Hero.Persona.AriaLabel" xml:space="preserve">
+    <value>Jsem</value>
+  </data>
+  <data name="Home.Hero.Persona.Label" xml:space="preserve">
+    <value>Vyberte svou roli v systému jakosti</value>
+  </data>
+  <data name="Home.Hero.Persona.Help" xml:space="preserve">
+    <value>Pomůže nám lépe doporučit kurzy. Například manažer kvality, interní auditor.</value>
+  </data>
+  <data name="Home.Hero.Goal.AriaLabel" xml:space="preserve">
+    <value>Chci</value>
+  </data>
+  <data name="Home.Hero.Goal.Label" xml:space="preserve">
+    <value>Jaký cíl chcete plněním norem dosáhnout?</value>
+  </data>
+  <data name="Home.Hero.Goal.Help" xml:space="preserve">
+    <value>Popište, čeho chcete školením dosáhnout. Například zlepšení procesů, příprava na akreditaci.</value>
+  </data>
+  <data name="Home.Hero.Chip.Online" xml:space="preserve">
+    <value>Online</value>
+  </data>
+  <data name="Home.Hero.Chip.Retraining" xml:space="preserve">
+    <value>Rekvalifikace</value>
+  </data>
+  <data name="Home.Hero.Chip.Certificate" xml:space="preserve">
+    <value>S certifikátem</value>
+  </data>
+  <data name="Home.Hero.Chip.Accreditation" xml:space="preserve">
+    <value>Příprava na akreditaci</value>
+  </data>
+  <data name="Home.Hero.Chip.InternalAudits" xml:space="preserve">
+    <value>Interní audity</value>
+  </data>
+  <data name="Home.Hero.Chip.Beginner" xml:space="preserve">
+    <value>Začátečník</value>
+  </data>
+  <data name="Home.Hero.Chip.Prague" xml:space="preserve">
+    <value>Praha</value>
+  </data>
+  <data name="Home.Hero.Chips.Online" xml:space="preserve">
+    <value>Online</value>
+  </data>
+  <data name="Home.Hero.Chips.Retraining" xml:space="preserve">
+    <value>Rekvalifikace</value>
+  </data>
+  <data name="Home.Hero.Chips.Certificate" xml:space="preserve">
+    <value>S certifikátem</value>
+  </data>
+  <data name="Home.Hero.Chips.Accreditation" xml:space="preserve">
+    <value>Příprava na akreditaci</value>
+  </data>
+  <data name="Home.Hero.Chips.InternalAudits" xml:space="preserve">
+    <value>Interní audity</value>
+  </data>
+  <data name="Home.Hero.Chips.Beginner" xml:space="preserve">
+    <value>Začátečník</value>
+  </data>
+  <data name="Home.Hero.Chips.Prague" xml:space="preserve">
+    <value>Praha</value>
+  </data>
 </root>
