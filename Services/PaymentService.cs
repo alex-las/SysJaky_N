@@ -142,7 +142,9 @@ public class PaymentService
         try
         {
             var stripeEvent = EventUtility.ConstructEvent(json, request.Headers["Stripe-Signature"], _options.WebhookSecret);
-            if (stripeEvent.Type == Events.CheckoutSessionCompleted)
+            const string checkoutSessionCompletedEventType = "checkout.session.completed";
+
+            if (stripeEvent.Type == checkoutSessionCompletedEventType)
             {
                 var alreadyProcessed = await _context.PaymentIds.AnyAsync(p => p.Id == stripeEvent.Id);
                 if (alreadyProcessed)
