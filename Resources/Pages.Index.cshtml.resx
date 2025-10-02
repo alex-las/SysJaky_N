@@ -58,10 +58,10 @@
     <value>Jsem</value>
   </data>
   <data name="PersonaLabel" xml:space="preserve">
-    <value>Vyberte svoji roli</value>
+    <value>Vyberte svou roli v systému jakosti</value>
   </data>
   <data name="PersonaHelp" xml:space="preserve">
-    <value>Pomůže nám lépe doporučit kurzy.</value>
+    <value>Pomůže nám lépe doporučit kurzy. Například manažer kvality, interní auditor.</value>
   </data>
   <data name="StepSelectTitle" xml:space="preserve">
     <value>Vyberte kurz</value>
@@ -90,6 +90,12 @@
   <data name="ChipCertificate" xml:space="preserve">
     <value>S certifikátem</value>
   </data>
+  <data name="ChipAccreditation" xml:space="preserve">
+    <value>Příprava na akreditaci</value>
+  </data>
+  <data name="ChipInternalAudits" xml:space="preserve">
+    <value>Interní audity</value>
+  </data>
   <data name="ChipOnline" xml:space="preserve">
     <value>Online</value>
   </data>
@@ -103,10 +109,10 @@
     <value>Chci</value>
   </data>
   <data name="GoalLabel" xml:space="preserve">
-    <value>Vyberte cíl</value>
+    <value>Jaký cíl chcete plněním norem dosáhnout?</value>
   </data>
   <data name="GoalHelp" xml:space="preserve">
-    <value>Popište, čeho chcete školením dosáhnout.</value>
+    <value>Popište, čeho chcete školením dosáhnout. Například zlepšení procesů, příprava na akreditaci.</value>
   </data>
   <data name="NewsHeading" xml:space="preserve">
     <value>Novinky</value>
