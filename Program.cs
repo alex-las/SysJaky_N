@@ -28,6 +28,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.ResponseCompression;
 using Serilog.Extensions.Logging;
 using CompressionLevel = System.IO.Compression.CompressionLevel;
+using System.Globalization;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
@@ -474,4 +475,5 @@ finally
 {
     Log.CloseAndFlush();
 }
+
 
