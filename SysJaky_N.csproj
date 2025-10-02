@@ -35,4 +35,9 @@
     </Content>
   </ItemGroup>
 
+  <ItemGroup>
+    <EmbeddedResource Include="Resources/SharedResource.resx" />
+    <EmbeddedResource Include="Resources/SharedResource.en-US.resx" />
+  </ItemGroup>
+
 </Project>
