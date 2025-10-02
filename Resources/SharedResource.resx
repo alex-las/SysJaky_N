@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="BrandName" xml:space="preserve">
+    <value>SysJaky</value>
+  </data>
+  <data name="NavHome" xml:space="preserve">
+    <value>Domů</value>
+  </data>
+  <data name="NavAbout" xml:space="preserve">
+    <value>O nás</value>
+  </data>
+  <data name="NavServices" xml:space="preserve">
+    <value>Služby</value>
+  </data>
+  <data name="NavCourses" xml:space="preserve">
+    <value>Kurzy</value>
+  </data>
+  <data name="NavArticles" xml:space="preserve">
+    <value>Články</value>
+  </data>
+  <data name="NavCorporateInquiry" xml:space="preserve">
+    <value>Firemní poptávka</value>
+  </data>
+  <data name="NavPrivacy" xml:space="preserve">
+    <value>Ochrana soukromí</value>
+  </data>
+  <data name="LanguageNameCs" xml:space="preserve">
+    <value>Čeština</value>
+  </data>
+  <data name="LanguageNameEn" xml:space="preserve">
+    <value>Angličtina</value>
+  </data>
+  <data name="LoginRegister" xml:space="preserve">
+    <value>Přihlásit se / Registrovat</value>
+  </data>
+  <data name="HeroMainHeading" xml:space="preserve">
+    <value>Akreditované kurzy pro auditory a compliance</value>
+  </data>
+  <data name="HeroSubheading" xml:space="preserve">
+    <value>Rozvíjejte své týmy pomocí odborně vedených školení na míru.</value>
+  </data>
+  <data name="HeroUSP1" xml:space="preserve">
+    <value>Zkušení lektoři z praxe</value>
+  </data>
+  <data name="HeroUSP2" xml:space="preserve">
+    <value>Moderní online i prezenční formáty</value>
+  </data>
+  <data name="HeroUSP3" xml:space="preserve">
+    <value>Garantované profesní certifikace</value>
+  </data>
+  <data name="HeroPrimaryCTA" xml:space="preserve">
+    <value>Prohlédnout nabídku kurzů</value>
+  </data>
+  <data name="HeroSecondaryCTA" xml:space="preserve">
+    <value>Domluvit konzultaci</value>
+  </data>
+  <data name="HeroSearchPlaceholder" xml:space="preserve">
+    <value>Hledejte kurz, téma nebo lektora</value>
+  </data>
+  <data name="HeroSubmit" xml:space="preserve">
+    <value>Hledat</value>
+  </data>
+  <data name="ChipOnline" xml:space="preserve">
+    <value>Online</value>
+  </data>
+  <data name="ChipRetraining" xml:space="preserve">
+    <value>Rekvalifikace</value>
+  </data>
+  <data name="ChipBeginner" xml:space="preserve">
+    <value>Začátečník</value>
+  </data>
+  <data name="ChipPrague" xml:space="preserve">
+    <value>Praha</value>
+  </data>
+  <data name="ChipCertificate" xml:space="preserve">
+    <value>Certifikát</value>
+  </data>
+  <data name="ChipAccreditation" xml:space="preserve">
+    <value>Akreditace</value>
+  </data>
+  <data name="ChipInternalAudits" xml:space="preserve">
+    <value>Interní audity</value>
+  </data>
+</root>
