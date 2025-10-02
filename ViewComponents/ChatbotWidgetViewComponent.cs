@@ -23,14 +23,23 @@ public class ChatbotWidgetViewComponent : ViewComponent
             .OrderBy(s => s.Id)
             .FirstOrDefaultAsync();
 
-        if (settings is null || !settings.IsEnabled)
+        var isEnabled = true;
+        var autoInitialize = true;
+
+        if (settings is not null)
+        {
+            isEnabled = settings.IsEnabled;
+            autoInitialize = settings.AutoInitialize;
+        }
+
+        if (!isEnabled)
         {
             return new HtmlContentViewComponentResult(new Microsoft.AspNetCore.Html.HtmlString(string.Empty));
         }
 
         var model = new ChatbotWidgetViewModel
         {
-            AutoInitialize = settings.AutoInitialize
+            AutoInitialize = autoInitialize
         };
 
         return View("/Pages/Shared/_Chatbot.cshtml", model);
