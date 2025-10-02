@@ -88,6 +88,12 @@
   <data name="LanguageNameEn" xml:space="preserve">
     <value>English</value>
   </data>
+  <data name="LanguageMenuLabel" xml:space="preserve">
+    <value>Language selection</value>
+  </data>
+  <data name="ChangeLanguageFormLabel" xml:space="preserve">
+    <value>Change language</value>
+  </data>
   <data name="LoginRegister" xml:space="preserve">
     <value>Log in / Register</value>
   </data>

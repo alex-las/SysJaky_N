@@ -88,6 +88,12 @@
   <data name="LanguageNameEn" xml:space="preserve">
     <value>Angličtina</value>
   </data>
+  <data name="LanguageMenuLabel" xml:space="preserve">
+    <value>Výběr jazyka</value>
+  </data>
+  <data name="ChangeLanguageFormLabel" xml:space="preserve">
+    <value>Změna jazyka</value>
+  </data>
   <data name="LoginRegister" xml:space="preserve">
     <value>Přihlásit se / Registrovat</value>
   </data>
