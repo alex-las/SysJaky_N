@@ -163,7 +163,12 @@
                     </ul>
                     <div class="d-flex align-items-center gap-3">
                         <partial name="_LanguageSwitcher" />
-                        <a class="btn btn-outline-light ms-2" asp-page="/Account/Login">@T["LoginRegister"]</a>
+                        @if (!User.Identity.IsAuthenticated)
+                        {
+                            <button type="button" class="btn btn-outline-light ms-2" data-bs-toggle="modal" data-bs-target="#authModal">
+                                @T["LoginRegister"]
+                            </button>
+                        }
                     </div>
                 </div>
             </div>
