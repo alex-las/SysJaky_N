@@ -5,7 +5,7 @@ const THEMES = {
 };
 
 const DARK_META_COLOR = '#0f172a';
-const LIGHT_META_COLOR = '#0b7bb3';
+const LIGHT_META_COLOR = '#2563eb';
 
 function getStoredPreference() {
     try {

@@ -3,14 +3,14 @@
   <desc id="desc">Stylized checklist with five steps for ISO certification.</desc>
   <defs>
     <linearGradient id="bg" x1="0%" x2="100%" y1="0%" y2="100%">
-      <stop offset="0%" stop-color="#0b7bb3" />
-      <stop offset="100%" stop-color="#55c1ff" />
+      <stop offset="0%" stop-color="#2563eb" />
+      <stop offset="100%" stop-color="#06b6d4" />
     </linearGradient>
   </defs>
   <rect width="600" height="400" rx="24" fill="url(#bg)" />
   <rect x="70" y="60" width="460" height="280" rx="20" fill="#ffffff" opacity="0.9" />
-  <text x="120" y="120" font-family="'Segoe UI', sans-serif" font-size="32" fill="#0b7bb3" font-weight="700">ISO 9001</text>
-  <g fill="none" stroke="#0b7bb3" stroke-width="10" stroke-linecap="round">
+  <text x="120" y="120" font-family="'Segoe UI', sans-serif" font-size="32" fill="#2563eb" font-weight="700">ISO 9001</text>
+  <g fill="none" stroke="#2563eb" stroke-width="10" stroke-linecap="round">
     <polyline points="100,160 120,180 160,140" />
     <line x1="200" y1="160" x2="480" y2="160" />
     <polyline points="100,220 120,240 160,200" />
