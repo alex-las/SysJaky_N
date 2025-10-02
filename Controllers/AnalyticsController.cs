@@ -3,7 +3,8 @@ using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using OfficeOpenXml;
+using ClosedXML.Excel;
+using System.IO;
 using SysJaky_N.Data;
 using SysJaky_N.Models;
 
@@ -78,73 +79,75 @@ public class AnalyticsController : ControllerBase
     {
         var dashboard = await BuildDashboardAsync(query, cancellationToken);
 
-        using var package = new ExcelPackage();
-        var summarySheet = package.Workbook.Worksheets.Add("Přehled");
+        using var workbook = new XLWorkbook();
+        var summarySheet = workbook.Worksheets.Add("Přehled");
 
-        summarySheet.Cells[1, 1].Value = "Období";
-        summarySheet.Cells[1, 2].Value = $"{dashboard.ObdobiOd:yyyy-MM-dd} – {dashboard.ObdobiDo:yyyy-MM-dd}";
+        summarySheet.Cell(1, 1).Value = "Období";
+        summarySheet.Cell(1, 2).Value = $"{dashboard.ObdobiOd:yyyy-MM-dd} – {dashboard.ObdobiDo:yyyy-MM-dd}";
 
-        summarySheet.Cells[3, 1].Value = "Souhrn";
-        summarySheet.Cells[4, 1].Value = "Tržby celkem";
-        summarySheet.Cells[4, 2].Value = dashboard.Souhrn.CelkoveTrzby;
-        summarySheet.Cells[5, 1].Value = "Změna tržeb";
-        summarySheet.Cells[5, 2].Value = dashboard.Souhrn.ZmenaTrzebProcenta / 100d;
-        summarySheet.Cells[5, 2].Style.Numberformat.Format = "0.00%";
-        summarySheet.Cells[6, 1].Value = "Objednávky";
-        summarySheet.Cells[6, 2].Value = dashboard.Souhrn.Objednavky;
-        summarySheet.Cells[7, 1].Value = "Průměrná hodnota objednávky";
-        summarySheet.Cells[7, 2].Value = dashboard.Souhrn.PrumernaObjednavka;
-        summarySheet.Cells[8, 1].Value = "Prodáno míst";
-        summarySheet.Cells[8, 2].Value = dashboard.Souhrn.ProdanaMista;
-        summarySheet.Cells[9, 1].Value = "Průměrná obsazenost";
-        summarySheet.Cells[9, 2].Value = dashboard.Souhrn.PrumernaObsazenost / 100d;
-        summarySheet.Cells[9, 2].Style.Numberformat.Format = "0.00%";
-        summarySheet.Cells[10, 1].Value = "Aktivní zákazníci";
-        summarySheet.Cells[10, 2].Value = dashboard.Souhrn.AktivniZakaznici;
-        summarySheet.Cells[11, 1].Value = "Noví zákazníci";
-        summarySheet.Cells[11, 2].Value = dashboard.Souhrn.NoviZakaznici;
+        summarySheet.Cell(3, 1).Value = "Souhrn";
+        summarySheet.Cell(4, 1).Value = "Tržby celkem";
+        summarySheet.Cell(4, 2).Value = dashboard.Souhrn.CelkoveTrzby;
+        summarySheet.Cell(5, 1).Value = "Změna tržeb";
+        summarySheet.Cell(5, 2).Value = dashboard.Souhrn.ZmenaTrzebProcenta / 100d;
+        summarySheet.Cell(5, 2).Style.NumberFormat.Format = "0.00%";
+        summarySheet.Cell(6, 1).Value = "Objednávky";
+        summarySheet.Cell(6, 2).Value = dashboard.Souhrn.Objednavky;
+        summarySheet.Cell(7, 1).Value = "Průměrná hodnota objednávky";
+        summarySheet.Cell(7, 2).Value = dashboard.Souhrn.PrumernaObjednavka;
+        summarySheet.Cell(8, 1).Value = "Prodáno míst";
+        summarySheet.Cell(8, 2).Value = dashboard.Souhrn.ProdanaMista;
+        summarySheet.Cell(9, 1).Value = "Průměrná obsazenost";
+        summarySheet.Cell(9, 2).Value = dashboard.Souhrn.PrumernaObsazenost / 100d;
+        summarySheet.Cell(9, 2).Style.NumberFormat.Format = "0.00%";
+        summarySheet.Cell(10, 1).Value = "Aktivní zákazníci";
+        summarySheet.Cell(10, 2).Value = dashboard.Souhrn.AktivniZakaznici;
+        summarySheet.Cell(11, 1).Value = "Noví zákazníci";
+        summarySheet.Cell(11, 2).Value = dashboard.Souhrn.NoviZakaznici;
 
-        summarySheet.Cells[4, 2].Style.Numberformat.Format = "#,##0.00";
-        summarySheet.Cells[7, 2].Style.Numberformat.Format = "#,##0.00";
+        summarySheet.Cell(4, 2).Style.NumberFormat.Format = "#,##0.00";
+        summarySheet.Cell(7, 2).Style.NumberFormat.Format = "#,##0.00";
 
-        summarySheet.Cells[13, 1].Value = "Top kurzy podle tržeb";
-        summarySheet.Cells[14, 1].Value = "Kurz";
-        summarySheet.Cells[14, 2].Value = "Tržby";
-        summarySheet.Cells[14, 3].Value = "Prodáno míst";
+        summarySheet.Cell(13, 1).Value = "Top kurzy podle tržeb";
+        summarySheet.Cell(14, 1).Value = "Kurz";
+        summarySheet.Cell(14, 2).Value = "Tržby";
+        summarySheet.Cell(14, 3).Value = "Prodáno míst";
 
         var topRow = 15;
         foreach (var kurz in dashboard.TopKurzy)
         {
-            summarySheet.Cells[topRow, 1].Value = kurz.Nazev;
-            summarySheet.Cells[topRow, 2].Value = kurz.Trzba;
-            summarySheet.Cells[topRow, 3].Value = kurz.Mnozstvi;
-            summarySheet.Cells[topRow, 2].Style.Numberformat.Format = "#,##0.00";
+            summarySheet.Cell(topRow, 1).Value = kurz.Nazev;
+            summarySheet.Cell(topRow, 2).Value = kurz.Trzba;
+            summarySheet.Cell(topRow, 3).Value = kurz.Mnozstvi;
+            summarySheet.Cell(topRow, 2).Style.NumberFormat.Format = "#,##0.00";
             topRow++;
         }
 
-        summarySheet.Cells[topRow + 1, 1].Value = "Vývoj tržeb";
-        summarySheet.Cells[topRow + 2, 1].Value = "Datum";
-        summarySheet.Cells[topRow + 2, 2].Value = "Tržby";
-        summarySheet.Cells[topRow + 2, 3].Value = "Objednávky";
-        summarySheet.Cells[topRow + 2, 4].Value = "Průměrná objednávka";
+        summarySheet.Cell(topRow + 1, 1).Value = "Vývoj tržeb";
+        summarySheet.Cell(topRow + 2, 1).Value = "Datum";
+        summarySheet.Cell(topRow + 2, 2).Value = "Tržby";
+        summarySheet.Cell(topRow + 2, 3).Value = "Objednávky";
+        summarySheet.Cell(topRow + 2, 4).Value = "Průměrná objednávka";
 
         var trendRow = topRow + 3;
         foreach (var bod in dashboard.Trend)
         {
-            summarySheet.Cells[trendRow, 1].Value = bod.Datum.ToDateTime(TimeOnly.MinValue);
-            summarySheet.Cells[trendRow, 1].Style.Numberformat.Format = "yyyy-mm-dd";
-            summarySheet.Cells[trendRow, 2].Value = bod.Trzba;
-            summarySheet.Cells[trendRow, 2].Style.Numberformat.Format = "#,##0.00";
-            summarySheet.Cells[trendRow, 3].Value = bod.Objednavky;
-            summarySheet.Cells[trendRow, 4].Value = bod.PrumernaObjednavka;
-            summarySheet.Cells[trendRow, 4].Style.Numberformat.Format = "#,##0.00";
+            summarySheet.Cell(trendRow, 1).Value = bod.Datum.ToDateTime(TimeOnly.MinValue);
+            summarySheet.Cell(trendRow, 1).Style.DateFormat.Format = "yyyy-mm-dd";
+            summarySheet.Cell(trendRow, 2).Value = bod.Trzba;
+            summarySheet.Cell(trendRow, 2).Style.NumberFormat.Format = "#,##0.00";
+            summarySheet.Cell(trendRow, 3).Value = bod.Objednavky;
+            summarySheet.Cell(trendRow, 4).Value = bod.PrumernaObjednavka;
+            summarySheet.Cell(trendRow, 4).Style.NumberFormat.Format = "#,##0.00";
             trendRow++;
         }
 
-        summarySheet.Cells.AutoFitColumns();
+        summarySheet.Columns().AdjustToContents();
 
+        using var stream = new MemoryStream();
+        workbook.SaveAs(stream);
         var fileName = $"report-{DateTime.UtcNow:yyyyMMdd-HHmm}.xlsx";
-        return File(package.GetAsByteArray(),
+        return File(stream.ToArray(),
             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
             fileName);
     }

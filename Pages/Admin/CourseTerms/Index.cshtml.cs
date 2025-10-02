@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using OfficeOpenXml;
+using ClosedXML.Excel;
 using SysJaky_N.Data;
 using SysJaky_N.Models;
 using SysJaky_N.Services;
@@ -68,8 +68,8 @@ public class IndexModel : PageModel
             return NotFound();
         }
 
-        using var package = new ExcelPackage();
-        var worksheet = package.Workbook.Worksheets.Add("Enrollments");
+        using var workbook = new XLWorkbook();
+        var worksheet = workbook.Worksheets.Add("Enrollments");
 
         var headers = new[]
         {
@@ -87,8 +87,9 @@ public class IndexModel : PageModel
 
         for (var column = 0; column < headers.Length; column++)
         {
-            worksheet.Cells[1, column + 1].Value = headers[column];
-            worksheet.Cells[1, column + 1].Style.Font.Bold = true;
+            var cell = worksheet.Cell(1, column + 1);
+            cell.Value = headers[column];
+            cell.Style.Font.SetBold();
         }
 
         var enrollments = term.Enrollments
@@ -100,36 +101,34 @@ public class IndexModel : PageModel
             var row = index + 2;
             var enrollment = enrollments[index];
 
-            worksheet.Cells[row, 1].Value = enrollment.Id;
-            worksheet.Cells[row, 2].Value = enrollment.Status.ToString();
-            worksheet.Cells[row, 3].Value = enrollment.UserId;
-            worksheet.Cells[row, 4].Value = enrollment.User?.Email;
-            worksheet.Cells[row, 5].Value = enrollment.User?.UserName;
-            worksheet.Cells[row, 6].Value = enrollment.User?.PhoneNumber;
-            worksheet.Cells[row, 7].Value = term.Id;
-            worksheet.Cells[row, 8].Value = term.Course?.Title ?? $"Course {term.CourseId}";
+            worksheet.Cell(row, 1).Value = enrollment.Id;
+            worksheet.Cell(row, 2).Value = enrollment.Status.ToString();
+            worksheet.Cell(row, 3).Value = enrollment.UserId;
+            worksheet.Cell(row, 4).Value = enrollment.User?.Email;
+            worksheet.Cell(row, 5).Value = enrollment.User?.UserName;
+            worksheet.Cell(row, 6).Value = enrollment.User?.PhoneNumber;
+            worksheet.Cell(row, 7).Value = term.Id;
+            worksheet.Cell(row, 8).Value = term.Course?.Title ?? $"Course {term.CourseId}";
 
             var startUtc = EnsureUtc(term.StartUtc);
             var endUtc = EnsureUtc(term.EndUtc);
 
-            worksheet.Cells[row, 9].Value = startUtc;
-            worksheet.Cells[row, 9].Style.Numberformat.Format = "yyyy-mm-dd hh:mm";
+            worksheet.Cell(row, 9).Value = startUtc;
+            worksheet.Cell(row, 9).Style.DateFormat.Format = "yyyy-mm-dd hh:mm";
 
-            worksheet.Cells[row, 10].Value = endUtc;
-            worksheet.Cells[row, 10].Style.Numberformat.Format = "yyyy-mm-dd hh:mm";
+            worksheet.Cell(row, 10).Value = endUtc;
+            worksheet.Cell(row, 10).Style.DateFormat.Format = "yyyy-mm-dd hh:mm";
         }
 
-        if (worksheet.Dimension != null)
-        {
-            worksheet.Cells[worksheet.Dimension.Address].AutoFitColumns();
-        }
+        worksheet.Columns().AdjustToContents();
 
         var courseTitle = term.Course?.Title ?? $"Kurz_{term.CourseId}";
         var safeCourseTitle = SanitizeForFileName(courseTitle);
         var fileName = $"{safeCourseTitle}_term_{term.Id}_enrollments.xlsx";
-        var content = package.GetAsByteArray();
+        using var exportStream = new MemoryStream();
+        workbook.SaveAs(exportStream);
 
-        return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+        return File(exportStream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
     }
 
     public async Task<IActionResult> OnPostImportAsync()
@@ -159,9 +158,10 @@ public class IndexModel : PageModel
             await ImportFile.CopyToAsync(stream);
             stream.Position = 0;
 
-            using var package = new ExcelPackage(stream);
-            var worksheet = package.Workbook.Worksheets.FirstOrDefault();
-            if (worksheet == null || worksheet.Dimension == null)
+            using var workbook = new XLWorkbook(stream);
+            var worksheet = workbook.Worksheets.FirstOrDefault();
+            var usedRange = worksheet?.RangeUsed();
+            if (worksheet == null || usedRange == null)
             {
                 ModelState.AddModelError(nameof(ImportFile), "Nahraný soubor neobsahuje žádná data.");
                 ErrorMessage = "Import se nezdařil. Zkontrolujte zvýrazněné problémy.";
@@ -186,7 +186,7 @@ public class IndexModel : PageModel
                 return Page();
             }
 
-            var lastRow = worksheet.Dimension.End.Row;
+            var lastRow = usedRange.LastRow().RowNumber();
             for (var row = 2; row <= lastRow; row++)
             {
                 if (IsRowEmpty(worksheet, row))
@@ -199,13 +199,13 @@ public class IndexModel : PageModel
                 int? id = null;
                 if (TryGetColumn(headerMap, "Id", out var idColumn))
                 {
-                    if (!TryGetNullableInt(worksheet.Cells[row, idColumn], out id))
+                    if (!TryGetNullableInt(worksheet.Cell(row, idColumn), out id))
                     {
                         rowErrors.Add("Neplatná hodnota ve sloupci Id.");
                     }
                 }
 
-                if (!TryGetInt(worksheet.Cells[row, headerMap["CourseId"]], out var courseId))
+                if (!TryGetInt(worksheet.Cell(row, headerMap["CourseId"]), out var courseId))
                 {
                     rowErrors.Add("CourseId je povinný a musí být číslo.");
                 }
@@ -214,17 +214,17 @@ public class IndexModel : PageModel
                     courseIds.Add(courseId);
                 }
 
-                if (!TryGetDateTime(worksheet.Cells[row, headerMap["StartUtc"]], out var startUtc))
+                if (!TryGetDateTime(worksheet.Cell(row, headerMap["StartUtc"]), out var startUtc))
                 {
                     rowErrors.Add("StartUtc je povinný a musí být platné datum a čas.");
                 }
 
-                if (!TryGetDateTime(worksheet.Cells[row, headerMap["EndUtc"]], out var endUtc))
+                if (!TryGetDateTime(worksheet.Cell(row, headerMap["EndUtc"]), out var endUtc))
                 {
                     rowErrors.Add("EndUtc je povinný a musí být platné datum a čas.");
                 }
 
-                if (!TryGetInt(worksheet.Cells[row, headerMap["Capacity"]], out var capacity))
+                if (!TryGetInt(worksheet.Cell(row, headerMap["Capacity"]), out var capacity))
                 {
                     rowErrors.Add("Capacity je povinná a musí být číslo.");
                 }
@@ -236,7 +236,7 @@ public class IndexModel : PageModel
                 bool? isActive = null;
                 if (TryGetColumn(headerMap, "IsActive", out var isActiveColumn))
                 {
-                    if (!TryGetNullableBool(worksheet.Cells[row, isActiveColumn], out isActive))
+                    if (!TryGetNullableBool(worksheet.Cell(row, isActiveColumn), out isActive))
                     {
                         rowErrors.Add("IsActive musí být logická hodnota.");
                     }
@@ -245,7 +245,7 @@ public class IndexModel : PageModel
                 int? instructorId = null;
                 if (TryGetColumn(headerMap, "InstructorId", out var instructorColumn))
                 {
-                    if (!TryGetNullableInt(worksheet.Cells[row, instructorColumn], out instructorId))
+                    if (!TryGetNullableInt(worksheet.Cell(row, instructorColumn), out instructorId))
                     {
                         rowErrors.Add("InstructorId musí být číslo.");
                     }
@@ -444,14 +444,15 @@ public class IndexModel : PageModel
             .ToListAsync();
     }
 
-    private static Dictionary<string, int> ReadHeaderMap(ExcelWorksheet worksheet)
+    private static Dictionary<string, int> ReadHeaderMap(IXLWorksheet worksheet)
     {
         var headers = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
-        var endColumn = worksheet.Dimension?.End.Column ?? 0;
+        var range = worksheet.RangeUsed();
+        var endColumn = range?.LastColumn().ColumnNumber() ?? 0;
 
         for (var column = 1; column <= endColumn; column++)
         {
-            var header = worksheet.Cells[1, column].GetValue<string>();
+            var header = worksheet.Cell(1, column).GetString();
             if (!string.IsNullOrWhiteSpace(header))
             {
                 headers[header.Trim()] = column;
@@ -466,12 +467,13 @@ public class IndexModel : PageModel
         return headerMap.TryGetValue(key, out column);
     }
 
-    private static bool IsRowEmpty(ExcelWorksheet worksheet, int row)
+    private static bool IsRowEmpty(IXLWorksheet worksheet, int row)
     {
-        var endColumn = worksheet.Dimension?.End.Column ?? 0;
+        var range = worksheet.RangeUsed();
+        var endColumn = range?.LastColumn().ColumnNumber() ?? 0;
         for (var column = 1; column <= endColumn; column++)
         {
-            var value = worksheet.Cells[row, column].Value;
+            var value = worksheet.Cell(row, column).Value;
             if (value is string stringValue)
             {
                 if (!string.IsNullOrWhiteSpace(stringValue))
@@ -488,7 +490,7 @@ public class IndexModel : PageModel
         return true;
     }
 
-    private static bool TryGetInt(ExcelRange cell, out int value)
+    private static bool TryGetInt(IXLCell cell, out int value)
     {
         var success = TryGetNullableInt(cell, out var nullable);
         if (success && nullable.HasValue)
@@ -501,7 +503,7 @@ public class IndexModel : PageModel
         return false;
     }
 
-    private static bool TryGetNullableInt(ExcelRange cell, out int? value)
+    private static bool TryGetNullableInt(IXLCell cell, out int? value)
     {
         var raw = cell.Value;
 
@@ -570,7 +572,7 @@ public class IndexModel : PageModel
         return false;
     }
 
-    private static bool TryGetDateTime(ExcelRange cell, out DateTime value)
+    private static bool TryGetDateTime(IXLCell cell, out DateTime value)
     {
         var raw = cell.Value;
 
@@ -612,7 +614,7 @@ public class IndexModel : PageModel
         return false;
     }
 
-    private static bool TryGetNullableBool(ExcelRange cell, out bool? value)
+    private static bool TryGetNullableBool(IXLCell cell, out bool? value)
     {
         var raw = cell.Value;
 
