@@ -562,6 +562,7 @@ static bool TryAssignContextValue(PropertyInfo licenseProperty, LicenseContext d
         ?? FindAssignableLicenseInstance(propertyType, ConvertContextValue)
         ?? FindPreconfiguredLicenseValue(propertyType, desiredContext, ConvertContextValue);
 
+
     if (instance == null)
     {
         if (setter == null)
@@ -573,6 +574,7 @@ static bool TryAssignContextValue(PropertyInfo licenseProperty, LicenseContext d
             }
 
             ApplyContext(existingInstance, ConvertContextValue);
+
             return true;
         }
 
