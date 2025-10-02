@@ -68,13 +68,10 @@ public abstract class OrderDetailsPageModel : PageModel
             return NotFound();
         }
 
-        if (RequireOrderOwnership)
+        var accessCheck = EnsureOrderAccess(order);
+        if (accessCheck != null)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (!User.IsInRole(ApplicationRoles.Admin) && order.UserId != userId)
-            {
-                return Forbid();
-            }
+            return accessCheck;
         }
 
         if (!string.IsNullOrEmpty(session_id))
@@ -86,16 +83,8 @@ public abstract class OrderDetailsPageModel : PageModel
         Order = order;
         PaymentEnabled = _paymentService.IsEnabled;
 
-        var iban = _configuration["Payment:Iban"] ?? string.Empty;
-        var vsPrefix = _configuration["Payment:VsPrefix"] ?? string.Empty;
-        var vs = $"{vsPrefix}{order.Id}";
-        var amount = order.Total.ToString("0.00", CultureInfo.InvariantCulture);
-        var payload = $"SPD*1.0*ACC:{iban}*AM:{amount}*CC:CZK*X-VS:{vs}";
-
-        var generator = new QRCodeGenerator();
-        var data = generator.CreateQrCode(payload, QRCodeGenerator.ECCLevel.Q);
-        var qrCode = new PngByteQRCode(data);
-        var bytes = qrCode.GetGraphic(20);
+        var payload = CreatePaymentPayload(order);
+        var bytes = GenerateQrCodeBytes(payload);
         QrCodeImage = $"data:image/png;base64,{Convert.ToBase64String(bytes)}";
 
         return Page();
@@ -112,13 +101,10 @@ public abstract class OrderDetailsPageModel : PageModel
             return NotFound();
         }
 
-        if (RequireOrderOwnership)
+        var accessCheck = EnsureOrderAccess(order);
+        if (accessCheck != null)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (!User.IsInRole(ApplicationRoles.Admin) && order.UserId != userId)
-            {
-                return Forbid();
-            }
+            return accessCheck;
         }
 
         var html = await RenderViewAsync("/Pages/Shared/Invoice.cshtml", order);
@@ -162,25 +148,14 @@ public abstract class OrderDetailsPageModel : PageModel
             return NotFound();
         }
 
-        if (RequireOrderOwnership)
+        var accessCheck = EnsureOrderAccess(order);
+        if (accessCheck != null)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (!User.IsInRole(ApplicationRoles.Admin) && order.UserId != userId)
-            {
-                return Forbid();
-            }
+            return accessCheck;
         }
 
-        var iban = _configuration["Payment:Iban"] ?? string.Empty;
-        var vsPrefix = _configuration["Payment:VsPrefix"] ?? string.Empty;
-        var vs = $"{vsPrefix}{order.Id}";
-        var amount = order.Total.ToString("0.00", CultureInfo.InvariantCulture);
-        var payload = $"SPD*1.0*ACC:{iban}*AM:{amount}*CC:CZK*X-VS:{vs}";
-
-        var generator = new QRCodeGenerator();
-        var data = generator.CreateQrCode(payload, QRCodeGenerator.ECCLevel.Q);
-        var qrCode = new PngByteQRCode(data);
-        var bytes = qrCode.GetGraphic(20);
+        var payload = CreatePaymentPayload(order);
+        var bytes = GenerateQrCodeBytes(payload);
 
         return File(bytes, "image/png", $"qr_{order.Id}.png");
     }
@@ -196,13 +171,10 @@ public abstract class OrderDetailsPageModel : PageModel
             return NotFound();
         }
 
-        if (RequireOrderOwnership)
+        var accessCheck = EnsureOrderAccess(order);
+        if (accessCheck != null)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (!User.IsInRole(ApplicationRoles.Admin) && order.UserId != userId)
-            {
-                return Forbid();
-            }
+            return accessCheck;
         }
 
         var baseUrl = Url.Page(PaymentReturnPagePath, null, new { id = order.Id }, Request.Scheme) ?? string.Empty;
@@ -234,4 +206,40 @@ public abstract class OrderDetailsPageModel : PageModel
         await viewResult.View.RenderAsync(viewContext);
         return sw.ToString();
     }
+
+    protected IActionResult? EnsureOrderAccess(Order order)
+    {
+        if (!RequireOrderOwnership)
+        {
+            return null;
+        }
+
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (User.IsInRole(ApplicationRoles.Admin) || order.UserId == userId)
+        {
+            return null;
+        }
+
+        return Forbid();
+    }
+
+    protected string CreatePaymentPayload(Order order)
+    {
+        var iban = _configuration["Payment:Iban"] ?? string.Empty;
+        var vsPrefix = _configuration["Payment:VsPrefix"] ?? string.Empty;
+        var vs = $"{vsPrefix}{order.Id}";
+        var amount = order.Total.ToString("0.00", CultureInfo.InvariantCulture);
+
+        return $"SPD*1.0*ACC:{iban}*AM:{amount}*CC:CZK*X-VS:{vs}";
+    }
+
+    protected byte[] GenerateQrCodeBytes(string payload)
+    {
+        var generator = new QRCodeGenerator();
+        var data = generator.CreateQrCode(payload, QRCodeGenerator.ECCLevel.Q);
+        var qrCode = new PngByteQRCode(data);
+        return qrCode.GetGraphic(20);
+    }
+
 }
+
