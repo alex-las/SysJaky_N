@@ -1,17 +1,19 @@
 @using Microsoft.AspNetCore.Localization
-@inject IHttpContextAccessor Http
-@inject Microsoft.Extensions.Localization.IStringLocalizer<SysJaky_N.SharedResource> T
+@using Microsoft.Extensions.Options
+@inject IOptions<RequestLocalizationOptions> LocOptions
 
 @{
-    var feat = Http.HttpContext?.Features.Get<IRequestCultureFeature>();
-    var ui = feat?.RequestCulture.UICulture.Name ?? "cs-CZ";
-    var back = Context.Request.Path + Context.Request.QueryString;
+    var current = System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName;
+    var cultures = LocOptions.Value.SupportedUICultures!.Select(c => c.TwoLetterISOLanguageName).ToList();
 }
-
-<form asp-controller="Culture" asp-action="Set" method="post" class="d-inline">
-    <input type="hidden" name="returnUrl" value="@back" />
-    <select name="culture" class="form-select form-select-sm" style="width:auto" onchange="this.form.submit()">
-        <option value="cs-CZ" selected="@(ui.StartsWith("cs"))">@T["LanguageNameCs"]</option>
-        <option value="en-US" selected="@(ui.StartsWith("en"))">@T["LanguageNameEn"]</option>
+<form asp-controller="Language" asp-action="Set" method="post" class="d-inline">
+    <input type="hidden" name="returnUrl" value="@Context.Request.Path@Context.Request.QueryString" />
+    <select name="culture" class="form-select form-select-sm" onchange="this.form.submit()">
+        @foreach (var c in cultures)
+        {
+            <option value="@c" selected="@(c == current)">
+                @(c == "cs" ? "Čeština" : "English")
+            </option>
+        }
     </select>
 </form>

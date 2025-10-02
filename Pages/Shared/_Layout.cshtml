@@ -121,7 +121,7 @@
                         </li>
                         <li class="nav-item d-flex align-items-center">
                             <i class="bi bi-translate text-white me-2" aria-hidden="true"></i>
-                            @await Html.PartialAsync("~/Views/Shared/_LanguageSwitcher.cshtml")
+                            @await Html.PartialAsync("_LanguageSwitcher")
                         </li>
                         @if (!User.Identity.IsAuthenticated)
                         {
