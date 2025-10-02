@@ -33,4 +33,202 @@
   <data name="Range" xml:space="preserve">
     <value>Pole {0} musí být mezi {1} a {2}.</value>
   </data>
+  <data name="Validation.Required" xml:space="preserve">
+    <value>Pole {0} je povinné.</value>
+  </data>
+  <data name="Validation.StringLength" xml:space="preserve">
+    <value>Pole {0} může mít maximálně {1} znaků.</value>
+  </data>
+  <data name="Validation.StringLengthRange" xml:space="preserve">
+    <value>Pole {0} musí mít délku mezi {2} a {1} znaky.</value>
+  </data>
+  <data name="Validation.EmailAddress" xml:space="preserve">
+    <value>Pole {0} musí obsahovat platnou e-mailovou adresu.</value>
+  </data>
+  <data name="Validation.Phone" xml:space="preserve">
+    <value>Pole {0} musí obsahovat platné telefonní číslo.</value>
+  </data>
+  <data name="Validation.Url" xml:space="preserve">
+    <value>Pole {0} musí obsahovat platnou URL adresu.</value>
+  </data>
+  <data name="Validation.Range" xml:space="preserve">
+    <value>Pole {0} musí být mezi {1} a {2}.</value>
+  </data>
+  <data name="Validation.PositiveInteger" xml:space="preserve">
+    <value>Pole {0} musí být větší než nula.</value>
+  </data>
+  <data name="Validation.NonNegativeNumber" xml:space="preserve">
+    <value>Pole {0} musí být nezáporné.</value>
+  </data>
+  <data name="Validation.NewPricePositive" xml:space="preserve">
+    <value>Nová cena musí být větší než nula.</value>
+  </data>
+  <data name="Validation.PasswordComplexity" xml:space="preserve">
+    <value>Heslo musí obsahovat malá a velká písmena a čísla.</value>
+  </data>
+  <data name="Validation.PasswordMismatch" xml:space="preserve">
+    <value>Pole {0} a {1} se musí shodovat.</value>
+  </data>
+  <data name="Models.CompanyProfile.ManagerId.DisplayName" xml:space="preserve">
+    <value>Správce</value>
+  </data>
+  <data name="Models.CompanyProfile.Name.DisplayName" xml:space="preserve">
+    <value>Název</value>
+  </data>
+  <data name="Models.CompanyProfile.ReferenceCode.DisplayName" xml:space="preserve">
+    <value>Referenční kód</value>
+  </data>
+  <data name="Models.CourseBlock.Description.DisplayName" xml:space="preserve">
+    <value>Popis</value>
+  </data>
+  <data name="Models.CourseBlock.Price.DisplayName" xml:space="preserve">
+    <value>Cena</value>
+  </data>
+  <data name="Models.CourseBlock.Title.DisplayName" xml:space="preserve">
+    <value>Název</value>
+  </data>
+  <data name="Models.CourseTerm.CourseId.DisplayName" xml:space="preserve">
+    <value>Kurz</value>
+  </data>
+  <data name="Models.CourseTerm.EndUtc.DisplayName" xml:space="preserve">
+    <value>Konec (UTC)</value>
+  </data>
+  <data name="Models.CourseTerm.InstructorId.DisplayName" xml:space="preserve">
+    <value>Lektor</value>
+  </data>
+  <data name="Models.CourseTerm.IsActive.DisplayName" xml:space="preserve">
+    <value>Aktivní</value>
+  </data>
+  <data name="Models.CourseTerm.SeatsTaken.DisplayName" xml:space="preserve">
+    <value>Obsazená místa</value>
+  </data>
+  <data name="Models.CourseTerm.StartUtc.DisplayName" xml:space="preserve">
+    <value>Začátek (UTC)</value>
+  </data>
+  <data name="Models.Instructor.Bio.DisplayName" xml:space="preserve">
+    <value>Životopis</value>
+  </data>
+  <data name="Models.Instructor.Email.DisplayName" xml:space="preserve">
+    <value>E-mail</value>
+  </data>
+  <data name="Models.Instructor.FullName.DisplayName" xml:space="preserve">
+    <value>Celé jméno</value>
+  </data>
+  <data name="Models.Instructor.PhoneNumber.DisplayName" xml:space="preserve">
+    <value>Telefon</value>
+  </data>
+  <data name="Models.OrderStatus.Cancelled.DisplayName" xml:space="preserve">
+    <value>Zrušeno</value>
+  </data>
+  <data name="Models.OrderStatus.Paid.DisplayName" xml:space="preserve">
+    <value>Zaplaceno</value>
+  </data>
+  <data name="Models.OrderStatus.Pending.DisplayName" xml:space="preserve">
+    <value>Čeká na platbu</value>
+  </data>
+  <data name="Models.OrderStatus.Refunded.DisplayName" xml:space="preserve">
+    <value>Vráceno</value>
+  </data>
+  <data name="Models.PriceSchedule.CourseId.DisplayName" xml:space="preserve">
+    <value>Kurz</value>
+  </data>
+  <data name="Models.PriceSchedule.FromUtc.DisplayName" xml:space="preserve">
+    <value>Platí od</value>
+  </data>
+  <data name="Models.PriceSchedule.NewPriceExcl.DisplayName" xml:space="preserve">
+    <value>Nová cena (bez DPH)</value>
+  </data>
+  <data name="Models.PriceSchedule.ToUtc.DisplayName" xml:space="preserve">
+    <value>Platí do</value>
+  </data>
+  <data name="Models.Testimonial.Company.DisplayName" xml:space="preserve">
+    <value>Společnost</value>
+  </data>
+  <data name="Models.Testimonial.ConsentGranted.DisplayName" xml:space="preserve">
+    <value>Souhlas se zpracováním osobních údajů</value>
+  </data>
+  <data name="Models.Testimonial.FullName.DisplayName" xml:space="preserve">
+    <value>Jméno a příjmení</value>
+  </data>
+  <data name="Models.Testimonial.IsPublished.DisplayName" xml:space="preserve">
+    <value>Publikovat</value>
+  </data>
+  <data name="Models.Testimonial.PhotoAltText.DisplayName" xml:space="preserve">
+    <value>Alternativní text fotografie</value>
+  </data>
+  <data name="Models.Testimonial.PhotoUrl.DisplayName" xml:space="preserve">
+    <value>URL fotografie</value>
+  </data>
+  <data name="Models.Testimonial.Position.DisplayName" xml:space="preserve">
+    <value>Pozice</value>
+  </data>
+  <data name="Models.Testimonial.Quote.DisplayName" xml:space="preserve">
+    <value>Citace</value>
+  </data>
+  <data name="Models.Testimonial.Rating.DisplayName" xml:space="preserve">
+    <value>Hodnocení</value>
+  </data>
+  <data name="Models.Voucher.AppliesToCourse.DisplayName" xml:space="preserve">
+    <value>Platí pro kurz</value>
+  </data>
+  <data name="Models.Voucher.Code.DisplayName" xml:space="preserve">
+    <value>Kód</value>
+  </data>
+  <data name="Models.Voucher.ExpiresUtc.DisplayName" xml:space="preserve">
+    <value>Platnost (UTC)</value>
+  </data>
+  <data name="Models.Voucher.MaxRedemptions.DisplayName" xml:space="preserve">
+    <value>Maximální počet uplatnění</value>
+  </data>
+  <data name="Models.Voucher.Type.DisplayName" xml:space="preserve">
+    <value>Typ voucheru</value>
+  </data>
+  <data name="Models.Voucher.UsedCount.DisplayName" xml:space="preserve">
+    <value>Počet uplatnění</value>
+  </data>
+  <data name="Models.Voucher.Value.DisplayName" xml:space="preserve">
+    <value>Hodnota</value>
+  </data>
+  <data name="Models.VoucherType.FixedAmount.DisplayName" xml:space="preserve">
+    <value>Fixní částka</value>
+  </data>
+  <data name="Models.VoucherType.Percentage.DisplayName" xml:space="preserve">
+    <value>Procentuální sleva</value>
+  </data>
+  <data name="Pages.Account.Register.Input.ConfirmPassword.DisplayName" xml:space="preserve">
+    <value>Potvrzení hesla</value>
+  </data>
+  <data name="Pages.Account.Register.Input.ReferralCode.DisplayName" xml:space="preserve">
+    <value>Referenční kód</value>
+  </data>
+  <data name="Pages.Admin.CourseTerms.Input.CourseId.DisplayName" xml:space="preserve">
+    <value>Kurz</value>
+  </data>
+  <data name="Pages.Admin.CourseTerms.Input.EndUtc.DisplayName" xml:space="preserve">
+    <value>Konec</value>
+  </data>
+  <data name="Pages.Admin.CourseTerms.Input.InstructorId.DisplayName" xml:space="preserve">
+    <value>Lektor</value>
+  </data>
+  <data name="Pages.Admin.CourseTerms.Input.IsActive.DisplayName" xml:space="preserve">
+    <value>Aktivní</value>
+  </data>
+  <data name="Pages.Admin.CourseTerms.Input.StartUtc.DisplayName" xml:space="preserve">
+    <value>Začátek</value>
+  </data>
+  <data name="Pages.Admin.Users.Edit.Input.Email.DisplayName" xml:space="preserve">
+    <value>E-mail</value>
+  </data>
+  <data name="Pages.Admin.Users.Edit.Input.IsLocked.DisplayName" xml:space="preserve">
+    <value>Účet zablokován</value>
+  </data>
+  <data name="Pages.Admin.Users.Edit.Input.PhoneNumber.DisplayName" xml:space="preserve">
+    <value>Telefonní číslo</value>
+  </data>
+  <data name="Pages.Api.Newsletter.Input.Consent.DisplayName" xml:space="preserve">
+    <value>Souhlas</value>
+  </data>
+  <data name="Pages.Api.Newsletter.Input.Email.DisplayName" xml:space="preserve">
+    <value>E-mail</value>
+  </data>
 </root>

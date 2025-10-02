@@ -30,16 +30,16 @@ public class EditModel : PageModel
 
     public class InputModel
     {
-        [Required(ErrorMessage = "Pole {0} je povinné.")]
-        [EmailAddress(ErrorMessage = "Zadejte platnou e-mailovou adresu.")]
-        [Display(Name = "E-mail")]
+        [Required(ErrorMessage = "Validation.Required")]
+        [EmailAddress(ErrorMessage = "Validation.EmailAddress")]
+        [Display(Name = "Pages.Admin.Users.Edit.Input.Email.DisplayName")]
         public string Email { get; set; } = string.Empty;
 
-        [Phone(ErrorMessage = "Zadejte platné telefonní číslo.")]
-        [Display(Name = "Telefonní číslo")]
+        [Phone(ErrorMessage = "Validation.Phone")]
+        [Display(Name = "Pages.Admin.Users.Edit.Input.PhoneNumber.DisplayName")]
         public string? PhoneNumber { get; set; }
 
-        [Display(Name = "Účet zablokován")]
+        [Display(Name = "Pages.Admin.Users.Edit.Input.IsLocked.DisplayName")]
         public bool IsLocked { get; set; }
         public List<RoleSelection> Roles { get; set; } = new();
     }
