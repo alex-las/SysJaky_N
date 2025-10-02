@@ -64,22 +64,22 @@
     <value>Helps us tailor course suggestions. For example, quality manager or internal auditor.</value>
   </data>
   <data name="StepSelectTitle" xml:space="preserve">
-    <value>Select a course</value>
+    <value>Analyze the current state</value>
   </data>
   <data name="StepSelectDescription" xml:space="preserve">
-    <value>Browse our offer and choose the right course.</value>
+    <value>Perform a gap analysis, map your processes and identify areas that need improvement.</value>
   </data>
   <data name="StepRegisterTitle" xml:space="preserve">
-    <value>Register</value>
+    <value>Plan training and audits</value>
   </data>
   <data name="StepRegisterDescription" xml:space="preserve">
-    <value>Register easily and create your account.</value>
+    <value>Build a training plan for your team, schedule the internal audit and assign responsibilities.</value>
   </data>
   <data name="StepPayTitle" xml:space="preserve">
-    <value>Pay</value>
+    <value>Achieve certification with confidence</value>
   </data>
   <data name="StepPayDescription" xml:space="preserve">
-    <value>Secure online payment reserves your spot.</value>
+    <value>Prepare the documentation, coordinate the certification audit and guide everyone through the process stress-free.</value>
   </data>
   <data name="CalendarButton" xml:space="preserve">
     <value>Course calendar</value>
