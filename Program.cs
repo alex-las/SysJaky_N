@@ -10,6 +10,7 @@ using System.Linq;
 using DinkToPdf;
 using DinkToPdf.Contracts;
 using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Mvc.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.RateLimiting;
 using System.Threading.RateLimiting;
@@ -156,7 +157,7 @@ try
     {
         options.Level = CompressionLevel.SmallestSize;
     });
-    var dataAnnotationsLocalizationOptions = new Action<DataAnnotationsLocalizationOptions>(options =>
+    var dataAnnotationsLocalizationOptions = new Action<MvcDataAnnotationsLocalizationOptions>(options =>
     {
         options.DataAnnotationLocalizerProvider = (type, factory) =>
             factory.Create(typeof(SysJaky_N.Resources.SharedResources));
