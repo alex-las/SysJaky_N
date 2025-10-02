@@ -379,6 +379,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const supportsIntersectionObserver = typeof window !== 'undefined'
             && typeof window.IntersectionObserver === 'function';
 
+        const revealRootMargin = ['0px', '0px', '-10%', '0px'].join(' ');
+        const progressRootMargin = ['-12%', '0px', '-12%', '0px'].join(' ');
+
         if (supportsIntersectionObserver && revealElements.length) {
             const revealObserver = new IntersectionObserver(
                 (entries, observer) => {
@@ -391,7 +394,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 },
                 {
                     threshold: 0.2,
-                    rootMargin: '0px 0px -10% 0px'
+                    rootMargin: revealRootMargin
                 }
             );
 
@@ -422,7 +425,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 },
                 {
                     threshold: [0.25, 0.5, 0.75],
-                    rootMargin: '-12% 0px -12% 0px'
+                    rootMargin: progressRootMargin
                 }
             );
 
