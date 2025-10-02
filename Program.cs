@@ -30,6 +30,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.ResponseCompression;
 using Serilog.Extensions.Logging;
 using CompressionLevel = System.IO.Compression.CompressionLevel;
+using System.Globalization;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
@@ -496,6 +497,13 @@ static void ConfigureEpplusLicense()
         return;
     }
 
+    // Fallback to the direct static property which is available on all supported EPPlus versions.
+    ExcelPackage.LicenseContext = desiredContext;
+    if (ExcelPackage.LicenseContext == desiredContext)
+    {
+        return;
+    }
+
     throw new InvalidOperationException(
         "Unable to configure EPPlus for non-commercial use. Please review the ConfigureEpplusLicense implementation.");
 }
@@ -504,18 +512,41 @@ static bool TryAssignContextValue(PropertyInfo licenseProperty, LicenseContext d
 {
     var licenseContextType = typeof(LicenseContext);
     var propertyType = licenseProperty.PropertyType;
+    var setter = licenseProperty.SetMethod;
 
-    if (propertyType == licenseContextType)
+    object? ConvertContextValue(Type targetType)
     {
-        licenseProperty.SetValue(null, desiredContext);
+        if (targetType == licenseContextType)
+        {
+            return desiredContext;
+        }
+
+        if (targetType.IsEnum && targetType.Name.Contains("LicenseContext", StringComparison.OrdinalIgnoreCase))
+        {
+            return Enum.Parse(targetType, desiredContext.ToString());
+        }
+
+        return null;
+    }
+
+    bool TryAssign(object? value)
+    {
+        if (value == null || setter == null)
+        {
+            return false;
+        }
+
+        licenseProperty.SetValue(null, value, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static, binder: null, index: null, culture: CultureInfo.InvariantCulture);
         return true;
     }
 
-    if (propertyType.IsEnum && propertyType.Name.Contains("LicenseContext", StringComparison.OrdinalIgnoreCase))
+    if (setter != null)
     {
-        var enumValue = Enum.Parse(propertyType, desiredContext.ToString());
-        licenseProperty.SetValue(null, enumValue);
-        return true;
+        var directValue = ConvertContextValue(propertyType);
+        if (TryAssign(directValue))
+        {
+            return true;
+        }
     }
 
     var instance = CreateLicenseInstance(propertyType, desiredContext, licenseContextType)
@@ -523,11 +554,22 @@ static bool TryAssignContextValue(PropertyInfo licenseProperty, LicenseContext d
 
     if (instance == null)
     {
+        if (setter == null)
+        {
+            var existingInstance = licenseProperty.GetValue(null);
+            if (existingInstance == null)
+            {
+                return false;
+            }
+
+            ApplyContext(existingInstance, desiredContext, licenseContextType);
+            return true;
+        }
+
         return false;
     }
 
-    licenseProperty.SetValue(null, instance);
-    return true;
+    return TryAssign(instance);
 }
 
 static object? FindAssignableLicenseInstance(Type propertyType, LicenseContext desiredContext, Type licenseContextType)
