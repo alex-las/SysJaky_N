@@ -176,19 +176,19 @@
   </data>
 
   <data name="Home.Hero.Title" xml:space="preserve">
-    <value>Implementace, audity a školení systémů jakosti</value>
+    <value>Najděte ideální školení</value>
   </data>
   <data name="Home.Hero.Subtitle" xml:space="preserve">
-    <value>Provázíme organizace celým cyklem ISO 9001, ISO 14001, ISO/IEC 17025, ISO 15189, HACCP, ISO 45001, ISO 27001, IATF 16949 a ISO 13485 – od analýzy po certifikaci.</value>
+    <value>Kurzy, poradenství a audit na jednom místě</value>
   </data>
   <data name="Home.Hero.PrimaryCta" xml:space="preserve">
-    <value>Prohlédnout nabídku kurzů ISO</value>
+    <value>Přehled kurzů</value>
   </data>
   <data name="Home.Hero.SecondaryCta" xml:space="preserve">
-    <value>Nechat si připravit firemní řešení</value>
+    <value>Nezávazná poptávka</value>
   </data>
   <data name="Home.Hero.SearchPlaceholder" xml:space="preserve">
-    <value>Hledat kurz, nástroj nebo dovednost…</value>
+    <value>Hledat kurz, normu nebo město…</value>
   </data>
   <data name="Home.Hero.Search.Placeholder" xml:space="preserve">
     <value>Hledat kurz, nástroj nebo dovednost…</value>
@@ -233,10 +233,10 @@
     <value>Online</value>
   </data>
   <data name="Home.Hero.Chip.Retraining" xml:space="preserve">
-    <value>Rekvalifikace</value>
+    <value>Přezkoušení</value>
   </data>
   <data name="Home.Hero.Chip.Certificate" xml:space="preserve">
-    <value>S certifikátem</value>
+    <value>Certifikace</value>
   </data>
   <data name="Home.Hero.Chip.Accreditation" xml:space="preserve">
     <value>Příprava na akreditaci</value>
