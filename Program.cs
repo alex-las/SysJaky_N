@@ -10,6 +10,7 @@ using System.Linq;
 using DinkToPdf;
 using DinkToPdf.Contracts;
 using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.RateLimiting;
 using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.Http;
@@ -132,6 +133,7 @@ try
     builder.Services.AddDistributedMemoryCache();
     builder.Services.AddSession();
     builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+    builder.Services.AddHttpContextAccessor();
     builder.Services.AddResponseCompression(options =>
     {
         options.EnableForHttps = true;
@@ -154,46 +156,41 @@ try
     {
         options.Level = CompressionLevel.SmallestSize;
     });
+    var dataAnnotationsLocalizationOptions = new Action<DataAnnotationsLocalizationOptions>(options =>
+    {
+        options.DataAnnotationLocalizerProvider = (type, factory) =>
+            factory.Create(typeof(SysJaky_N.Resources.SharedResources));
+    });
+
+    builder.Services
+        .AddControllersWithViews()
+        .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
+        .AddDataAnnotationsLocalization(dataAnnotationsLocalizationOptions);
+
     builder.Services
         .AddRazorPages()
-        .AddViewLocalization()
-        .AddDataAnnotationsLocalization(options =>
-        {
-            options.DataAnnotationLocalizerProvider = (type, factory) =>
-                factory.Create(typeof(SysJaky_N.Resources.SharedResources));
-        });
-    builder.Services.AddControllers();
+        .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
+        .AddDataAnnotationsLocalization(dataAnnotationsLocalizationOptions);
+
     builder.Services.AddSignalR();
+
+    var supportedCultures = new[]
+    {
+        new CultureInfo("cs-CZ"),
+        new CultureInfo("en-US")
+    };
+
     builder.Services.Configure<RequestLocalizationOptions>(options =>
     {
-        var supportedCultures = new[] { "cs", "en" };
-        options.SetDefaultCulture("en");
-        options.AddSupportedCultures(supportedCultures);
-        options.AddSupportedUICultures(supportedCultures);
+        options.DefaultRequestCulture = new RequestCulture("cs-CZ");
+        options.SupportedCultures = supportedCultures;
+        options.SupportedUICultures = supportedCultures;
 
-        // Prefer a persisted user preference, otherwise respect the browser language header
-        var cookieProvider = new CookieRequestCultureProvider
+        options.RequestCultureProviders = new IRequestCultureProvider[]
         {
-            CookieName = CookieRequestCultureProvider.DefaultCookieName
+            new CookieRequestCultureProvider(),
+            new AcceptLanguageHeaderRequestCultureProvider()
         };
-
-        var acceptLanguageProvider = options.RequestCultureProviders
-            .OfType<AcceptLanguageHeaderRequestCultureProvider>()
-            .FirstOrDefault();
-
-        options.RequestCultureProviders.Clear();
-
-        // 1) Explicit query string override
-        options.RequestCultureProviders.Add(new QueryStringRequestCultureProvider());
-
-        // 2) Persisted user preference via cookie
-        options.RequestCultureProviders.Add(cookieProvider);
-
-        // 3) Browser language headers
-        if (acceptLanguageProvider is not null)
-        {
-            options.RequestCultureProviders.Add(acceptLanguageProvider);
-        }
     });
     builder.Services.Configure<PaymentGatewayOptions>(builder.Configuration.GetSection("PaymentGateway"));
     builder.Services.AddScoped<PaymentService>();
@@ -344,13 +341,14 @@ try
     app.UseResponseCompression();
     app.UseMiddleware<ContentSecurityPolicyMiddleware>();
     app.UseMiddleware<ImageOptimizationMiddleware>();
-    app.UseStaticFiles();
-
-    app.UseRouting();
 
     var localizationOptions = app.Services
         .GetRequiredService<IOptions<RequestLocalizationOptions>>().Value;
     app.UseRequestLocalization(localizationOptions);
+
+    app.UseStaticFiles();
+
+    app.UseRouting();
 
     app.UseSession();
     app.UseAuthentication();
