@@ -16,25 +16,28 @@
     <value>Přeskočit na obsah</value>
   </data>
   <data name="BrandName" xml:space="preserve">
-    <value>Systémy jakosti</value>
+    <value>Systémy jakosti – poradenství ISO</value>
   </data>
   <data name="ToggleNavigation" xml:space="preserve">
     <value>Přepnout navigaci</value>
   </data>
   <data name="NavHome" xml:space="preserve">
-    <value>Domů</value>
+    <value>Úvod – poradenství systémů jakosti</value>
   </data>
   <data name="NavAbout" xml:space="preserve">
-    <value>O společnosti</value>
+    <value>O společnosti Systémy jakosti</value>
   </data>
   <data name="NavCourses" xml:space="preserve">
-    <value>Kurzy a školení</value>
+    <value>Kurzy a školení ISO</value>
   </data>
   <data name="NavArticles" xml:space="preserve">
-    <value>Články</value>
+    <value>Články a případové studie</value>
   </data>
   <data name="NavCorporateInquiry" xml:space="preserve">
-    <value>Firemní poptávka</value>
+    <value>Firemní poptávka / audit na míru</value>
+  </data>
+  <data name="NavServices" xml:space="preserve">
+    <value>Poradenství a audity</value>
   </data>
   <data name="NavPrivacy" xml:space="preserve">
     <value>Ochrana soukromí</value>
