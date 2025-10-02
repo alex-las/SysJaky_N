@@ -5,14 +5,15 @@
 @inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
 @inject Microsoft.Extensions.Configuration.IConfiguration Configuration
 @inject Microsoft.Extensions.Localization.IStringLocalizer<SysJaky_N.SharedResource> T
-@{
+@{ 
     var currentCulture = CultureInfo.CurrentUICulture;
     var isCzech = string.Equals(currentCulture.TwoLetterISOLanguageName, "cs", System.StringComparison.OrdinalIgnoreCase);
     var currentPage = ViewContext.RouteData.Values["page"]?.ToString();
     var canAccessAdmin = ApplicationRoles.AdminDashboardRoles.Any(role => User.IsInRole(role));
 
     var pushPublicKey = Configuration["PushNotifications:PublicKey"] ?? string.Empty;
-    var themeToggleText = Localizer["ThemeToggle"];
+
+    var themeToggleText = Localizer["ToggleTheme"].Value;
 }
 <!DOCTYPE html>
 <html lang="@currentCulture.TwoLetterISOLanguageName">
@@ -73,25 +74,25 @@
                 <div id="primaryNavigation" class="navbar-collapse collapse d-lg-inline-flex justify-content-between">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0 gap-lg-1">
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-page="/Index" aria-current="@(currentPage == "/Index" ? "page" : null)">@Localizer["NavHome"]</a>
+                            <a class="nav-link" asp-area="" asp-page="/Index" aria-current="@(currentPage == "/Index" ? "page" : null)">@T["NavHome"]</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-page="/About" aria-current="@(currentPage == "/About" ? "page" : null)">@Localizer["NavAbout"]</a>
+                            <a class="nav-link" asp-area="" asp-page="/About" aria-current="@(currentPage == "/About" ? "page" : null)">@T["NavAbout"]</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-page="/Services" aria-current="@(currentPage == "/Services" ? "page" : null)">@Localizer["NavServices"]</a>
+                            <a class="nav-link" asp-area="" asp-page="/Services" aria-current="@(currentPage == "/Services" ? "page" : null)">@T["NavServices"]</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-page="/Courses/Index" aria-current="@(currentPage == "/Courses/Index" ? "page" : null)">@Localizer["NavCourses"]</a>
+                            <a class="nav-link" asp-area="" asp-page="/Courses/Index" aria-current="@(currentPage == "/Courses/Index" ? "page" : null)">@T["NavCourses"]</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-page="/Articles/Index" aria-current="@(currentPage == "/Articles/Index" ? "page" : null)">@Localizer["NavArticles"]</a>
+                            <a class="nav-link" asp-area="" asp-page="/Articles/Index" aria-current="@(currentPage == "/Articles/Index" ? "page" : null)">@T["NavArticles"]</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-page="/CorporateInquiry" aria-current="@(currentPage == "/CorporateInquiry" ? "page" : null)">@Localizer["NavCorporateInquiry"]</a>
+                            <a class="nav-link" asp-area="" asp-page="/CorporateInquiry" aria-current="@(currentPage == "/CorporateInquiry" ? "page" : null)">@T["NavCorporateInquiry"]</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-page="/Privacy" aria-current="@(currentPage == "/Privacy" ? "page" : null)">@Localizer["NavPrivacy"]</a>
+                            <a class="nav-link" asp-area="" asp-page="/Privacy" aria-current="@(currentPage == "/Privacy" ? "page" : null)">@T["NavPrivacy"]</a>
                         </li>
                     </ul>
                     <ul class="navbar-nav ms-auto align-items-center gap-3 mb-2 mb-lg-0">
@@ -125,7 +126,7 @@
                         @if (!User.Identity.IsAuthenticated)
                         {
                             <li class="nav-item">
-                                <a class="btn btn-outline-light" data-bs-toggle="modal" data-bs-target="#authModal">@Localizer["LoginRegister"]</a>
+                                <a class="btn btn-outline-light" data-bs-toggle="modal" data-bs-target="#authModal">@T["LoginRegister"]</a>
                             </li>
                         }
                         else
