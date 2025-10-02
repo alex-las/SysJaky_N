@@ -6,13 +6,13 @@ using SysJaky_N.Data;
 using SysJaky_N.Models;
 using SysJaky_N.Services;
 using SysJaky_N.Services.Calendar;
+using System.Collections.Generic;
 using System.Linq;
 using DinkToPdf;
 using DinkToPdf.Contracts;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.Razor;
-using Microsoft.AspNetCore.Mvc.DataAnnotations;
 using Microsoft.AspNetCore.RateLimiting;
 using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.Http;
@@ -148,7 +148,26 @@ try
 
     builder.Services.AddDistributedMemoryCache();
     builder.Services.AddSession();
+
     builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+    builder.Services
+        .AddRazorPages()
+        .AddViewLocalization()
+        .AddDataAnnotationsLocalization();
+
+    var supportedCultures = new[] { new CultureInfo("cs"), new CultureInfo("en") };
+    builder.Services.Configure<RequestLocalizationOptions>(options =>
+    {
+        options.DefaultRequestCulture = new RequestCulture("cs");
+        options.SupportedCultures = supportedCultures;
+        options.SupportedUICultures = supportedCultures;
+        options.RequestCultureProviders = new List<IRequestCultureProvider>
+        {
+            new CookieRequestCultureProvider(),
+            new AcceptLanguageHeaderRequestCultureProvider()
+        };
+    });
+
     builder.Services.AddHttpContextAccessor();
     builder.Services.AddResponseCompression(options =>
     {
@@ -183,31 +202,7 @@ try
         .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
         .AddDataAnnotationsLocalization(dataAnnotationsLocalizationOptions);
 
-    builder.Services
-        .AddRazorPages()
-        .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
-        .AddDataAnnotationsLocalization(dataAnnotationsLocalizationOptions);
-
     builder.Services.AddSignalR();
-
-    var supportedCultures = new[]
-    {
-        new CultureInfo("cs-CZ"),
-        new CultureInfo("en-US")
-    };
-
-    builder.Services.Configure<RequestLocalizationOptions>(options =>
-    {
-        options.DefaultRequestCulture = new RequestCulture("cs-CZ");
-        options.SupportedCultures = supportedCultures;
-        options.SupportedUICultures = supportedCultures;
-
-        options.RequestCultureProviders = new IRequestCultureProvider[]
-        {
-            new CookieRequestCultureProvider(),
-            new AcceptLanguageHeaderRequestCultureProvider()
-        };
-    });
     builder.Services.Configure<PaymentGatewayOptions>(builder.Configuration.GetSection("PaymentGateway"));
     builder.Services.AddScoped<PaymentService>();
     builder.Services.AddSingleton<ICourseSearchOptionProvider, CourseSearchOptionProvider>();
@@ -314,6 +309,9 @@ try
 
     var app = builder.Build();
 
+    var locOptions = app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>();
+    app.UseRequestLocalization(locOptions.Value);
+
     // DB migrate + seed (bez rekurze – sink používá tichou továrnu ApplicationDbContext)
     if (!useInMemoryDatabase)
     {
@@ -360,10 +358,6 @@ try
     app.UseResponseCompression();
     app.UseMiddleware<ContentSecurityPolicyMiddleware>();
     app.UseMiddleware<ImageOptimizationMiddleware>();
-
-    var localizationOptions = app.Services
-        .GetRequiredService<IOptions<RequestLocalizationOptions>>().Value;
-    app.UseRequestLocalization(localizationOptions);
 
     app.UseStaticFiles();
 
