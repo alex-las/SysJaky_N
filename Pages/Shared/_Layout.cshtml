@@ -126,7 +126,15 @@
                         @if (!User.Identity.IsAuthenticated)
                         {
                             <li class="nav-item">
-                                <a class="btn btn-outline-light" data-bs-toggle="modal" data-bs-target="#authModal">@T["LoginRegister"]</a>
+                                <button type="button"
+                                        class="btn btn-outline-light"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#authModal"
+                                        aria-controls="authModal"
+                                        aria-haspopup="dialog"
+                                        aria-expanded="false">
+                                    @T["LoginRegister"]
+                                </button>
                             </li>
                         }
                         else
@@ -165,7 +173,13 @@
                         <partial name="_LanguageSwitcher" />
                         @if (!User.Identity.IsAuthenticated)
                         {
-                            <button type="button" class="btn btn-outline-light ms-2" data-bs-toggle="modal" data-bs-target="#authModal">
+                            <button type="button"
+                                    class="btn btn-outline-light ms-2"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#authModal"
+                                    aria-controls="authModal"
+                                    aria-haspopup="dialog"
+                                    aria-expanded="false">
                                 @T["LoginRegister"]
                             </button>
                         }
