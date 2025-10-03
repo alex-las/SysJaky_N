@@ -57,10 +57,28 @@ document.addEventListener('DOMContentLoaded', () => {
         traps.delete(element);
     };
 
-    const updateAriaExpanded = (trigger, isExpanded) => {
-        if (trigger) {
-            trigger.setAttribute('aria-expanded', isExpanded ? 'true' : 'false');
+    const toArray = (value) => {
+        if (!value) {
+            return [];
         }
+
+        if (Array.isArray(value)) {
+            return value;
+        }
+
+        if (value instanceof Element) {
+            return [value];
+        }
+
+        return Array.from(value);
+    };
+
+    const updateAriaExpanded = (targets, isExpanded) => {
+        toArray(targets).forEach((trigger) => {
+            if (trigger instanceof Element) {
+                trigger.setAttribute('aria-expanded', isExpanded ? 'true' : 'false');
+            }
+        });
     };
 
     const politeRegion = document.getElementById('accessibility-live-region');
@@ -86,6 +104,42 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (bootstrap && typeof bootstrap.Modal === 'function') {
+        const getModalTriggers = (modalId) =>
+            document.querySelectorAll(`[data-bs-target='#${modalId}'], [href='#${modalId}']`);
+
+        document.querySelectorAll('[data-bs-toggle="modal"]').forEach((trigger) => {
+            const selector = trigger.getAttribute('data-bs-target') || trigger.getAttribute('href');
+            if (!selector || !selector.startsWith('#')) {
+                return;
+            }
+
+            const modalEl = document.querySelector(selector);
+            if (!modalEl) {
+                return;
+            }
+
+            if (!trigger.hasAttribute('aria-haspopup')) {
+                trigger.setAttribute('aria-haspopup', 'dialog');
+            }
+
+            if (!trigger.hasAttribute('aria-controls')) {
+                trigger.setAttribute('aria-controls', modalEl.id);
+            }
+
+            if (!trigger.hasAttribute('aria-expanded')) {
+                trigger.setAttribute('aria-expanded', 'false');
+            }
+
+            trigger.addEventListener('click', (event) => {
+                if (trigger.tagName === 'A') {
+                    event.preventDefault();
+                }
+
+                const instance = bootstrap.Modal.getOrCreateInstance(modalEl);
+                instance.show();
+            });
+        });
+
         document.querySelectorAll('.modal').forEach((modalEl) => {
             modalEl.addEventListener('shown.bs.modal', () => {
                 enableFocusTrap(modalEl);
@@ -94,11 +148,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (initialFocus) {
                     initialFocus.focus({ preventScroll: true });
                 }
-                updateAriaExpanded(document.querySelector(`[data-bs-target="#${modalEl.id}"]`), true);
+                updateAriaExpanded(getModalTriggers(modalEl.id), true);
             });
             modalEl.addEventListener('hidden.bs.modal', () => {
                 disableFocusTrap(modalEl);
-                updateAriaExpanded(document.querySelector(`[data-bs-target="#${modalEl.id}"]`), false);
+                updateAriaExpanded(getModalTriggers(modalEl.id), false);
             });
         });
     }
@@ -111,11 +165,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (focusable.length) {
                     focusable[0].focus({ preventScroll: true });
                 }
-                updateAriaExpanded(document.querySelector(`[href="#${offcanvasEl.id}"]`), true);
+                updateAriaExpanded(document.querySelectorAll(`[href="#${offcanvasEl.id}"]`), true);
             });
             offcanvasEl.addEventListener('hidden.bs.offcanvas', () => {
                 disableFocusTrap(offcanvasEl);
-                updateAriaExpanded(document.querySelector(`[href="#${offcanvasEl.id}"]`), false);
+                updateAriaExpanded(document.querySelectorAll(`[href="#${offcanvasEl.id}"]`), false);
             });
         });
     }
@@ -407,7 +461,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     const observer = new IntersectionObserver(callback, {
                       threshold: [0.25, 0.5, 0.75],
-                      rootMargin: rootMargin // napø. '-12% 0px -12% 0px'
+                      rootMargin: rootMargin // napÅ™. '-12% 0px -12% 0px'
                     });
 
                 }
