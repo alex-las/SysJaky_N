@@ -126,7 +126,9 @@
                         @if (!User.Identity.IsAuthenticated)
                         {
                             <li class="nav-item">
-                                <a class="btn btn-outline-light" data-bs-toggle="modal" data-bs-target="#authModal">@T["LoginRegister"]</a>
+                                <button type="button" class="btn btn-outline-light" data-bs-toggle="modal" data-bs-target="#authModal">
+                                    @T["LoginRegister"]
+                                </button>
                             </li>
                         }
                         else
