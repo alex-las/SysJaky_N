@@ -81,4 +81,82 @@
   <data name="CoverImageLabel" xml:space="preserve">
     <value>Cover image</value>
   </data>
+  <data name="IsoStandardLabel" xml:space="preserve">
+    <value>ISO standard</value>
+  </data>
+  <data name="IsoStandardPlaceholder" xml:space="preserve">
+    <value>ISO 9001</value>
+  </data>
+  <data name="DurationTextLabel" xml:space="preserve">
+    <value>Duration (text)</value>
+  </data>
+  <data name="DurationTextPlaceholder" xml:space="preserve">
+    <value>3 days / 24 hours</value>
+  </data>
+  <data name="DeliveryFormLabel" xml:space="preserve">
+    <value>Delivery format</value>
+  </data>
+  <data name="DeliveryFormPlaceholder" xml:space="preserve">
+    <value>In person</value>
+  </data>
+  <data name="TargetAudienceLabel" xml:space="preserve">
+    <value>Target audience</value>
+  </data>
+  <data name="TargetAudiencePlaceholder" xml:space="preserve">
+    <value>quality managers, team leads</value>
+  </data>
+  <data name="LearningOutcomesLabel" xml:space="preserve">
+    <value>Learning outcomes</value>
+  </data>
+  <data name="LearningOutcomesPlaceholder" xml:space="preserve">
+    <value>Enter each item on a new line</value>
+  </data>
+  <data name="CaseStudiesLabel" xml:space="preserve">
+    <value>Case studies</value>
+  </data>
+  <data name="CaseStudiesPlaceholder" xml:space="preserve">
+    <value>Describe practical exercises</value>
+  </data>
+  <data name="CertificationsLabel" xml:space="preserve">
+    <value>Certifications</value>
+  </data>
+  <data name="CertificationsPlaceholder" xml:space="preserve">
+    <value>Certificates obtained</value>
+  </data>
+  <data name="CourseProgramLabel" xml:space="preserve">
+    <value>Course agenda</value>
+  </data>
+  <data name="CourseProgramPlaceholder" xml:space="preserve">
+    <value>Day 1 (9:00-16:00): ...</value>
+  </data>
+  <data name="InstructorNameLabel" xml:space="preserve">
+    <value>Instructor name</value>
+  </data>
+  <data name="InstructorNamePlaceholder" xml:space="preserve">
+    <value>Instructor name</value>
+  </data>
+  <data name="InstructorBioLabel" xml:space="preserve">
+    <value>Instructor bio</value>
+  </data>
+  <data name="InstructorBioPlaceholder" xml:space="preserve">
+    <value>Qualifications and experience</value>
+  </data>
+  <data name="OrganizationalNotesLabel" xml:space="preserve">
+    <value>Organizational notes</value>
+  </data>
+  <data name="OrganizationalNotesPlaceholder" xml:space="preserve">
+    <value>One instruction per line</value>
+  </data>
+  <data name="FollowUpCoursesLabel" xml:space="preserve">
+    <value>Follow-up courses</value>
+  </data>
+  <data name="FollowUpCoursesPlaceholder" xml:space="preserve">
+    <value>Recommended courses</value>
+  </data>
+  <data name="CertificateInfoLabel" xml:space="preserve">
+    <value>Certificate information</value>
+  </data>
+  <data name="CertificateInfoPlaceholder" xml:space="preserve">
+    <value>Details about the certificate</value>
+  </data>
 </root>

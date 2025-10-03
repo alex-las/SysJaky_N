@@ -81,4 +81,82 @@
   <data name="CoverImageLabel" xml:space="preserve">
     <value>Úvodní obrázek</value>
   </data>
+  <data name="IsoStandardLabel" xml:space="preserve">
+    <value>Norma ISO</value>
+  </data>
+  <data name="IsoStandardPlaceholder" xml:space="preserve">
+    <value>ISO 9001</value>
+  </data>
+  <data name="DurationTextLabel" xml:space="preserve">
+    <value>Délka (text)</value>
+  </data>
+  <data name="DurationTextPlaceholder" xml:space="preserve">
+    <value>3 dny / 24 hodin</value>
+  </data>
+  <data name="DeliveryFormLabel" xml:space="preserve">
+    <value>Forma výuky</value>
+  </data>
+  <data name="DeliveryFormPlaceholder" xml:space="preserve">
+    <value>Prezenční</value>
+  </data>
+  <data name="TargetAudienceLabel" xml:space="preserve">
+    <value>Cílová skupina</value>
+  </data>
+  <data name="TargetAudiencePlaceholder" xml:space="preserve">
+    <value>manažeři kvality, vedoucí pracovníci</value>
+  </data>
+  <data name="LearningOutcomesLabel" xml:space="preserve">
+    <value>Cíle učení</value>
+  </data>
+  <data name="LearningOutcomesPlaceholder" xml:space="preserve">
+    <value>Každý bod na nový řádek</value>
+  </data>
+  <data name="CaseStudiesLabel" xml:space="preserve">
+    <value>Praktické příklady</value>
+  </data>
+  <data name="CaseStudiesPlaceholder" xml:space="preserve">
+    <value>Popis praktických cvičení</value>
+  </data>
+  <data name="CertificationsLabel" xml:space="preserve">
+    <value>Certifikace</value>
+  </data>
+  <data name="CertificationsPlaceholder" xml:space="preserve">
+    <value>Získaná osvědčení</value>
+  </data>
+  <data name="CourseProgramLabel" xml:space="preserve">
+    <value>Program kurzu</value>
+  </data>
+  <data name="CourseProgramPlaceholder" xml:space="preserve">
+    <value>1. den (9:00-16:00): ...</value>
+  </data>
+  <data name="InstructorNameLabel" xml:space="preserve">
+    <value>Jméno lektora</value>
+  </data>
+  <data name="InstructorNamePlaceholder" xml:space="preserve">
+    <value>Jméno lektora</value>
+  </data>
+  <data name="InstructorBioLabel" xml:space="preserve">
+    <value>Profil lektora</value>
+  </data>
+  <data name="InstructorBioPlaceholder" xml:space="preserve">
+    <value>Kvalifikace a zkušenosti</value>
+  </data>
+  <data name="OrganizationalNotesLabel" xml:space="preserve">
+    <value>Organizační informace</value>
+  </data>
+  <data name="OrganizationalNotesPlaceholder" xml:space="preserve">
+    <value>Každý pokyn na nový řádek</value>
+  </data>
+  <data name="FollowUpCoursesLabel" xml:space="preserve">
+    <value>Navazující kurzy</value>
+  </data>
+  <data name="FollowUpCoursesPlaceholder" xml:space="preserve">
+    <value>Doporučené kurzy</value>
+  </data>
+  <data name="CertificateInfoLabel" xml:space="preserve">
+    <value>Informace o certifikátu</value>
+  </data>
+  <data name="CertificateInfoPlaceholder" xml:space="preserve">
+    <value>Informace o certifikátu</value>
+  </data>
 </root>
