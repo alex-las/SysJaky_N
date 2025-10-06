@@ -174,50 +174,120 @@ public class AnalyticsController : ControllerBase
             orderItemsQuery = orderItemsQuery.Where(oi => filter.CourseIds.Contains(oi.CourseId));
         }
 
-        var orderItemData = await orderItemsQuery
-            .Select(oi => new OrderItemSnapshot(
-                oi.OrderId,
-                oi.Order!.CreatedAt,
-                oi.Order.UserId,
-                oi.Total,
-                oi.Quantity,
-                oi.CourseId,
-                oi.Course!.Title))
+        var orderAggregatesQuery = orderItemsQuery
+            .GroupBy(oi => new { oi.OrderId, oi.Order!.CreatedAt, oi.Order.UserId })
+            .Select(group => new OrderAggregateDto(
+                group.Key.OrderId,
+                group.Key.CreatedAt,
+                group.Key.UserId,
+                group.Sum(item => item.Total),
+                group.Sum(item => item.Quantity)));
+
+        var periodLength = Math.Max(1, filter.To.DayNumber - filter.From.DayNumber + 1);
+        var useSalesStats = !filter.HasCourseFilter && periodLength > 180;
+
+        IReadOnlyList<SalesPointDto> trend;
+
+        if (useSalesStats)
+        {
+            var salesStats = await _context.SalesStats
+                .AsNoTracking()
+                .Where(stat => stat.Date >= filter.From && stat.Date <= filter.To)
+                .OrderBy(stat => stat.Date)
+                .Select(stat => new SalesStatProjection(stat.Date, stat.Revenue, stat.OrderCount, stat.AverageOrderValue))
+                .ToListAsync(cancellationToken);
+
+            trend = salesStats
+                .Select(stat => new SalesPointDto(
+                    stat.Date,
+                    Math.Round(stat.Revenue, 2),
+                    stat.OrderCount,
+                    Math.Round(stat.AverageOrderValue, 2)))
+                .ToList();
+        }
+        else
+        {
+            var trendAggregates = await orderAggregatesQuery
+                .GroupBy(order => EF.Functions.DateDiffDay(filter.FromUtc, order.CreatedAtUtc) ?? 0)
+                .Select(group => new DailySalesAggregate(
+                    group.Key,
+                    group.Sum(order => order.Total),
+                    group.Count()))
+                .OrderBy(group => group.DayOffset)
+                .ToListAsync(cancellationToken);
+
+            trend = trendAggregates
+                .Select(aggregate =>
+                {
+                    var date = filter.From.AddDays(aggregate.DayOffset);
+                    var orders = aggregate.OrderCount;
+                    var revenue = Math.Round(aggregate.TotalRevenue, 2);
+                    var average = orders > 0
+                        ? Math.Round(aggregate.TotalRevenue / orders, 2)
+                        : 0m;
+                    return new SalesPointDto(date, revenue, orders, average);
+                })
+                .ToList();
+        }
+
+        var topCourseAggregates = await orderItemsQuery
+            .GroupBy(oi => new { oi.CourseId, oi.Course!.Title })
+            .Select(group => new CourseSalesAggregate(
+                group.Key.CourseId,
+                group.Key.Title,
+                group.Sum(item => item.Total),
+                group.Sum(item => item.Quantity)))
+            .OrderByDescending(course => course.TotalRevenue)
+            .ThenBy(course => course.CourseTitle)
+            .Take(5)
             .ToListAsync(cancellationToken);
 
-        var trend = BuildTrend(orderItemData);
-        var topCourses = BuildTopCourses(orderItemData);
+        var topCourses = topCourseAggregates
+            .Select(course => new TopCourseDto(
+                course.CourseId,
+                course.CourseTitle,
+                Math.Round(course.TotalRevenue, 2),
+                course.SeatsSold))
+            .ToList();
 
         var termSnapshots = await LoadTermSnapshotsAsync(filter, cancellationToken);
         var heatmap = BuildHeatmap(termSnapshots);
 
-        var summary = await BuildSummaryAsync(orderItemData, termSnapshots, filter, cancellationToken);
+        var summary = await BuildSummaryAsync(orderAggregatesQuery, termSnapshots, filter, cancellationToken);
 
-        var conversions = await BuildConversionAsync(orderItemData, filter, cancellationToken);
+        var conversions = await BuildConversionAsync(orderAggregatesQuery, filter, cancellationToken);
 
         return new DashboardResponse(filter.From, filter.To, summary, trend, topCourses, conversions, heatmap);
     }
 
     private async Task<SummaryDto> BuildSummaryAsync(
-        IReadOnlyCollection<OrderItemSnapshot> orderItems,
+        IQueryable<OrderAggregateDto> orderAggregatesQuery,
         IReadOnlyCollection<TermSnapshot> terms,
         FilterContext filter,
         CancellationToken cancellationToken)
     {
-        var totalRevenue = orderItems.Sum(item => item.Total);
-        var orderIds = orderItems.Select(item => item.OrderId).Distinct().ToList();
-        var totalOrders = orderIds.Count;
+        var totals = await orderAggregatesQuery
+            .GroupBy(_ => 1)
+            .Select(group => new SummaryAggregate(
+                group.Sum(order => order.Total),
+                group.Count(),
+                group.Sum(order => order.Quantity)))
+            .SingleOrDefaultAsync(cancellationToken) ?? new SummaryAggregate(0m, 0, 0);
+
+        var totalRevenue = totals.TotalRevenue;
+        var totalOrders = totals.OrderCount;
         var averageOrder = totalOrders > 0 ? totalRevenue / totalOrders : 0m;
-        var seatsSold = orderItems.Sum(item => item.Quantity);
+        var seatsSold = totals.SeatsSold;
         var occupancyAverage = terms.Count > 0
             ? terms.Average(term => term.Occupancy)
             : 0d;
 
-        var customerIds = orderItems
-            .Where(item => !string.IsNullOrWhiteSpace(item.UserId))
-            .Select(item => item.UserId!)
+        var customerIds = await orderAggregatesQuery
+            .Select(order => order.UserId)
+            .Where(userId => userId != null && userId != "")
+            .Select(userId => userId!)
             .Distinct()
-            .ToList();
+            .ToListAsync(cancellationToken);
 
         var previousCustomers = customerIds.Count == 0
             ? new HashSet<string>()
@@ -255,14 +325,11 @@ public class AnalyticsController : ControllerBase
     }
 
     private async Task<ConversionDto> BuildConversionAsync(
-        IReadOnlyCollection<OrderItemSnapshot> orderItems,
+        IQueryable<OrderAggregateDto> orderAggregatesQuery,
         FilterContext filter,
         CancellationToken cancellationToken)
     {
-        var payments = orderItems
-            .Select(item => item.OrderId)
-            .Distinct()
-            .Count();
+        var payments = await orderAggregatesQuery.CountAsync(cancellationToken);
 
         var waitlistQuery = _context.WaitlistEntries
             .AsNoTracking()
@@ -300,38 +367,6 @@ public class AnalyticsController : ControllerBase
             visitToRegistration,
             registrationToPayment,
             visitToPayment);
-    }
-
-    private static IReadOnlyList<SalesPointDto> BuildTrend(IEnumerable<OrderItemSnapshot> orderItems)
-    {
-        return orderItems
-            .GroupBy(item => DateOnly.FromDateTime(TimeZoneInfo.ConvertTimeFromUtc(
-                DateTime.SpecifyKind(item.CreatedAtUtc, DateTimeKind.Utc),
-                PragueTimeZone)))
-            .OrderBy(group => group.Key)
-            .Select(group =>
-            {
-                var revenue = group.Sum(item => item.Total);
-                var orders = group.Select(item => item.OrderId).Distinct().Count();
-                var average = orders > 0 ? revenue / orders : 0m;
-                return new SalesPointDto(group.Key, Math.Round(revenue, 2), orders, Math.Round(average, 2));
-            })
-            .ToList();
-    }
-
-    private static IReadOnlyList<TopCourseDto> BuildTopCourses(IEnumerable<OrderItemSnapshot> orderItems)
-    {
-        return orderItems
-            .GroupBy(item => new { item.CourseId, item.CourseTitle })
-            .Select(group => new TopCourseDto(
-                group.Key.CourseId,
-                group.Key.CourseTitle,
-                Math.Round(group.Sum(item => item.Total), 2),
-                group.Sum(item => item.Quantity)))
-            .OrderByDescending(course => course.Trzba)
-            .ThenBy(course => course.Nazev)
-            .Take(5)
-            .ToList();
     }
 
     private async Task<IReadOnlyList<TermSnapshot>> LoadTermSnapshotsAsync(FilterContext filter, CancellationToken cancellationToken)
@@ -566,14 +601,20 @@ public class AnalyticsController : ControllerBase
         int KapacitaCelkem,
         int ObsazenaMista);
 
-    private sealed record OrderItemSnapshot(
+    private sealed record OrderAggregateDto(
         int OrderId,
         DateTime CreatedAtUtc,
         string? UserId,
         decimal Total,
-        int Quantity,
-        int CourseId,
-        string CourseTitle);
+        int Quantity);
+
+    private sealed record DailySalesAggregate(int DayOffset, decimal TotalRevenue, int OrderCount);
+
+    private sealed record CourseSalesAggregate(int CourseId, string CourseTitle, decimal TotalRevenue, int SeatsSold);
+
+    private sealed record SummaryAggregate(decimal TotalRevenue, int OrderCount, int SeatsSold);
+
+    private sealed record SalesStatProjection(DateOnly Date, decimal Revenue, int OrderCount, decimal AverageOrderValue);
 
     private sealed record TermSnapshot(DateTime StartUtc, int Capacity, int SeatsTaken)
     {
