@@ -95,18 +95,18 @@
                             <a class="nav-link" asp-area="" asp-page="/Privacy" aria-current="@(currentPage == "/Privacy" ? "page" : null)">@T["Nav.Privacy"]</a>
                         </li>
                     </ul>
-                    <ul class="navbar-nav ms-auto align-items-center gap-3 mb-2 mb-lg-0">
+                    <ul class="navbar-nav navbar-actions ms-lg-auto align-items-lg-center gap-3 mb-2 mb-lg-0 flex-column flex-lg-row">
                         @if (canAccessAdmin)
                         {
                             <li class="nav-item">
-                                <a class="nav-link d-flex align-items-center gap-1" asp-page="/Admin/Dashboard/Index">
+                                <a class="nav-link d-flex align-items-center gap-1 justify-content-center justify-content-lg-start" asp-page="/Admin/Dashboard/Index">
                                     <i class="bi bi-speedometer2"></i>
                                     <span>@Localizer["AdminDashboard"]</span>
                                 </a>
                             </li>
                         }
                         <li class="nav-item">
-                            <button type="button" class="btn btn-outline-light d-flex align-items-center justify-content-center gap-2 theme-toggle"
+                            <button type="button" class="btn btn-outline-light d-flex align-items-center justify-content-center gap-2 theme-toggle btn-nav-action"
                                     data-theme-toggle aria-pressed="false" aria-label='@themeToggleText'
                                     title='@themeToggleText'>
                                 <i class="bi bi-sun-fill" data-theme-icon="light" aria-hidden="true"></i>
@@ -115,25 +115,24 @@
                             </button>
                         </li>
                         <li class="nav-item">
-                            <a class="btn btn-outline-light ms-2" data-bs-toggle="offcanvas" href="#advisor" role="button" aria-controls="advisor" aria-haspopup="dialog">
-                                <i class="bi bi-magic"></i> @Localizer["AdvisorButton"]
+                            <a class="btn btn-outline-light d-flex align-items-center justify-content-center gap-2 btn-nav-action" data-bs-toggle="offcanvas" href="#advisor" role="button" aria-controls="advisor" aria-haspopup="dialog">
+                                <i class="bi bi-magic"></i>
+                                <span>@Localizer["AdvisorButton"]</span>
                             </a>
                         </li>
-                        <li class="nav-item d-flex align-items-center">
-                            <i class="bi bi-translate text-white me-2" aria-hidden="true"></i>
+                        <li class="nav-item">
                             @await Html.PartialAsync("_LanguageSwitcher")
                         </li>
                         @if (!User.Identity.IsAuthenticated)
                         {
                             <li class="nav-item">
                                 <button type="button"
-                                        class="btn btn-outline-light"
+                                        class="btn btn-outline-light btn-nav-action"
                                         data-bs-toggle="modal"
                                         data-bs-target="#authModal"
                                         aria-controls="authModal"
                                         aria-haspopup="dialog"
                                         aria-expanded="false">
-                                <button type="button" class="btn btn-outline-light" data-bs-toggle="modal" data-bs-target="#authModal">
                                     @T["LoginRegister"]
                                 </button>
                             </li>
@@ -141,9 +140,9 @@
                         else
                         {
                             <li class="nav-item dropdown">
-                                <a class="btn btn-outline-light dropdown-toggle" href="#" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                                <button class="btn btn-outline-light dropdown-toggle text-start text-lg-center btn-nav-action" data-bs-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false">
                                     @User.Identity?.Name
-                                </a>
+                                </button>
                                 <ul class="dropdown-menu dropdown-menu-end" role="menu" aria-label='@Localizer["AccountMenuLabel"]'>
                                     <li role="none"><a class="dropdown-item" asp-page="/Account/Manage" role="menuitem">@Localizer["ProfileOverview"]</a></li>
                                     <li role="none"><a class="dropdown-item" href="/Account/Manage#upcoming-courses" role="menuitem">@Localizer["UpcomingCourses"]</a></li>
@@ -155,27 +154,12 @@
                             </li>
                         }
                         <li class="nav-item">
-                            <a class="nav-link position-relative @(currentPage == "/Cart" ? "active" : null)" asp-area="" asp-page="/Cart" aria-label='@Localizer["CartAriaLabel"]'>
+                            <a class="nav-link position-relative text-center @(currentPage == "/Cart" ? "active" : null)" asp-area="" asp-page="/Cart" aria-label='@Localizer["CartAriaLabel"]'>
                                 <i class="bi bi-cart fs-5"></i>
                                 <span class="visually-hidden">@Localizer["Cart"]</span>
                             </a>
                         </li>
                     </ul>
-                    <div class="d-flex align-items-center gap-3">
-                        <partial name="_LanguageSwitcher" />
-                        @if (!User.Identity.IsAuthenticated)
-                        {
-                            <button type="button"
-                                    class="btn btn-outline-light ms-2"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#authModal"
-                                    aria-controls="authModal"
-                                    aria-haspopup="dialog"
-                                    aria-expanded="false">
-                                @T["LoginRegister"]
-                            </button>
-                        }
-                    </div>
                 </div>
             </div>
         </nav>
