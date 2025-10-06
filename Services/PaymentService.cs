@@ -7,6 +7,7 @@ using Stripe.Checkout;
 using SysJaky_N.Data;
 using SysJaky_N.Models;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Security.Cryptography;
 
 namespace SysJaky_N.Services;
@@ -43,6 +44,15 @@ public class PaymentService
 
         var service = new SessionService();
         var successUrlWithSessionId = QueryHelpers.AddQueryString(successUrl, "session_id", "{CHECKOUT_SESSION_ID}");
+
+        const string currency = "czk";
+        var metadata = new Dictionary<string, string>
+        {
+            { "orderId", order.Id.ToString(CultureInfo.InvariantCulture) }
+        };
+
+        var amount = (long)Math.Round(order.Total * 100m, MidpointRounding.AwayFromZero);
+
         var sessionOptions = new SessionCreateOptions
         {
             Mode = "payment",
@@ -54,8 +64,8 @@ public class PaymentService
                 {
                     PriceData = new SessionLineItemPriceDataOptions
                     {
-                        Currency = "czk",
-                        UnitAmountDecimal = order.Total * 100m,
+                        Currency = currency,
+                        UnitAmount = amount,
                         ProductData = new SessionLineItemPriceDataProductDataOptions
                         {
                             Name = $"Order {order.Id}"
@@ -64,10 +74,7 @@ public class PaymentService
                     Quantity = 1
                 }
             },
-            Metadata = new Dictionary<string, string>
-            {
-                { "orderId", order.Id.ToString() }
-            }
+            Metadata = metadata
         };
 
         var session = await service.CreateAsync(sessionOptions);
