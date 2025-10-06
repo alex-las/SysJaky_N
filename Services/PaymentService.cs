@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -41,10 +42,11 @@ public class PaymentService
             return null;
 
         var service = new SessionService();
+        var successUrlWithSessionId = QueryHelpers.AddQueryString(successUrl, "session_id", "{CHECKOUT_SESSION_ID}");
         var sessionOptions = new SessionCreateOptions
         {
             Mode = "payment",
-            SuccessUrl = successUrl + "?session_id={CHECKOUT_SESSION_ID}",
+            SuccessUrl = successUrlWithSessionId,
             CancelUrl = cancelUrl,
             LineItems = new List<SessionLineItemOptions>
             {
