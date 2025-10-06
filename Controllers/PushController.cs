@@ -2,9 +2,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text.Json;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using SysJaky_N.Authorization;
 using SysJaky_N.Models;
 using SysJaky_N.Services;
 using WebPush;
@@ -71,6 +73,7 @@ public class PushController : ControllerBase
     }
 
     [HttpPost("notify")]
+    [Authorize(Policy = AuthorizationPolicies.AdminDashboardAccess)]
     public async Task<IActionResult> Notify([FromBody] PushMessageRequest request, CancellationToken cancellationToken)
     {
         if (request is null || string.IsNullOrWhiteSpace(request.Body))
