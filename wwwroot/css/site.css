@@ -1952,3 +1952,60 @@ footer.app-footer a:focus {
   .course-card__image{ transition:none; }
   .course-card__wishlist{ transition:none; }
 }
+
+.navbar-actions {
+  width: 100%;
+}
+
+.navbar-actions > .nav-item {
+  width: 100%;
+}
+
+.navbar-actions > .nav-item .nav-link {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.navbar-actions .btn-nav-action {
+  width: 100%;
+}
+
+.navbar-actions .dropdown-menu {
+  width: 100%;
+  max-width: 100%;
+}
+
+.language-switcher {
+  width: 100%;
+}
+
+@media (min-width: 992px) {
+  .navbar-actions {
+    width: auto;
+  }
+
+  .navbar-actions > .nav-item {
+    width: auto;
+  }
+
+  .navbar-actions > .nav-item .nav-link {
+    width: auto;
+    justify-content: flex-start;
+  }
+
+  .navbar-actions .btn-nav-action {
+    width: auto;
+  }
+
+  .navbar-actions .dropdown-menu {
+    width: auto;
+    min-width: 12rem;
+  }
+
+  .language-switcher {
+    width: auto;
+  }
+}
+
