@@ -3,44 +3,44 @@
     <div class="modal-dialog modal-lg modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="coursePreviewModalLabel" data-course-modal="title">Název kurzu</h5>
+                <h5 class="modal-title" id="coursePreviewModalLabel" data-course-modal="title">@Localizer["CourseTitle"]</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="@Localizer["Close"]"></button>
             </div>
             <div class="modal-body">
                 <p class="text-muted mb-3" data-course-modal="subtitle"></p>
                 <dl class="row g-3">
                     <div class="col-sm-6">
-                        <dt>Začátek</dt>
+                        <dt>@Localizer["StartLabel"]</dt>
                         <dd data-course-modal="start"></dd>
                     </div>
                     <div class="col-sm-6">
-                        <dt>Konec</dt>
+                        <dt>@Localizer["EndLabel"]</dt>
                         <dd data-course-modal="end"></dd>
                     </div>
                     <div class="col-sm-6">
-                        <dt>Město</dt>
+                        <dt>@Localizer["CityLabel"]</dt>
                         <dd data-course-modal="city"></dd>
                     </div>
                     <div class="col-sm-6">
-                        <dt>Režim</dt>
+                        <dt>@Localizer["ModeLabel"]</dt>
                         <dd data-course-modal="mode"></dd>
                     </div>
                     <div class="col-12">
-                        <dt>Popis</dt>
+                        <dt>@Localizer["DescriptionLabel"]</dt>
                         <dd data-course-modal="description" class="mb-0"></dd>
                     </div>
                     <div class="col-12">
-                        <dt>Dostupnost</dt>
+                        <dt>@Localizer["AvailabilityLabel"]</dt>
                         <dd data-course-modal="availability"></dd>
                     </div>
                 </dl>
                 <div class="d-flex flex-wrap gap-2" data-course-modal="badges"></div>
             </div>
             <div class="modal-footer flex-wrap gap-2">
-                <a class="btn btn-outline-secondary me-auto" data-course-modal="details-link" href="#" target="_blank" rel="noopener">Detail kurzu</a>
+                <a class="btn btn-outline-secondary me-auto" data-course-modal="details-link" href="#" target="_blank" rel="noopener">@Localizer["CourseDetails"]</a>
                 <div class="btn-group" role="group">
-                    <button type="button" class="btn btn-primary" data-course-modal="google">Přidat do Google kalendáře</button>
-                    <button type="button" class="btn btn-outline-primary" data-course-modal="ics">Exportovat ICS</button>
+                    <button type="button" class="btn btn-primary" data-course-modal="google">@Localizer["AddToGoogleCalendar"]</button>
+                    <button type="button" class="btn btn-outline-primary" data-course-modal="ics">@Localizer["ExportIcs"]</button>
                 </div>
             </div>
         </div>
