@@ -1,0 +1,11 @@
+{
+  "name": "sysjaky_n",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build:assets": "node build-assets.mjs"
+  },
+  "devDependencies": {
+    "esbuild": "^0.24.0"
+  }
+}
