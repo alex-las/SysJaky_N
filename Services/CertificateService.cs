@@ -25,7 +25,12 @@ public class CertificateOptions
     public string Title { get; set; } = "Certifikát o absolvování";
 }
 
-public class CertificateService
+public interface ICertificateService
+{
+    Task<int> IssueCertificatesForCompletedEnrollmentsAsync(CancellationToken cancellationToken = default);
+}
+
+public class CertificateService : ICertificateService
 {
     private readonly ApplicationDbContext _context;
     private readonly IConverter _converter;
