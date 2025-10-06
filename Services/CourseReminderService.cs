@@ -9,9 +9,15 @@ namespace SysJaky_N.Services;
 
 public class CourseReminderService : ScopedRecurringBackgroundService<CourseReminderService>
 {
-    public CourseReminderService(IServiceScopeFactory scopeFactory, ILogger<CourseReminderService> logger)
+    private readonly TimeProvider _timeProvider;
+
+    public CourseReminderService(
+        IServiceScopeFactory scopeFactory,
+        ILogger<CourseReminderService> logger,
+        TimeProvider timeProvider)
         : base(scopeFactory, logger, RecurringSchedule.FixedDelay(TimeSpan.FromDays(1)))
     {
+        _timeProvider = timeProvider ?? throw new ArgumentNullException(nameof(timeProvider));
     }
 
     protected override string FailureMessage => "Error sending course reminders";
@@ -20,11 +26,12 @@ public class CourseReminderService : ScopedRecurringBackgroundService<CourseRemi
     {
         var context = serviceProvider.GetRequiredService<ApplicationDbContext>();
         var emailSender = serviceProvider.GetRequiredService<IEmailSender>();
-        var certificateService = serviceProvider.GetRequiredService<CertificateService>();
+        var certificateService = serviceProvider.GetRequiredService<ICertificateService>();
 
-        var today = DateTime.UtcNow.Date;
+        var today = _timeProvider.GetUtcNow().UtcDateTime.Date;
         var courses = await context.Courses
-            .Where(c => c.ReminderDays > 0 && c.Date.Date == today.AddDays(c.ReminderDays))
+            .Where(c => c.ReminderDays > 0)
+            .Where(c => EF.Functions.DateDiffDay(today, c.Date) == c.ReminderDays)
             .ToListAsync(stoppingToken);
 
         foreach (var course in courses)

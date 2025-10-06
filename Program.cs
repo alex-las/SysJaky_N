@@ -214,6 +214,7 @@ try
     builder.Services.AddScoped<PaymentService>();
     builder.Services.AddSingleton<ICourseSearchOptionProvider, CourseSearchOptionProvider>();
     builder.Services.AddSingleton<IConverter>(sp => new SynchronizedConverter(new PdfTools()));
+    builder.Services.AddSingleton(TimeProvider.System);
     builder.Services.AddSingleton<IRazorLightEngine>(sp =>
     {
         var environment = sp.GetRequiredService<IHostEnvironment>();
@@ -233,7 +234,7 @@ try
     builder.Services.AddScoped<ICourseEditor, CourseEditor>();
     builder.Services.AddScoped<CartService>();
     builder.Services.Configure<CertificateOptions>(builder.Configuration.GetSection("Certificates"));
-    builder.Services.AddScoped<CertificateService>();
+    builder.Services.AddScoped<ICertificateService, CertificateService>();
     builder.Services.AddHostedService<CourseReminderService>();
     builder.Services.AddHostedService<SalesStatsService>();
     builder.Services.AddHostedService<CourseReviewRequestService>();
