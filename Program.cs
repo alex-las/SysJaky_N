@@ -29,7 +29,6 @@ using System.Security.Claims;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.ResponseCompression;
-using Serilog.Extensions.Logging;
 using CompressionLevel = System.IO.Compression.CompressionLevel;
 using System.Globalization;
 
@@ -311,9 +310,6 @@ try
                 });
         });
     });
-
-    using var bundlerLoggerFactory = new SerilogLoggerFactory(Log.Logger);
-    StaticAssetBundler.Build(builder.Environment, bundlerLoggerFactory.CreateLogger(nameof(StaticAssetBundler)));
 
     var app = builder.Build();
 

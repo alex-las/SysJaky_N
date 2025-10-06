@@ -21,7 +21,6 @@
     <PackageReference Include="DinkToPdf" Version="1.0.8" />
     <PackageReference Include="MailKit" Version="4.14.0" />
     <PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
-    <PackageReference Include="Serilog.Extensions.Logging" Version="9.0.2" />
     <PackageReference Include="Serilog.Settings.Configuration" Version="9.0.0" />
     <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
     <PackageReference Include="RazorLight" Version="2.3.1" />
@@ -36,4 +35,10 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
   </ItemGroup>
+
+  <Target Name="BuildStaticAssets" BeforeTargets="Build" Condition="'$(NpmSkipStaticAssets)' != 'true'">
+    <Message Importance="high" Text="Bundling static web assets with npm" />
+    <Exec Command="npm install --no-audit --no-fund --silent" WorkingDirectory="$(ProjectDir)" />
+    <Exec Command="npm run build:assets --silent" WorkingDirectory="$(ProjectDir)" />
+  </Target>
 </Project>
