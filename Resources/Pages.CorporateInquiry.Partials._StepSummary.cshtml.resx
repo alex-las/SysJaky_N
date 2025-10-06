@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Step4Title" xml:space="preserve">
+    <value>Krok 4 – Shrnutí</value>
+  </data>
+  <data name="Step4Description" xml:space="preserve">
+    <value>Zkontrolujte zadané údaje a odešlete poptávku.</value>
+  </data>
+  <data name="SummaryTitle" xml:space="preserve">
+    <value>Rekapitulace poptávky</value>
+  </data>
+  <data name="SummaryServiceType" xml:space="preserve">
+    <value>Typ služby</value>
+  </data>
+  <data name="SummaryTrainingTypes" xml:space="preserve">
+    <value>ISO normy</value>
+  </data>
+  <data name="SummaryParticipantCount" xml:space="preserve">
+    <value>Počet účastníků</value>
+  </data>
+  <data name="SummaryPreferredDate" xml:space="preserve">
+    <value>Preferovaný termín</value>
+  </data>
+  <data name="SummaryMode" xml:space="preserve">
+    <value>Režim</value>
+  </data>
+  <data name="SummaryTrainingLevel" xml:space="preserve">
+    <value>Úroveň školení</value>
+  </data>
+  <data name="SummaryLocation" xml:space="preserve">
+    <value>Lokalita</value>
+  </data>
+  <data name="SummarySpecialRequirements" xml:space="preserve">
+    <value>Speciální požadavky</value>
+  </data>
+  <data name="SummaryCompanyId" xml:space="preserve">
+    <value>IČO</value>
+  </data>
+  <data name="SummaryCompanyName" xml:space="preserve">
+    <value>Název společnosti</value>
+  </data>
+  <data name="SummaryContactPerson" xml:space="preserve">
+    <value>Kontaktní osoba</value>
+  </data>
+  <data name="SummaryContactEmail" xml:space="preserve">
+    <value>E-mail</value>
+  </data>
+  <data name="SummaryContactPhone" xml:space="preserve">
+    <value>Telefon</value>
+  </data>
+  <data name="SummaryPrice" xml:space="preserve">
+    <value>Odhadovaná cena</value>
+  </data>
+  <data name="SummaryPlaceholder" xml:space="preserve">
+    <value>Nezadáno</value>
+  </data>
+  <data name="PriceUnavailable" xml:space="preserve">
+    <value>Doplnit údaje</value>
+  </data>
+</root>
