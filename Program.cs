@@ -26,7 +26,7 @@ using RazorLight;
 using Microsoft.Extensions.Hosting;
 using System.IO;
 using System.Security.Claims;
-using Microsoft.Extensions.Logging.Abstractions; // kvůli NullLoggerFactory
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.ResponseCompression;
 using Serilog.Extensions.Logging;
@@ -73,10 +73,22 @@ try
         }
 
         options.UseMySql(connectionString!, serverVersion);
+
         if (quietLogging)
         {
-            options.UseLoggerFactory(NullLoggerFactory.Instance); // vypne EF logování z tohoto contextu
-            options.EnableDetailedErrors(false).EnableSensitiveDataLogging(false);
+            options.ConfigureWarnings(warnings =>
+            {
+                warnings.Ignore(RelationalEventId.CommandExecuting);
+                warnings.Ignore(RelationalEventId.CommandExecuted);
+            });
+
+            options.EnableDetailedErrors(false);
+            options.EnableSensitiveDataLogging(false);
+        }
+        else if (builder.Environment.IsDevelopment())
+        {
+            options.EnableDetailedErrors();
+            options.EnableSensitiveDataLogging();
         }
     }
 
@@ -85,13 +97,8 @@ try
         ConfigureApplicationDbContext(options));
 
     // --- Tichá továrna pro DB sink (žádné EF logy) ---
-    builder.Services.AddSingleton<IDbContextFactory<ApplicationDbContext>>(_ =>
-        new DelegateDbContextFactory<ApplicationDbContext>(() =>
-        {
-            var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
-            ConfigureApplicationDbContext(optionsBuilder, quietLogging: true);
-            return new ApplicationDbContext(optionsBuilder.Options);
-        }));
+    builder.Services.AddDbContextFactory<ApplicationDbContext>(options =>
+        ConfigureApplicationDbContext(options, quietLogging: true));
 
     // --- Serilog s možností vypnout DB sink přes DISABLE_DB_LOGS=1 ---
     builder.Host.UseSerilog((context, services, configuration) =>
