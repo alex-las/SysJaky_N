@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Home.Hero.Title" xml:space="preserve">
+    <value>Find the ideal training</value>
+  </data>
+  <data name="Home.Hero.Subtitle" xml:space="preserve">
+    <value>Courses, consulting and auditing in one place</value>
+  </data>
+  <data name="Home.Hero.PrimaryCta" xml:space="preserve">
+    <value>Course overview</value>
+  </data>
+  <data name="Home.Hero.SecondaryCta" xml:space="preserve">
+    <value>Request a quote</value>
+  </data>
+  <data name="Home.Hero.SearchPlaceholder" xml:space="preserve">
+    <value>Search for a course, standard or city…</value>
+  </data>
+  <data name="Home.Hero.Search.Placeholder" xml:space="preserve">
+    <value>Search for a course, tool, or skill…</value>
+  </data>
+  <data name="Home.Hero.Search.AriaLabel" xml:space="preserve">
+    <value>Search courses</value>
+  </data>
+  <data name="Home.Hero.Search.Label" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="Home.Hero.Search.Submit" xml:space="preserve">
+    <value>Suggest courses</value>
+  </data>
+  <data name="Home.Hero.Usp1" xml:space="preserve">
+    <value>20+ years of experience in management systems</value>
+  </data>
+  <data name="Home.Hero.Usp2" xml:space="preserve">
+    <value>Certified courses with recognized credentials</value>
+  </data>
+  <data name="Home.Hero.Usp3" xml:space="preserve">
+    <value>Training on-site, online or directly at your company</value>
+  </data>
+  <data name="Home.Hero.Persona.Label" xml:space="preserve">
+    <value>Select your role in the quality system</value>
+  </data>
+  <data name="Home.Hero.Persona.Help" xml:space="preserve">
+    <value>Helps us tailor course suggestions. For example, quality manager or internal auditor.</value>
+  </data>
+  <data name="Home.Hero.Goal.Label" xml:space="preserve">
+    <value>Which goal do you want to achieve by meeting the standards?</value>
+  </data>
+  <data name="Home.Hero.Goal.Help" xml:space="preserve">
+    <value>Tell us what you want to achieve with the training. For example, process improvement or accreditation preparation.</value>
+  </data>
+  <data name="Home.Hero.Chip.Online" xml:space="preserve">
+    <value>Online</value>
+  </data>
+  <data name="Home.Hero.Chip.Retraining" xml:space="preserve">
+    <value>Re-examination</value>
+  </data>
+  <data name="Home.Hero.Chip.Certificate" xml:space="preserve">
+    <value>Certification</value>
+  </data>
+  <data name="Home.Hero.Chip.Accreditation" xml:space="preserve">
+    <value>Accreditation preparation</value>
+  </data>
+  <data name="Home.Hero.Chip.InternalAudits" xml:space="preserve">
+    <value>Internal audits</value>
+  </data>
+  <data name="Home.Hero.Chip.Beginner" xml:space="preserve">
+    <value>Beginner</value>
+  </data>
+  <data name="Home.Hero.Chip.Prague" xml:space="preserve">
+    <value>Prague</value>
+  </data>
+  <data name="Home.Hero.Chips.Online" xml:space="preserve">
+    <value>Online</value>
+  </data>
+  <data name="Home.Hero.Chips.Retraining" xml:space="preserve">
+    <value>Retraining</value>
+  </data>
+  <data name="Home.Hero.Chips.Certificate" xml:space="preserve">
+    <value>With certificate</value>
+  </data>
+  <data name="Home.Hero.Chips.Accreditation" xml:space="preserve">
+    <value>Accreditation preparation</value>
+  </data>
+  <data name="Home.Hero.Chips.InternalAudits" xml:space="preserve">
+    <value>Internal audits</value>
+  </data>
+  <data name="Home.Hero.Chips.Beginner" xml:space="preserve">
+    <value>Beginner</value>
+  </data>
+  <data name="Home.Hero.Chips.Prague" xml:space="preserve">
+    <value>Prague</value>
+  </data>
+</root>
