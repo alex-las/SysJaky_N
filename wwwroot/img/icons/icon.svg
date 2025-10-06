@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">SysJaky Logo</title>
+  <desc id="desc">Stylized S letter inside a rounded square</desc>
+  <defs>
+    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2563eb" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#gradient)" />
+  <path fill="#f8fafc" d="M342.4 132c-40.5 0-67 10.9-97.8 24-28.8 12.3-59.4 25.4-113.2 25.4-10.1 0-20.5-.5-31.4-1.6l-18.5 64.9c22 6.8 45.2 10.2 69.5 10.2 53.7 0 84.1-12.9 112.7-25.1 29-12.5 56.3-24.2 98.7-24.2 18.1 0 34.5 2.2 49.4 6.2l18.7-65.6c-17.7-9-48.4-14.2-87.1-14.2Zm-172.8 149.2c-29 12.5-56.3 24.2-98.7 24.2-18.1 0-34.5-2.2-49.4-6.2L3 364.8c17.7 9 48.4 14.2 87.1 14.2 40.5 0 67-10.9 97.8-24 28.8-12.3 59.4-25.4 113.2-25.4 10.1 0 20.5.5 31.4 1.6l18.5-64.9c-22-6.8-45.2-10.2-69.5-10.2-53.7 0-84.1 12.9-112.7 25.1Z" />
+</svg>

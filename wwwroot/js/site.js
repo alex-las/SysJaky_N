@@ -448,22 +448,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 },
                 {
                     threshold: 0.2,
-
                     rootMargin: revealRootMargin
-
-                    rootMargin: '-12% 0px -12% 0px'
-                    const marginTop = '-12%';
-                    const marginRight = '0px';
-                    const marginBottom = '-12%';
-                    const marginLeft = '0px';
-
-                    const rootMargin = [marginTop, marginRight, marginBottom, marginLeft].join(' ');
-
-                    const observer = new IntersectionObserver(callback, {
-                      threshold: [0.25, 0.5, 0.75],
-                      rootMargin: rootMargin // např. '-12% 0px -12% 0px'
-                    });
-
                 }
             );
 

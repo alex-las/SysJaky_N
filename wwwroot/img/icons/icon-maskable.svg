@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">SysJaky Maskable Icon</title>
+  <desc id="desc">Maskable variant of the SysJaky logo</desc>
+  <defs>
+    <linearGradient id="maskGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1d4ed8" />
+      <stop offset="100%" stop-color="#0b1120" />
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" fill="url(#maskGradient)" />
+  <path fill="#f8fafc" d="M364.2 118.1c-47.9 0-77.3 12.9-110.3 28.4-31.3 14.4-64.2 29.6-122.4 29.6-12.4 0-25.3-.8-38.9-2.3l-22.9 80.5c26.1 8.5 53.6 12.7 82.3 12.7 58.1 0 94.4-15.7 125.2-29.4 31.3-14 60.8-27.2 106.5-27.2 21.9 0 41.8 2.6 59.9 7.3l22.9-80.5c-20.6-12.1-56-18.1-102.3-18.1Zm-197.4 181.1c-31.3 14-60.8 27.2-106.5 27.2-21.9 0-41.8-2.6-59.9-7.3L2 399.6c20.6 12.1 56 18.1 102.3 18.1 47.9 0 77.3-12.9 110.3-28.4 31.3-14.4 64.2-29.6 122.4-29.6 12.4 0 25.3.8 38.9 2.3l22.9-80.5c-26.1-8.5-53.6-12.7-82.3-12.7-58.1 0-94.4 15.7-125.2 29.4Z" />
+</svg>
