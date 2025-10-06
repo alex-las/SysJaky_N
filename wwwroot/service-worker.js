@@ -113,7 +113,11 @@ self.addEventListener('install', (event) => {
     event.waitUntil(
         (async () => {
             const cache = await caches.open(STATIC_CACHE);
-            await cache.addAll(PRECACHE_URLS);
+            try {
+                await cache.addAll(PRECACHE_URLS);
+            } catch (error) {
+                console.warn('Precaching failed', error);
+            }
             await self.skipWaiting();
         })()
     );
@@ -273,14 +277,14 @@ self.addEventListener('push', (event) => {
     const title = payload.title || 'SysJaky';
     const options = {
         body: payload.body,
-        icon: '/img/icons/icon-192.png',
-        badge: '/img/icons/icon-192.png',
+        icon: '/img/icons/icon.svg',
+        badge: '/img/icons/icon.svg',
         data: {
             url: payload.url || '/',
             tag: payload.tag || 'sysjaky-notification'
         },
         actions: payload.actions || [
-            { action: 'open', title: 'Otevřít', icon: '/img/icons/icon-192.png' }
+            { action: 'open', title: 'Otevřít', icon: '/img/icons/icon.svg' }
         ]
     };
 
