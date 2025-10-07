@@ -32,7 +32,8 @@ public class CourseReminderService : ScopedRecurringBackgroundService<CourseRemi
         var todayDateTime = today.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc);
         var courses = await context.Courses
             .Where(c => c.ReminderDays > 0)
-            .Where(c => EF.Functions.DateDiffDay(todayDateTime, c.Date) == c.ReminderDays)
+            .Where(c => c.Date >= todayDateTime.AddDays(c.ReminderDays)
+                && c.Date < todayDateTime.AddDays(c.ReminderDays + 1))
             .ToListAsync(stoppingToken);
 
         foreach (var course in courses)
