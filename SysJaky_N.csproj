@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
+    <DefaultItemExcludes>$(DefaultItemExcludes);SysJaky_N.Tests/**</DefaultItemExcludes>
   </PropertyGroup>
 
   <ItemGroup>

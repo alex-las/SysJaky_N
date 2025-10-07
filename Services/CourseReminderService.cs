@@ -28,12 +28,27 @@ public class CourseReminderService : ScopedRecurringBackgroundService<CourseRemi
         var emailSender = serviceProvider.GetRequiredService<IEmailSender>();
         var certificateService = serviceProvider.GetRequiredService<ICertificateService>();
 
-        var today = DateOnly.FromDateTime(_timeProvider.GetUtcNow().UtcDateTime);
-        var todayDateTime = today.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc);
-        var courses = await context.Courses
-            .Where(c => c.ReminderDays > 0)
-            .Where(c => EF.Functions.DateDiffDay(todayDateTime, c.Date) == c.ReminderDays)
-            .ToListAsync(stoppingToken);
+        var todayUtc = _timeProvider.GetUtcNow().UtcDateTime.Date;
+        var todayDateTime = DateTime.SpecifyKind(todayUtc, DateTimeKind.Unspecified);
+
+        var eligibleCourses = context.Courses
+            .Where(c => c.ReminderDays > 0);
+
+        List<Course> courses;
+        if (context.Database.IsRelational())
+        {
+            courses = await eligibleCourses
+                .Where(c => EF.Functions.DateDiffDay(todayDateTime, c.Date) == c.ReminderDays)
+                .ToListAsync(stoppingToken);
+        }
+        else
+        {
+            var todayDateOnly = DateOnly.FromDateTime(todayDateTime);
+            var materializedCourses = await eligibleCourses.ToListAsync(stoppingToken);
+            courses = materializedCourses
+                .Where(c => DateOnly.FromDateTime(c.Date).DayNumber - todayDateOnly.DayNumber == c.ReminderDays)
+                .ToList();
+        }
 
         foreach (var course in courses)
         {

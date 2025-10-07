@@ -5,50 +5,20 @@ using Microsoft.Extensions.Logging;
 using SysJaky_N.Data;
 using SysJaky_N.Models;
 using SysJaky_N.Services;
+using Xunit;
 
-public static class TestHarness
+namespace SysJaky_N.Tests;
+
+public class CourseReminderServiceTests
 {
-    public static async Task<int> Main()
-    {
-        var tester = new CourseReminderServiceTester();
-        return await tester.RunAsync();
-    }
-}
-
-internal sealed class CourseReminderServiceTester
-{
-    public async Task<int> RunAsync()
-    {
-        var tests = new (string Name, Func<Task> Execute)[]
-        {
-            ("Course reminders respect different time zones", RunCourseSelectionTestAsync),
-            ("Course reminders avoid client-side evaluation warnings", RunClientEvaluationWarningTestAsync)
-        };
-
-        var success = true;
-        foreach (var (name, execute) in tests)
-        {
-            try
-            {
-                await execute();
-                Console.WriteLine($"[PASS] {name}");
-            }
-            catch (Exception ex)
-            {
-                success = false;
-                Console.Error.WriteLine($"[FAIL] {name}: {ex.Message}");
-            }
-        }
-
-        return success ? 0 : 1;
-    }
-
-    private static async Task RunCourseSelectionTestAsync()
+    [Fact]
+    public async Task SendsRemindersForCoursesRegardlessOfDateKind()
     {
         var timeProvider = new ManualTimeProvider(new DateTimeOffset(2024, 5, 10, 6, 0, 0, TimeSpan.Zero));
         var emailSender = new RecordingEmailSender();
         var certificateService = new StubCertificateService();
         var logProvider = new CapturingLoggerProvider();
+
         using var loggerFactory = LoggerFactory.Create(builder =>
         {
             builder.AddProvider(logProvider);
@@ -65,10 +35,18 @@ internal sealed class CourseReminderServiceTester
 
         await SeedCoursesForSelectionTestAsync(provider);
 
-        var service = new TestableCourseReminderService(new NoopScopeFactory(), loggerFactory.CreateLogger<CourseReminderService>(), timeProvider);
+        var service = new TestableCourseReminderService(
+            new NoopScopeFactory(),
+            loggerFactory.CreateLogger<CourseReminderService>(),
+            timeProvider);
+
         await service.InvokeExecuteInScopeAsync(provider, CancellationToken.None);
 
-        var recipients = emailSender.SentMessages.Select(m => m.To).OrderBy(e => e).ToArray();
+        var recipients = emailSender.SentMessages
+            .Select(m => m.To)
+            .OrderBy(e => e)
+            .ToArray();
+
         var expectedRecipients = new[]
         {
             "local@example.com",
@@ -76,28 +54,19 @@ internal sealed class CourseReminderServiceTester
             "utc@example.com"
         };
 
-        if (!recipients.SequenceEqual(expectedRecipients))
-        {
-            throw new InvalidOperationException($"Unexpected recipients: {string.Join(", ", recipients)}");
-        }
-
-        if (certificateService.InvocationCount != 1)
-        {
-            throw new InvalidOperationException($"Certificate service should be invoked once, but was called {certificateService.InvocationCount} times.");
-        }
-
-        if (emailSender.SentMessages.Any(m => m.Template != EmailTemplate.CourseReminder))
-        {
-            throw new InvalidOperationException("Unexpected email template used for course reminders.");
-        }
+        Assert.Equal(expectedRecipients, recipients);
+        Assert.Equal(1, certificateService.InvocationCount);
+        Assert.All(emailSender.SentMessages, m => Assert.Equal(EmailTemplate.CourseReminder, m.Template));
     }
 
-    private static async Task RunClientEvaluationWarningTestAsync()
+    [Fact]
+    public async Task QueryDoesNotTriggerClientEvaluationWarnings()
     {
         var timeProvider = new ManualTimeProvider(new DateTimeOffset(2024, 6, 1, 12, 0, 0, TimeSpan.Zero));
         var emailSender = new RecordingEmailSender();
         var certificateService = new StubCertificateService();
         var logProvider = new CapturingLoggerProvider();
+
         using var loggerFactory = LoggerFactory.Create(builder =>
         {
             builder.AddProvider(logProvider);
@@ -114,7 +83,11 @@ internal sealed class CourseReminderServiceTester
 
         await SeedSingleReminderCourseAsync(provider);
 
-        var service = new TestableCourseReminderService(new NoopScopeFactory(), loggerFactory.CreateLogger<CourseReminderService>(), timeProvider);
+        var service = new TestableCourseReminderService(
+            new NoopScopeFactory(),
+            loggerFactory.CreateLogger<CourseReminderService>(),
+            timeProvider);
+
         await service.InvokeExecuteInScopeAsync(provider, CancellationToken.None);
 
         var problematicLogs = logProvider.Entries
@@ -125,11 +98,7 @@ internal sealed class CourseReminderServiceTester
                 || entry.Message.Contains("evaluated locally", StringComparison.OrdinalIgnoreCase))
             .ToList();
 
-        if (problematicLogs.Count > 0)
-        {
-            var messages = string.Join(Environment.NewLine, problematicLogs.Select(l => $"[{l.Level}] {l.Category}: {l.Message}"));
-            throw new InvalidOperationException($"Client evaluation warnings were logged:{Environment.NewLine}{messages}");
-        }
+        Assert.Empty(problematicLogs);
     }
 
     private static async Task SeedCoursesForSelectionTestAsync(IServiceProvider provider)
@@ -276,10 +245,7 @@ internal sealed class CourseReminderServiceTester
             _utcNow = utcNow;
         }
 
-        public void SetUtcNow(DateTimeOffset utcNow)
-        {
-            _utcNow = utcNow;
-        }
+        public void SetUtcNow(DateTimeOffset utcNow) => _utcNow = utcNow;
 
         public override DateTimeOffset GetUtcNow() => _utcNow;
     }
@@ -298,7 +264,7 @@ internal sealed class CourseReminderServiceTester
     private sealed class NoopScopeFactory : IServiceScopeFactory
     {
         public IServiceScope CreateScope()
-            => throw new NotSupportedException("Scope creation is not supported in the test harness.");
+            => throw new NotSupportedException("Scope creation is not supported in unit tests.");
     }
 
     private sealed class RecordingEmailSender : IEmailSender
@@ -325,6 +291,8 @@ internal sealed class CourseReminderServiceTester
         }
     }
 
+    private sealed record SentEmail(string To, EmailTemplate Template);
+
     private sealed class CapturingLoggerProvider : ILoggerProvider
     {
         private readonly ConcurrentBag<LogEntry> _entries = new();
@@ -337,8 +305,6 @@ internal sealed class CourseReminderServiceTester
         {
         }
     }
-
-    private sealed record SentEmail(string To, EmailTemplate Template);
 
     internal sealed record LogEntry(string Category, LogLevel Level, EventId EventId, string Message, Exception? Exception);
 
