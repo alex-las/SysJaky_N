@@ -93,7 +93,8 @@ try
 
     // --- Hlavní app DB context ---
     builder.Services.AddDbContext<ApplicationDbContext>(options =>
-        ConfigureApplicationDbContext(options));
+            ConfigureApplicationDbContext(options),
+        optionsLifetime: ServiceLifetime.Singleton);
 
     // --- Tichá továrna pro DB sink (žádné EF logy) ---
     builder.Services.AddDbContextFactory<ApplicationDbContext>(options =>
