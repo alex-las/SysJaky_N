@@ -1,7 +1,11 @@
 using System.Collections.Concurrent;
+using System.IO;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using SysJaky_N.Controllers;
 using SysJaky_N.Data;
 using SysJaky_N.Models;
 using SysJaky_N.Services;
@@ -22,7 +26,8 @@ internal sealed class CourseReminderServiceTester
         var tests = new (string Name, Func<Task> Execute)[]
         {
             ("Course reminders respect different time zones", RunCourseSelectionTestAsync),
-            ("Course reminders avoid client-side evaluation warnings", RunClientEvaluationWarningTestAsync)
+            ("Course reminders avoid client-side evaluation warnings", RunClientEvaluationWarningTestAsync),
+            ("Analytics dashboard aggregates sales using SQL grouping", RunAnalyticsAggregationTestAsync)
         };
 
         var success = true;
@@ -36,7 +41,7 @@ internal sealed class CourseReminderServiceTester
             catch (Exception ex)
             {
                 success = false;
-                Console.Error.WriteLine($"[FAIL] {name}: {ex.Message}");
+                Console.Error.WriteLine($"[FAIL] {name}: {ex}");
             }
         }
 
@@ -55,40 +60,53 @@ internal sealed class CourseReminderServiceTester
             builder.SetMinimumLevel(LogLevel.Debug);
         });
 
-        await using var provider = BuildServiceProvider(
-            databaseName: "CourseSelection",
-            timeProvider,
-            emailSender,
-            certificateService,
-            logProvider,
-            loggerFactory);
+        var databasePath = Path.Combine(Path.GetTempPath(), $"course-selection-{Guid.NewGuid():N}.db");
 
-        await SeedCoursesForSelectionTestAsync(provider);
-
-        var service = new TestableCourseReminderService(new NoopScopeFactory(), loggerFactory.CreateLogger<CourseReminderService>(), timeProvider);
-        await service.InvokeExecuteInScopeAsync(provider, CancellationToken.None);
-
-        var recipients = emailSender.SentMessages.Select(m => m.To).OrderBy(e => e).ToArray();
-        var expectedRecipients = new[]
+        try
         {
-            "local@example.com",
-            "unspecified@example.com",
-            "utc@example.com"
-        };
+            await using var provider = BuildServiceProvider(
+                databaseName: "CourseSelection",
+                timeProvider,
+                emailSender,
+                certificateService,
+                logProvider,
+                loggerFactory,
+                options => ConfigureSqlite(options, $"Data Source={databasePath};Cache=Shared"));
 
-        if (!recipients.SequenceEqual(expectedRecipients))
-        {
-            throw new InvalidOperationException($"Unexpected recipients: {string.Join(", ", recipients)}");
+            await SeedCoursesForSelectionTestAsync(provider);
+
+            var service = new TestableCourseReminderService(new NoopScopeFactory(), loggerFactory.CreateLogger<CourseReminderService>(), timeProvider);
+            await service.InvokeExecuteInScopeAsync(provider, CancellationToken.None);
+
+            var recipients = emailSender.SentMessages.Select(m => m.To).OrderBy(e => e).ToArray();
+            var expectedRecipients = new[]
+            {
+                "local@example.com",
+                "unspecified@example.com",
+                "utc@example.com"
+            };
+
+            if (!recipients.SequenceEqual(expectedRecipients))
+            {
+                throw new InvalidOperationException($"Unexpected recipients: {string.Join(", ", recipients)}");
+            }
+
+            if (certificateService.InvocationCount != 1)
+            {
+                throw new InvalidOperationException($"Certificate service should be invoked once, but was called {certificateService.InvocationCount} times.");
+            }
+
+            if (emailSender.SentMessages.Any(m => m.Template != EmailTemplate.CourseReminder))
+            {
+                throw new InvalidOperationException("Unexpected email template used for course reminders.");
+            }
         }
-
-        if (certificateService.InvocationCount != 1)
+        finally
         {
-            throw new InvalidOperationException($"Certificate service should be invoked once, but was called {certificateService.InvocationCount} times.");
-        }
-
-        if (emailSender.SentMessages.Any(m => m.Template != EmailTemplate.CourseReminder))
-        {
-            throw new InvalidOperationException("Unexpected email template used for course reminders.");
+            if (File.Exists(databasePath))
+            {
+                File.Delete(databasePath);
+            }
         }
     }
 
@@ -104,31 +122,172 @@ internal sealed class CourseReminderServiceTester
             builder.SetMinimumLevel(LogLevel.Debug);
         });
 
-        await using var provider = BuildServiceProvider(
-            databaseName: "ClientEvaluation",
-            timeProvider,
-            emailSender,
-            certificateService,
-            logProvider,
-            loggerFactory);
+        var evaluationDatabasePath = Path.Combine(Path.GetTempPath(), $"client-evaluation-{Guid.NewGuid():N}.db");
 
-        await SeedSingleReminderCourseAsync(provider);
-
-        var service = new TestableCourseReminderService(new NoopScopeFactory(), loggerFactory.CreateLogger<CourseReminderService>(), timeProvider);
-        await service.InvokeExecuteInScopeAsync(provider, CancellationToken.None);
-
-        var problematicLogs = logProvider.Entries
-            .Where(entry => entry.Level >= LogLevel.Warning)
-            .Where(entry => entry.Category.StartsWith("Microsoft.EntityFrameworkCore", StringComparison.Ordinal))
-            .Where(entry => entry.Message.Contains("client", StringComparison.OrdinalIgnoreCase)
-                || entry.Message.Contains("translated", StringComparison.OrdinalIgnoreCase)
-                || entry.Message.Contains("evaluated locally", StringComparison.OrdinalIgnoreCase))
-            .ToList();
-
-        if (problematicLogs.Count > 0)
+        try
         {
-            var messages = string.Join(Environment.NewLine, problematicLogs.Select(l => $"[{l.Level}] {l.Category}: {l.Message}"));
-            throw new InvalidOperationException($"Client evaluation warnings were logged:{Environment.NewLine}{messages}");
+            await using var provider = BuildServiceProvider(
+                databaseName: "ClientEvaluation",
+                timeProvider,
+                emailSender,
+                certificateService,
+                logProvider,
+                loggerFactory,
+                options => ConfigureSqlite(options, $"Data Source={evaluationDatabasePath};Cache=Shared"));
+
+            await SeedSingleReminderCourseAsync(provider);
+
+            var service = new TestableCourseReminderService(new NoopScopeFactory(), loggerFactory.CreateLogger<CourseReminderService>(), timeProvider);
+            await service.InvokeExecuteInScopeAsync(provider, CancellationToken.None);
+
+            var problematicLogs = logProvider.Entries
+                .Where(entry => entry.Level >= LogLevel.Warning)
+                .Where(entry => entry.Category.StartsWith("Microsoft.EntityFrameworkCore", StringComparison.Ordinal))
+                .Where(entry => entry.Message.Contains("client", StringComparison.OrdinalIgnoreCase)
+                    || entry.Message.Contains("translated", StringComparison.OrdinalIgnoreCase)
+                    || entry.Message.Contains("evaluated locally", StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+            if (problematicLogs.Count > 0)
+            {
+                var messages = string.Join(Environment.NewLine, problematicLogs.Select(l => $"[{l.Level}] {l.Category}: {l.Message}"));
+                throw new InvalidOperationException($"Client evaluation warnings were logged:{Environment.NewLine}{messages}");
+            }
+        }
+        finally
+        {
+            if (File.Exists(evaluationDatabasePath))
+            {
+                File.Delete(evaluationDatabasePath);
+            }
+        }
+    }
+
+    private static async Task RunAnalyticsAggregationTestAsync()
+    {
+        var timeProvider = new ManualTimeProvider(new DateTimeOffset(2024, 5, 3, 12, 0, 0, TimeSpan.Zero));
+        var emailSender = new RecordingEmailSender();
+        var certificateService = new StubCertificateService();
+        var logProvider = new CapturingLoggerProvider();
+        using var loggerFactory = LoggerFactory.Create(builder =>
+        {
+            builder.AddProvider(logProvider);
+            builder.SetMinimumLevel(LogLevel.Debug);
+        });
+
+        var databasePath = Path.Combine(Path.GetTempPath(), $"analytics-{Guid.NewGuid():N}.db");
+
+        try
+        {
+            await using var provider = BuildServiceProvider(
+                databaseName: "AnalyticsAggregation",
+                timeProvider,
+                emailSender,
+                certificateService,
+                logProvider,
+                loggerFactory,
+                options => ConfigureSqlite(options, $"Data Source={databasePath};Cache=Shared"));
+
+            await SeedAnalyticsDataAsync(provider);
+
+            using var scope = provider.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+            var controller = new AnalyticsController(context);
+
+            var result = await controller.GetDashboard(new AnalyticsController.AnalyticsQuery
+            {
+                From = "2024-05-01",
+                To = "2024-05-03"
+            }, CancellationToken.None);
+
+            var dashboard = result.Value
+                ?? (result.Result as OkObjectResult)?.Value as AnalyticsController.DashboardResponse;
+
+            if (dashboard is null)
+            {
+                throw new InvalidOperationException("Dashboard response should not be null.");
+            }
+
+            var summary = dashboard.Souhrn;
+
+            if (summary.CelkoveTrzby != 350m)
+            {
+                throw new InvalidOperationException($"Expected total revenue 350, but was {summary.CelkoveTrzby}.");
+            }
+
+            if (summary.PredchoziTrzby != 120m)
+            {
+                throw new InvalidOperationException($"Expected previous revenue 120, but was {summary.PredchoziTrzby}.");
+            }
+
+            if (summary.Objednavky != 2)
+            {
+                throw new InvalidOperationException($"Expected 2 orders, but was {summary.Objednavky}.");
+            }
+
+            if (summary.ProdanaMista != 3)
+            {
+                throw new InvalidOperationException($"Expected seats sold 3, but was {summary.ProdanaMista}.");
+            }
+
+            if (summary.AktivniZakaznici != 2 || summary.NoviZakaznici != 1)
+            {
+                throw new InvalidOperationException($"Unexpected customer counts: active={summary.AktivniZakaznici}, new={summary.NoviZakaznici}.");
+            }
+
+            if (summary.PrumernaObjednavka != 175m)
+            {
+                throw new InvalidOperationException($"Expected average order value 175, but was {summary.PrumernaObjednavka}.");
+            }
+
+            if (summary.PrumernaObsazenost != 50d)
+            {
+                throw new InvalidOperationException($"Expected occupancy percentage 50, but was {summary.PrumernaObsazenost}.");
+            }
+
+            var trend = dashboard.Trend.OrderBy(point => point.Datum).ToArray();
+
+            if (trend.Length != 2)
+            {
+                throw new InvalidOperationException($"Expected 2 trend points, but found {trend.Length}.");
+            }
+
+            if (trend[0].Datum != new DateOnly(2024, 5, 1) || trend[0].Trzba != 200m || trend[0].Objednavky != 1)
+            {
+                throw new InvalidOperationException("Unexpected first trend point.");
+            }
+
+            if (trend[1].Datum != new DateOnly(2024, 5, 2) || trend[1].Trzba != 150m || trend[1].Objednavky != 1)
+            {
+                throw new InvalidOperationException("Unexpected second trend point.");
+            }
+
+            var topCourses = dashboard.TopKurzy;
+
+            if (topCourses.Count != 2)
+            {
+                throw new InvalidOperationException($"Expected 2 top courses, but found {topCourses.Count}.");
+            }
+
+            if (topCourses[0].Trzba < topCourses[1].Trzba)
+            {
+                throw new InvalidOperationException("Top courses should be ordered by revenue.");
+            }
+
+            var conversions = dashboard.Konverze;
+
+            if (conversions.Platby != 2 || conversions.Registrace != 3 || conversions.Navstevy != 10)
+            {
+                throw new InvalidOperationException($"Unexpected conversion metrics: visits={conversions.Navstevy}, registrations={conversions.Registrace}, payments={conversions.Platby}.");
+            }
+        }
+        finally
+        {
+            if (File.Exists(databasePath))
+            {
+                File.Delete(databasePath);
+            }
         }
     }
 
@@ -136,6 +295,8 @@ internal sealed class CourseReminderServiceTester
     {
         using var scope = provider.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+        await context.Database.EnsureCreatedAsync();
 
         var utcCourse = new Course
         {
@@ -223,6 +384,8 @@ internal sealed class CourseReminderServiceTester
         using var scope = provider.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
+        await context.Database.EnsureCreatedAsync();
+
         var course = new Course
         {
             Title = "Logging Course",
@@ -235,13 +398,156 @@ internal sealed class CourseReminderServiceTester
         await context.SaveChangesAsync();
     }
 
+    private static async Task SeedAnalyticsDataAsync(IServiceProvider provider)
+    {
+        using var scope = provider.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+        await context.Database.EnsureCreatedAsync();
+
+        var userOne = new ApplicationUser { Id = Guid.NewGuid().ToString(), Email = "alice@example.com", UserName = "alice@example.com" };
+        var userTwo = new ApplicationUser { Id = Guid.NewGuid().ToString(), Email = "bob@example.com", UserName = "bob@example.com" };
+        var userThree = new ApplicationUser { Id = Guid.NewGuid().ToString(), Email = "carol@example.com", UserName = "carol@example.com" };
+
+        context.Users.AddRange(userOne, userTwo, userThree);
+
+        var courseOne = new Course
+        {
+            Title = "SQL Foundations",
+            Date = new DateTime(2024, 5, 20, 0, 0, 0, DateTimeKind.Utc),
+            Price = 100m,
+            ReminderDays = 0,
+            Type = CourseType.Online
+        };
+
+        var courseTwo = new Course
+        {
+            Title = "Data Insights",
+            Date = new DateTime(2024, 6, 10, 0, 0, 0, DateTimeKind.Utc),
+            Price = 150m,
+            ReminderDays = 0,
+            Type = CourseType.Online
+        };
+
+        context.Courses.AddRange(courseOne, courseTwo);
+        await context.SaveChangesAsync();
+
+        var previousOrder = new Order
+        {
+            Status = OrderStatus.Paid,
+            UserId = userOne.Id,
+            User = userOne,
+            CreatedAt = new DateTime(2024, 4, 29, 9, 0, 0, DateTimeKind.Utc)
+        };
+        previousOrder.Items.Add(new OrderItem
+        {
+            CourseId = courseOne.Id,
+            Quantity = 1,
+            Total = 120m
+        });
+
+        var currentOrderOne = new Order
+        {
+            Status = OrderStatus.Paid,
+            UserId = userOne.Id,
+            User = userOne,
+            CreatedAt = new DateTime(2024, 5, 1, 10, 0, 0, DateTimeKind.Utc)
+        };
+        currentOrderOne.Items.Add(new OrderItem
+        {
+            CourseId = courseOne.Id,
+            Quantity = 2,
+            Total = 200m
+        });
+
+        var currentOrderTwo = new Order
+        {
+            Status = OrderStatus.Paid,
+            UserId = userTwo.Id,
+            User = userTwo,
+            CreatedAt = new DateTime(2024, 5, 2, 11, 0, 0, DateTimeKind.Utc)
+        };
+        currentOrderTwo.Items.Add(new OrderItem
+        {
+            CourseId = courseTwo.Id,
+            Quantity = 1,
+            Total = 150m
+        });
+
+        context.Orders.AddRange(previousOrder, currentOrderOne, currentOrderTwo);
+        await context.SaveChangesAsync();
+
+        var termOne = new CourseTerm
+        {
+            CourseId = courseOne.Id,
+            StartUtc = new DateTime(2024, 5, 1, 8, 0, 0, DateTimeKind.Utc),
+            EndUtc = new DateTime(2024, 5, 1, 12, 0, 0, DateTimeKind.Utc),
+            Capacity = 10,
+            SeatsTaken = 5,
+            IsActive = true
+        };
+
+        var termTwo = new CourseTerm
+        {
+            CourseId = courseTwo.Id,
+            StartUtc = new DateTime(2024, 5, 2, 8, 0, 0, DateTimeKind.Utc),
+            EndUtc = new DateTime(2024, 5, 2, 12, 0, 0, DateTimeKind.Utc),
+            Capacity = 20,
+            SeatsTaken = 10,
+            IsActive = true
+        };
+
+        context.CourseTerms.AddRange(termOne, termTwo);
+        await context.SaveChangesAsync();
+
+        context.WaitlistEntries.AddRange(
+            new WaitlistEntry { UserId = userOne.Id, CourseTermId = termOne.Id, CreatedAtUtc = new DateTime(2024, 5, 1, 6, 0, 0, DateTimeKind.Utc) },
+            new WaitlistEntry { UserId = userTwo.Id, CourseTermId = termOne.Id, CreatedAtUtc = new DateTime(2024, 5, 1, 7, 0, 0, DateTimeKind.Utc) },
+            new WaitlistEntry { UserId = userThree.Id, CourseTermId = termTwo.Id, CreatedAtUtc = new DateTime(2024, 5, 2, 7, 30, 0, DateTimeKind.Utc) }
+        );
+
+        var visitStart = new DateTime(2024, 5, 1, 5, 0, 0, DateTimeKind.Utc);
+        for (var i = 0; i < 10; i++)
+        {
+            context.LogEntries.Add(new SysJaky_N.Models.LogEntry
+            {
+                Timestamp = visitStart.AddMinutes(i * 30),
+                Level = "Information",
+                Message = "Visit"
+            });
+        }
+
+        await context.SaveChangesAsync();
+    }
+
+    private static void ConfigureSqlite(DbContextOptionsBuilder options, string connectionString)
+    {
+        const string typeName = "Microsoft.EntityFrameworkCore.Sqlite.Infrastructure.Internal.SqliteOptionsExtension, Microsoft.EntityFrameworkCore.Sqlite";
+        if (Type.GetType(typeName) is not Type extensionType)
+        {
+            throw new InvalidOperationException($"Unable to resolve type '{typeName}'.");
+        }
+
+        var instance = Activator.CreateInstance(extensionType)
+            ?? throw new InvalidOperationException("Failed to create SqliteOptionsExtension instance.");
+
+        var withConnectionString = extensionType.GetMethod("WithConnectionString", new[] { typeof(string) })
+            ?? throw new InvalidOperationException("WithConnectionString method was not found on SqliteOptionsExtension.");
+
+        var configuredExtension = withConnectionString.Invoke(instance, new object[] { connectionString })
+            ?? throw new InvalidOperationException("WithConnectionString returned null.");
+
+        ((IDbContextOptionsBuilderInfrastructure)options).AddOrUpdateExtension((IDbContextOptionsExtension)configuredExtension);
+    }
+
     private static ServiceProvider BuildServiceProvider(
         string databaseName,
         ManualTimeProvider timeProvider,
         RecordingEmailSender emailSender,
         StubCertificateService certificateService,
         CapturingLoggerProvider logProvider,
-        ILoggerFactory loggerFactory)
+        ILoggerFactory loggerFactory,
+        Action<DbContextOptionsBuilder>? configureDb = null)
     {
         var services = new ServiceCollection();
 
@@ -258,7 +564,15 @@ internal sealed class CourseReminderServiceTester
 
         services.AddDbContext<ApplicationDbContext>(options =>
         {
-            options.UseInMemoryDatabase(databaseName);
+            if (configureDb is not null)
+            {
+                configureDb(options);
+            }
+            else
+            {
+                options.UseInMemoryDatabase(databaseName);
+            }
+
             options.UseLoggerFactory(loggerFactory);
             options.EnableSensitiveDataLogging();
             options.EnableDetailedErrors();
