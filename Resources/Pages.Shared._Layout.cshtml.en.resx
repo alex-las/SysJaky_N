@@ -16,7 +16,7 @@
     <value>Skip to content</value>
   </data>
   <data name="BrandName" xml:space="preserve">
-    <value>Quality Systems</value>
+    <value>Systémy jakosti – ISO consulting</value>
   </data>
   <data name="ToggleNavigation" xml:space="preserve">
     <value>Toggle navigation</value>
@@ -25,22 +25,22 @@
     <value>Toggle theme</value>
   </data>
   <data name="NavHome" xml:space="preserve">
-    <value>Home</value>
+    <value>Home – ISO consulting hub</value>
   </data>
   <data name="NavAbout" xml:space="preserve">
-    <value>About</value>
+    <value>About Systémy jakosti</value>
   </data>
   <data name="NavCourses" xml:space="preserve">
-    <value>Courses &amp; Training</value>
+    <value>ISO courses &amp; training</value>
   </data>
   <data name="NavArticles" xml:space="preserve">
-    <value>Articles</value>
+    <value>Articles &amp; case studies</value>
   </data>
   <data name="NavServices" xml:space="preserve">
-    <value>Consulting &amp; audits</value>
+    <value>Services &amp; ISO consulting</value>
   </data>
   <data name="NavCorporateInquiry" xml:space="preserve">
-    <value>Corporate inquiry</value>
+    <value>Corporate inquiry / tailored audit</value>
   </data>
   <data name="NavPrivacy" xml:space="preserve">
     <value>Privacy</value>
