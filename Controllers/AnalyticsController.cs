@@ -208,7 +208,7 @@ public class AnalyticsController : ControllerBase
         else
         {
             var trendAggregates = await orderAggregatesQuery
-                .GroupBy(order => EF.Functions.DateDiffDay(filter.FromUtc, order.CreatedAtUtc) ?? 0)
+                .GroupBy(order => EF.Functions.DateDiffDay(filter.FromUtc, order.CreatedAtUtc))
                 .Select(group => new DailySalesAggregate(
                     group.Key,
                     group.Sum(order => order.Total),
