@@ -19,7 +19,7 @@ The application now ships production CSS/JS bundles from `wwwroot/dist`. Bundles
 ## CI / publish pipelines
 
 * Ensure Node.js is installed before invoking `dotnet publish` (the build restores npm dependencies on demand via the `EnsureNodeModules` target, caching installs with `node_modules/.install-stamp`).
-* No extra steps are needed – the MSBuild target executes `npm run build:assets --silent` automatically before static web asset discovery/publish.
+* No extra steps are needed – the MSBuild target executes `npm run build:assets --silent` automatically before static web asset discovery (`ResolveCurrentProjectStaticWebAssets`) and again before files-to-publish are computed (`ComputeFilesToPublish`).
 * The generated files live under `wwwroot/dist` and are deployed like any other static asset. Nothing tries to mutate the web root at runtime.
 
 ## Read-only hosting environments
