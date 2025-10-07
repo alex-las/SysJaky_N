@@ -31,7 +31,7 @@
     <value>Vyhledávání</value>
   </data>
   <data name="HeroSubheading" xml:space="preserve">
-    <value>Provázíme organizace celým cyklem ISO 9001, ISO 14001, ISO/IEC 17025, ISO 15189, HACCP, ISO 45001, ISO 27001, IATF 16949 a ISO 13485 – od analýzy po certifikaci.</value>
+    <value>Provázíme organizace celým cyklem ISO 9001, ISO 14001, ISO/IEC 17025, ISO 15189, HACCP, ISO 45001, ISO 27001, IATF 16949 a ISO 13485 — od analýzy po certifikaci.</value>
   </data>
   <data name="HeroSubmit" xml:space="preserve">
     <value>Navrhnout kurzy</value>
@@ -61,7 +61,7 @@
     <value>Vyberte svou roli v systému jakosti</value>
   </data>
   <data name="PersonaHelp" xml:space="preserve">
-    <value>Pomůže nám lépe doporučit kurzy. Například manažer kvality, interní auditor.</value>
+    <value>Pomůže nám lépe doporučit kurzy. Například manažer kvality, interní auditor, příprava na akreditaci.</value>
   </data>
   <data name="StepSelectTitle" xml:space="preserve">
     <value>Analyzujte aktuální stav</value>
@@ -176,16 +176,16 @@
   </data>
 
   <data name="Home.Hero.Title" xml:space="preserve">
-    <value>Najděte ideální školení</value>
+    <value>Implementace, audity a školení systémů jakosti</value>
   </data>
   <data name="Home.Hero.Subtitle" xml:space="preserve">
-    <value>Kurzy, poradenství a audit na jednom místě</value>
+    <value>Provázíme organizace celým cyklem ISO 9001, ISO 14001, ISO/IEC 17025, ISO 15189, HACCP, ISO 45001, ISO 27001, IATF 16949 a ISO 13485 — od analýzy po certifikaci.</value>
   </data>
   <data name="Home.Hero.PrimaryCta" xml:space="preserve">
-    <value>Přehled kurzů</value>
+    <value>Prohlédnout nabídku kurzů ISO</value>
   </data>
   <data name="Home.Hero.SecondaryCta" xml:space="preserve">
-    <value>Nezávazná poptávka</value>
+    <value>Nechat si připravit firemní řešení</value>
   </data>
   <data name="Home.Hero.SearchPlaceholder" xml:space="preserve">
     <value>Hledat kurz, normu nebo město…</value>
@@ -218,7 +218,7 @@
     <value>Vyberte svou roli v systému jakosti</value>
   </data>
   <data name="Home.Hero.Persona.Help" xml:space="preserve">
-    <value>Pomůže nám lépe doporučit kurzy. Například manažer kvality, interní auditor.</value>
+    <value>Pomůže nám lépe doporučit kurzy. Například manažer kvality, interní auditor, příprava na akreditaci.</value>
   </data>
   <data name="Home.Hero.Goal.AriaLabel" xml:space="preserve">
     <value>Chci</value>

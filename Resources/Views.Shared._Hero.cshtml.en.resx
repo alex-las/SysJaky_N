@@ -13,16 +13,16 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Home.Hero.Title" xml:space="preserve">
-    <value>Find the ideal training</value>
+    <value>Implementation, audits, and training for quality systems</value>
   </data>
   <data name="Home.Hero.Subtitle" xml:space="preserve">
-    <value>Courses, consulting and auditing in one place</value>
+    <value>We guide organizations through the entire ISO 9001, ISO 14001, ISO/IEC 17025, ISO 15189, HACCP, ISO 45001, ISO 27001, IATF 16949, and ISO 13485 lifecycle — from analysis to certification.</value>
   </data>
   <data name="Home.Hero.PrimaryCta" xml:space="preserve">
-    <value>Course overview</value>
+    <value>Browse ISO course offering</value>
   </data>
   <data name="Home.Hero.SecondaryCta" xml:space="preserve">
-    <value>Request a quote</value>
+    <value>Request a tailored corporate solution</value>
   </data>
   <data name="Home.Hero.SearchPlaceholder" xml:space="preserve">
     <value>Search for a course, standard or city…</value>
@@ -40,19 +40,19 @@
     <value>Suggest courses</value>
   </data>
   <data name="Home.Hero.Usp1" xml:space="preserve">
-    <value>20+ years of experience in management systems</value>
+    <value>Seasoned auditors and consultants with years of experience</value>
   </data>
   <data name="Home.Hero.Usp2" xml:space="preserve">
-    <value>Certified courses with recognized credentials</value>
+    <value>Practical know-how drawn from real-world audits</value>
   </data>
   <data name="Home.Hero.Usp3" xml:space="preserve">
-    <value>Training on-site, online or directly at your company</value>
+    <value>Internal workshops delivered directly at your company</value>
   </data>
   <data name="Home.Hero.Persona.Label" xml:space="preserve">
     <value>Select your role in the quality system</value>
   </data>
   <data name="Home.Hero.Persona.Help" xml:space="preserve">
-    <value>Helps us tailor course suggestions. For example, quality manager or internal auditor.</value>
+    <value>Helps us tailor course suggestions. For example, quality manager, internal auditor, accreditation preparation.</value>
   </data>
   <data name="Home.Hero.Goal.Label" xml:space="preserve">
     <value>Which goal do you want to achieve by meeting the standards?</value>
