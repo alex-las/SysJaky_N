@@ -16,7 +16,7 @@
     <value>Implementace, audity a školení systémů jakosti</value>
   </data>
   <data name="Home.Hero.Subtitle" xml:space="preserve">
-    <value>Provázíme organizace celým cyklem ISO 9001, ISO 14001, ISO/IEC 17025, ISO 15189, HACCP, ISO 45001, ISO 27001, IATF 16949 a ISO 13485 – od analýzy po certifikaci.</value>
+    <value>Provázíme organizace celým cyklem ISO 9001, ISO 14001, ISO/IEC 17025, ISO 15189, HACCP, ISO 45001, ISO 27001, IATF 16949 a ISO 13485 — od analýzy po certifikaci.</value>
   </data>
   <data name="Home.Hero.PrimaryCta" xml:space="preserve">
     <value>Prohlédnout nabídku kurzů ISO</value>
@@ -52,7 +52,7 @@
     <value>Vyberte svou roli v systému jakosti</value>
   </data>
   <data name="Home.Hero.Persona.Help" xml:space="preserve">
-    <value>Pomůže nám lépe doporučit kurzy. Například manažer kvality, interní auditor.</value>
+    <value>Pomůže nám lépe doporučit kurzy. Například manažer kvality, interní auditor, příprava na akreditaci.</value>
   </data>
   <data name="Home.Hero.Goal.Label" xml:space="preserve">
     <value>Jaký cíl chcete plněním norem dosáhnout?</value>
