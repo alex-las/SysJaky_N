@@ -36,9 +36,39 @@
     </Content>
   </ItemGroup>
 
-  <Target Name="BuildStaticAssets" BeforeTargets="Build" Condition="'$(NpmSkipStaticAssets)' != 'true'">
-    <Message Importance="high" Text="Bundling static web assets with npm" />
+  <ItemGroup>
+    <StaticAssetBundleSource Include="wwwroot/css/site.css" />
+    <StaticAssetBundleSource Include="wwwroot/js/site.js" />
+    <StaticAssetBundleSource Include="wwwroot/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <StaticAssetBundleSource Include="wwwroot/lib/bootstrap/dist/js/bootstrap.bundle.min.js" />
+    <StaticAssetBundleSource Include="wwwroot/lib/jquery/dist/jquery.min.js" />
+    <StaticAssetBundleSource Include="build-assets.mjs" />
+    <StaticAssetBundleSource Include="package.json" />
+    <StaticAssetBundleSource Include="package-lock.json" />
+
+    <StaticAssetBundleOutput Include="wwwroot/dist/styles.min.css" />
+    <StaticAssetBundleOutput Include="wwwroot/dist/scripts.min.js" />
+
+    <NpmInstallInput Include="package.json" />
+    <NpmInstallInput Include="package-lock.json" />
+  </ItemGroup>
+
+  <Target Name="EnsureNodeModules"
+          Inputs="@(NpmInstallInput)"
+          Outputs="node_modules/.install-stamp"
+          Condition="'$(NpmSkipStaticAssets)' != 'true'">
+    <Message Importance="high" Text="Restoring npm packages for static asset bundling" />
     <Exec Command="npm install --no-audit --no-fund --silent" WorkingDirectory="$(ProjectDir)" />
+    <Touch Files="node_modules/.install-stamp" AlwaysCreate="true" />
+  </Target>
+
+  <Target Name="BundleStaticAssets"
+          DependsOnTargets="EnsureNodeModules"
+          Inputs="@(StaticAssetBundleSource)"
+          Outputs="@(StaticAssetBundleOutput)"
+          BeforeTargets="ResolveCurrentProjectStaticWebAssets;PrepareForPublish"
+          Condition="'$(NpmSkipStaticAssets)' != 'true'">
+    <Message Importance="high" Text="Bundling static web assets" />
     <Exec Command="npm run build:assets --silent" WorkingDirectory="$(ProjectDir)" />
   </Target>
 </Project>
