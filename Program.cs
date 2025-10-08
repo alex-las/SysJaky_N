@@ -157,6 +157,7 @@ try
     builder.Services.AddSession();
 
     builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+    builder.Services.AddSingleton<IIsoSpecializationCatalog, IsoSpecializationCatalog>();
     builder.Services
         .AddRazorPages()
         .AddViewLocalization()

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <root>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
@@ -173,5 +173,17 @@
   </data>
   <data name="ISO13485" xml:space="preserve">
     <value>ISO 13485 — Medical Devices</value>
+  </data>
+  <data name="SpecializationsFeatureHeading" xml:space="preserve">
+    <value>Our specialisations</value>
+  </data>
+  <data name="SpecializationsFeatureLead" xml:space="preserve">
+    <value>We provide end-to-end consulting and training for the following standards</value>
+  </data>
+  <data name="SpecializationsGridHeading" xml:space="preserve">
+    <value>Our specialisations</value>
+  </data>
+  <data name="SpecializationsGridLead" xml:space="preserve">
+    <value>We guide you through certification for the most in-demand international standards.</value>
   </data>
 </root>

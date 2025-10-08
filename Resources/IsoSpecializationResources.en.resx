@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="ISO9001.Name" xml:space="preserve">
+    <value>ISO 9001</value>
+  </data>
+  <data name="ISO9001.Tagline" xml:space="preserve">
+    <value>Quality management system</value>
+  </data>
+  <data name="ISO9001.Description" xml:space="preserve">
+    <value>Designed for all organisations focused on improving product and service quality. Emphasises process management, risk-based thinking, customer satisfaction, and continual improvement.</value>
+  </data>
+  <data name="ISO9001.Courses.Introduction" xml:space="preserve">
+    <value>Introduction to ISO 9001</value>
+  </data>
+  <data name="ISO9001.Courses.QualityManager" xml:space="preserve">
+    <value>Quality Manager</value>
+  </data>
+  <data name="ISO9001.Courses.InternalAuditor" xml:space="preserve">
+    <value>Internal Quality Auditor</value>
+  </data>
+  <data name="ISO14001.Name" xml:space="preserve">
+    <value>ISO 14001</value>
+  </data>
+  <data name="ISO14001.Tagline" xml:space="preserve">
+    <value>Environmental management</value>
+  </data>
+  <data name="ISO14001.Description" xml:space="preserve">
+    <value>For organisations that want to manage environmental impacts systematically. Focus on reducing the ecological footprint, staying compliant with legislation, and using resources responsibly.</value>
+  </data>
+  <data name="ISO14001.Courses.InternalAuditor" xml:space="preserve">
+    <value>Internal EMS Auditor</value>
+  </data>
+  <data name="ISO14001.Courses.IntegratedManager" xml:space="preserve">
+    <value>Integrated Management System Manager</value>
+  </data>
+  <data name="ISO17025.Name" xml:space="preserve">
+    <value>ISO/IEC 17025</value>
+  </data>
+  <data name="ISO17025.Tagline" xml:space="preserve">
+    <value>Laboratory accreditation</value>
+  </data>
+  <data name="ISO17025.Description" xml:space="preserve">
+    <value>Internationally recognised standard for testing and calibration laboratories. Ensures technical competence, valid results, and comparable measurements.</value>
+  </data>
+  <data name="ISO17025.Courses.QualityManager" xml:space="preserve">
+    <value>Laboratory Quality Manager</value>
+  </data>
+  <data name="ISO17025.Courses.InternalAuditor" xml:space="preserve">
+    <value>Internal Laboratory Auditor</value>
+  </data>
+  <data name="ISO17025.Courses.Metrologist" xml:space="preserve">
+    <value>Metrologist</value>
+  </data>
+  <data name="ISO15189.Name" xml:space="preserve">
+    <value>ISO 15189</value>
+  </data>
+  <data name="ISO15189.Tagline" xml:space="preserve">
+    <value>Medical laboratories</value>
+  </data>
+  <data name="ISO15189.Description" xml:space="preserve">
+    <value>Specific requirements for medical laboratories, combining technical competence with patient-safety-focused quality management.</value>
+  </data>
+  <data name="ISO15189.Courses.QualityManager" xml:space="preserve">
+    <value>Medical Laboratory Quality Manager</value>
+  </data>
+  <data name="ISO15189.Courses.InternalAuditor" xml:space="preserve">
+    <value>Internal Medical Laboratory Auditor</value>
+  </data>
+  <data name="HACCP.Name" xml:space="preserve">
+    <value>HACCP</value>
+  </data>
+  <data name="HACCP.Tagline" xml:space="preserve">
+    <value>Food safety</value>
+  </data>
+  <data name="HACCP.Description" xml:space="preserve">
+    <value>Hazard Analysis and Critical Control Points methodology for identifying and controlling food safety hazards. Focus on preventive measures, process monitoring, and maintaining accurate documentation.</value>
+  </data>
+  <data name="HACCP.Courses.Implementation" xml:space="preserve">
+    <value>Implementing HACCP</value>
+  </data>
+  <data name="HACCP.Courses.InternalAuditor" xml:space="preserve">
+    <value>Internal HACCP Auditor</value>
+  </data>
+  <data name="ISO45001.Name" xml:space="preserve">
+    <value>ISO 45001</value>
+  </data>
+  <data name="ISO45001.Tagline" xml:space="preserve">
+    <value>Occupational health and safety</value>
+  </data>
+  <data name="ISO45001.Description" xml:space="preserve">
+    <value>Management system for protecting employee health and safety. Prevents workplace injuries, identifies risks, and engages people.</value>
+  </data>
+  <data name="ISO45001.Courses.InternalAuditor" xml:space="preserve">
+    <value>Occupational H&amp;S Internal Auditor</value>
+  </data>
+  <data name="ISO45001.Courses.IntegratedManager" xml:space="preserve">
+    <value>Integrated Management System Manager</value>
+  </data>
+  <data name="ISO27001.Name" xml:space="preserve">
+    <value>ISO 27001</value>
+  </data>
+  <data name="ISO27001.Tagline" xml:space="preserve">
+    <value>Information security</value>
+  </data>
+  <data name="ISO27001.Description" xml:space="preserve">
+    <value>Protects sensitive information, manages cyber risks, and supports GDPR and other data protection compliance.</value>
+  </data>
+  <data name="ISO27001.Courses.Introduction" xml:space="preserve">
+    <value>Introduction to ISO 27001</value>
+  </data>
+  <data name="ISO27001.Courses.InternalAuditor" xml:space="preserve">
+    <value>Internal ISMS Auditor</value>
+  </data>
+  <data name="IATF16949.Name" xml:space="preserve">
+    <value>IATF 16949</value>
+  </data>
+  <data name="IATF16949.Tagline" xml:space="preserve">
+    <value>Automotive quality</value>
+  </data>
+  <data name="IATF16949.Description" xml:space="preserve">
+    <value>Specialised quality standard for automotive suppliers, covering tools such as APQP, PPAP, FMEA, and SPC.</value>
+  </data>
+  <data name="IATF16949.Courses.QualityManager" xml:space="preserve">
+    <value>Automotive Quality Manager</value>
+  </data>
+  <data name="IATF16949.Courses.APQP" xml:space="preserve">
+    <value>APQP &amp; PPAP</value>
+  </data>
+  <data name="IATF16949.Courses.CoreTools" xml:space="preserve">
+    <value>Core Tools</value>
+  </data>
+  <data name="ISO13485.Name" xml:space="preserve">
+    <value>ISO 13485</value>
+  </data>
+  <data name="ISO13485.Tagline" xml:space="preserve">
+    <value>Medical devices</value>
+  </data>
+  <data name="ISO13485.Description" xml:space="preserve">
+    <value>For manufacturers and distributors of medical devices with emphasis on safety, regulatory compliance, and risk management.</value>
+  </data>
+  <data name="ISO13485.Courses.Introduction" xml:space="preserve">
+    <value>Introduction to ISO 13485</value>
+  </data>
+  <data name="ISO13485.Courses.QualityManager" xml:space="preserve">
+    <value>Medical Device Quality Manager</value>
+  </data>
+</root>

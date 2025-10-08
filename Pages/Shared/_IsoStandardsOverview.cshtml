@@ -1,21 +1,8 @@
-@using System.Collections.Generic
-@using System.Text.Json
 @inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
-
-@functions {
-    private sealed record IsoCourse(string Name, string Url);
-
-    private sealed record IsoStandard(string Title, string Icon, string Description, IReadOnlyList<IsoCourse> Courses);
-}
+@inject SysJaky_N.Services.IIsoSpecializationCatalog IsoCatalog
 
 @{
-    var serializerOptions = new JsonSerializerOptions
-    {
-        PropertyNameCaseInsensitive = true
-    };
-
-    var standardsJson = Localizer["StandardsJson"].Value;
-    var standards = JsonSerializer.Deserialize<List<IsoStandard>>(standardsJson ?? "[]", serializerOptions) ?? new List<IsoStandard>();
+    var standards = IsoCatalog.GetAll();
 }
 
 <section class="iso-standards py-5 bg-light">
@@ -34,13 +21,19 @@
                                 <span class="iso-icon rounded-circle d-inline-flex align-items-center justify-content-center">
                                     <i class="bi @standard.Icon" aria-hidden="true"></i>
                                 </span>
-                                <h3 class="h5 mb-0">@standard.Title</h3>
+                                <div class="d-flex flex-column">
+                                    <h3 class="h5 mb-0">@standard.Name</h3>
+                                    @if (!string.IsNullOrWhiteSpace(standard.Tagline))
+                                    {
+                                        <span class="small text-muted">@standard.Tagline</span>
+                                    }
+                                </div>
                             </div>
                             <p class="text-muted flex-grow-1">@standard.Description</p>
                             <div>
                                 <h4 class="h6 text-uppercase text-primary mb-2">@Localizer["RecommendedCoursesHeading"]</h4>
                                 <ul class="list-unstyled mb-0">
-                                    @foreach (var course in standard.Courses ?? Array.Empty<IsoCourse>())
+                                    @foreach (var course in standard.Courses)
                                     {
                                         <li class="mb-1">
                                             <a class="link-underline link-underline-opacity-0 link-primary" href="@course.Url">

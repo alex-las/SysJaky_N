@@ -1,8 +1,10 @@
 @page
 @model IndexModel
 @inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer T
-@{
+@inject SysJaky_N.Services.IIsoSpecializationCatalog IsoCatalog
+@{ 
     ViewData["Title"] = T["Title"];
+    var isoSpecializations = IsoCatalog.GetAll();
 }
 
 <style>
@@ -228,6 +230,55 @@
         box-shadow: 0 15px 25px rgba(15, 23, 42, 0.12);
     }
 
+    .iso-card-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 1rem;
+        color: #ffffff;
+    }
+
+    .iso-card-icon i {
+        font-size: 1.5rem;
+    }
+
+    .iso-card-icon.iso-card-icon-iso-9001 {
+        background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
+    }
+
+    .iso-card-icon.iso-card-icon-iso-14001 {
+        background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+    }
+
+    .iso-card-icon.iso-card-icon-iso-17025 {
+        background: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%);
+    }
+
+    .iso-card-icon.iso-card-icon-iso-15189 {
+        background: linear-gradient(135deg, #ef4444 0%, #f87171 100%);
+    }
+
+    .iso-card-icon.iso-card-icon-haccp {
+        background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+    }
+
+    .iso-card-icon.iso-card-icon-iso-45001 {
+        background: linear-gradient(135deg, #eab308 0%, #facc15 100%);
+        color: #78350f;
+    }
+
+    .iso-card-icon.iso-card-icon-iso-27001 {
+        background: linear-gradient(135deg, #6366f1 0%, #818cf8 100%);
+    }
+
+    .iso-card-icon.iso-card-icon-iatf-16949 {
+        background: linear-gradient(135deg, #475569 0%, #64748b 100%);
+    }
+
+    .iso-card-icon.iso-card-icon-iso-13485 {
+        background: linear-gradient(135deg, #ec4899 0%, #f472b6 100%);
+    }
+
     .specialization-icon.iso-9001 {
         background: #2563eb;
     }
@@ -382,155 +433,32 @@
 
 <section class="py-5 mb-5">
     <div class="container-xl">
-
-        <!-- Nadpis sekce -->
         <div class="text-center mb-5">
             <h2 class="display-5 fw-bold mb-3" style="color: #2563eb;">
-                Naše specializace
+                @T["SpecializationsFeatureHeading"]
             </h2>
             <p class="lead text-muted">
-                Poskytujeme komplexní poradenství a školení pro následující normy
+                @T["SpecializationsFeatureLead"]
             </p>
         </div>
 
-        <!-- Grid s ISO normami -->
         <div class="row g-4">
-
-            <!-- ISO 9001 -->
-            <div class="col-12 col-md-6 col-lg-4">
-                <div class="card h-100 border-0 shadow-sm hover-lift" style="border-radius: 1rem; transition: transform 0.2s, box-shadow 0.2s; cursor: pointer;">
-                    <div class="card-body p-4">
-                        <div class="d-flex align-items-center mb-3">
-                            <div class="rounded-3 p-3 me-3" style="background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);">
-                                <i class="bi bi-award-fill text-white" style="font-size: 1.5rem;"></i>
+            @foreach (var specialization in isoSpecializations)
+            {
+                <div class="col-12 col-md-6 col-lg-4">
+                    <div class="card h-100 border-0 shadow-sm hover-lift" style="border-radius: 1rem; transition: transform 0.2s, box-shadow 0.2s; cursor: pointer;">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="iso-card-icon iso-card-icon-@specialization.Id p-3 me-3">
+                                    <i class="bi @specialization.Icon" aria-hidden="true"></i>
+                                </div>
+                                <h3 class="h4 mb-0 fw-bold">@specialization.Name</h3>
                             </div>
-                            <h3 class="h4 mb-0 fw-bold">ISO 9001</h3>
+                            <p class="text-muted mb-0">@specialization.Tagline</p>
                         </div>
-                        <p class="text-muted mb-0">Systém managementu kvality</p>
                     </div>
                 </div>
-            </div>
-
-            <!-- ISO 14001 -->
-            <div class="col-12 col-md-6 col-lg-4">
-                <div class="card h-100 border-0 shadow-sm hover-lift" style="border-radius: 1rem; transition: transform 0.2s, box-shadow 0.2s; cursor: pointer;">
-                    <div class="card-body p-4">
-                        <div class="d-flex align-items-center mb-3">
-                            <div class="rounded-3 p-3 me-3" style="background: linear-gradient(135deg, #10b981 0%, #34d399 100%);">
-                                <i class="bi bi-tree-fill text-white" style="font-size: 1.5rem;"></i>
-                            </div>
-                            <h3 class="h4 mb-0 fw-bold">ISO 14001</h3>
-                        </div>
-                        <p class="text-muted mb-0">Environmentální management</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ISO 17025 -->
-            <div class="col-12 col-md-6 col-lg-4">
-                <div class="card h-100 border-0 shadow-sm hover-lift" style="border-radius: 1rem; transition: transform 0.2s, box-shadow 0.2s; cursor: pointer;">
-                    <div class="card-body p-4">
-                        <div class="d-flex align-items-center mb-3">
-                            <div class="rounded-3 p-3 me-3" style="background: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%);">
-                                <i class="bi bi-clipboard-data-fill text-white" style="font-size: 1.5rem;"></i>
-                            </div>
-                            <h3 class="h4 mb-0 fw-bold">ISO 17025</h3>
-                        </div>
-                        <p class="text-muted mb-0">Akreditace laboratoří</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ISO 15189 -->
-            <div class="col-12 col-md-6 col-lg-4">
-                <div class="card h-100 border-0 shadow-sm hover-lift" style="border-radius: 1rem; transition: transform 0.2s, box-shadow 0.2s; cursor: pointer;">
-                    <div class="card-body p-4">
-                        <div class="d-flex align-items-center mb-3">
-                            <div class="rounded-3 p-3 me-3" style="background: linear-gradient(135deg, #ef4444 0%, #f87171 100%);">
-                                <i class="bi bi-hospital-fill text-white" style="font-size: 1.5rem;"></i>
-                            </div>
-                            <h3 class="h4 mb-0 fw-bold">ISO 15189</h3>
-                        </div>
-                        <p class="text-muted mb-0">Zdravotnické laboratoře</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- HACCP -->
-            <div class="col-12 col-md-6 col-lg-4">
-                <div class="card h-100 border-0 shadow-sm hover-lift" style="border-radius: 1rem; transition: transform 0.2s, box-shadow 0.2s; cursor: pointer;">
-                    <div class="card-body p-4">
-                        <div class="d-flex align-items-center mb-3">
-                            <div class="rounded-3 p-3 me-3" style="background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);">
-                                <i class="bi bi-egg-fill text-white" style="font-size: 1.5rem;"></i>
-                            </div>
-                            <h3 class="h4 mb-0 fw-bold">HACCP</h3>
-                        </div>
-                        <p class="text-muted mb-0">Bezpečnost potravin</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ISO 45001 -->
-            <div class="col-12 col-md-6 col-lg-4">
-                <div class="card h-100 border-0 shadow-sm hover-lift" style="border-radius: 1rem; transition: transform 0.2s, box-shadow 0.2s; cursor: pointer;">
-                    <div class="card-body p-4">
-                        <div class="d-flex align-items-center mb-3">
-                            <div class="rounded-3 p-3 me-3" style="background: linear-gradient(135deg, #eab308 0%, #facc15 100%);">
-                                <i class="bi bi-shield-fill-check text-white" style="font-size: 1.5rem;"></i>
-                            </div>
-                            <h3 class="h4 mb-0 fw-bold">ISO 45001</h3>
-                        </div>
-                        <p class="text-muted mb-0">Bezpečnost práce</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ISO 27001 -->
-            <div class="col-12 col-md-6 col-lg-4">
-                <div class="card h-100 border-0 shadow-sm hover-lift" style="border-radius: 1rem; transition: transform 0.2s, box-shadow 0.2s; cursor: pointer;">
-                    <div class="card-body p-4">
-                        <div class="d-flex align-items-center mb-3">
-                            <div class="rounded-3 p-3 me-3" style="background: linear-gradient(135deg, #6366f1 0%, #818cf8 100%);">
-                                <i class="bi bi-shield-lock-fill text-white" style="font-size: 1.5rem;"></i>
-                            </div>
-                            <h3 class="h4 mb-0 fw-bold">ISO 27001</h3>
-                        </div>
-                        <p class="text-muted mb-0">Informační bezpečnost</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- IATF 16949 -->
-            <div class="col-12 col-md-6 col-lg-4">
-                <div class="card h-100 border-0 shadow-sm hover-lift" style="border-radius: 1rem; transition: transform 0.2s, box-shadow 0.2s; cursor: pointer;">
-                    <div class="card-body p-4">
-                        <div class="d-flex align-items-center mb-3">
-                            <div class="rounded-3 p-3 me-3" style="background: linear-gradient(135deg, #475569 0%, #64748b 100%);">
-                                <i class="bi bi-car-front-fill text-white" style="font-size: 1.5rem;"></i>
-                            </div>
-                            <h3 class="h4 mb-0 fw-bold">IATF 16949</h3>
-                        </div>
-                        <p class="text-muted mb-0">Automobilový průmysl</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ISO 13485 -->
-            <div class="col-12 col-md-6 col-lg-4">
-                <div class="card h-100 border-0 shadow-sm hover-lift" style="border-radius: 1rem; transition: transform 0.2s, box-shadow 0.2s; cursor: pointer;">
-                    <div class="card-body p-4">
-                        <div class="d-flex align-items-center mb-3">
-                            <div class="rounded-3 p-3 me-3" style="background: linear-gradient(135deg, #ec4899 0%, #f472b6 100%);">
-                                <i class="bi bi-heart-pulse-fill text-white" style="font-size: 1.5rem;"></i>
-                            </div>
-                            <h3 class="h4 mb-0 fw-bold">ISO 13485</h3>
-                        </div>
-                        <p class="text-muted mb-0">Zdravotnické prostředky</p>
-                    </div>
-                </div>
-            </div>
-
+            }
         </div>
     </div>
 </section>
@@ -569,91 +497,22 @@
 <section class="specializations-section py-5">
     <div class="container-xl">
         <div class="text-center mb-5">
-            <h2 class="section-heading mb-3">Naše specializace</h2>
-            <p class="section-subheading lead">Odborně vás provedeme certifikací podle nejžádanějších mezinárodních norem.</p>
+            <h2 class="section-heading mb-3">@T["SpecializationsGridHeading"]</h2>
+            <p class="section-subheading lead">@T["SpecializationsGridLead"]</p>
         </div>
         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-            <div class="col">
-                <div class="specialization-card h-100 text-center p-4">
-                    <div class="specialization-icon iso-9001 mb-3">
-                        <i class="bi bi-award-fill" aria-hidden="true"></i>
+            @foreach (var specialization in isoSpecializations)
+            {
+                <div class="col">
+                    <div class="specialization-card h-100 text-center p-4">
+                        <div class="specialization-icon @specialization.Id mb-3">
+                            <i class="bi @specialization.Icon" aria-hidden="true"></i>
+                        </div>
+                        <h3 class="h4 fw-bold mb-2">@specialization.Name</h3>
+                        <p class="text-muted mb-0">@specialization.Tagline</p>
                     </div>
-                    <h3 class="h4 fw-bold mb-2">ISO 9001</h3>
-                    <p class="text-muted mb-0">Systém managementu kvality</p>
                 </div>
-            </div>
-            <div class="col">
-                <div class="specialization-card h-100 text-center p-4">
-                    <div class="specialization-icon iso-14001 mb-3">
-                        <i class="bi bi-award-fill" aria-hidden="true"></i>
-                    </div>
-                    <h3 class="h4 fw-bold mb-2">ISO 14001</h3>
-                    <p class="text-muted mb-0">Systém environmentálního managementu</p>
-                </div>
-            </div>
-            <div class="col">
-                <div class="specialization-card h-100 text-center p-4">
-                    <div class="specialization-icon iso-17025 mb-3">
-                        <i class="bi bi-award-fill" aria-hidden="true"></i>
-                    </div>
-                    <h3 class="h4 fw-bold mb-2">ISO/IEC 17025</h3>
-                    <p class="text-muted mb-0">Akreditace zkušebních a kalibračních laboratoří</p>
-                </div>
-            </div>
-            <div class="col">
-                <div class="specialization-card h-100 text-center p-4">
-                    <div class="specialization-icon iso-15189 mb-3">
-                        <i class="bi bi-award-fill" aria-hidden="true"></i>
-                    </div>
-                    <h3 class="h4 fw-bold mb-2">ISO 15189</h3>
-                    <p class="text-muted mb-0">Kvalita zdravotnických laboratoří</p>
-                </div>
-            </div>
-            <div class="col">
-                <div class="specialization-card h-100 text-center p-4">
-                    <div class="specialization-icon haccp mb-3">
-                        <i class="bi bi-award-fill" aria-hidden="true"></i>
-                    </div>
-                    <h3 class="h4 fw-bold mb-2">HACCP</h3>
-                    <p class="text-muted mb-0">Bezpečnost a kontrola potravin</p>
-                </div>
-            </div>
-            <div class="col">
-                <div class="specialization-card h-100 text-center p-4">
-                    <div class="specialization-icon iso-45001 mb-3">
-                        <i class="bi bi-award-fill" aria-hidden="true"></i>
-                    </div>
-                    <h3 class="h4 fw-bold mb-2">ISO 45001</h3>
-                    <p class="text-muted mb-0">Bezpečnost a ochrana zdraví při práci</p>
-                </div>
-            </div>
-            <div class="col">
-                <div class="specialization-card h-100 text-center p-4">
-                    <div class="specialization-icon iso-27001 mb-3">
-                        <i class="bi bi-award-fill" aria-hidden="true"></i>
-                    </div>
-                    <h3 class="h4 fw-bold mb-2">ISO/IEC 27001</h3>
-                    <p class="text-muted mb-0">Řízení bezpečnosti informací</p>
-                </div>
-            </div>
-            <div class="col">
-                <div class="specialization-card h-100 text-center p-4">
-                    <div class="specialization-icon iatf-16949 mb-3">
-                        <i class="bi bi-award-fill" aria-hidden="true"></i>
-                    </div>
-                    <h3 class="h4 fw-bold mb-2">IATF 16949</h3>
-                    <p class="text-muted mb-0">Automotive Quality Management</p>
-                </div>
-            </div>
-            <div class="col">
-                <div class="specialization-card h-100 text-center p-4">
-                    <div class="specialization-icon iso-13485 mb-3">
-                        <i class="bi bi-award-fill" aria-hidden="true"></i>
-                    </div>
-                    <h3 class="h4 fw-bold mb-2">ISO 13485</h3>
-                    <p class="text-muted mb-0">Management kvality zdravotnických prostředků</p>
-                </div>
-            </div>
+            }
         </div>
     </div>
 </section>
