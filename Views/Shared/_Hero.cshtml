@@ -55,13 +55,13 @@
     {
         var fallbackChipDefinitions = new List<(string Url, string Label)>
         {
-            ("/Courses/Index?Mode=Online", GetString("Home.Hero.Chip.Online", "Home.Hero.Chips.Online")),
-            ("/Courses/Index?CourseGroupId=REKVAL", GetString("Home.Hero.Chip.Retraining", "Home.Hero.Chips.Retraining")),
-            ("/Courses/Index?Level=Beginner", GetString("Home.Hero.Chip.Beginner", "Home.Hero.Chips.Beginner")),
-            ("/Courses/Index?City=Praha", GetString("Home.Hero.Chip.Prague", "Home.Hero.Chips.Prague")),
-            ("/Courses/Index?HasCertificate=true", GetString("Home.Hero.Chip.Certificate", "Home.Hero.Chips.Certificate")),
-            ("/Courses/Index?q=akreditace", GetString("Home.Hero.Chip.Accreditation", "Home.Hero.Chips.Accreditation")),
-            ("/Courses/Index?q=intern%C3%AD%20audit", GetString("Home.Hero.Chip.InternalAudits", "Home.Hero.Chips.InternalAudits")),
+            ("/Courses/Index?Mode=Online", GetString("Home.Hero.Chips.Online", "Home.Hero.Chip.Online")),
+            ("/Courses/Index?CourseGroupId=REKVAL", GetString("Home.Hero.Chips.Retraining", "Home.Hero.Chip.Retraining")),
+            ("/Courses/Index?Level=Beginner", GetString("Home.Hero.Chips.Beginner", "Home.Hero.Chip.Beginner")),
+            ("/Courses/Index?City=Praha", GetString("Home.Hero.Chips.Prague", "Home.Hero.Chip.Prague")),
+            ("/Courses/Index?HasCertificate=true", GetString("Home.Hero.Chips.Certificate", "Home.Hero.Chip.Certificate")),
+            ("/Courses/Index?q=akreditace", GetString("Home.Hero.Chips.Accreditation", "Home.Hero.Chip.Accreditation")),
+            ("/Courses/Index?q=intern%C3%AD%20audit", GetString("Home.Hero.Chips.InternalAudits", "Home.Hero.Chip.InternalAudits")),
         };
 
         var lookup = fallbackChipDefinitions.ToDictionary(c => c.Label, c => c.Url, StringComparer.OrdinalIgnoreCase);
