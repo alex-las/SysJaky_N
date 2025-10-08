@@ -3,7 +3,7 @@
 @inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
 @{
     var formId = Model.FormId ?? "login-form";
-    var emailId = Model.EmailInputId ?? $"{formId}-email";
+    var loginId = Model.LoginInputId ?? $"{formId}-login";
     var passwordId = Model.PasswordInputId ?? $"{formId}-password";
     var rememberId = Model.RememberMeInputId ?? $"{formId}-remember";
     var altchaId = Model.AltchaId ?? $"{formId}-altcha";
@@ -45,9 +45,9 @@
     <div asp-validation-summary="All" class="@Model.ValidationSummaryCssClass"></div>
 
     <div class="mb-3">
-        <label class="form-label" for="@emailId">@Localizer[Model.EmailLabelKey]</label>
-        <input class="form-control" asp-for="Input.Email" id="@emailId" autocomplete="email" />
-        <span class="text-danger" asp-validation-for="Input.Email"></span>
+        <label class="form-label" for="@loginId">@Localizer[Model.LoginLabelKey]</label>
+        <input class="form-control" asp-for="Input.Login" id="@loginId" autocomplete="username" />
+        <span class="text-danger" asp-validation-for="Input.Login"></span>
     </div>
 
     <div class="mb-3">

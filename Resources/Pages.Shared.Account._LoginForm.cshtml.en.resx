@@ -15,8 +15,8 @@
   <data name="LoginTitle" xml:space="preserve">
     <value>Login</value>
   </data>
-  <data name="EmailLabel" xml:space="preserve">
-    <value>Email</value>
+  <data name="LoginLabel" xml:space="preserve">
+    <value>Email or username</value>
   </data>
   <data name="PasswordLabel" xml:space="preserve">
     <value>Password</value>

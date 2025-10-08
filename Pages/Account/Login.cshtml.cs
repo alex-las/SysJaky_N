@@ -26,8 +26,7 @@ public class LoginModel : PageModel
     public class InputModel
     {
         [Required(ErrorMessage = "Validation.Required")]
-        [EmailAddress(ErrorMessage = "Validation.EmailAddress")]
-        public string Email { get; set; } = string.Empty;
+        public string Login { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Validation.Required")]
         [DataType(DataType.Password)]
@@ -51,11 +50,21 @@ public class LoginModel : PageModel
         {
             return Page();
         }
-        var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+        var loginIdentifier = Input.Login.Trim();
+
+        var user = await _signInManager.UserManager.FindByNameAsync(loginIdentifier)
+            ?? await _signInManager.UserManager.FindByEmailAsync(loginIdentifier);
+
+        if (user is null)
+        {
+            ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+            return Page();
+        }
+
+        var result = await _signInManager.PasswordSignInAsync(user, Input.Password, Input.RememberMe, lockoutOnFailure: false);
         if (result.Succeeded)
         {
-            var user = await _signInManager.UserManager.FindByEmailAsync(Input.Email);
-            await _auditService.LogAsync(user?.Id, "Login");
+            await _auditService.LogAsync(user.Id, "Login");
             return RedirectToPage("/Index");
         }
 
