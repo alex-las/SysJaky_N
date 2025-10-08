@@ -1,3 +1,4 @@
+@using System.Linq
 @using System.Text.Json
 @model SysJaky_N.Models.ViewModels.ChatbotWidgetViewModel
 @inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
@@ -8,8 +9,34 @@
         PropertyNameCaseInsensitive = true
     };
 
-    var quickRepliesJson = Localizer["QuickRepliesJson"].Value;
-    var quickReplies = JsonSerializer.Deserialize<string[]>(quickRepliesJson ?? "[]", serializerOptions) ?? Array.Empty<string>();
+    var quickRepliesLocalizedString = Localizer.GetString("QuickRepliesJson");
+    var quickRepliesJson = quickRepliesLocalizedString.Value;
+    var quickReplies = Array.Empty<string>();
+
+    if (!quickRepliesLocalizedString.ResourceNotFound && !string.IsNullOrWhiteSpace(quickRepliesJson))
+    {
+        var trimmedValue = quickRepliesJson.Trim();
+
+        if (trimmedValue.StartsWith("["))
+        {
+            try
+            {
+                quickReplies = JsonSerializer.Deserialize<string[]>(trimmedValue, serializerOptions) ?? Array.Empty<string>();
+            }
+            catch (JsonException)
+            {
+                quickReplies = Array.Empty<string>();
+            }
+        }
+        else
+        {
+            quickReplies = trimmedValue
+                .Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
+                .Select(reply => reply.Trim())
+                .Where(reply => !string.IsNullOrEmpty(reply))
+                .ToArray();
+        }
+    }
 }
 
 <div class="chatbot" data-chatbot data-chatbot-autoinit="@(Model.AutoInitialize ? "true" : "false")">
