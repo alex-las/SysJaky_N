@@ -110,6 +110,92 @@
         text-decoration: none;
     }
 
+    .specializations-section {
+        background: #f8fafc;
+    }
+
+    .specializations-section .section-heading {
+        font-size: clamp(2rem, 3vw + 1rem, 2.75rem);
+        font-weight: 700;
+        color: #0f172a;
+    }
+
+    .specializations-section .section-subheading {
+        max-width: 48rem;
+        margin: 0 auto;
+        color: #475569;
+        font-size: clamp(1rem, 1vw + 0.85rem, 1.25rem);
+    }
+
+    .specialization-card {
+        background: #ffffff;
+        border-radius: 1.25rem;
+        border: 1px solid rgba(15, 23, 42, 0.08);
+        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .specialization-card:hover,
+    .specialization-card:focus-within {
+        transform: translateY(-6px) scale(1.02);
+        box-shadow: 0 24px 50px rgba(15, 23, 42, 0.15);
+    }
+
+    .specialization-icon {
+        width: 3.25rem;
+        height: 3.25rem;
+        border-radius: 999px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: #ffffff;
+        font-size: 1.5rem;
+        box-shadow: 0 15px 25px rgba(15, 23, 42, 0.12);
+    }
+
+    .specialization-icon.iso-9001 {
+        background: #2563eb;
+    }
+
+    .specialization-icon.iso-14001 {
+        background: #22c55e;
+    }
+
+    .specialization-icon.iso-17025 {
+        background: #7c3aed;
+    }
+
+    .specialization-icon.iso-15189 {
+        background: #ef4444;
+    }
+
+    .specialization-icon.haccp {
+        background: #f97316;
+    }
+
+    .specialization-icon.iso-45001 {
+        background: #facc15;
+        color: #78350f;
+    }
+
+    .specialization-icon.iso-27001 {
+        background: #4338ca;
+    }
+
+    .specialization-icon.iatf-16949 {
+        background: #6b7280;
+    }
+
+    .specialization-icon.iso-13485 {
+        background: #ec4899;
+    }
+
+    @@media (max-width: 575.98px) {
+        .specialization-card {
+            text-align: center;
+        }
+    }
+
     @@media (max-width: 767.98px) {
         .hero-usp-card {
             text-align: center;
@@ -212,6 +298,98 @@
                 <div class="trust-item d-flex align-items-center justify-content-center justify-content-md-start gap-2">
                     <i class="bi bi-patch-check"></i>
                     <span>@T["TrustCertificate"]</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="specializations-section py-5">
+    <div class="container-xl">
+        <div class="text-center mb-5">
+            <h2 class="section-heading mb-3">Naše specializace</h2>
+            <p class="section-subheading lead">Odborně vás provedeme certifikací podle nejžádanějších mezinárodních norem.</p>
+        </div>
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            <div class="col">
+                <div class="specialization-card h-100 text-center p-4">
+                    <div class="specialization-icon iso-9001 mb-3">
+                        <i class="bi bi-award-fill" aria-hidden="true"></i>
+                    </div>
+                    <h3 class="h4 fw-bold mb-2">ISO 9001</h3>
+                    <p class="text-muted mb-0">Systém managementu kvality</p>
+                </div>
+            </div>
+            <div class="col">
+                <div class="specialization-card h-100 text-center p-4">
+                    <div class="specialization-icon iso-14001 mb-3">
+                        <i class="bi bi-award-fill" aria-hidden="true"></i>
+                    </div>
+                    <h3 class="h4 fw-bold mb-2">ISO 14001</h3>
+                    <p class="text-muted mb-0">Systém environmentálního managementu</p>
+                </div>
+            </div>
+            <div class="col">
+                <div class="specialization-card h-100 text-center p-4">
+                    <div class="specialization-icon iso-17025 mb-3">
+                        <i class="bi bi-award-fill" aria-hidden="true"></i>
+                    </div>
+                    <h3 class="h4 fw-bold mb-2">ISO/IEC 17025</h3>
+                    <p class="text-muted mb-0">Akreditace zkušebních a kalibračních laboratoří</p>
+                </div>
+            </div>
+            <div class="col">
+                <div class="specialization-card h-100 text-center p-4">
+                    <div class="specialization-icon iso-15189 mb-3">
+                        <i class="bi bi-award-fill" aria-hidden="true"></i>
+                    </div>
+                    <h3 class="h4 fw-bold mb-2">ISO 15189</h3>
+                    <p class="text-muted mb-0">Kvalita zdravotnických laboratoří</p>
+                </div>
+            </div>
+            <div class="col">
+                <div class="specialization-card h-100 text-center p-4">
+                    <div class="specialization-icon haccp mb-3">
+                        <i class="bi bi-award-fill" aria-hidden="true"></i>
+                    </div>
+                    <h3 class="h4 fw-bold mb-2">HACCP</h3>
+                    <p class="text-muted mb-0">Bezpečnost a kontrola potravin</p>
+                </div>
+            </div>
+            <div class="col">
+                <div class="specialization-card h-100 text-center p-4">
+                    <div class="specialization-icon iso-45001 mb-3">
+                        <i class="bi bi-award-fill" aria-hidden="true"></i>
+                    </div>
+                    <h3 class="h4 fw-bold mb-2">ISO 45001</h3>
+                    <p class="text-muted mb-0">Bezpečnost a ochrana zdraví při práci</p>
+                </div>
+            </div>
+            <div class="col">
+                <div class="specialization-card h-100 text-center p-4">
+                    <div class="specialization-icon iso-27001 mb-3">
+                        <i class="bi bi-award-fill" aria-hidden="true"></i>
+                    </div>
+                    <h3 class="h4 fw-bold mb-2">ISO/IEC 27001</h3>
+                    <p class="text-muted mb-0">Řízení bezpečnosti informací</p>
+                </div>
+            </div>
+            <div class="col">
+                <div class="specialization-card h-100 text-center p-4">
+                    <div class="specialization-icon iatf-16949 mb-3">
+                        <i class="bi bi-award-fill" aria-hidden="true"></i>
+                    </div>
+                    <h3 class="h4 fw-bold mb-2">IATF 16949</h3>
+                    <p class="text-muted mb-0">Automotive Quality Management</p>
+                </div>
+            </div>
+            <div class="col">
+                <div class="specialization-card h-100 text-center p-4">
+                    <div class="specialization-icon iso-13485 mb-3">
+                        <i class="bi bi-award-fill" aria-hidden="true"></i>
+                    </div>
+                    <h3 class="h4 fw-bold mb-2">ISO 13485</h3>
+                    <p class="text-muted mb-0">Management kvality zdravotnických prostředků</p>
                 </div>
             </div>
         </div>
