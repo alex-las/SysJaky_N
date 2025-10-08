@@ -183,21 +183,6 @@
   <data name="ISO13485" xml:space="preserve">
     <value>ISO 13485 - Medical devices</value>
   </data>
-  <data name="PackageRecommendationsTitle" xml:space="preserve">
-    <value>Recommended service packages</value>
-  </data>
-  <data name="PackageIso9001Full" xml:space="preserve">
-    <value>ISO 9001 – Full implementation
-End-to-end engagement covering gap analysis, documentation, and certification readiness.</value>
-  </data>
-  <data name="PackageImsIntegrated" xml:space="preserve">
-    <value>Integrated management system (ISO 9001 + ISO 14001 + ISO 45001)
-Combined rollout of quality, environmental, and OH&amp;S standards with aligned processes and training.</value>
-  </data>
-  <data name="PackageLabAccreditation" xml:space="preserve">
-    <value>Laboratory accreditation (ISO/IEC 17025)
-Support with laboratory processes, calibration controls, and records to meet accreditation requirements.</value>
-  </data>
   <data name="ValidationServiceTypeRequired" xml:space="preserve">
     <value>Please select a service type.</value>
   </data>
