@@ -169,24 +169,40 @@
         </main>
     </div>
 
-    <footer class="footer app-footer mt-5" role="contentinfo">
-        <div class="container-xxl py-4">
-            <div class="d-flex flex-column flex-md-row gap-3 align-items-start align-items-md-center justify-content-between">
-                <div class="text-muted small">
-                    &copy; 2025 - SysJaky_N - <a asp-area="" asp-page="/Privacy" class="text-decoration-none">@Localizer["FooterPrivacy"]</a>
+    <footer class="footer app-footer mt-5 bg-gray-900 text-white" role="contentinfo">
+        <div class="container-xxl py-5">
+            <div class="row gy-4">
+                <div class="col-12 col-md-4">
+                    <h5 class="text-uppercase fw-semibold fs-6 text-white-50">O společnosti</h5>
+                    <p class="mb-1">Systémy jakosti s.r.o.</p>
+                    <p class="mb-0">IČO: 123 456 78</p>
                 </div>
-                <form id="newsletter-form" class="newsletter-form d-flex flex-column flex-sm-row align-items-stretch gap-2" asp-page="/Api/Newsletter" method="post" novalidate>
-                    <div class="d-flex flex-column flex-sm-row gap-2 w-100">
-                        <label class="visually-hidden" for="newsletter-email">@Localizer["NewsletterEmailLabel"]</label>
-                        <input id="newsletter-email" name="Email" type="email" class="form-control form-control-sm" placeholder='@Localizer["NewsletterPlaceholder"]' autocomplete="email" required />
-                        <button type="submit" class="btn btn-primary btn-sm flex-shrink-0">@Localizer["NewsletterButtonText"]</button>
-                    </div>
-                    <div class="form-check small mb-0">
-                        <input class="form-check-input" type="checkbox" value="true" id="newsletter-consent" name="Consent" />
-                        <label class="form-check-label" for="newsletter-consent">@Localizer["NewsletterConsentText"]</label>
-                    </div>
-                    <div class="newsletter-message small" role="status" aria-live="polite"></div>
-                </form>
+                <div class="col-12 col-md-4">
+                    <h5 class="text-uppercase fw-semibold fs-6 text-white-50">Služby</h5>
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-1">Poradenství pro systémy řízení kvality</li>
+                        <li class="mb-1">Interní audity a příprava na certifikaci</li>
+                        <li class="mb-1">Školení a kurzy ISO standardů</li>
+                        <li class="mb-0">Tvorba a revize dokumentace</li>
+                    </ul>
+                </div>
+                <div class="col-12 col-md-4">
+                    <h5 class="text-uppercase fw-semibold fs-6 text-white-50">Kontakt</h5>
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-2">
+                            <a class="link-light text-decoration-none" href="mailto:info@systemy-jakosti.cz">info@systemy-jakosti.cz</a>
+                        </li>
+                        <li>
+                            <a class="link-light text-decoration-none" href="tel:+420123456789">+420 123 456 789</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-top border-light border-opacity-25 mt-4 pt-4">
+                <div class="d-flex flex-column flex-md-row gap-2 gap-md-4 align-items-center justify-content-between small text-white-50">
+                    <span>&copy; 2025 - Systémy jakosti s.r.o.</span>
+                    <a asp-area="" asp-page="/Privacy" class="link-light text-decoration-none">@Localizer["FooterPrivacy"]</a>
+                </div>
             </div>
         </div>
     </footer>
