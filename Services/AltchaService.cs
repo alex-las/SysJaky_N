@@ -55,6 +55,7 @@ public class AltchaService : IAltchaService
         // 0) sanity
         if (!string.Equals(proof.Algorithm, "SHA-256", StringComparison.OrdinalIgnoreCase)) return false;
         if (string.IsNullOrWhiteSpace(proof.Challenge) || string.IsNullOrWhiteSpace(proof.Salt) || string.IsNullOrWhiteSpace(proof.Signature)) return false;
+        if (string.IsNullOrWhiteSpace(proof.Number)) return false;
 
         // 1) expirace (pokud je v salt)
         try
@@ -68,7 +69,7 @@ public class AltchaService : IAltchaService
         }
         catch { /* ignore */ }
 
-        // 2) podpis (HMAC) ñ pouûij difficulty z payloadu (pokud je), jinak konfiguraci
+        // 2) podpis (HMAC) ‚Äì pou≈æij difficulty z payloadu (pokud je), jinak konfiguraci
         var difficulty = proof.Difficulty ?? _difficulty;
         var payload = $"{proof.Challenge}:{difficulty}:{proof.Salt}:{proof.Algorithm}";
 
@@ -79,7 +80,7 @@ public class AltchaService : IAltchaService
                 Encoding.UTF8.GetBytes((proof.Signature ?? "").ToLowerInvariant())))
             return false;
 
-        // 3) proof-of-work ñ dovol obÏ varianty (bez dvojteËky i s dvojteËkou) a ovÏ¯ jak "hex nuly", tak "bitovÈ nuly"
+        // 3) proof-of-work ‚Äì dovol obƒõ varianty (bez dvojteƒçky i s dvojteƒçkou) a ovƒõ≈ô jak "hex nuly", tak "bitov√© nuly"
         using var sha = SHA256.Create();
 
         static bool HasLeadingZeroHex(ReadOnlySpan<byte> hashBytes, int zerosNibbles)
@@ -114,16 +115,16 @@ public class AltchaService : IAltchaService
             return bitsLeft <= 0;
         }
 
-        // a) bez dvojteËky
+        // a) bez dvojteƒçky
         var h1 = sha.ComputeHash(Encoding.UTF8.GetBytes(proof.Challenge + proof.Number));
-        // b) s dvojteËkou
+        // b) s dvojteƒçkou
         var h2 = sha.ComputeHash(Encoding.UTF8.GetBytes($"{proof.Challenge}:{proof.Number}"));
 
-        // Akceptuj, pokud alespoÚ jedna varianta projde ñ nejprve "hex nuly", pak "bitovÈ nuly"
+        // Akceptuj, pokud alespo≈à jedna varianta projde ‚Äì nejprve "hex nuly", pak "bitov√© nuly"
         if (HasLeadingZeroHex(h1, difficulty) || HasLeadingZeroHex(h2, difficulty)) return true;
 
-        // Pokud tv˘j build Altchy interpretuje difficulty jako "bitovÈ nuly" (nikoli hex),
-        // projde jedna z tÏchto variant:
+        // Pokud tv≈Øj build Altchy interpretuje difficulty jako "bitov√© nuly" (nikoli hex),
+        // projde jedna z tƒõchto variant:
         if (HasLeadingZeroBits(h1, difficulty) || HasLeadingZeroBits(h2, difficulty)) return true;
 
         return false;
@@ -161,7 +162,7 @@ public class AltchaService : IAltchaService
                 Salt = model.Salt,
                 Algorithm = model.Algorithm,
                 Signature = model.Signature,
-                Number = model.Nonce
+                Number = (model.Nonce ?? string.Empty).Trim()
             };
 
             return Task.FromResult(Verify(proof));

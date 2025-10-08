@@ -61,18 +61,66 @@ public class AltchaController : ControllerBase
         }
 
         // 2) Tolerantní mapování -> AltchaProof
+        static string ReadString(JsonElement source, string propertyName, string fallback = "")
+        {
+            if (source.TryGetProperty(propertyName, out var element) && element.ValueKind == JsonValueKind.String)
+            {
+                var value = element.GetString();
+                if (!string.IsNullOrEmpty(value))
+                {
+                    return value;
+                }
+            }
+
+            return fallback;
+        }
+
+        static string? ReadNumber(JsonElement source, string propertyName)
+        {
+            if (!source.TryGetProperty(propertyName, out var element))
+            {
+                return null;
+            }
+
+            return element.ValueKind switch
+            {
+                JsonValueKind.String => element.GetString(),
+                JsonValueKind.Number => element.GetRawText(),
+                _ => null
+            };
+        }
+
+        static int? ReadDifficulty(JsonElement source)
+        {
+            if (!source.TryGetProperty("difficulty", out var element))
+            {
+                return null;
+            }
+
+            if (element.ValueKind == JsonValueKind.Number && element.TryGetInt32(out var value))
+            {
+                return value;
+            }
+
+            if (element.ValueKind == JsonValueKind.String &&
+                int.TryParse(element.GetString(), System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture, out var parsed))
+            {
+                return parsed;
+            }
+
+            return null;
+        }
+
+        var numberText = ReadNumber(proofJson, "number") ?? ReadNumber(proofJson, "nonce");
         var proof = new AltchaProof
         {
-            Algorithm = proofJson.TryGetProperty("algorithm", out var alg) && alg.ValueKind == JsonValueKind.String ? alg.GetString()! : "SHA-256",
-            Challenge = proofJson.TryGetProperty("challenge", out var ch) && ch.ValueKind == JsonValueKind.String ? ch.GetString()! :
-                         proofJson.TryGetProperty("seed", out var sd) && sd.ValueKind == JsonValueKind.String ? sd.GetString()! : "",
-            Number = proofJson.TryGetProperty("number", out var num) && num.TryGetInt64(out var nVal) ? nVal :
-                         proofJson.TryGetProperty("nonce", out var nn) && nn.TryGetInt64(out var n2Val) ? n2Val : 0,
-            Salt = proofJson.TryGetProperty("salt", out var salt) && salt.ValueKind == JsonValueKind.String ? salt.GetString()! : "",
-            Signature = proofJson.TryGetProperty("signature", out var sign) && sign.ValueKind == JsonValueKind.String ? sign.GetString()! : "",
-            Difficulty = proofJson.TryGetProperty("difficulty", out var diff) && diff.TryGetInt32(out var dVal) ? dVal : (int?)null
+            Algorithm = ReadString(proofJson, "algorithm", "SHA-256"),
+            Challenge = ReadString(proofJson, "challenge", ReadString(proofJson, "seed")),
+            Number = (numberText ?? string.Empty).Trim(),
+            Salt = ReadString(proofJson, "salt"),
+            Signature = ReadString(proofJson, "signature"),
+            Difficulty = ReadDifficulty(proofJson)
         };
-
         // 3) Ověření
         var success = _altchaService.Verify(proof);
 
