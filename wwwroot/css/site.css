@@ -2040,3 +2040,30 @@ footer.app-footer a:focus {
   }
 }
 
+/* Modern hero section with gradient background */
+.hero-modern {
+  background: linear-gradient(135deg, #2563eb 0%, #06b6d4 55%, #f59e0b 130%);
+  padding: 5rem 0;
+  border-radius: 1rem;
+  color: white;
+}
+
+.iso-card {
+  border-radius: 1rem;
+  padding: 2rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+  background: white;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.iso-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+}
+
+.stats-section {
+  background: linear-gradient(to right, #2563eb, #06b6d4);
+  padding: 4rem 0;
+  color: white;
+}
+
