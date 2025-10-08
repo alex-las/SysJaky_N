@@ -31,12 +31,12 @@ public abstract class AuthFormOptionsBase<TInput>
 
 public class LoginFormOptions : AuthFormOptionsBase<LoginModel.InputModel>
 {
-    public string LoginLabelKey { get; set; } = "LoginLabel";
+    public string EmailLabelKey { get; set; } = "EmailLabel";
     public string PasswordLabelKey { get; set; } = "PasswordLabel";
     public string RememberMeLabelKey { get; set; } = "RememberMe";
     public string SubmitButtonKey { get; set; } = "LoginTitle";
     public string EnableJavascriptKey { get; set; } = "EnableJavascript";
-    public string? LoginInputId { get; set; }
+    public string? EmailInputId { get; set; }
     public string? PasswordInputId { get; set; }
     public string? RememberMeInputId { get; set; }
     public bool ShowRememberMe { get; set; } = true;

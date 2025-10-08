@@ -15,8 +15,8 @@
   <data name="LoginTitle" xml:space="preserve">
     <value>Přihlášení</value>
   </data>
-  <data name="LoginLabel" xml:space="preserve">
-    <value>E-mail nebo uživatelské jméno</value>
+  <data name="EmailLabel" xml:space="preserve">
+    <value>E-mail</value>
   </data>
   <data name="PasswordLabel" xml:space="preserve">
     <value>Heslo</value>

@@ -12,19 +12,16 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="LoginTitle" xml:space="preserve">
-    <value>Login</value>
+  <data name="InvalidLogin" xml:space="preserve">
+    <value>Neplatný pokus o přihlášení.</value>
   </data>
-  <data name="EmailLabel" xml:space="preserve">
-    <value>Email</value>
+  <data name="EmailNotConfirmed" xml:space="preserve">
+    <value>Před přihlášením musíte potvrdit svůj e-mail.</value>
   </data>
-  <data name="PasswordLabel" xml:space="preserve">
-    <value>Password</value>
+  <data name="LoginNotAllowed" xml:space="preserve">
+    <value>Přihlášení není povoleno. Kontaktujte podporu.</value>
   </data>
-  <data name="RememberMe" xml:space="preserve">
-    <value>Remember me</value>
-  </data>
-  <data name="EnableJavascript" xml:space="preserve">
-    <value>Please enable JavaScript.</value>
+  <data name="AccountLocked" xml:space="preserve">
+    <value>Tento účet je uzamčen. Zkuste to prosím později nebo kontaktujte podporu.</value>
   </data>
 </root>

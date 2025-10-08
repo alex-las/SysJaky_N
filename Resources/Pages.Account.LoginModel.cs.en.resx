@@ -12,19 +12,16 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="LoginTitle" xml:space="preserve">
-    <value>Login</value>
+  <data name="InvalidLogin" xml:space="preserve">
+    <value>Invalid login attempt.</value>
   </data>
-  <data name="EmailLabel" xml:space="preserve">
-    <value>Email</value>
+  <data name="EmailNotConfirmed" xml:space="preserve">
+    <value>You must confirm your email before signing in.</value>
   </data>
-  <data name="PasswordLabel" xml:space="preserve">
-    <value>Password</value>
+  <data name="LoginNotAllowed" xml:space="preserve">
+    <value>You are not allowed to sign in. Please contact support.</value>
   </data>
-  <data name="RememberMe" xml:space="preserve">
-    <value>Remember me</value>
-  </data>
-  <data name="EnableJavascript" xml:space="preserve">
-    <value>Please enable JavaScript.</value>
+  <data name="AccountLocked" xml:space="preserve">
+    <value>This account is locked. Please try again later or contact support.</value>
   </data>
 </root>
