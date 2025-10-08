@@ -21,6 +21,9 @@
   <data name="HeroHeadline" xml:space="preserve">
     <value>Articles that streamline your management systems</value>
   </data>
+  <data name="HeroIntro" xml:space="preserve">
+    <value>Discover best practices for ISO 9001 and ISO 14001, download auditor checklists, and stay current with legislative changes affecting your certifications.</value>
+  </data>
   <data name="HeroSubheadline" xml:space="preserve">
     <value>Browse a curated selection of articles on ISO standards, audits and process management. Filter by category, search key topics and switch between grid and list views.</value>
   </data>

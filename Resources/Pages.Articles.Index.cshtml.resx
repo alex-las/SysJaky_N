@@ -21,6 +21,9 @@
   <data name="HeroHeadline" xml:space="preserve">
     <value>Články, které zefektivní vaše systémy řízení</value>
   </data>
+  <data name="HeroIntro" xml:space="preserve">
+    <value>Zjistěte osvědčené postupy pro ISO 9001 a ISO 14001, stáhněte si kontrolní seznamy pro auditory a sledujte legislativní novinky ovlivňující vaše certifikace.</value>
+  </data>
   <data name="HeroSubheadline" xml:space="preserve">
     <value>Vyberte si z kurátorovaného výběru článků o ISO normách, auditech i procesním řízení. Filtrujte podle kategorií, vyhledávejte klíčová témata a přepínejte mezi dlaždicovým a seznamovým zobrazením.</value>
   </data>
