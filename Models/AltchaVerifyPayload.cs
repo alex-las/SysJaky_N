@@ -33,8 +33,9 @@ public class AltchaVerifyPayload
 
     /// <summary>
     /// Nonce solving the proof-of-work.
+    /// Stored as string to avoid overflow when Altcha produces large values.
     /// </summary>
-    public long Nonce { get; set; }
+    public string Nonce { get; set; } = string.Empty;
 
 }
 
