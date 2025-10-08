@@ -115,13 +115,13 @@
     <value>Tell us what you want to achieve with the training. For example, process improvement or accreditation preparation.</value>
   </data>
   <data name="NewsHeading" xml:space="preserve">
-    <value>News</value>
+    <value>ISO updates</value>
   </data>
   <data name="RecommendedEmpty" xml:space="preserve">
-    <value>Select “I am… / I want to…” above or use the search field.</value>
+    <value>Select a standard and goal above to see tailored course suggestions.</value>
   </data>
   <data name="RecommendedForYou" xml:space="preserve">
-    <value>Recommended for you</value>
+    <value>Courses recommended for your certification journey</value>
   </data>
   <data name="RecommendedViewAll" xml:space="preserve">
     <value>View all</value>
