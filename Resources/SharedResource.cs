@@ -1,3 +1,8 @@
-namespace SysJaky_N;
+namespace SysJaky_N.Resources;
 
-public class SharedResource { }
+/// <summary>
+/// Marker class for IStringLocalizer. This is NOT a static class.
+/// </summary>
+public class SharedResource
+{
+}
