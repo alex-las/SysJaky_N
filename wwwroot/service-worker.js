@@ -153,11 +153,11 @@ async function networkFirst(request) {
         if (offline) {
             return offline;
         }
-        throw error;
+        return Response.error();
     }
 }
 
-async function staleWhileRevalidate(request, cacheName) {
+async function staleWhileRevalidate(request, cacheName, getFallback) {
     const cache = await caches.open(cacheName);
     const cachedResponse = await cache.match(request);
     const networkPromise = fetch(request)
@@ -167,7 +167,18 @@ async function staleWhileRevalidate(request, cacheName) {
             }
             return networkResponse;
         })
-        .catch(() => cachedResponse);
+        .catch(async () => {
+            if (cachedResponse) {
+                return cachedResponse;
+            }
+            if (typeof getFallback === 'function') {
+                const fallback = await getFallback();
+                if (fallback) {
+                    return fallback;
+                }
+            }
+            return Response.error();
+        });
 
     return cachedResponse || networkPromise;
 }
@@ -214,39 +225,44 @@ self.addEventListener('fetch', (event) => {
 
     const url = new URL(request.url);
 
-    if (url.origin === self.location.origin) {
-        if (request.destination === 'style' || url.pathname.endsWith('.css')) {
-            event.respondWith(staleWhileRevalidate(request, STATIC_CACHE));
-            return;
-        }
+    if (url.origin !== self.location.origin) {
+        return;
+    }
 
-        if (request.destination === 'script' || url.pathname.endsWith('.js')) {
-            event.respondWith(staleWhileRevalidate(request, RUNTIME_CACHE));
-            return;
-        }
+    if (request.destination === 'style' || url.pathname.endsWith('.css')) {
+        event.respondWith(staleWhileRevalidate(request, STATIC_CACHE));
+        return;
+    }
 
-        if (request.destination === 'image') {
-            event.respondWith(
-                caches.open(RUNTIME_CACHE).then((cache) =>
-                    cache.match(request).then((cached) => {
-                        const fetchPromise = fetch(request)
-                            .then((networkResponse) => {
-                                if (networkResponse && networkResponse.ok) {
-                                    cache.put(request, networkResponse.clone());
-                                }
-                                return networkResponse;
-                            })
-                            .catch(() => cached);
-                        return cached || fetchPromise;
-                    })
-                )
-            );
-            return;
-        }
+    if (request.destination === 'script' || url.pathname.endsWith('.js')) {
+        event.respondWith(staleWhileRevalidate(request, RUNTIME_CACHE));
+        return;
+    }
+
+    if (request.destination === 'image') {
+        event.respondWith(
+            staleWhileRevalidate(request, RUNTIME_CACHE)
+        );
+        return;
     }
 
     event.respondWith(
-        caches.match(request).then((cached) => cached || fetch(request).catch(() => caches.match(OFFLINE_URL)))
+        (async () => {
+            const cached = await caches.match(request);
+            if (cached) {
+                return cached;
+            }
+
+            try {
+                return await fetch(request);
+            } catch (error) {
+                const offline = await caches.match(OFFLINE_URL);
+                if (offline) {
+                    return offline;
+                }
+                return Response.error();
+            }
+        })()
     );
 });
 
