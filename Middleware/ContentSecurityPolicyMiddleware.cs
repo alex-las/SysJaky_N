@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Hosting;
@@ -19,22 +20,42 @@ public class ContentSecurityPolicyMiddleware
 
     private static string BuildPolicyValue(IHostEnvironment environment)
     {
-        var connectSources = "'self' https://fonts.googleapis.com https://fonts.gstatic.com https://cdn.jsdelivr.net";
+        var connectSources = new List<string>
+        {
+            "'self'",
+            "https://fonts.googleapis.com",
+            "https://fonts.gstatic.com",
+            "https://cdn.jsdelivr.net"
+        };
+
         if (environment.IsDevelopment())
         {
-            connectSources += " http://localhost:* https://localhost:* ws://localhost:* wss://localhost:*";
+            connectSources.AddRange(new[]
+            {
+                "http://localhost:*",
+                "https://localhost:*",
+                "ws://localhost:*",
+                "wss://localhost:*"
+            });
         }
 
-        return
-            "default-src 'self'; " +
-            "script-src 'self' 'unsafe-inline'; " +
-            "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; " +
-            "font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net data:; " +
-            "img-src 'self' data:; " +
-            $"connect-src {connectSources}; " +
-            "form-action 'self'; " +
-            "frame-ancestors 'self'; " +
-            "object-src 'none';";
+        var scriptSources = new[] { "'self'", "'unsafe-inline'" };
+        var styleSources = new[] { "'self'", "'unsafe-inline'", "https://fonts.googleapis.com", "https://cdn.jsdelivr.net" };
+        var fontSources = new[] { "'self'", "https://fonts.gstatic.com", "https://cdn.jsdelivr.net", "data:" };
+        var imageSources = new[] { "'self'", "data:" };
+
+        return string.Join(' ', new[]
+        {
+            "default-src 'self';",
+            $"script-src {string.Join(' ', scriptSources)};",
+            $"style-src {string.Join(' ', styleSources)};",
+            $"font-src {string.Join(' ', fontSources)};",
+            $"img-src {string.Join(' ', imageSources)};",
+            $"connect-src {string.Join(' ', connectSources)};",
+            "form-action 'self';",
+            "frame-ancestors 'self';",
+            "object-src 'none';"
+        });
     }
 
     public Task InvokeAsync(HttpContext context)
