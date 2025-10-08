@@ -51,11 +51,21 @@ public class LoginModel : PageModel
         {
             return Page();
         }
-        var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+        var loginIdentifier = Input.Email.Trim();
+
+        var user = await _signInManager.UserManager.FindByNameAsync(loginIdentifier)
+            ?? await _signInManager.UserManager.FindByEmailAsync(loginIdentifier);
+
+        if (user is null)
+        {
+            ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+            return Page();
+        }
+
+        var result = await _signInManager.PasswordSignInAsync(user, Input.Password, Input.RememberMe, lockoutOnFailure: false);
         if (result.Succeeded)
         {
-            var user = await _signInManager.UserManager.FindByEmailAsync(Input.Email);
-            await _auditService.LogAsync(user?.Id, "Login");
+            await _auditService.LogAsync(user.Id, "Login");
             return RedirectToPage("/Index");
         }
 
