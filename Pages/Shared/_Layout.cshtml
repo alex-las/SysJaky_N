@@ -66,79 +66,65 @@
     <header class="app-header" role="banner">
         <nav class="navbar navbar-expand-lg navbar-dark bg-transparent bg-gradient-to-r from-blue-600 to-cyan-500 shadow-lg sticky top-0 z-50 app-navbar" role="navigation" aria-label='@Localizer["PrimaryNavigation"]' style="backdrop-filter: blur(12px);">
             <div class="container-xxl py-2">
-                <a class="navbar-brand d-flex align-items-center gap-2 text-white" asp-area="" asp-page="/Index">
-                    <span class="d-inline-flex align-items-center justify-content-center rounded-circle bg-light bg-opacity-25 p-2">
-                        <i class="bi bi-award-fill" aria-hidden="true"></i>
-                    </span>
-                    <span class="fw-semibold">@T["BrandName"]</span>
+                <a class="navbar-brand d-flex align-items-center gap-2" asp-area="" asp-page="/Index">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-award" viewBox="0 0 16 16">
+                        <path d="M9.669.864 8 0 6.331.864l-1.858.282-.842 1.68-1.337 1.32L2.6 6l-.306 1.854 1.337 1.32.842 1.68 1.858.282L8 12l1.669-.864 1.858-.282.842-1.68 1.337-1.32L13.4 6l.306-1.854-1.337-1.32-.842-1.68L9.669.864zm1.196 1.193.684 1.365 1.086 1.072L12.387 6l.248 1.506-1.086 1.072-.684 1.365-1.51.229L8 10.874l-1.355-.702-1.51-.229-.684-1.365-1.086-1.072L3.614 6l-.25-1.506 1.087-1.072.684-1.365 1.51-.229L8 1.126l1.356.702 1.509.229z" />
+                        <path d="M4 11.794V16l4-1 4 1v-4.206l-2.018.306L8 13.126 6.018 12.1 4 11.794z" />
+                    </svg>
+                    <span class="fw-bold">@T["BrandName"]</span>
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#primaryNavigation" aria-controls="primaryNavigation"
                         aria-expanded="false" aria-label='@Localizer["ToggleNavigation"]'>
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div id="primaryNavigation" class="navbar-collapse collapse">
-                    <ul class="navbar-nav primary-nav ms-lg-5 mb-4 mb-lg-0 gap-2 gap-lg-3">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 gap-2">
                         <li class="nav-item">
-                            <a class="nav-link fw-semibold" asp-area="" asp-page="/Index" aria-current="@(currentPage == "/Index" ? "page" : null)">@T["NavHome"]</a>
+                            <a class="nav-link px-3 py-2 rounded-pill" style="@(currentPage == "/Index" ? "background: rgba(255,255,255,0.2);" : string.Empty)" asp-area="" asp-page="/Index" aria-current="@(currentPage == "/Index" ? "page" : null)">@T["NavHome"]</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link fw-semibold" asp-area="" asp-page="/About" aria-current="@(currentPage == "/About" ? "page" : null)">@T["NavAbout"]</a>
+                            <a class="nav-link px-3 py-2 rounded-pill" style="@(currentPage == "/About" ? "background: rgba(255,255,255,0.2);" : string.Empty)" asp-area="" asp-page="/About" aria-current="@(currentPage == "/About" ? "page" : null)">@T["NavAbout"]</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link fw-semibold" asp-area="" asp-page="/About" aria-current="@(currentPage == "/About" ? "page" : null)">@T["NavServices"]</a>
+                            <a class="nav-link px-3 py-2 rounded-pill" style="@(currentPage == "/About" ? "background: rgba(255,255,255,0.2);" : string.Empty)" asp-area="" asp-page="/About" aria-current="@(currentPage == "/About" ? "page" : null)">@T["NavServices"]</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link fw-semibold" asp-area="" asp-page="/Courses/Index" aria-current="@(currentPage == "/Courses/Index" ? "page" : null)">@T["NavCourses"]</a>
+                            <a class="nav-link px-3 py-2 rounded-pill" style="@(currentPage == "/Courses/Index" ? "background: rgba(255,255,255,0.2);" : string.Empty)" asp-area="" asp-page="/Courses/Index" aria-current="@(currentPage == "/Courses/Index" ? "page" : null)">@T["NavCourses"]</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link fw-semibold" asp-area="" asp-page="/Articles/Index" aria-current="@(currentPage == "/Articles/Index" ? "page" : null)">@T["NavArticles"]</a>
+                            <a class="nav-link px-3 py-2 rounded-pill" style="@(currentPage == "/Articles/Index" ? "background: rgba(255,255,255,0.2);" : string.Empty)" asp-area="" asp-page="/Articles/Index" aria-current="@(currentPage == "/Articles/Index" ? "page" : null)">@T["NavArticles"]</a>
                         </li>
                     </ul>
-                    <ul class="navbar-nav navbar-actions ms-lg-auto align-items-lg-center gap-3 mb-2 mb-lg-0 flex-column flex-lg-row flex-lg-wrap">
+                    <div class="d-flex align-items-center gap-2 ms-lg-auto flex-wrap">
                         @if (canAccessAdmin)
                         {
-                            <li class="nav-item">
-                                <a class="btn btn-dark d-flex align-items-center gap-2 px-3" asp-page="/Admin/Dashboard/Index">
-                                    <i class="bi bi-speedometer2" aria-hidden="true"></i>
-                                    <span>Admin Dashboard</span>
-                                </a>
-                            </li>
-                        }
-                        <li class="nav-item">
-                            <a class="btn btn-light text-primary fw-semibold d-flex align-items-center justify-content-center gap-2 shadow-sm px-3 btn-nav-action" data-bs-toggle="offcanvas" href="#advisor" role="button" aria-controls="advisor" aria-haspopup="dialog">
-                                <i class="bi bi-magic" aria-hidden="true"></i>
-                                <span>@Localizer["AdvisorButton"]</span>
+                            <a class="btn btn-dark d-flex align-items-center gap-2 px-3" asp-page="/Admin/Dashboard/Index">
+                                <i class="bi bi-speedometer2" aria-hidden="true"></i>
+                                <span>Admin Dashboard</span>
                             </a>
-                        </li>
-                        <li class="nav-item">
-                            @await Html.PartialAsync("_LanguageSwitcher")
-                        </li>
-                        <li class="nav-item">
-                            <button type="button" class="btn btn-outline-light d-flex align-items-center justify-content-center gap-2 theme-toggle btn-nav-action"
-                                    data-theme-toggle aria-pressed="false" aria-label='@themeToggleText'
-                                    title='@themeToggleText'>
-                                <i class="bi bi-sun-fill" data-theme-icon="light" aria-hidden="true"></i>
-                                <i class="bi bi-moon-stars-fill d-none" data-theme-icon="dark" aria-hidden="true"></i>
-                                <span class="visually-hidden">@themeToggleText</span>
-                            </button>
-                        </li>
+                        }
+                        <button class="btn btn-light btn-sm rounded-pill px-4 d-flex align-items-center gap-2"
+                                data-bs-toggle="offcanvas" href="#advisor" role="button" aria-controls="advisor" aria-haspopup="dialog">
+                            <i class="bi bi-magic"></i>
+                            @Localizer["AdvisorButton"]
+                        </button>
+                        <partial name="_LanguageSwitcher" />
+                        <button type="button" class="btn btn-outline-light d-flex align-items-center justify-content-center gap-2 theme-toggle btn-nav-action"
+                                data-theme-toggle aria-pressed="false" aria-label='@themeToggleText'
+                                title='@themeToggleText'>
+                            <i class="bi bi-sun-fill" data-theme-icon="light" aria-hidden="true"></i>
+                            <i class="bi bi-moon-stars-fill d-none" data-theme-icon="dark" aria-hidden="true"></i>
+                            <span class="visually-hidden">@themeToggleText</span>
+                        </button>
                         @if (!User.Identity.IsAuthenticated)
                         {
-                            <li class="nav-item">
-                                <button type="button"
-                                        class="btn btn-outline-light btn-nav-action"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#authModal"
-                                        aria-controls="authModal"
-                                        aria-haspopup="dialog"
-                                        aria-expanded="false">
-                                    @T["LoginRegister"]
-                                </button>
-                            </li>
+                            <a class="btn btn-outline-light btn-sm rounded-pill px-4" asp-page="/Account/Login">
+                                @T["LoginRegister"]
+                            </a>
                         }
                         else
                         {
-                            <li class="nav-item dropdown">
+                            <div class="dropdown">
                                 <button class="btn btn-outline-light dropdown-toggle text-start text-lg-center btn-nav-action" data-bs-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false">
                                     @User.Identity?.Name
                                 </button>
@@ -150,15 +136,13 @@
                                     <li><hr class="dropdown-divider" /></li>
                                     <li role="none"><a class="dropdown-item" asp-page="/Cart" role="menuitem">@Localizer["Cart"]</a></li>
                                 </ul>
-                            </li>
+                            </div>
                         }
-                        <li class="nav-item">
-                            <a class="nav-link position-relative text-center @(currentPage == "/Cart" ? "active" : null)" asp-area="" asp-page="/Cart" aria-label='@Localizer["CartAriaLabel"]'>
-                                <i class="bi bi-cart fs-5"></i>
-                                <span class="visually-hidden">@Localizer["Cart"]</span>
-                            </a>
-                        </li>
-                    </ul>
+                        <a class="nav-link position-relative text-center @(currentPage == "/Cart" ? "active" : null)" asp-area="" asp-page="/Cart" aria-label='@Localizer["CartAriaLabel"]'>
+                            <i class="bi bi-cart fs-5"></i>
+                            <span class="visually-hidden">@Localizer["Cart"]</span>
+                        </a>
+                    </div>
                 </div>
             </div>
         </nav>
