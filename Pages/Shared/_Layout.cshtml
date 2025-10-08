@@ -71,8 +71,8 @@
                         aria-expanded="false" aria-label='@Localizer["ToggleNavigation"]'>
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div id="primaryNavigation" class="navbar-collapse collapse d-lg-inline-flex justify-content-between">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 gap-lg-1">
+                <div id="primaryNavigation" class="navbar-collapse collapse">
+                    <ul class="navbar-nav primary-nav me-auto mb-2 mb-lg-0 gap-2 gap-lg-1">
                         <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-page="/Index" aria-current="@(currentPage == "/Index" ? "page" : null)">@T["Nav.Home"]</a>
                         </li>
@@ -95,7 +95,7 @@
                             <a class="nav-link" asp-area="" asp-page="/Privacy" aria-current="@(currentPage == "/Privacy" ? "page" : null)">@T["Nav.Privacy"]</a>
                         </li>
                     </ul>
-                    <ul class="navbar-nav navbar-actions ms-lg-auto align-items-lg-center gap-3 mb-2 mb-lg-0 flex-column flex-lg-row">
+                    <ul class="navbar-nav navbar-actions ms-lg-auto align-items-lg-center gap-2 gap-lg-3 mb-2 mb-lg-0 flex-column flex-lg-row flex-lg-wrap">
                         @if (canAccessAdmin)
                         {
                             <li class="nav-item">

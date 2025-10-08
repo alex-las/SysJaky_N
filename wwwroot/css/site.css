@@ -233,6 +233,30 @@ button:focus-visible {
   box-shadow: 0 20px 45px rgba(37, 99, 235, 0.2);
 }
 
+.app-navbar .navbar-collapse {
+  gap: 1.25rem;
+}
+
+@media (min-width: 992px) {
+  .app-navbar .navbar-collapse {
+    display: flex !important;
+    align-items: center;
+    gap: 1.25rem;
+    flex-wrap: wrap;
+  }
+
+  .app-navbar .primary-nav {
+    display: flex;
+    flex: 1 1 auto;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .app-navbar .primary-nav .nav-item {
+    flex: 0 0 auto;
+  }
+}
+
 .theme-toggle {
   min-width: 2.5rem;
   min-height: 2.5rem;
@@ -1984,6 +2008,13 @@ footer.app-footer a:focus {
 @media (min-width: 992px) {
   .navbar-actions {
     width: auto;
+    display: flex;
+    flex: 0 1 auto;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    row-gap: 0.5rem;
   }
 
   .navbar-actions > .nav-item {
