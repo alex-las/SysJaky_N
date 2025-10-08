@@ -54,4 +54,70 @@
   <data name="PhoneInvalid" xml:space="preserve">
     <value>Please enter a valid phone number.</value>
   </data>
+  <data name="Step0Title" xml:space="preserve">
+    <value>Step 0 – Select a service type</value>
+  </data>
+  <data name="Step0Description" xml:space="preserve">
+    <value>Choose which service you would like us to help with.</value>
+  </data>
+  <data name="Step1Title" xml:space="preserve">
+    <value>Step 1 – Select standards</value>
+  </data>
+  <data name="Step1Description" xml:space="preserve">
+    <value>Select every standard you would like the training to cover.</value>
+  </data>
+  <data name="ServiceType_CustomTraining" xml:space="preserve">
+    <value>Custom corporate training</value>
+  </data>
+  <data name="ServiceType_CertificationProject" xml:space="preserve">
+    <value>Certification project (full implementation)</value>
+  </data>
+  <data name="ServiceType_PreAudit" xml:space="preserve">
+    <value>Pre-audit before certification</value>
+  </data>
+  <data name="ServiceType_InternalAudit" xml:space="preserve">
+    <value>Internal audit</value>
+  </data>
+  <data name="ServiceType_Consulting" xml:space="preserve">
+    <value>Consulting &amp; advisory</value>
+  </data>
+  <data name="ISO9001" xml:space="preserve">
+    <value>ISO 9001 - Quality management</value>
+  </data>
+  <data name="ISO14001" xml:space="preserve">
+    <value>ISO 14001 - Environmental management</value>
+  </data>
+  <data name="ISO17025" xml:space="preserve">
+    <value>ISO/IEC 17025 - Laboratory accreditation</value>
+  </data>
+  <data name="ISO15189" xml:space="preserve">
+    <value>ISO 15189 - Medical laboratories</value>
+  </data>
+  <data name="HACCP" xml:space="preserve">
+    <value>HACCP - Food safety</value>
+  </data>
+  <data name="ISO45001" xml:space="preserve">
+    <value>ISO 45001 - Occupational health &amp; safety</value>
+  </data>
+  <data name="ISO27001" xml:space="preserve">
+    <value>ISO 27001 - Information security</value>
+  </data>
+  <data name="IATF16949" xml:space="preserve">
+    <value>IATF 16949 - Automotive</value>
+  </data>
+  <data name="ISO13485" xml:space="preserve">
+    <value>ISO 13485 - Medical devices</value>
+  </data>
+  <data name="PackageRecommendationsTitle" xml:space="preserve">
+    <value>Recommended service packages</value>
+  </data>
+  <data name="PackageIso9001Full" xml:space="preserve">
+    <value>ISO 9001 – Full implementation&#x0a;End-to-end engagement covering gap analysis, documentation, and certification readiness.</value>
+  </data>
+  <data name="PackageImsIntegrated" xml:space="preserve">
+    <value>Integrated management system (ISO 9001 + ISO 14001 + ISO 45001)&#x0a;Combined rollout of quality, environmental, and OH&amp;S standards with aligned processes and training.</value>
+  </data>
+  <data name="PackageLabAccreditation" xml:space="preserve">
+    <value>Laboratory accreditation (ISO/IEC 17025)&#x0a;Support with laboratory processes, calibration controls, and records to meet accreditation requirements.</value>
+  </data>
 </root>
