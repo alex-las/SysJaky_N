@@ -3,6 +3,7 @@ using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using SysJaky_N.Data;
 using SysJaky_N.EmailTemplates.Models;
 using SysJaky_N.Models;
@@ -19,11 +20,13 @@ public class NewsletterModel : PageModel
 
     private readonly ApplicationDbContext _context;
     private readonly IEmailSender _emailSender;
+    private readonly IStringLocalizer<NewsletterModel> _localizer;
 
-    public NewsletterModel(ApplicationDbContext context, IEmailSender emailSender)
+    public NewsletterModel(ApplicationDbContext context, IEmailSender emailSender, IStringLocalizer<NewsletterModel> localizer)
     {
         _context = context;
         _emailSender = emailSender;
+        _localizer = localizer;
     }
 
     [BindProperty]
@@ -48,12 +51,12 @@ public class NewsletterModel : PageModel
 
         if (!EmailRegex.IsMatch(normalizedEmail))
         {
-            ModelState.AddModelError(nameof(Input.Email), "Zadejte platný e-mail.");
+            ModelState.AddModelError(nameof(Input.Email), _localizer["Validation.Email.Invalid"]);
         }
 
         if (!Input.Consent)
         {
-            ModelState.AddModelError(nameof(Input.Consent), "Pro přihlášení k newsletteru je nutný souhlas.");
+            ModelState.AddModelError(nameof(Input.Consent), _localizer["Validation.Consent.Required"]);
         }
 
         if (!ModelState.IsValid)
@@ -75,7 +78,7 @@ public class NewsletterModel : PageModel
             return new JsonResult(new
             {
                 success = true,
-                message = "Tento e-mail je již přihlášen k odběru."
+                message = _localizer["Json.AlreadySubscribed"].Value
             });
         }
 
@@ -118,7 +121,7 @@ public class NewsletterModel : PageModel
         return new JsonResult(new
         {
             success = true,
-            message = "Děkujeme! Odeslali jsme potvrzovací e-mail."
+            message = _localizer["Json.ConfirmationEmailSent"].Value
         });
     }
 
@@ -128,8 +131,8 @@ public class NewsletterModel : PageModel
 
         if (string.IsNullOrWhiteSpace(token))
         {
-            ConfirmationTitle = "Potvrzení odběru";
-            ConfirmationMessage = "Odkaz je neplatný. Zkuste to prosím znovu.";
+            ConfirmationTitle = _localizer["Confirmation.DefaultTitle"];
+            ConfirmationMessage = _localizer["Confirmation.InvalidLink"];
             return Page();
         }
 
@@ -138,15 +141,15 @@ public class NewsletterModel : PageModel
 
         if (subscriber is null)
         {
-            ConfirmationTitle = "Potvrzení odběru";
-            ConfirmationMessage = "Odkaz je neplatný nebo již vypršel.";
+            ConfirmationTitle = _localizer["Confirmation.DefaultTitle"];
+            ConfirmationMessage = _localizer["Confirmation.InvalidOrExpired"];
             return Page();
         }
 
         if (subscriber.ConfirmedAtUtc.HasValue)
         {
-            ConfirmationTitle = "Potvrzení odběru";
-            ConfirmationMessage = "Odběr tohoto e-mailu byl již potvrzen.";
+            ConfirmationTitle = _localizer["Confirmation.DefaultTitle"];
+            ConfirmationMessage = _localizer["Confirmation.AlreadyConfirmed"];
             ConfirmationSucceeded = true;
             return Page();
         }
@@ -154,8 +157,8 @@ public class NewsletterModel : PageModel
         subscriber.ConfirmedAtUtc = DateTime.UtcNow;
         await _context.SaveChangesAsync(cancellationToken);
 
-        ConfirmationTitle = "Potvrzení dokončeno";
-        ConfirmationMessage = "Děkujeme, váš odběr newsletteru byl úspěšně potvrzen.";
+        ConfirmationTitle = _localizer["Confirmation.CompletedTitle"];
+        ConfirmationMessage = _localizer["Confirmation.CompletedMessage"];
         ConfirmationSucceeded = true;
 
         return Page();
