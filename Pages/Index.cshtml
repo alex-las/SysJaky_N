@@ -265,6 +265,33 @@
         background: #ec4899;
     }
 
+    .stats-section {
+        background: linear-gradient(135deg, #1d4ed8 0%, #06b6d4 100%);
+        color: #ffffff;
+    }
+
+    .stats-card {
+        border-radius: 1.25rem;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        padding: 2rem 1.5rem;
+        height: 100%;
+        backdrop-filter: blur(8px);
+    }
+
+    .stats-number {
+        font-size: clamp(2.5rem, 4vw + 1rem, 3.75rem);
+        font-weight: 800;
+        letter-spacing: -0.02em;
+    }
+
+    .stats-label {
+        font-size: clamp(1rem, 0.8vw + 0.9rem, 1.15rem);
+        font-weight: 500;
+        color: rgba(255, 255, 255, 0.9);
+        margin-bottom: 0;
+    }
+
     @@media (max-width: 575.98px) {
         .specialization-card {
             text-align: center;
@@ -681,6 +708,37 @@
       </div>
     </div>
   </div>
+</section>
+
+<section class="stats-section py-5">
+    <div class="container-xl">
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-4 text-center">
+            <div class="col">
+                <div class="stats-card h-100 d-flex flex-column justify-content-center">
+                    <div class="stats-number">20+</div>
+                    <p class="stats-label mb-0">Let zkušeností</p>
+                </div>
+            </div>
+            <div class="col">
+                <div class="stats-card h-100 d-flex flex-column justify-content-center">
+                    <div class="stats-number">500+</div>
+                    <p class="stats-label mb-0">Spokojených klientů</p>
+                </div>
+            </div>
+            <div class="col">
+                <div class="stats-card h-100 d-flex flex-column justify-content-center">
+                    <div class="stats-number">2000+</div>
+                    <p class="stats-label mb-0">Realizovaných školení</p>
+                </div>
+            </div>
+            <div class="col">
+                <div class="stats-card h-100 d-flex flex-column justify-content-center">
+                    <div class="stats-number">15</div>
+                    <p class="stats-label mb-0">Certifikovaných lektorů</p>
+                </div>
+            </div>
+        </div>
+    </div>
 </section>
 
 <section class="app-section">
