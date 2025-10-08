@@ -19,7 +19,7 @@ public class ContentSecurityPolicyMiddleware
 
     private static string BuildPolicyValue(IHostEnvironment environment)
     {
-        var connectSources = "'self'";
+        var connectSources = "'self' https://fonts.googleapis.com https://fonts.gstatic.com https://cdn.jsdelivr.net";
         if (environment.IsDevelopment())
         {
             connectSources += " http://localhost:* https://localhost:* ws://localhost:* wss://localhost:*";
