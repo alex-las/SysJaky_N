@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.Extensions.Localization;
 using SysJaky_N.Models;
 using SysJaky_N.Attributes;
 using SysJaky_N.Services;
@@ -13,11 +14,16 @@ public class LoginModel : PageModel
 {
     private readonly SignInManager<ApplicationUser> _signInManager;
     private readonly IAuditService _auditService;
+    private readonly IStringLocalizer<LoginModel> _localizer;
 
-    public LoginModel(SignInManager<ApplicationUser> signInManager, IAuditService auditService)
+    public LoginModel(
+        SignInManager<ApplicationUser> signInManager,
+        IAuditService auditService,
+        IStringLocalizer<LoginModel> localizer)
     {
         _signInManager = signInManager;
         _auditService = auditService;
+        _localizer = localizer;
     }
 
     [BindProperty]
@@ -51,25 +57,49 @@ public class LoginModel : PageModel
         {
             return Page();
         }
-        var loginIdentifier = Input.Email.Trim();
+        var email = Input.Email.Trim();
+        Input.Email = email;
 
-        var user = await _signInManager.UserManager.FindByNameAsync(loginIdentifier)
-            ?? await _signInManager.UserManager.FindByEmailAsync(loginIdentifier);
+        var user = await _signInManager.UserManager.FindByEmailAsync(email);
 
         if (user is null)
         {
-            ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+            ModelState.AddModelError(string.Empty, _localizer["InvalidLogin"]);
             return Page();
         }
 
-        var result = await _signInManager.PasswordSignInAsync(user, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+        var result = await _signInManager.PasswordSignInAsync(
+            user,
+            Input.Password,
+            Input.RememberMe,
+            lockoutOnFailure: false);
         if (result.Succeeded)
         {
             await _auditService.LogAsync(user.Id, "Login");
             return RedirectToPage("/Index");
         }
 
-        ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+        if (result.IsLockedOut)
+        {
+            ModelState.AddModelError(string.Empty, _localizer["AccountLocked"]);
+            return Page();
+        }
+
+        if (result.IsNotAllowed)
+        {
+            if (!await _signInManager.UserManager.IsEmailConfirmedAsync(user))
+            {
+                ModelState.AddModelError(string.Empty, _localizer["EmailNotConfirmed"]);
+            }
+            else
+            {
+                ModelState.AddModelError(string.Empty, _localizer["LoginNotAllowed"]);
+            }
+
+            return Page();
+        }
+
+        ModelState.AddModelError(string.Empty, _localizer["InvalidLogin"]);
         return Page();
     }
 }

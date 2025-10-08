@@ -46,7 +46,7 @@
 
     <div class="mb-3">
         <label class="form-label" for="@emailId">@Localizer[Model.EmailLabelKey]</label>
-        <input class="form-control" asp-for="Input.Email" id="@emailId" autocomplete="email" />
+        <input class="form-control" type="email" asp-for="Input.Email" id="@emailId" autocomplete="email" />
         <span class="text-danger" asp-validation-for="Input.Email"></span>
     </div>
 
