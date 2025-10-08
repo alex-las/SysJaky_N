@@ -52,15 +52,12 @@
     <value>Doporučené balíčky služeb</value>
   </data>
   <data name="PackageIso9001Full" xml:space="preserve">
-    <value>ISO 9001 – Kompletní zavedení
-Komplexní projekt od úvodní analýzy přes tvorbu dokumentace až po přípravu na certifikační audit.</value>
+    <value>ISO 9001 – Kompletní zavedení&#x0a;Komplexní projekt od úvodní analýzy přes tvorbu dokumentace až po přípravu na certifikační audit.</value>
   </data>
   <data name="PackageImsIntegrated" xml:space="preserve">
-    <value>Integrovaný systém řízení (ISO 9001 + ISO 14001 + ISO 45001)
-Koordinované zavedení kvality, environmentu a BOZP s jednotnou dokumentací a školením.</value>
+    <value>Integrovaný systém řízení (ISO 9001 + ISO 14001 + ISO 45001)&#x0a;Koordinované zavedení kvality, environmentu a BOZP s jednotnou dokumentací a školením.</value>
   </data>
   <data name="PackageLabAccreditation" xml:space="preserve">
-    <value>Akreditace laboratoře (ISO/IEC 17025)
-Podpora při nastavení laboratorních procesů, kalibrací a evidence tak, abyste splnili požadavky ČIA.</value>
+    <value>Akreditace laboratoře (ISO/IEC 17025)&#x0a;Podpora při nastavení laboratorních procesů, kalibrací a evidence tak, abyste splnili požadavky ČIA.</value>
   </data>
 </root>
