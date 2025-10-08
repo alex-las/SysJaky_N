@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Validation.Email.Invalid" xml:space="preserve">
+    <value>Please enter a valid email address.</value>
+  </data>
+  <data name="Validation.Consent.Required" xml:space="preserve">
+    <value>Consent is required to subscribe to the newsletter.</value>
+  </data>
+  <data name="Json.AlreadySubscribed" xml:space="preserve">
+    <value>This email address is already subscribed.</value>
+  </data>
+  <data name="Json.ConfirmationEmailSent" xml:space="preserve">
+    <value>Thank you! We've sent a confirmation email.</value>
+  </data>
+  <data name="Confirmation.DefaultTitle" xml:space="preserve">
+    <value>Subscription confirmation</value>
+  </data>
+  <data name="Confirmation.InvalidLink" xml:space="preserve">
+    <value>The link is invalid. Please try again.</value>
+  </data>
+  <data name="Confirmation.InvalidOrExpired" xml:space="preserve">
+    <value>The link is invalid or has expired.</value>
+  </data>
+  <data name="Confirmation.AlreadyConfirmed" xml:space="preserve">
+    <value>The subscription for this email address has already been confirmed.</value>
+  </data>
+  <data name="Confirmation.CompletedTitle" xml:space="preserve">
+    <value>Confirmation completed</value>
+  </data>
+  <data name="Confirmation.CompletedMessage" xml:space="preserve">
+    <value>Thank you, your newsletter subscription has been successfully confirmed.</value>
+  </data>
+</root>

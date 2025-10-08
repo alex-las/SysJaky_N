@@ -1,9 +1,14 @@
 @page "{handler?}"
 @model SysJaky_N.Pages.Api.NewsletterModel
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
 @{
     if (Model.ShowConfirmationResult)
     {
         ViewData["Title"] = Model.ConfirmationTitle;
+    }
+    else
+    {
+        ViewData["Title"] = Localizer["Title"].Value;
     }
 }
 
@@ -17,6 +22,6 @@
 else
 {
     <section class="container-xl py-5">
-        <p class="text-muted">Tento endpoint slouží pro newsletter API.</p>
+        <p class="text-muted">@Localizer["Description"]</p>
     </section>
 }

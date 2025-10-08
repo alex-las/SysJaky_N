@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Validation.Email.Invalid" xml:space="preserve">
+    <value>Zadejte platný e-mail.</value>
+  </data>
+  <data name="Validation.Consent.Required" xml:space="preserve">
+    <value>Pro přihlášení k newsletteru je nutný souhlas.</value>
+  </data>
+  <data name="Json.AlreadySubscribed" xml:space="preserve">
+    <value>Tento e-mail je již přihlášen k odběru.</value>
+  </data>
+  <data name="Json.ConfirmationEmailSent" xml:space="preserve">
+    <value>Děkujeme! Odeslali jsme potvrzovací e-mail.</value>
+  </data>
+  <data name="Confirmation.DefaultTitle" xml:space="preserve">
+    <value>Potvrzení odběru</value>
+  </data>
+  <data name="Confirmation.InvalidLink" xml:space="preserve">
+    <value>Odkaz je neplatný. Zkuste to prosím znovu.</value>
+  </data>
+  <data name="Confirmation.InvalidOrExpired" xml:space="preserve">
+    <value>Odkaz je neplatný nebo již vypršel.</value>
+  </data>
+  <data name="Confirmation.AlreadyConfirmed" xml:space="preserve">
+    <value>Odběr tohoto e-mailu byl již potvrzen.</value>
+  </data>
+  <data name="Confirmation.CompletedTitle" xml:space="preserve">
+    <value>Potvrzení dokončeno</value>
+  </data>
+  <data name="Confirmation.CompletedMessage" xml:space="preserve">
+    <value>Děkujeme, váš odběr newsletteru byl úspěšně potvrzen.</value>
+  </data>
+</root>
