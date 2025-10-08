@@ -1,144 +1,79 @@
-@using System.Globalization
-@using System.Text.Encodings.Web
-@using SysJaky_N.Models.ViewModels
-@using SysJaky_N.Pages.Account
+@using Microsoft.AspNetCore.Localization
+@using SysJaky_N.Extensions
+@inject IStringLocalizer<SharedResources> T
 @inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
-@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
-@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer T
-@{ 
-    var currentCulture = CultureInfo.CurrentUICulture;
-    var isCzech = string.Equals(currentCulture.TwoLetterISOLanguageName, "cs", System.StringComparison.OrdinalIgnoreCase);
-    var currentPage = ViewContext.RouteData.Values["page"]?.ToString();
-    var canAccessAdmin = ApplicationRoles.AdminDashboardRoles.Any(role => User.IsInRole(role));
-
-    var pushPublicKey = Configuration["PushNotifications:PublicKey"] ?? string.Empty;
-
-    var themeToggleText = Localizer["ToggleTheme"].Value;
+@{
+    var requestCulture = Context.Features.Get<IRequestCultureFeature>();
+    var currentCulture = requestCulture?.RequestCulture.Culture.TwoLetterISOLanguageName ?? "cs";
+    var currentPage = ViewContext.RouteData.Values["page"]?.ToString() ?? string.Empty;
+    var canAccessAdmin = User.IsInRole("Admin");
 }
 <!DOCTYPE html>
-<html lang="@currentCulture.TwoLetterISOLanguageName">
+<html lang="@currentCulture">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#2563eb" />
-    <meta name="application-name" content="SysJaky" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="mobile-web-app-capable" content="yes" />
-    <meta name="description" content="Školení a kurzy ISO 9001, 14001, 17025, 15189, 45001, 27001, IATF 16949. Komplexní příprava k certifikaci a akreditaci. Firemní školení na míru." />
-    <meta name="keywords" content="školení ISO, kurzy ISO 9001, certifikace ISO, akreditace laboratoří, ISO 14001, IATF 16949, HACCP" />
-    <meta name="author" content="Systémy jakosti s.r.o." />
-    <meta property="og:title" content="Systémy jakosti - Školení a certifikace ISO" />
-    <meta property="og:description" content="Profesionální školení ISO 9001, 14001, 17025 a další. Příprava k certifikaci." />
-    <meta property="og:image" content="~/img/og-image.jpg" />
-    <meta property="og:type" content="website" />
     <title>@ViewData["Title"] - SysJaky_N</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Inter:wght@400;500;600;700&family=Merriweather:wght@400;600;700&display=swap" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Inter:wght@400;500;600;700&family=Merriweather:wght@400;600;700&display=swap" media="print" onload="this.media='all'" />
-    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Inter:wght@400;500;600;700&family=Merriweather:wght@400;600;700&display=swap" /></noscript>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
-    <link rel="preload" as="style" href="~/dist/styles.min.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/dist/styles.min.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/SysJaky_N.styles.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/lib/altcha/altcha.min.css" />
-    <link rel="manifest" href="~/manifest.json" crossorigin="use-credentials" />
-    <link rel="apple-touch-icon" href="~/img/icons/icon.svg" />
-    <script type="application/ld+json">
-    {
-      "@@context": "https://schema.org",
-      "@@type": "EducationalOrganization",
-      "name": "Systémy jakosti s.r.o.",
-      "description": "Poskytovatel školení a poradenství v oblasti ISO norem",
-      "url": "https://www.systemy-jakosti.cz",
-      "address": {
-        "@@type": "PostalAddress",
-        "addressCountry": "CZ"
-      }
-    }
-    </script>
-    @await RenderSectionAsync("Head", required: false)
 </head>
-<body class="app-body">
-    <a class="skip-link" href="#main-content">@Localizer["SkipToContent"]</a>
-    <div id="accessibility-live-region" class="visually-hidden" aria-live="polite" aria-atomic="true"></div>
-    <div id="accessibility-assertive-region" class="visually-hidden" aria-live="assertive" aria-atomic="true"></div>
-    <header class="app-header" role="banner">
-        <nav class="navbar navbar-expand-lg navbar-dark bg-transparent bg-gradient-to-r from-blue-600 to-cyan-500 shadow-lg sticky top-0 z-50 app-navbar" role="navigation" aria-label='@Localizer["PrimaryNavigation"]' style="backdrop-filter: blur(12px);">
-            <div class="container-xxl py-2">
-                <a class="navbar-brand d-flex align-items-center gap-2" asp-area="" asp-page="/Index">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-award" viewBox="0 0 16 16">
-                        <path d="M9.669.864 8 0 6.331.864l-1.858.282-.842 1.68-1.337 1.32L2.6 6l-.306 1.854 1.337 1.32.842 1.68 1.858.282L8 12l1.669-.864 1.858-.282.842-1.68 1.337-1.32L13.4 6l.306-1.854-1.337-1.32-.842-1.68L9.669.864zm1.196 1.193.684 1.365 1.086 1.072L12.387 6l.248 1.506-1.086 1.072-.684 1.365-1.51.229L8 10.874l-1.355-.702-1.51-.229-.684-1.365-1.086-1.072L3.614 6l-.25-1.506 1.087-1.072.684-1.365 1.51-.229L8 1.126l1.356.702 1.509.229z" />
-                        <path d="M4 11.794V16l4-1 4 1v-4.206l-2.018.306L8 13.126 6.018 12.1 4 11.794z" />
-                    </svg>
-                    <span class="fw-bold">@T["BrandName"]</span>
-                </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#primaryNavigation" aria-controls="primaryNavigation"
-                        aria-expanded="false" aria-label='@Localizer["ToggleNavigation"]'>
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div id="primaryNavigation" class="navbar-collapse collapse">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 gap-2">
-                        <li class="nav-item">
-                            <a class="nav-link px-3 py-2 rounded-pill" style="@(currentPage == "/Index" ? "background: rgba(255,255,255,0.2);" : string.Empty)" asp-area="" asp-page="/Index" aria-current="@(currentPage == "/Index" ? "page" : null)">@T["NavHome"]</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link px-3 py-2 rounded-pill" style="@(currentPage == "/About" ? "background: rgba(255,255,255,0.2);" : string.Empty)" asp-area="" asp-page="/About" aria-current="@(currentPage == "/About" ? "page" : null)">@T["NavAbout"]</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link px-3 py-2 rounded-pill" style="@(currentPage == "/About" ? "background: rgba(255,255,255,0.2);" : string.Empty)" asp-area="" asp-page="/About" aria-current="@(currentPage == "/About" ? "page" : null)">@T["NavServices"]</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link px-3 py-2 rounded-pill" style="@(currentPage == "/Courses/Index" ? "background: rgba(255,255,255,0.2);" : string.Empty)" asp-area="" asp-page="/Courses/Index" aria-current="@(currentPage == "/Courses/Index" ? "page" : null)">@T["NavCourses"]</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link px-3 py-2 rounded-pill" style="@(currentPage == "/Articles/Index" ? "background: rgba(255,255,255,0.2);" : string.Empty)" asp-area="" asp-page="/Articles/Index" aria-current="@(currentPage == "/Articles/Index" ? "page" : null)">@T["NavArticles"]</a>
-                        </li>
-                    </ul>
-                    <div class="d-flex align-items-center gap-2 ms-lg-auto flex-wrap">
-                        @if (canAccessAdmin)
-                        {
-                            <a class="btn btn-dark d-flex align-items-center gap-2 px-3" asp-page="/Admin/Dashboard/Index">
-                                <i class="bi bi-speedometer2" aria-hidden="true"></i>
-                                <span>Admin Dashboard</span>
-                            </a>
-                        }
-                        <button class="btn btn-light btn-sm rounded-pill px-4 d-flex align-items-center gap-2"
-                                data-bs-toggle="offcanvas" href="#advisor" role="button" aria-controls="advisor" aria-haspopup="dialog">
-                            <i class="bi bi-magic"></i>
-                            @Localizer["AdvisorButton"]
-                        </button>
-                        <partial name="_LanguageSwitcher" />
-                        <button type="button" class="btn btn-outline-light d-flex align-items-center justify-content-center gap-2 theme-toggle btn-nav-action"
-                                data-theme-toggle aria-pressed="false" aria-label='@themeToggleText'
-                                title='@themeToggleText'>
-                            <i class="bi bi-sun-fill" data-theme-icon="light" aria-hidden="true"></i>
-                            <i class="bi bi-moon-stars-fill d-none" data-theme-icon="dark" aria-hidden="true"></i>
-                            <span class="visually-hidden">@themeToggleText</span>
-                        </button>
-                        @if (!User.Identity.IsAuthenticated)
-                        {
-                            <a class="btn btn-outline-light btn-sm rounded-pill px-4" asp-page="/Account/Login">
-                                @T["LoginRegister"]
-                            </a>
-                        }
-                        else
-                        {
-                            <div class="dropdown">
-                                <button class="btn btn-outline-light dropdown-toggle text-start text-lg-center btn-nav-action" data-bs-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false">
-                                    @User.Identity?.Name
-                                </button>
-                                <ul class="dropdown-menu dropdown-menu-end" role="menu" aria-label='@Localizer["AccountMenuLabel"]'>
-                                    <li role="none"><a class="dropdown-item" asp-page="/Account/Manage" role="menuitem">@Localizer["ProfileOverview"]</a></li>
-                                    <li role="none"><a class="dropdown-item" href="/Account/Manage#upcoming-courses" role="menuitem">@Localizer["UpcomingCourses"]</a></li>
-                                    <li role="none"><a class="dropdown-item" href="/Account/Manage#wishlist" role="menuitem">@Localizer["Wishlist"]</a></li>
-                                    <li role="none"><a class="dropdown-item" href="/Account/Manage#orders" role="menuitem">@Localizer["Orders"]</a></li>
-                                    <li><hr class="dropdown-divider" /></li>
-                                    <li role="none"><a class="dropdown-item" asp-page="/Cart" role="menuitem">@Localizer["Cart"]</a></li>
-                                </ul>
-                            </div>
-                        }
-                        <a class="nav-link position-relative text-center @(currentPage == "/Cart" ? "active" : null)" asp-area="" asp-page="/Cart" aria-label='@Localizer["CartAriaLabel"]'>
+<body>
+    <a href="#main-content" class="visually-hidden-focusable">@Localizer["SkipToContent"]</a>
+    <header role="banner">
+        <nav class="navbar navbar-expand-lg app-navbar bg-gradient-to-r from-primary to-primary-dark py-3" role="navigation" aria-label='@Localizer["PrimaryNavigation"]'>
+            <div class="container-xxl">
+                <div class="d-flex align-items-center justify-content-between w-100">
+                    <a class="navbar-brand d-flex align-items-center gap-2 text-white" asp-area="" asp-page="/Index">
+                        <i class="bi bi-award-fill fs-3"></i>
+                        <span class="fw-bold fs-5">@Localizer["BrandName"]</span>
+                    </a>
+                    <button class="navbar-toggler text-white border-white" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label='@Localizer["ToggleNavigation"]'>
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="navbar-nav mx-auto mb-2 mb-lg-0 gap-1">
+                            <li class="nav-item">
+                                <a class="nav-link px-3 py-2 rounded-pill text-white" style="@(currentPage == "/Index" ? "background: rgba(255,255,255,0.2);" : string.Empty)" asp-area="" asp-page="/Index" aria-current="@(currentPage == "/Index" ? "page" : null)">@T["NavHome"]</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link px-3 py-2 rounded-pill text-white" style="@(currentPage == "/About" ? "background: rgba(255,255,255,0.2);" : string.Empty)" asp-area="" asp-page="/About" aria-current="@(currentPage == "/About" ? "page" : null)">@T["NavAbout"]</a>
+                            </li>
+                            <li class="nav-item">
+                                <!-- ✅ OPRAVENO: Změněno z asp-page="/About" na asp-page="/Services" -->
+                                <a class="nav-link px-3 py-2 rounded-pill text-white" style="@(currentPage == "/Services" ? "background: rgba(255,255,255,0.2);" : string.Empty)" asp-area="" asp-page="/Services" aria-current="@(currentPage == "/Services" ? "page" : null)">@T["NavServices"]</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link px-3 py-2 rounded-pill text-white" style="@(currentPage == "/Courses/Index" ? "background: rgba(255,255,255,0.2);" : string.Empty)" asp-area="" asp-page="/Courses/Index" aria-current="@(currentPage == "/Courses/Index" ? "page" : null)">@T["NavCourses"]</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link px-3 py-2 rounded-pill text-white" style="@(currentPage == "/Articles/Index" ? "background: rgba(255,255,255,0.2);" : string.Empty)" asp-area="" asp-page="/Articles/Index" aria-current="@(currentPage == "/Articles/Index" ? "page" : null)">@T["NavArticles"]</a>
+                            </li>
+                        </ul>
+                        <div class="d-flex align-items-center gap-2 ms-lg-auto flex-wrap">
+                            @if (canAccessAdmin)
+                            {
+                                <a class="btn btn-dark d-flex align-items-center gap-2 px-3" asp-page="/Admin/Dashboard/Index">
+                                    <i class="bi bi-speedometer2" aria-hidden="true"></i>
+                                    <!-- ✅ SPRÁVNĚ: Admin Dashboard zůstává v češtině -->
+                                    <span>Admin Dashboard</span>
+                                </a>
+                            }
+                            <button class="btn btn-light btn-sm rounded-pill px-4 d-flex align-items-center gap-2"
+                                    data-bs-toggle="offcanvas" href="#advisor" role="button" aria-controls="advisor" aria-haspopup="dialog">
+                                <i class="bi bi-magic"></i>
+                                @Localizer["AdvisorButton"]
+                            </button>
+                            <partial name="_LanguageSwitcher" />
+                            <button type="button" class="btn btn-outline-light d-flex align-items-center justify-content-center gap-2 theme-toggle btn-nav-action"
+                                    title='@Localizer["ToggleTheme"]'>
+                                <i class="bi bi-sun-fill theme-icon-light"></i>
+                                <i class="bi bi-moon-fill theme-icon-dark"></i>
+                            </button>
+                            <partial name="_LoginPartial" />
+                        </div>
+                        <a class="d-block d-lg-none nav-link text-white" style="@(currentPage == "/Cart" ? "active" : null)" asp-area="" asp-page="/Cart" aria-label='@Localizer["CartAriaLabel"]'>
                             <i class="bi bi-cart fs-5"></i>
                             <span class="visually-hidden">@Localizer["Cart"]</span>
                         </a>
@@ -153,181 +88,42 @@
         </main>
     </div>
 
-    <section class="py-5 my-5" style="background: linear-gradient(to right, #2563eb, #06b6d4); border-radius: 1.5rem;">
-        <div class="container-xl">
-            <div class="row g-4 text-center text-white">
-
-                <div class="col-6 col-md-3">
-                    <div class="p-3">
-                        <div class="display-3 fw-bold mb-2">20+</div>
-                        <div style="opacity: 0.9; font-size: 0.95rem;">Let zkušeností</div>
-                    </div>
-                </div>
-
-                <div class="col-6 col-md-3">
-                    <div class="p-3">
-                        <div class="display-3 fw-bold mb-2">500+</div>
-                        <div style="opacity: 0.9; font-size: 0.95rem;">Spokojených klientů</div>
-                    </div>
-                </div>
-
-                <div class="col-6 col-md-3">
-                    <div class="p-3">
-                        <div class="display-3 fw-bold mb-2">2000+</div>
-                        <div style="opacity: 0.9; font-size: 0.95rem;">Realizovaných školení</div>
-                    </div>
-                </div>
-
-                <div class="col-6 col-md-3">
-                    <div class="p-3">
-                        <div class="display-3 fw-bold mb-2">15</div>
-                        <div style="opacity: 0.9; font-size: 0.95rem;">Certifikovaných lektorů</div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </section>
-
-    <footer class="mt-5 py-5" style="background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%); color: white;">
-        <div class="container-xl">
-            
-            <div class="row g-4 mb-4">
-                
-                <!-- Sloupec 1: O společnosti -->
+    <footer class="footer app-footer mt-5 bg-gray-900 text-white" role="contentinfo">
+        <div class="container-xxl py-5">
+            <div class="row gy-4">
                 <div class="col-12 col-md-4">
-                    <div class="d-flex align-items-center gap-2 mb-3">
-                        <i class="bi bi-award-fill" style="font-size: 1.5rem; color: #06b6d4;"></i>
-                        <h5 class="mb-0">Systémy jakosti</h5>
-                    </div>
-                    <p class="text-white-50 mb-2">Systémy jakosti s.r.o.</p>
-                    <p class="text-white-50 mb-0">IČO: XXXXXXXX</p>
+                    <h5 class="text-uppercase fw-semibold fs-6 text-white-50">O společnosti</h5>
+                    <p class="mb-1">Systémy jakosti s.r.o.</p>
+                    <p class="mb-0">IČO: 123 456 78</p>
                 </div>
-                
-                <!-- Sloupec 2: Služby -->
                 <div class="col-12 col-md-4">
-                    <h5 class="mb-3">Služby</h5>
-                    <ul class="list-unstyled">
-                        <li class="mb-2"><a href="/Courses/Index" class="text-white-50 text-decoration-none hover-cyan">Školení ISO</a></li>
-                        <li class="mb-2"><a href="/Services" class="text-white-50 text-decoration-none hover-cyan">Certifikace</a></li>
-                        <li class="mb-2"><a href="/Services" class="text-white-50 text-decoration-none hover-cyan">Akreditace</a></li>
-                        <li class="mb-2"><a href="/CorporateInquiry" class="text-white-50 text-decoration-none hover-cyan">Poradenství</a></li>
+                    <h5 class="text-uppercase fw-semibold fs-6 text-white-50">Služby</h5>
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-1">Poradenství pro systémy řízení kvality</li>
+                        <li class="mb-1">Interní audity a příprava na certifikaci</li>
+                        <li class="mb-1">Školení a kurzy ISO standardů</li>
+                        <li class="mb-0">Tvorba a revize dokumentace</li>
                     </ul>
                 </div>
-                
-                <!-- Sloupec 3: Kontakt -->
                 <div class="col-12 col-md-4">
-                    <h5 class="mb-3">Kontakt</h5>
-                    <p class="text-white-50 mb-2">
-                        <i class="bi bi-envelope me-2"></i>
-                        info@systemy-jakosti.cz
-                    </p>
-                    <p class="text-white-50 mb-2">
-                        <i class="bi bi-telephone me-2"></i>
-                        +420 XXX XXX XXX
-                    </p>
-                </div>
-                
-            </div>
-            
-            <!-- Copyright -->
-            <div class="pt-4 border-top" style="border-color: rgba(255,255,255,0.1) !important;">
-                <div class="text-center text-white-50">
-                    <p class="mb-0">© @DateTime.Now.Year Systémy jakosti s.r.o. Všechna práva vyhrazena.</p>
+                    <h5 class="text-uppercase fw-semibold fs-6 text-white-50">Kontakt</h5>
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-1"><i class="bi bi-envelope me-2"></i>info@systemy-jakosti.cz</li>
+                        <li class="mb-0"><i class="bi bi-telephone me-2"></i>+420 XXX XXX XXX</li>
+                    </ul>
                 </div>
             </div>
-            
+            <div class="row mt-4 pt-4 border-top border-secondary">
+                <div class="col-12 text-center">
+                    <p class="mb-0 text-white-50">&copy; @DateTime.Now.Year Systémy jakosti s.r.o. Všechna práva vyhrazena.</p>
+                </div>
+            </div>
         </div>
     </footer>
 
-    <style>
-    .hover-cyan:hover {
-        color: #06b6d4 !important;
-    }
-    </style>
-
-    <script>
-        window.__appConfig = window.__appConfig || {};
-        window.__appConfig.pushPublicKey = '@JavaScriptEncoder.Default.Encode(pushPublicKey)';
-    </script>
-    @await Component.InvokeAsync("ChatbotWidget")
-
-    <script src="~/dist/scripts.min.js" asp-append-version="true" defer></script>
-    <script type="module" src='@Url.Content("~/lib/altcha/altcha.min.js")' defer></script>
-    <script src="~/js/pwa.js" asp-append-version="true" defer></script>
-    <script src="~/js/newsletter.js" asp-append-version="true" defer></script>
-    <script src="~/js/chatbot.js" asp-append-version="true" defer></script>
-    <script type="module" src="~/js/theme-switcher.js" asp-append-version="true"></script>
-
-    @await Html.PartialAsync("/Pages/Shared/_AdvisorOffcanvas.cshtml")
-
-    @if (!User.Identity.IsAuthenticated)
-    {
-        var loginFormOptions = new LoginFormOptions
-        {
-            FormId = "login-modal-form",
-            FormCssClass = null,
-            AspPage = "/Account/Login",
-            HeadingLocalizationKey = null,
-            ValidationSummaryCssClass = "text-danger",
-            EmailInputId = "loginEmail",
-            PasswordInputId = "loginPassword",
-            RememberMeInputId = "rememberMe",
-            AltchaId = "altcha-login",
-            UseAbsoluteWorkerUrl = true,
-            AltchaWorkerVersionSuffix = "?v=5",
-            EnableRefetchOnExpire = false,
-            Input = new LoginModel.InputModel()
-        };
-
-        var registerFormOptions = new RegisterFormOptions
-        {
-            FormId = "register-modal-form",
-            FormCssClass = null,
-            AspPage = "/Account/Register",
-            HeadingLocalizationKey = null,
-            ValidationSummaryCssClass = "text-danger",
-            EmailInputId = "registerEmail",
-            PasswordInputId = "registerPassword",
-            ConfirmPasswordInputId = "registerConfirmPassword",
-            AltchaId = "altcha-register",
-            IncludeConfirmPassword = true,
-            IncludeReferralCode = false,
-            UseAbsoluteWorkerUrl = true,
-            AltchaWorkerVersionSuffix = "?v=5",
-            EnableRefetchOnExpire = false,
-            Input = new RegisterModel.InputModel()
-        };
-
-        <div class="modal fade" id="authModal" tabindex="-1" aria-labelledby="authModalLabel" aria-hidden="true" role="dialog" aria-modal="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="authModalLabel">@Localizer["LoginTitle"]</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label='@Localizer["Close"]'></button>
-                    </div>
-                    <div class="modal-body">
-                        <ul class="nav nav-tabs mb-3" id="authTab" role="tablist">
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link active" id="login-tab" data-bs-toggle="tab" data-bs-target="#login-tab-pane" type="button" role="tab">@Localizer["LoginTitle"]</button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="register-tab" data-bs-toggle="tab" data-bs-target="#register-tab-pane" type="button" role="tab">@Localizer["RegisterTitle"]</button>
-                            </li>
-                        </ul>
-                        <div class="tab-content" id="authTabContent">
-                            <div class="tab-pane fade show active" id="login-tab-pane" role="tabpanel" aria-labelledby="login-tab">
-                                <partial name="~/Pages/Shared/Account/_LoginForm.cshtml" model="loginFormOptions" />
-                            </div>
-                            <div class="tab-pane fade" id="register-tab-pane" role="tabpanel" aria-labelledby="register-tab">
-                                <partial name="~/Pages/Shared/Account/_RegisterForm.cshtml" model="registerFormOptions" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    }
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>
