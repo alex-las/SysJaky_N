@@ -120,6 +120,81 @@
         color: #0f172a;
     }
 
+    .training-section {
+        background: #ffffff;
+    }
+
+    .training-section .section-heading {
+        font-size: clamp(2rem, 3vw + 1rem, 2.5rem);
+        font-weight: 700;
+        color: #0f172a;
+    }
+
+    .training-section .section-subheading {
+        color: #475569;
+        max-width: 52rem;
+        margin: 0 auto;
+    }
+
+    .training-card {
+        border: 1px solid rgba(15, 23, 42, 0.08);
+        border-radius: 1.25rem;
+        box-shadow: 0 12px 35px rgba(15, 23, 42, 0.08);
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+        background-color: #f8fafc;
+    }
+
+    .training-card:hover,
+    .training-card:focus-within {
+        transform: translateY(-6px);
+        box-shadow: 0 25px 55px rgba(15, 23, 42, 0.15);
+    }
+
+    .training-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        font-weight: 600;
+        letter-spacing: 0.01em;
+        color: #1d4ed8;
+        background: rgba(37, 99, 235, 0.1);
+        border-radius: 999px;
+        padding: 0.35rem 0.85rem;
+    }
+
+    .training-meta {
+        color: #475569;
+    }
+
+    .training-meta i {
+        color: #2563eb;
+    }
+
+    .training-mode {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        border-radius: 999px;
+        padding: 0.35rem 0.85rem;
+        font-weight: 600;
+    }
+
+    .training-mode.online {
+        background: rgba(59, 130, 246, 0.12);
+        color: #1d4ed8;
+    }
+
+    .training-mode.onsite {
+        background: rgba(34, 197, 94, 0.12);
+        color: #15803d;
+    }
+
+    .training-price {
+        font-size: clamp(1.5rem, 1vw + 1.25rem, 2rem);
+        font-weight: 700;
+        color: #1d4ed8;
+    }
+
     .specializations-section .section-subheading {
         max-width: 48rem;
         margin: 0 auto;
@@ -390,6 +465,89 @@
                     </div>
                     <h3 class="h4 fw-bold mb-2">ISO 13485</h3>
                     <p class="text-muted mb-0">Management kvality zdravotnických prostředků</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="training-section py-5">
+    <div class="container-xl">
+        <div class="text-center mb-5">
+            <h2 class="section-heading mb-3">Aktuální školení a kurzy</h2>
+            <p class="section-subheading lead">Vyberte si z nejžádanějších kurzů, které vám pomohou splnit požadavky norem a posunout váš tým o krok dál.</p>
+        </div>
+
+        <div class="row row-cols-1 row-cols-lg-2 g-4">
+            <div class="col">
+                <div class="training-card h-100 p-4 d-flex flex-column gap-3">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <span class="training-badge"><i class="bi bi-patch-check-fill" aria-hidden="true"></i> ISO 9001</span>
+                        <span class="training-mode online"><i class="bi bi-wifi" aria-hidden="true"></i> Online</span>
+                    </div>
+                    <h3 class="h4 fw-bold mb-0">Interní auditor systému managementu kvality</h3>
+                    <div class="d-flex flex-wrap gap-3 training-meta">
+                        <span class="d-inline-flex align-items-center gap-2"><i class="bi bi-clock-history" aria-hidden="true"></i>3 dny</span>
+                        <span class="d-inline-flex align-items-center gap-2"><i class="bi bi-calendar-event" aria-hidden="true"></i>12.–14. března 2024</span>
+                    </div>
+                    <div class="training-price">9 990 Kč</div>
+                    <div class="mt-auto">
+                        <a class="btn btn-primary w-100" href="/Courses/Details">Detail kurzu</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="training-card h-100 p-4 d-flex flex-column gap-3">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <span class="training-badge"><i class="bi bi-patch-check-fill" aria-hidden="true"></i> ISO 14001</span>
+                        <span class="training-mode onsite"><i class="bi bi-geo-alt" aria-hidden="true"></i> Prezenčně</span>
+                    </div>
+                    <h3 class="h4 fw-bold mb-0">Environmentální legislativa v praxi</h3>
+                    <div class="d-flex flex-wrap gap-3 training-meta">
+                        <span class="d-inline-flex align-items-center gap-2"><i class="bi bi-clock-history" aria-hidden="true"></i>2 dny</span>
+                        <span class="d-inline-flex align-items-center gap-2"><i class="bi bi-calendar-event" aria-hidden="true"></i>21.–22. března 2024</span>
+                    </div>
+                    <div class="training-price">7 490 Kč</div>
+                    <div class="mt-auto">
+                        <a class="btn btn-primary w-100" href="/Courses/Details">Detail kurzu</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="training-card h-100 p-4 d-flex flex-column gap-3">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <span class="training-badge"><i class="bi bi-patch-check-fill" aria-hidden="true"></i> ISO/IEC 27001</span>
+                        <span class="training-mode online"><i class="bi bi-wifi" aria-hidden="true"></i> Online</span>
+                    </div>
+                    <h3 class="h4 fw-bold mb-0">Bezpečnost informací pro manažery IT</h3>
+                    <div class="d-flex flex-wrap gap-3 training-meta">
+                        <span class="d-inline-flex align-items-center gap-2"><i class="bi bi-clock-history" aria-hidden="true"></i>4 dny</span>
+                        <span class="d-inline-flex align-items-center gap-2"><i class="bi bi-calendar-event" aria-hidden="true"></i>8.–11. dubna 2024</span>
+                    </div>
+                    <div class="training-price">12 490 Kč</div>
+                    <div class="mt-auto">
+                        <a class="btn btn-primary w-100" href="/Courses/Details">Detail kurzu</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="training-card h-100 p-4 d-flex flex-column gap-3">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <span class="training-badge"><i class="bi bi-patch-check-fill" aria-hidden="true"></i> ISO 45001</span>
+                        <span class="training-mode onsite"><i class="bi bi-geo-alt" aria-hidden="true"></i> Prezenčně</span>
+                    </div>
+                    <h3 class="h4 fw-bold mb-0">Praktický workshop BOZP pro vedoucí pracovníky</h3>
+                    <div class="d-flex flex-wrap gap-3 training-meta">
+                        <span class="d-inline-flex align-items-center gap-2"><i class="bi bi-clock-history" aria-hidden="true"></i>2 dny</span>
+                        <span class="d-inline-flex align-items-center gap-2"><i class="bi bi-calendar-event" aria-hidden="true"></i>16.–17. dubna 2024</span>
+                    </div>
+                    <div class="training-price">8 290 Kč</div>
+                    <div class="mt-auto">
+                        <a class="btn btn-primary w-100" href="/Courses/Details">Detail kurzu</a>
+                    </div>
                 </div>
             </div>
         </div>
