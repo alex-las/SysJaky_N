@@ -189,43 +189,62 @@
         </div>
     </section>
 
-    <footer class="footer app-footer mt-5 bg-gray-900 text-white" role="contentinfo">
-        <div class="container-xxl py-5">
-            <div class="row gy-4">
+    <footer class="mt-5 py-5" style="background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%); color: white;">
+        <div class="container-xl">
+            
+            <div class="row g-4 mb-4">
+                
+                <!-- Sloupec 1: O společnosti -->
                 <div class="col-12 col-md-4">
-                    <h5 class="text-uppercase fw-semibold fs-6 text-white-50">O společnosti</h5>
-                    <p class="mb-1">Systémy jakosti s.r.o.</p>
-                    <p class="mb-0">IČO: 123 456 78</p>
+                    <div class="d-flex align-items-center gap-2 mb-3">
+                        <i class="bi bi-award-fill" style="font-size: 1.5rem; color: #06b6d4;"></i>
+                        <h5 class="mb-0">Systémy jakosti</h5>
+                    </div>
+                    <p class="text-white-50 mb-2">Systémy jakosti s.r.o.</p>
+                    <p class="text-white-50 mb-0">IČO: XXXXXXXX</p>
                 </div>
+                
+                <!-- Sloupec 2: Služby -->
                 <div class="col-12 col-md-4">
-                    <h5 class="text-uppercase fw-semibold fs-6 text-white-50">Služby</h5>
-                    <ul class="list-unstyled mb-0">
-                        <li class="mb-1">Poradenství pro systémy řízení kvality</li>
-                        <li class="mb-1">Interní audity a příprava na certifikaci</li>
-                        <li class="mb-1">Školení a kurzy ISO standardů</li>
-                        <li class="mb-0">Tvorba a revize dokumentace</li>
+                    <h5 class="mb-3">Služby</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="/Courses/Index" class="text-white-50 text-decoration-none hover-cyan">Školení ISO</a></li>
+                        <li class="mb-2"><a href="/Services" class="text-white-50 text-decoration-none hover-cyan">Certifikace</a></li>
+                        <li class="mb-2"><a href="/Services" class="text-white-50 text-decoration-none hover-cyan">Akreditace</a></li>
+                        <li class="mb-2"><a href="/CorporateInquiry" class="text-white-50 text-decoration-none hover-cyan">Poradenství</a></li>
                     </ul>
                 </div>
+                
+                <!-- Sloupec 3: Kontakt -->
                 <div class="col-12 col-md-4">
-                    <h5 class="text-uppercase fw-semibold fs-6 text-white-50">Kontakt</h5>
-                    <ul class="list-unstyled mb-0">
-                        <li class="mb-2">
-                            <a class="link-light text-decoration-none" href="mailto:info@systemy-jakosti.cz">info@systemy-jakosti.cz</a>
-                        </li>
-                        <li>
-                            <a class="link-light text-decoration-none" href="tel:+420123456789">+420 123 456 789</a>
-                        </li>
-                    </ul>
+                    <h5 class="mb-3">Kontakt</h5>
+                    <p class="text-white-50 mb-2">
+                        <i class="bi bi-envelope me-2"></i>
+                        info@systemy-jakosti.cz
+                    </p>
+                    <p class="text-white-50 mb-2">
+                        <i class="bi bi-telephone me-2"></i>
+                        +420 XXX XXX XXX
+                    </p>
+                </div>
+                
+            </div>
+            
+            <!-- Copyright -->
+            <div class="pt-4 border-top" style="border-color: rgba(255,255,255,0.1) !important;">
+                <div class="text-center text-white-50">
+                    <p class="mb-0">© @DateTime.Now.Year Systémy jakosti s.r.o. Všechna práva vyhrazena.</p>
                 </div>
             </div>
-            <div class="border-top border-light border-opacity-25 mt-4 pt-4">
-                <div class="d-flex flex-column flex-md-row gap-2 gap-md-4 align-items-center justify-content-between small text-white-50">
-                    <span>&copy; 2025 - Systémy jakosti s.r.o.</span>
-                    <a asp-area="" asp-page="/Privacy" class="link-light text-decoration-none">@Localizer["FooterPrivacy"]</a>
-                </div>
-            </div>
+            
         </div>
     </footer>
+
+    <style>
+    .hover-cyan:hover {
+        color: #06b6d4 !important;
+    }
+    </style>
 
     <script>
         window.__appConfig = window.__appConfig || {};
