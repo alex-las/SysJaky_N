@@ -1,21 +1,19 @@
 @page "/Offline"
 @model SysJaky_N.Pages.OfflineModel
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
 @{
-    ViewData["Title"] = "Jste offline";
+    ViewData["Title"] = Localizer["Title"];
 }
 
 <section class="pwa-offline">
     <div class="pwa-offline__content">
-        <h1>Jste offline</h1>
-        <p>
-            Vypadá to, že nemáte připojení k internetu. Nejnovější uložené informace o kurzech jsou stále dostupné,
-            ale některé funkce, jako je nákup nebo přihlášení na kurz, budou dostupné po opětovném připojení.
-        </p>
+        <h1>@Localizer["Heading"]</h1>
+        <p>@Localizer["Message"]</p>
         <ul>
-            <li>Prohlížejte si dříve otevřené kurzy a články.</li>
-            <li>Vyplněné formuláře odešleme automaticky, jakmile budete online.</li>
-            <li>Pro plnohodnotný zážitek zkuste obnovit stránku po obnovení připojení.</li>
+            <li>@Localizer["ListItem1"]</li>
+            <li>@Localizer["ListItem2"]</li>
+            <li>@Localizer["ListItem3"]</li>
         </ul>
-        <a class="btn btn-primary" href="/">Zpět na úvodní stránku</a>
+        <a class="btn btn-primary" href="/">@Localizer["BackHome"]</a>
     </div>
 </section>
