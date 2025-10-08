@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Title" xml:space="preserve">
+    <value>Kalendář kurzů</value>
+  </data>
+  <data name="FiltersHeading" xml:space="preserve">
+    <value>Filtry</value>
+  </data>
+  <data name="NormLabel" xml:space="preserve">
+    <value>Norma</value>
+  </data>
+  <data name="NormHelp" xml:space="preserve">
+    <value>Vyberte jednu nebo více norem ISO.</value>
+  </data>
+  <data name="CityLabel" xml:space="preserve">
+    <value>Město</value>
+  </data>
+  <data name="CityHelp" xml:space="preserve">
+    <value>Filtrovat dle místa konání.</value>
+  </data>
+  <data name="ModeLabel" xml:space="preserve">
+    <value>Režim</value>
+  </data>
+  <data name="ModeHelp" xml:space="preserve">
+    <value>Můžete kombinovat více režimů.</value>
+  </data>
+  <data name="AvailableOnlyLabel" xml:space="preserve">
+    <value>Pouze volná místa</value>
+  </data>
+  <data name="ResetFilters" xml:space="preserve">
+    <value>Vymazat</value>
+  </data>
+  <data name="PrevAriaLabel" xml:space="preserve">
+    <value>Předchozí</value>
+  </data>
+  <data name="TodayButton" xml:space="preserve">
+    <value>Dnes</value>
+  </data>
+  <data name="NextAriaLabel" xml:space="preserve">
+    <value>Další</value>
+  </data>
+  <data name="ViewToggleAriaLabel" xml:space="preserve">
+    <value>Změna zobrazení</value>
+  </data>
+  <data name="MonthView" xml:space="preserve">
+    <value>Měsíc</value>
+  </data>
+  <data name="WeekView" xml:space="preserve">
+    <value>Týden</value>
+  </data>
+  <data name="DayView" xml:space="preserve">
+    <value>Den</value>
+  </data>
+  <data name="LoadingAlert" xml:space="preserve">
+    <value>Načítám termíny…</value>
+  </data>
+  <data name="ErrorAlert" xml:space="preserve">
+    <value>Nepodařilo se načíst data. Zkuste to prosím znovu.</value>
+  </data>
+  <data name="EmptyAlert" xml:space="preserve">
+    <value>Pro zadané filtry nebyly nalezeny žádné termíny.</value>
+  </data>
+</root>
