@@ -115,19 +115,19 @@
     <value>Popište, čeho chcete školením dosáhnout. Například zlepšení procesů, příprava na akreditaci.</value>
   </data>
   <data name="NewsHeading" xml:space="preserve">
-    <value>Novinky</value>
+    <value>Aktuality z oblasti ISO</value>
   </data>
   <data name="RecommendedEmpty" xml:space="preserve">
-    <value>Vyberte nahoře „Jsem… / Chci…“, nebo použijte vyhledávání.</value>
+    <value>Vyberte nahoře normu a cíl, kterého chcete dosáhnout, a zobrazí se vám doporučené kurzy.</value>
   </data>
   <data name="RecommendedForYou" xml:space="preserve">
-    <value>Doporučeno pro vás</value>
+    <value>Kurzy doporučené pro vaši certifikační cestu</value>
   </data>
   <data name="RecommendedViewAll" xml:space="preserve">
     <value>Zobrazit vše</value>
   </data>
   <data name="StartingSoon" xml:space="preserve">
-    <value>Co startuje nejdřív</value>
+    <value>Brzy startují</value>
   </data>
   <data name="TrustCertificate" xml:space="preserve">
     <value>Certifikát v ceně vybraných kurzů. Absolventi získají oficiální potvrzení auditora / interního auditora.</value>

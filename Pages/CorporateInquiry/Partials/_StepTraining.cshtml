@@ -1,18 +1,18 @@
 @model SysJaky_N.Pages.CorporateInquiryModel
-@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+@using SysJaky_N.Resources
 
-<h2 class="h4 mb-3">@Localizer["Step1Title"]</h2>
-<p class="text-muted mb-4">@Localizer["Step1Description"]</p>
+<h2 class="h4 mb-3">@CorporateInquiryResources.Step1Title</h2>
+<p class="text-muted mb-4">@CorporateInquiryResources.Step1Description</p>
 
 <div class="mb-3" role="group" aria-labelledby="trainingTypesLabel">
-    <span id="trainingTypesLabel" class="form-label d-block fw-semibold">@Localizer["TrainingTypesLabel"]</span>
+    <span id="trainingTypesLabel" class="form-label d-block fw-semibold">@CorporateInquiryResources.TrainingTypesLabel</span>
     @for (var index = 0; index < Model.IsoTrainingOptionKeys.Count; index++)
     {
         var key = Model.IsoTrainingOptionKeys[index];
         var inputId = $"iso-option-{index}";
         <div class="form-check">
             <input class="form-check-input" type="checkbox" id="@inputId" name="Input.TrainingTypes" value="@key" @(Model.Input.TrainingTypes.Contains(key) ? "checked" : null) />
-            <label class="form-check-label" for="@inputId">@Localizer[key]</label>
+            <label class="form-check-label" for="@inputId">@CorporateInquiryResources.GetTrainingTypeLabel(key)</label>
         </div>
     }
     @{
@@ -29,11 +29,11 @@
 }
 
 <div class="mt-4">
-    <h3 class="h5 mb-3">@Localizer["PackageRecommendationsTitle"]</h3>
+    <h3 class="h5 mb-3">@CorporateInquiryResources.PackageRecommendationsTitle</h3>
     <div class="row g-3">
         @foreach (var packageKey in packageKeys)
         {
-            var localized = Localizer[packageKey].Value ?? string.Empty;
+            var localized = CorporateInquiryResources.GetPackageRecommendation(packageKey);
             var parts = localized.Split(new[] { "\r\n", "\n" }, System.StringSplitOptions.RemoveEmptyEntries);
             var title = parts.Length > 0 ? parts[0] : localized;
             var description = parts.Length > 1 ? string.Join(" ", parts, 1, parts.Length - 1) : string.Empty;

@@ -32,6 +32,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Resources/**/*.resx" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Update="EmailTemplates/**/*.cshtml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>

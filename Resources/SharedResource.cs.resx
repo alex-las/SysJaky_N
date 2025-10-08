@@ -118,6 +118,18 @@
   <data name="HeroSecondaryCTA" xml:space="preserve">
     <value>Nechat si připravit firemní řešení</value>
   </data>
+  <data name="ConsultingIntro" xml:space="preserve">
+    <value>Poradenské projekty: Vedeme je od úvodní analýzy procesů přes návrh opatření až po zavedení systému řízení v souladu s požadavky ISO a akreditačních předpisů.</value>
+  </data>
+  <data name="TrainingIntro" xml:space="preserve">
+    <value>Školení a workshopy: Školíme manažery kvality, interní auditory i odborné pracovníky, aby dokázali normy aplikovat v praxi a podporovat kulturu neustálého zlepšování.</value>
+  </data>
+  <data name="AuditSupport" xml:space="preserve">
+    <value>Podpora auditů: Připravíme vás na interní i certifikační audity, provedeme gap analýzy a pomůžeme s nápravnými opatřeními i komunikací s certifikačním orgánem.</value>
+  </data>
+  <data name="DocumentTemplates" xml:space="preserve">
+    <value>Šablony dokumentace: Poskytujeme přehledné šablony směrnic, procesních map, checklistů a záznamů, které urychlí dokumentaci a usnadní následnou údržbu systému.</value>
+  </data>
   <data name="PersonaLabel" xml:space="preserve">
     <value>Vyberte svou roli v systému jakosti</value>
   </data>
