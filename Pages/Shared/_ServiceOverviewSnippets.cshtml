@@ -1,0 +1,48 @@
+@inject Microsoft.Extensions.Localization.IStringLocalizer<SharedResource> SharedLocalizer
+
+<section class="py-5 service-overview-snippets">
+    <div class="container">
+        <div class="row row-cols-1 row-cols-md-2 row-cols-xl-4 g-4">
+            <div class="col d-flex">
+                <article class="card shadow-sm border-0 w-100 h-100">
+                    <div class="card-body d-flex gap-3">
+                        <div class="icon-circle bg-primary-subtle text-primary flex-shrink-0">
+                            <i class="bi bi-lightbulb-fill fs-4" aria-hidden="true"></i>
+                        </div>
+                        <p class="mb-0 text-muted">@SharedLocalizer["ConsultingIntro"]</p>
+                    </div>
+                </article>
+            </div>
+            <div class="col d-flex">
+                <article class="card shadow-sm border-0 w-100 h-100">
+                    <div class="card-body d-flex gap-3">
+                        <div class="icon-circle bg-success-subtle text-success flex-shrink-0">
+                            <i class="bi bi-mortarboard-fill fs-4" aria-hidden="true"></i>
+                        </div>
+                        <p class="mb-0 text-muted">@SharedLocalizer["TrainingIntro"]</p>
+                    </div>
+                </article>
+            </div>
+            <div class="col d-flex">
+                <article class="card shadow-sm border-0 w-100 h-100">
+                    <div class="card-body d-flex gap-3">
+                        <div class="icon-circle bg-warning-subtle text-warning flex-shrink-0">
+                            <i class="bi bi-shield-check fs-4" aria-hidden="true"></i>
+                        </div>
+                        <p class="mb-0 text-muted">@SharedLocalizer["AuditSupport"]</p>
+                    </div>
+                </article>
+            </div>
+            <div class="col d-flex">
+                <article class="card shadow-sm border-0 w-100 h-100">
+                    <div class="card-body d-flex gap-3">
+                        <div class="icon-circle bg-info-subtle text-info flex-shrink-0">
+                            <i class="bi bi-files fs-4" aria-hidden="true"></i>
+                        </div>
+                        <p class="mb-0 text-muted">@SharedLocalizer["DocumentTemplates"]</p>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </div>
+</section>

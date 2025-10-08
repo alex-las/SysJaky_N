@@ -195,6 +195,18 @@
   <data name="Models.VoucherType.Percentage.DisplayName" xml:space="preserve">
     <value>Percentage discount</value>
   </data>
+  <data name="ConsultingIntro" xml:space="preserve">
+    <value>Consulting engagements: We lead them from the initial process analysis through tailored improvements to a management system fully aligned with ISO and accreditation requirements.</value>
+  </data>
+  <data name="TrainingIntro" xml:space="preserve">
+    <value>Training and workshops: We coach quality managers, internal auditors, and specialists to apply the standards in daily operations and foster a culture of continual improvement.</value>
+  </data>
+  <data name="AuditSupport" xml:space="preserve">
+    <value>Audit support: We prepare you for internal and certification audits, deliver gap analyses, and assist with corrective actions as well as communication with the certification body.</value>
+  </data>
+  <data name="DocumentTemplates" xml:space="preserve">
+    <value>Documentation templates: We supply clear templates for policies, process maps, checklists, and records to accelerate documentation and simplify ongoing system maintenance.</value>
+  </data>
   <data name="Pages.Account.Register.Input.ConfirmPassword.DisplayName" xml:space="preserve">
     <value>Confirm password</value>
   </data>
