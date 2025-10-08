@@ -1,41 +1,54 @@
+@using System.Text.Json
 @model SysJaky_N.Models.ViewModels.ChatbotWidgetViewModel
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+
+@{
+    var serializerOptions = new JsonSerializerOptions
+    {
+        PropertyNameCaseInsensitive = true
+    };
+
+    var quickRepliesJson = Localizer["QuickRepliesJson"].Value;
+    var quickReplies = JsonSerializer.Deserialize<string[]>(quickRepliesJson ?? "[]", serializerOptions) ?? Array.Empty<string>();
+}
 
 <div class="chatbot" data-chatbot data-chatbot-autoinit="@(Model.AutoInitialize ? "true" : "false")">
     <button type="button" class="chatbot-toggle" data-chatbot-toggle aria-haspopup="dialog" aria-expanded="false" aria-controls="chatbot-panel">
-        <span class="visually-hidden">Otevřít chat s virtuálním poradcem</span>
+        <span class="visually-hidden">@Localizer["ToggleLabel"]</span>
         <i class="bi bi-chat-dots"></i>
     </button>
-    <div class="chatbot-panel" id="chatbot-panel" role="dialog" aria-modal="false" aria-label="Virtuální poradce" hidden>
+    <div class="chatbot-panel" id="chatbot-panel" role="dialog" aria-modal="false" aria-label="@Localizer["PanelAriaLabel"]" hidden>
         <div class="chatbot-header">
             <div class="chatbot-header-text">
-                <h2 class="chatbot-title">Virtuální poradce</h2>
-                <p class="chatbot-subtitle">Rád poradím s výběrem vhodného kurzu.</p>
+                <h2 class="chatbot-title">@Localizer["Title"]</h2>
+                <p class="chatbot-subtitle">@Localizer["Subtitle"]</p>
             </div>
-            <button type="button" class="chatbot-close" data-chatbot-close aria-label="Zavřít chat">
+            <button type="button" class="chatbot-close" data-chatbot-close aria-label="@Localizer["CloseLabel"]">
                 <i class="bi bi-x"></i>
             </button>
         </div>
         <div class="chatbot-body">
             <div class="chatbot-messages" data-chatbot-messages role="log" aria-live="polite" tabindex="0"></div>
-            <div class="chatbot-quick-replies" data-chatbot-quick-replies role="group" aria-label="Rychlé dotazy">
-                <button type="button" class="chatbot-quick-reply" data-quick-reply="Hledám školení pro ISO 9001">Hledám školení pro ISO 9001</button>
-                <button type="button" class="chatbot-quick-reply" data-quick-reply="Kdy začíná nejbližší kurz?">Kdy začíná nejbližší kurz?</button>
-                <button type="button" class="chatbot-quick-reply" data-quick-reply="Kolik to stojí?">Kolik to stojí?</button>
+            <div class="chatbot-quick-replies" data-chatbot-quick-replies role="group" aria-label="@Localizer["QuickRepliesAriaLabel"]">
+                @foreach (var reply in quickReplies)
+                {
+                    <button type="button" class="chatbot-quick-reply" data-quick-reply="@reply">@reply</button>
+                }
             </div>
             <form class="chatbot-form" data-chatbot-form novalidate>
-                <label class="visually-hidden" for="chatbot-input">Vaše zpráva</label>
-                <input id="chatbot-input" class="chatbot-input" type="text" name="message" placeholder="Napište dotaz..." autocomplete="off" required />
+                <label class="visually-hidden" for="chatbot-input">@Localizer["MessageLabel"]</label>
+                <input id="chatbot-input" class="chatbot-input" type="text" name="message" placeholder="@Localizer["MessagePlaceholder"]" autocomplete="off" required />
                 <button type="submit" class="chatbot-send">
-                    <span>Odeslat</span>
+                    <span>@Localizer["SendButton"]</span>
                 </button>
             </form>
-            <button type="button" class="chatbot-escalate" data-chatbot-escalate>Potřebuji mluvit s člověkem</button>
+            <button type="button" class="chatbot-escalate" data-chatbot-escalate>@Localizer["EscalateButton"]</button>
             <form class="chatbot-escalate-form" data-chatbot-escalate-form hidden novalidate>
-                <p class="chatbot-escalate-description">Vyplňte prosím e-mail, kolega se vám ozve co nejdříve.</p>
-                <label class="chatbot-label" for="chatbot-escalate-email">E-mail</label>
-                <input id="chatbot-escalate-email" class="chatbot-input" type="email" name="email" placeholder="vas@email.cz" autocomplete="email" required />
-                <button type="submit" class="chatbot-send">Odeslat požadavek</button>
-                <button type="button" class="chatbot-cancel-escalation" data-chatbot-cancel-escalation>Zavřít</button>
+                <p class="chatbot-escalate-description">@Localizer["EscalateDescription"]</p>
+                <label class="chatbot-label" for="chatbot-escalate-email">@Localizer["EscalateEmailLabel"]</label>
+                <input id="chatbot-escalate-email" class="chatbot-input" type="email" name="email" placeholder="@Localizer["EscalateEmailPlaceholder"]" autocomplete="email" required />
+                <button type="submit" class="chatbot-send">@Localizer["EscalateSubmit"]</button>
+                <button type="button" class="chatbot-cancel-escalation" data-chatbot-cancel-escalation>@Localizer["EscalateCancel"]</button>
             </form>
         </div>
     </div>

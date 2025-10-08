@@ -1,4 +1,25 @@
+@using System.Collections.Generic
+@using System.Text.Json
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+
+@functions {
+    private sealed record FaqCategory(string Key, string Label);
+
+    private sealed record FaqItem(string Category, string Question, string Answer, bool Expanded);
+}
+
 @{
+    var serializerOptions = new JsonSerializerOptions
+    {
+        PropertyNameCaseInsensitive = true
+    };
+
+    var categoriesJson = Localizer["CategoriesJson"].Value;
+    var faqCategories = JsonSerializer.Deserialize<List<FaqCategory>>(categoriesJson ?? "[]", serializerOptions) ?? new List<FaqCategory>();
+
+    var faqItemsJson = Localizer["FaqItemsJson"].Value;
+    var faqItems = JsonSerializer.Deserialize<List<FaqItem>>(faqItemsJson ?? "[]", serializerOptions) ?? new List<FaqItem>();
+
     var faqId = $"faq-{Guid.NewGuid():N}";
     var accordionId = $"{faqId}-accordion";
     var searchInputId = $"{faqId}-search";
@@ -7,145 +28,50 @@
 
 <section class="faq" data-faq data-faq-id="@faqId">
     <header class="faq-header">
-        <h2 class="faq-title">Nejčastější dotazy</h2>
-        <p class="faq-subtitle">Najděte odpovědi na nejčastější otázky k přípravě na certifikaci, školením i samotnému auditu.</p>
+        <h2 class="faq-title">@Localizer["Title"]</h2>
+        <p class="faq-subtitle">@Localizer["Subtitle"]</p>
         <div class="faq-search">
-            <label class="form-label" for="@searchInputId">Vyhledat dotaz</label>
+            <label class="form-label" for="@searchInputId">@Localizer["SearchLabel"]</label>
             <div class="input-group">
                 <span class="input-group-text" id="@searchIconId"><i class="bi bi-search"></i></span>
-                <input id="@searchInputId" class="form-control" type="search" placeholder="Začněte psát dotaz..." aria-describedby="@searchIconId" autocomplete="off" data-faq-search />
+                <input id="@searchInputId" class="form-control" type="search" placeholder="@Localizer["SearchPlaceholder"]" aria-describedby="@searchIconId" autocomplete="off" data-faq-search />
             </div>
         </div>
     </header>
 
-    <div class="faq-categories" role="tablist" aria-label="Kategorie otázek">
-        <button type="button" class="faq-category active" data-faq-category="all">Vše</button>
-        <button type="button" class="faq-category" data-faq-category="general">Obecné otázky</button>
-        <button type="button" class="faq-category" data-faq-category="training">Školení</button>
-        <button type="button" class="faq-category" data-faq-category="certification">Certifikace</button>
+    <div class="faq-categories" role="tablist" aria-label="@Localizer["CategoriesAriaLabel"]">
+        @for (var i = 0; i < faqCategories.Count; i++)
+        {
+            var category = faqCategories[i];
+            <button type="button" class="faq-category @(i == 0 ? "active" : null)" data-faq-category="@category.Key">@category.Label</button>
+        }
     </div>
 
     <p class="faq-empty-message" aria-live="polite" hidden data-faq-empty>
-        Nenašli jsme žádný dotaz, který by odpovídal vašemu vyhledávání.
+        @Localizer["EmptyMessage"]
     </p>
 
     <div class="accordion faq-accordion" id="@accordionId">
-        <div class="accordion-item" data-faq-item data-faq-category="general">
-            <h3 class="accordion-header" id="@($"{faqId}-heading-general-1")">
-                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#@($"{faqId}-collapse-general-1")" aria-expanded="true" aria-controls="@($"{faqId}-collapse-general-1")">
-                    Jak dlouho trvá příprava k certifikaci?
-                </button>
-            </h3>
-            <div id="@($"{faqId}-collapse-general-1")" class="accordion-collapse collapse show" aria-labelledby="@($"{faqId}-heading-general-1")" data-bs-parent="#@accordionId">
-                <div class="accordion-body">
-                    Záleží na velikosti organizace a současném stavu. Obvykle 3-12 měsíců. Kontaktujte nás pro odhad.
-                </div>
-            </div>
-        </div>
+        @for (var i = 0; i < faqItems.Count; i++)
+        {
+            var item = faqItems[i];
+            var headingId = $"{faqId}-heading-{item.Category}-{i + 1}";
+            var collapseId = $"{faqId}-collapse-{item.Category}-{i + 1}";
+            var isExpanded = item.Expanded;
 
-        <div class="accordion-item" data-faq-item data-faq-category="general">
-            <h3 class="accordion-header" id="@($"{faqId}-heading-general-2")">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#@($"{faqId}-collapse-general-2")" aria-expanded="false" aria-controls="@($"{faqId}-collapse-general-2")">
-                    Kolik stojí certifikace ISO?
-                </button>
-            </h3>
-            <div id="@($"{faqId}-collapse-general-2")" class="accordion-collapse collapse" aria-labelledby="@($"{faqId}-heading-general-2")" data-bs-parent="#@accordionId">
-                <div class="accordion-body">
-                    Náklady zahrnují: školení (15-50 tis. Kč), poradenství (dle rozsahu), certifikační audit (30-100 tis. Kč dle velikosti firmy).
+            <div class="accordion-item" data-faq-item data-faq-category="@item.Category">
+                <h3 class="accordion-header" id="@headingId">
+                    <button class="accordion-button @(isExpanded ? null : "collapsed")" type="button" data-bs-toggle="collapse" data-bs-target="#@collapseId" aria-expanded="@(isExpanded ? "true" : "false")" aria-controls="@collapseId">
+                        @item.Question
+                    </button>
+                </h3>
+                <div id="@collapseId" class="accordion-collapse collapse @(isExpanded ? "show" : null)" aria-labelledby="@headingId" data-bs-parent="#@accordionId">
+                    <div class="accordion-body">
+                        @item.Answer
+                    </div>
                 </div>
             </div>
-        </div>
-
-        <div class="accordion-item" data-faq-item data-faq-category="general">
-            <h3 class="accordion-header" id="@($"{faqId}-heading-general-3")">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#@($"{faqId}-collapse-general-3")" aria-expanded="false" aria-controls="@($"{faqId}-collapse-general-3")">
-                    Potřebujeme externí poradce?
-                </button>
-            </h3>
-            <div id="@($"{faqId}-collapse-general-3")" class="accordion-collapse collapse" aria-labelledby="@($"{faqId}-heading-general-3")" data-bs-parent="#@accordionId">
-                <div class="accordion-body">
-                    Není povinné, ale výrazně to urychlí proces a zvýší šanci na úspěch v prvním auditu.
-                </div>
-            </div>
-        </div>
-
-        <div class="accordion-item" data-faq-item data-faq-category="training">
-            <h3 class="accordion-header" id="@($"{faqId}-heading-training-1")">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#@($"{faqId}-collapse-training-1")" aria-expanded="false" aria-controls="@($"{faqId}-collapse-training-1")">
-                    Jaký je rozdíl mezi osvědčením a certifikátem?
-                </button>
-            </h3>
-            <div id="@($"{faqId}-collapse-training-1")" class="accordion-collapse collapse" aria-labelledby="@($"{faqId}-heading-training-1")" data-bs-parent="#@accordionId">
-                <div class="accordion-body">
-                    Osvědčení potvrzuje účast na kurzu. Certifikát získáte po úspěšném složení závěrečné zkoušky.
-                </div>
-            </div>
-        </div>
-
-        <div class="accordion-item" data-faq-item data-faq-category="training">
-            <h3 class="accordion-header" id="@($"{faqId}-heading-training-2")">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#@($"{faqId}-collapse-training-2")" aria-expanded="false" aria-controls="@($"{faqId}-collapse-training-2")">
-                    Jsou vaše kurzy akreditované?
-                </button>
-            </h3>
-            <div id="@($"{faqId}-collapse-training-2")" class="accordion-collapse collapse" aria-labelledby="@($"{faqId}-heading-training-2")" data-bs-parent="#@accordionId">
-                <div class="accordion-body">
-                    Ano, naše kurzy splňují požadavky certifikačních orgánů a jsou uznávané v ČR i zahraničí.
-                </div>
-            </div>
-        </div>
-
-        <div class="accordion-item" data-faq-item data-faq-category="training">
-            <h3 class="accordion-header" id="@($"{faqId}-heading-training-3")">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#@($"{faqId}-collapse-training-3")" aria-expanded="false" aria-controls="@($"{faqId}-collapse-training-3")">
-                    Můžeme absolvovat školení ve firmě?
-                </button>
-            </h3>
-            <div id="@($"{faqId}-collapse-training-3")" class="accordion-collapse collapse" aria-labelledby="@($"{faqId}-heading-training-3")" data-bs-parent="#@accordionId">
-                <div class="accordion-body">
-                    Ano, připravíme program na míru od 4 účastníků.
-                </div>
-            </div>
-        </div>
-
-        <div class="accordion-item" data-faq-item data-faq-category="certification">
-            <h3 class="accordion-header" id="@($"{faqId}-heading-certification-1")">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#@($"{faqId}-collapse-certification-1")" aria-expanded="false" aria-controls="@($"{faqId}-collapse-certification-1")">
-                    Kdo provádí certifikační audit?
-                </button>
-            </h3>
-            <div id="@($"{faqId}-collapse-certification-1")" class="accordion-collapse collapse" aria-labelledby="@($"{faqId}-heading-certification-1")" data-bs-parent="#@accordionId">
-                <div class="accordion-body">
-                    Nezávislý certifikační orgán akreditovaný ČIA (např. TÜV, Bureau Veritas, LRQA).
-                </div>
-            </div>
-        </div>
-
-        <div class="accordion-item" data-faq-item data-faq-category="certification">
-            <h3 class="accordion-header" id="@($"{faqId}-heading-certification-2")">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#@($"{faqId}-collapse-certification-2")" aria-expanded="false" aria-controls="@($"{faqId}-collapse-certification-2")">
-                    Jak často probíhají dozorové audity?
-                </button>
-            </h3>
-            <div id="@($"{faqId}-collapse-certification-2")" class="accordion-collapse collapse" aria-labelledby="@($"{faqId}-heading-certification-2")" data-bs-parent="#@accordionId">
-                <div class="accordion-body">
-                    Obvykle 1x ročně po dobu 3 let platnosti certifikátu.
-                </div>
-            </div>
-        </div>
-
-        <div class="accordion-item" data-faq-item data-faq-category="certification">
-            <h3 class="accordion-header" id="@($"{faqId}-heading-certification-3")">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#@($"{faqId}-collapse-certification-3")" aria-expanded="false" aria-controls="@($"{faqId}-collapse-certification-3")">
-                    Co když v auditu najdou neshody?
-                </button>
-            </h3>
-            <div id="@($"{faqId}-collapse-certification-3")" class="accordion-collapse collapse" aria-labelledby="@($"{faqId}-heading-certification-3")" data-bs-parent="#@accordionId">
-                <div class="accordion-body">
-                    Menší neshody řešíte akčním plánem. Větší mohou vést k odložení certifikace - pomůžeme vám je odstranit.
-                </div>
-            </div>
-        </div>
+        }
     </div>
 </section>
 

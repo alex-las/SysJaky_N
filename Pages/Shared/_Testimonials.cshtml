@@ -1,52 +1,37 @@
+@using System.Collections.Generic
+@using System.Text.Json
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+
+@functions {
+    private sealed record TestimonialEntry(string Quote, string Name, string Title, string Company, string ImageUrl, int Rating);
+}
+
 @{
-    var testimonials = new[]
+    var serializerOptions = new JsonSerializerOptions
     {
-        new
-        {
-            Quote = "Absolvovali jsme komplexní přípravu k certifikaci ISO 9001. Profesionální přístup, srozumitelný výklad a praktické příklady nám velmi pomohly. Certifikaci jsme získali na první pokus.",
-            Name = "Ing. Jana Nováková",
-            Title = "Manažerka kvality",
-            Company = "XYZ s.r.o.",
-            ImageUrl = "https://via.placeholder.com/120",
-            Rating = 5
-        },
-        new
-        {
-            Quote = "Lektorský tým kombinuje teoretické znalosti s praktickými zkušenostmi. Díky jejich školení máme připravený interní tým auditorů.",
-            Name = "Petr Svoboda",
-            Title = "Jednatel",
-            Company = "ABC Lab a.s.",
-            ImageUrl = "https://via.placeholder.com/120",
-            Rating = 5
-        },
-        new
-        {
-            Quote = "Firemní školení na míru přesně odpovídalo potřebám naší organizace. Oceňujeme flexibilitu a odbornost lektorů.",
-            Name = "Mgr. Marie Dvořáková",
-            Title = "HR Manager",
-            Company = "DEF Group",
-            ImageUrl = "https://via.placeholder.com/120",
-            Rating = 5
-        }
+        PropertyNameCaseInsensitive = true
     };
+
+    var testimonialsJson = Localizer["TestimonialsJson"].Value;
+    var testimonials = JsonSerializer.Deserialize<List<TestimonialEntry>>(testimonialsJson ?? "[]", serializerOptions) ?? new List<TestimonialEntry>();
 }
 
 <section class="container py-5" aria-labelledby="testimonialsHeading">
     <div class="text-center mb-4">
-        <h2 id="testimonialsHeading" class="fw-bold">Co o nás říkají klienti</h2>
-        <p class="text-muted mb-0">Reálné zkušenosti firem, které s námi spolupracovaly</p>
+        <h2 id="testimonialsHeading" class="fw-bold">@Localizer["Heading"]</h2>
+        <p class="text-muted mb-0">@Localizer["Subheading"]</p>
     </div>
 
     <div id="testimonialsCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="7000">
         <div class="carousel-indicators">
-            @for (var i = 0; i < testimonials.Length; i++)
+            @for (var i = 0; i < testimonials.Count; i++)
             {
-                <button type="button" data-bs-target="#testimonialsCarousel" data-bs-slide-to="@i" class="@(i == 0 ? "active" : null)" aria-current="@(i == 0 ? "true" : "false")" aria-label="Testimonial @(i + 1)"></button>
+                <button type="button" data-bs-target="#testimonialsCarousel" data-bs-slide-to="@i" class="@(i == 0 ? "active" : null)" aria-current="@(i == 0 ? "true" : "false")" aria-label="@Localizer["IndicatorLabel", i + 1]"></button>
             }
         </div>
 
         <div class="carousel-inner">
-            @for (var i = 0; i < testimonials.Length; i++)
+            @for (var i = 0; i < testimonials.Count; i++)
             {
                 var testimonial = testimonials[i];
                 <div class="carousel-item @(i == 0 ? "active" : null)">
@@ -62,7 +47,7 @@
                                         <i class="bi bi-star-fill"></i>
                                     }
                                 </div>
-                                <span class="visually-hidden">Hodnocení: @testimonial.Rating z 5</span>
+                                <span class="visually-hidden">@Localizer["RatingLabel", testimonial.Rating]</span>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -81,11 +66,11 @@
 
         <button class="carousel-control-prev" type="button" data-bs-target="#testimonialsCarousel" data-bs-slide="prev">
             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Předchozí</span>
+            <span class="visually-hidden">@Localizer["Prev"]</span>
         </button>
         <button class="carousel-control-next" type="button" data-bs-target="#testimonialsCarousel" data-bs-slide="next">
             <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Další</span>
+            <span class="visually-hidden">@Localizer["Next"]</span>
         </button>
     </div>
 </section>
