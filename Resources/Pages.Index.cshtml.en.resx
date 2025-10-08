@@ -18,50 +18,44 @@
   <data name="HeroDescription" xml:space="preserve">
     <value>Professional quality management training for your organization</value>
   </data>
-  <data name="Home.Hero.Title" xml:space="preserve">
+  <data name="HeroMainHeading" xml:space="preserve">
     <value>Implementation, audits, and training for quality systems</value>
   </data>
-  <data name="Home.Hero.Search.Placeholder" xml:space="preserve">
-    <value>Search for a course, tool, or skill…</value>
-  </data>
-  <data name="Home.Hero.Search.AriaLabel" xml:space="preserve">
-    <value>Search courses</value>
-  </data>
-  <data name="Home.Hero.Search.Label" xml:space="preserve">
-    <value>Search</value>
-  </data>
-  <data name="Home.Hero.Subtitle" xml:space="preserve">
+  <data name="HeroSubheading" xml:space="preserve">
     <value>We guide organizations through the entire ISO 9001, ISO 14001, ISO/IEC 17025, ISO 15189, HACCP, ISO 45001, ISO 27001, IATF 16949, and ISO 13485 lifecycle — from analysis to certification.</value>
   </data>
-  <data name="Home.Hero.Search.Submit" xml:space="preserve">
-    <value>Suggest courses</value>
-  </data>
-  <data name="Home.Hero.PrimaryCta" xml:space="preserve">
-    <value>Browse ISO course offering</value>
-  </data>
-  <data name="Home.Hero.SecondaryCta" xml:space="preserve">
-    <value>Request a tailored corporate solution</value>
-  </data>
-  <data name="Home.Hero.Usp1" xml:space="preserve">
+  <data name="HeroUSP1" xml:space="preserve">
     <value>Seasoned auditors and consultants with years of experience</value>
   </data>
-  <data name="Home.Hero.Usp2" xml:space="preserve">
+  <data name="HeroUSP2" xml:space="preserve">
     <value>Practical know-how drawn from real-world audits</value>
   </data>
-  <data name="Home.Hero.Usp3" xml:space="preserve">
+  <data name="HeroUSP3" xml:space="preserve">
     <value>Internal workshops delivered directly at your company</value>
+  </data>
+  <data name="HeroPrimaryCTA" xml:space="preserve">
+    <value>Browse ISO course offering</value>
+  </data>
+  <data name="HeroSecondaryCTA" xml:space="preserve">
+    <value>Request a tailored corporate solution</value>
+  </data>
+  <data name="HeroSearchLabel" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="HeroSearchPlaceholder" xml:space="preserve">
+    <value>Search for a course, tool, or skill…</value>
+  </data>
+  <data name="HeroSearchAriaLabel" xml:space="preserve">
+    <value>Search courses</value>
+  </data>
+  <data name="HeroSubmit" xml:space="preserve">
+    <value>Suggest courses</value>
   </data>
   <data name="HowItWorksTitle" xml:space="preserve">
     <value>How it works</value>
   </data>
   <data name="PersonaAriaLabel" xml:space="preserve">
     <value>I am</value>
-  </data>
-  <data name="Home.Hero.Persona.Label" xml:space="preserve">
-    <value>Select your role in the quality system</value>
-  </data>
-  <data name="Home.Hero.Persona.Help" xml:space="preserve">
-    <value>Helps us tailor course suggestions. For example, quality manager, internal auditor, accreditation preparation.</value>
   </data>
   <data name="StepSelectTitle" xml:space="preserve">
     <value>Analyze the current state</value>
@@ -84,35 +78,14 @@
   <data name="CalendarButton" xml:space="preserve">
     <value>Course calendar</value>
   </data>
-  <data name="Home.Hero.Chips.Beginner" xml:space="preserve">
-    <value>Beginner</value>
-  </data>
-  <data name="Home.Hero.Chips.Certificate" xml:space="preserve">
-    <value>With certificate</value>
-  </data>
-  <data name="Home.Hero.Chips.Accreditation" xml:space="preserve">
+  <data name="ChipAccreditation" xml:space="preserve">
     <value>Accreditation preparation</value>
   </data>
-  <data name="Home.Hero.Chips.InternalAudits" xml:space="preserve">
+  <data name="ChipInternalAudits" xml:space="preserve">
     <value>Internal audits</value>
-  </data>
-  <data name="Home.Hero.Chips.Online" xml:space="preserve">
-    <value>Online</value>
-  </data>
-  <data name="Home.Hero.Chips.Prague" xml:space="preserve">
-    <value>Prague</value>
-  </data>
-  <data name="Home.Hero.Chips.Retraining" xml:space="preserve">
-    <value>Retraining</value>
   </data>
   <data name="GoalAriaLabel" xml:space="preserve">
     <value>I want to</value>
-  </data>
-  <data name="Home.Hero.Goal.Label" xml:space="preserve">
-    <value>Which goal do you want to achieve by meeting the standards?</value>
-  </data>
-  <data name="Home.Hero.Goal.Help" xml:space="preserve">
-    <value>Tell us what you want to achieve with the training. For example, process improvement or accreditation preparation.</value>
   </data>
   <data name="NewsHeading" xml:space="preserve">
     <value>ISO updates</value>
