@@ -23,3 +23,29 @@
     }
     <div id="training-types-error" class="invalid-feedback d-block @errorClass">@trainingError</div>
 </div>
+
+@{
+    var packageKeys = new[] { "PackageIso9001Full", "PackageImsIntegrated", "PackageLabAccreditation" };
+}
+
+<div class="mt-4">
+    <h3 class="h5 mb-3">@Localizer["PackageRecommendationsTitle"]</h3>
+    <div class="row g-3">
+        @foreach (var packageKey in packageKeys)
+        {
+            var localized = Localizer[packageKey].Value ?? string.Empty;
+            var parts = localized.Split(new[] { "\r\n", "\n" }, System.StringSplitOptions.RemoveEmptyEntries);
+            var title = parts.Length > 0 ? parts[0] : localized;
+            var description = parts.Length > 1 ? string.Join(" ", parts, 1, parts.Length - 1) : string.Empty;
+            <div class="col-12 col-md-4">
+                <div class="border rounded p-3 h-100">
+                    <div class="fw-semibold mb-2">@title</div>
+                    @if (!string.IsNullOrEmpty(description))
+                    {
+                        <p class="mb-0 text-muted">@description</p>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+</div>
