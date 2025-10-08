@@ -1,4 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Resources;
 
@@ -6,12 +5,12 @@ namespace SysJaky_N.Resources;
 
 /// <summary>
 /// Provides strongly-typed accessors for shared localization resources.
+/// Used in DataAnnotations attributes.
 /// </summary>
-[SuppressMessage("Globalization", "CA1303:Do not pass literals as localized parameters", Justification = "Wrapper around localized resources")]
 public static class SharedResources
 {
     private static readonly ResourceManager ResourceManager = new(
-        "SysJaky_N.Resources.SharedResources",
+        "SysJaky_N.Resources.SharedResource",  // DŮLEŽITÉ: Toto odkazuje na marker class (singular)
         typeof(SharedResources).GetTypeInfo().Assembly);
 
     private static string GetString(string name) => ResourceManager.GetString(name) ?? string.Empty;

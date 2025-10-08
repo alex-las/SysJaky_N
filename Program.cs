@@ -201,7 +201,7 @@ try
     var dataAnnotationsLocalizationOptions = new Action<MvcDataAnnotationsLocalizationOptions>(options =>
     {
         options.DataAnnotationLocalizerProvider = (type, factory) =>
-            factory.Create(typeof(SysJaky_N.Resources.SharedResources));
+            factory.Create(typeof(SysJaky_N.Resources.SharedResources));  // Plural class
     });
 
     builder.Services
