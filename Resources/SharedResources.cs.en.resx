@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="BrandName" xml:space="preserve">
+    <value>SysJaky</value>
+  </data>
+  <data name="NavHome" xml:space="preserve">
+    <value>Home</value>
+  </data>
+  <data name="NavAbout" xml:space="preserve">
+    <value>About SysJaky</value>
+  </data>
+  <data name="NavServices" xml:space="preserve">
+    <value>Services &amp; consulting</value>
+  </data>
+  <data name="NavCourses" xml:space="preserve">
+    <value>Courses &amp; training</value>
+  </data>
+  <data name="NavArticles" xml:space="preserve">
+    <value>Articles &amp; case studies</value>
+  </data>
+  <data name="NavCorporateInquiry" xml:space="preserve">
+    <value>Corporate inquiry / tailored audit</value>
+  </data>
+  <data name="NavPrivacy" xml:space="preserve">
+    <value>Privacy</value>
+  </data>
+  <data name="LanguageNameCs" xml:space="preserve">
+    <value>Czech</value>
+  </data>
+  <data name="LanguageNameEn" xml:space="preserve">
+    <value>English</value>
+  </data>
+  <data name="LanguageMenuLabel" xml:space="preserve">
+    <value>Language selection</value>
+  </data>
+  <data name="ChangeLanguageFormLabel" xml:space="preserve">
+    <value>Change language</value>
+  </data>
+  <data name="LoginRegister" xml:space="preserve">
+    <value>Login / Register</value>
+  </data>
+  <data name="HeroMainHeading" xml:space="preserve">
+    <value>ISO training, courses and certifications for your organization</value>
+  </data>
+  <data name="HeroSubheading" xml:space="preserve">
+    <value>Comprehensive preparation for certification and accreditation according to ISO 9001, ISO 14001, ISO/IEC 17025, ISO 15189, HACCP, ISO 45001, ISO 27001, IATF 16949 and ISO 13485</value>
+  </data>
+  <data name="HeroUSP1" xml:space="preserve">
+    <value>20+ years of experience in management systems</value>
+  </data>
+  <data name="HeroUSP2" xml:space="preserve">
+    <value>Certified courses with recognized credentials</value>
+  </data>
+  <data name="HeroUSP3" xml:space="preserve">
+    <value>Training on-site, online or directly at your company</value>
+  </data>
+  <data name="HeroPrimaryCTA" xml:space="preserve">
+    <value>View all courses</value>
+  </data>
+  <data name="HeroSecondaryCTA" xml:space="preserve">
+    <value>Request in-company training</value>
+  </data>
+  <data name="ConsultingIntro" xml:space="preserve">
+    <value>Consulting engagements: We lead them from the initial process analysis through tailored improvements to a management system fully aligned with ISO and accreditation requirements.</value>
+  </data>
+  <data name="TrainingIntro" xml:space="preserve">
+    <value>Training and workshops: We coach quality managers, internal auditors, and specialists to apply the standards in daily operations and foster a culture of continual improvement.</value>
+  </data>
+  <data name="AuditSupport" xml:space="preserve">
+    <value>Audit support: We prepare you for internal and certification audits, deliver gap analyses, and assist with corrective actions as well as communication with the certification body.</value>
+  </data>
+  <data name="DocumentTemplates" xml:space="preserve">
+    <value>Documentation templates: We supply clear templates for policies, process maps, checklists, and records to accelerate documentation and simplify ongoing system maintenance.</value>
+  </data>
+  <data name="PersonaLabel" xml:space="preserve">
+    <value>Select your role in the quality system</value>
+  </data>
+  <data name="PersonaHelp" xml:space="preserve">
+    <value>Helps us tailor course suggestions. For example, quality manager or internal auditor.</value>
+  </data>
+  <data name="GoalLabel" xml:space="preserve">
+    <value>Which goal do you want to achieve by meeting the standards?</value>
+  </data>
+  <data name="GoalHelp" xml:space="preserve">
+    <value>Tell us what you want to achieve with the training. For example, process improvement or accreditation preparation.</value>
+  </data>
+  <data name="HeroSearchPlaceholder" xml:space="preserve">
+    <value>Search for a course, tool, or skill…</value>
+  </data>
+  <data name="HeroSearchAriaLabel" xml:space="preserve">
+    <value>Search courses</value>
+  </data>
+  <data name="HeroSearchLabel" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="HeroSubmit" xml:space="preserve">
+    <value>Suggest courses</value>
+  </data>
+  <data name="ChipOnline" xml:space="preserve">
+    <value>Online</value>
+  </data>
+  <data name="ChipRetraining" xml:space="preserve">
+    <value>Retraining</value>
+  </data>
+  <data name="ChipBeginner" xml:space="preserve">
+    <value>Beginner</value>
+  </data>
+  <data name="ChipPrague" xml:space="preserve">
+    <value>Prague</value>
+  </data>
+  <data name="ChipCertificate" xml:space="preserve">
+    <value>With certificate</value>
+  </data>
+  <data name="ChipAccreditation" xml:space="preserve">
+    <value>Accreditation preparation</value>
+  </data>
+  <data name="ChipInternalAudits" xml:space="preserve">
+    <value>Internal audits</value>
+  </data>
+</root>
