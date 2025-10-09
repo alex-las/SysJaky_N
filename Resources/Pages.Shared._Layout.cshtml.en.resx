@@ -47,6 +47,7 @@
   </data>
   <data name="AdminDashboard" xml:space="preserve">
     <value>Admin Dashboard</value>
+    <comment>Label for the navigation button that opens the admin dashboard.</comment>
   </data>
   <data name="AdvisorButton" xml:space="preserve">
     <value>Get advice</value>
