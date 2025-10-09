@@ -2,7 +2,7 @@
 @using Microsoft.Extensions.Localization
 @using SysJaky_N.Extensions
 @using SysJaky_N.Resources
-@inject IStringLocalizer<SharedResource> T
+@inject Microsoft.Extensions.Localization.IStringLocalizer<SysJaky_N.Resources.SharedResource> T
 @inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
 @{
     var requestCulture = Context.Features.Get<IRequestCultureFeature>();
