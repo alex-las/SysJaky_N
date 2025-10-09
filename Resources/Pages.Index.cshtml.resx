@@ -43,7 +43,7 @@
     <value>Vyhledávání</value>
   </data>
   <data name="HeroSearchPlaceholder" xml:space="preserve">
-    <value>Hledat kurz, nástroj nebo dovednost…</value>
+    <value>Hledat kurz, normu nebo město…</value>
   </data>
   <data name="HeroSearchAriaLabel" xml:space="preserve">
     <value>Vyhledávání kurzů</value>

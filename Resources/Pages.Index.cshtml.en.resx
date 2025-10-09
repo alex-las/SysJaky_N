@@ -43,7 +43,7 @@
     <value>Search</value>
   </data>
   <data name="HeroSearchPlaceholder" xml:space="preserve">
-    <value>Search for a course, tool, or skill…</value>
+    <value>Search for a course, standard or city…</value>
   </data>
   <data name="HeroSearchAriaLabel" xml:space="preserve">
     <value>Search courses</value>
