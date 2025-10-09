@@ -56,7 +56,9 @@
                         <div class="d-flex align-items-center gap-2 ms-lg-auto flex-wrap">
                             @if (canAccessAdmin)
                             {
-                                <a class="btn btn-dark d-flex align-items-center gap-2 px-3" asp-page="/Admin/Dashboard/Index">
+                                <a class="btn btn-dark d-flex align-items-center gap-2 px-3"
+                                   asp-page="/Admin/Dashboard/Index"
+                                   aria-label='@Localizer["AdminDashboard"]'>
                                     <i class="bi bi-speedometer2" aria-hidden="true"></i>
                                     <span>@Localizer["AdminDashboard"]</span>
                                 </a>
