@@ -1,7 +1,9 @@
 @page
 @inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+@inject SysJaky_N.Services.IsoStandards.IIsoSpecializationMetadataProvider IsoMetadataProvider
 @{
     ViewData["Title"] = Localizer["Title"];
+    var isoSpecializations = IsoMetadataProvider.GetAll();
 }
 
 <section class="py-5">
@@ -76,69 +78,16 @@
         </div>
 
         <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4">
-            <div class="col">
-                <div class="h-100 p-4 bg-white rounded-3 shadow-sm text-center">
-                    <i class="bi bi-patch-check-fill text-primary fs-1" aria-hidden="true"></i>
-                    <h3 class="h5 mt-3">@Localizer["ISO9001Title"]</h3>
-                    <p class="text-muted mb-0">@Localizer["ISO9001Description"]</p>
+            @foreach (var specialization in isoSpecializations)
+            {
+                <div class="col">
+                    <div class="h-100 p-4 bg-white rounded-3 shadow-sm text-center">
+                        <i class="bi @specialization.OverviewIconClass @(specialization.AboutIconColorClass ?? "text-primary") fs-1" aria-hidden="true"></i>
+                        <h3 class="h5 mt-3">@specialization.Name</h3>
+                        <p class="text-muted mb-0">@specialization.Summary</p>
+                    </div>
                 </div>
-            </div>
-            <div class="col">
-                <div class="h-100 p-4 bg-white rounded-3 shadow-sm text-center">
-                    <i class="bi bi-globe-europe-africa text-success fs-1" aria-hidden="true"></i>
-                    <h3 class="h5 mt-3">@Localizer["ISO14001Title"]</h3>
-                    <p class="text-muted mb-0">@Localizer["ISO14001Description"]</p>
-                </div>
-            </div>
-            <div class="col">
-                <div class="h-100 p-4 bg-white rounded-3 shadow-sm text-center">
-                    <i class="bi bi-flask text-info fs-1" aria-hidden="true"></i>
-                    <h3 class="h5 mt-3">@Localizer["ISOIEC17025Title"]</h3>
-                    <p class="text-muted mb-0">@Localizer["ISOIEC17025Description"]</p>
-                </div>
-            </div>
-            <div class="col">
-                <div class="h-100 p-4 bg-white rounded-3 shadow-sm text-center">
-                    <i class="bi bi-hospital text-danger fs-1" aria-hidden="true"></i>
-                    <h3 class="h5 mt-3">@Localizer["ISO15189Title"]</h3>
-                    <p class="text-muted mb-0">@Localizer["ISO15189Description"]</p>
-                </div>
-            </div>
-            <div class="col">
-                <div class="h-100 p-4 bg-white rounded-3 shadow-sm text-center">
-                    <i class="bi bi-shield-check text-warning fs-1" aria-hidden="true"></i>
-                    <h3 class="h5 mt-3">@Localizer["HACCPTitle"]</h3>
-                    <p class="text-muted mb-0">@Localizer["HACCPDescription"]</p>
-                </div>
-            </div>
-            <div class="col">
-                <div class="h-100 p-4 bg-white rounded-3 shadow-sm text-center">
-                    <i class="bi bi-exclamation-triangle-fill text-secondary fs-1" aria-hidden="true"></i>
-                    <h3 class="h5 mt-3">@Localizer["ISO45001Title"]</h3>
-                    <p class="text-muted mb-0">@Localizer["ISO45001Description"]</p>
-                </div>
-            </div>
-            <div class="col">
-                <div class="h-100 p-4 bg-white rounded-3 shadow-sm text-center">
-                    <i class="bi bi-shield-lock-fill text-primary fs-1" aria-hidden="true"></i>
-                    <h3 class="h5 mt-3">@Localizer["ISO27001Title"]</h3>
-                    <p class="text-muted mb-0">@Localizer["ISO27001Description"]</p>
-                </div>
-            </div>
-            <div class="col">
-                <div class="h-100 p-4 bg-white rounded-3 shadow-sm text-center">
-                    <i class="bi bi-gear-wide-connected text-dark fs-1" aria-hidden="true"></i>
-                    <h3 class="h5 mt-3">@Localizer["IATF16949Title"]</h3>
-                    <p class="text-muted mb-0">@Localizer["IATF16949Description"]</p>
-                </div>
-            </div>
-            <div class="col">
-                <div class="h-100 p-4 bg-white rounded-3 shadow-sm text-center">
-                    <i class="bi bi-heart-pulse-fill text-danger fs-1" aria-hidden="true"></i>
-                    <h3 class="h5 mt-3">@Localizer["ISO13485Title"]</h3>
-                    <p class="text-muted mb-0">@Localizer["ISO13485Description"]</p>
-                </div>
-            </div>
+            }
         </div>
     </div>
 </section>

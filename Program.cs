@@ -6,6 +6,7 @@ using SysJaky_N.Data;
 using SysJaky_N.Models;
 using SysJaky_N.Services;
 using SysJaky_N.Services.Calendar;
+using SysJaky_N.Services.IsoStandards;
 using System.Collections.Generic;
 using System.Linq;
 using DinkToPdf;
@@ -176,6 +177,7 @@ try
     });
 
     builder.Services.AddHttpContextAccessor();
+    builder.Services.AddSingleton<IIsoSpecializationMetadataProvider, IsoSpecializationMetadataProvider>();
     builder.Services.AddResponseCompression(options =>
     {
         options.EnableForHttps = true;
