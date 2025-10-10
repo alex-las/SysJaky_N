@@ -1,0 +1,65 @@
+@using Microsoft.AspNetCore.Identity
+@using SysJaky_N.Models
+@inject SignInManager<ApplicationUser> SignInManager
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+
+@{
+    var accountLabel = User?.Identity?.Name;
+    if (string.IsNullOrWhiteSpace(accountLabel))
+    {
+        accountLabel = Localizer["AccountMenuLabel"];
+    }
+
+    var pathValue = Context.Request.Path.HasValue ? Context.Request.Path.Value : "/";
+    if (string.IsNullOrWhiteSpace(pathValue))
+    {
+        pathValue = "/";
+    }
+
+    var queryValue = Context.Request.QueryString.HasValue ? Context.Request.QueryString.Value : string.Empty;
+    var returnUrl = string.Concat(pathValue, queryValue);
+}
+
+@if (SignInManager.IsSignedIn(User))
+{
+    <div class="dropdown">
+        <button class="btn btn-outline-light btn-sm dropdown-toggle d-flex align-items-center gap-2"
+                id="userMenuDropdown"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+                aria-label="@Localizer["AccountMenuAriaLabel"]">
+            <i class="bi bi-person-circle" aria-hidden="true"></i>
+            <span class="text-truncate" style="max-width: 12rem;">@accountLabel</span>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenuDropdown">
+            <li>
+                <a class="dropdown-item d-flex align-items-center gap-2" asp-page="/Account/Manage">
+                    <i class="bi bi-gear" aria-hidden="true"></i>
+                    <span>@Localizer["ManageAccount"]</span>
+                </a>
+            </li>
+            <li><hr class="dropdown-divider" /></li>
+            <li>
+                <form method="post" asp-page="/Account/Logout" asp-route-returnUrl="@returnUrl" class="px-3">
+                    <button type="submit" class="dropdown-item d-flex align-items-center gap-2 btn btn-link px-0 text-start">
+                        <i class="bi bi-box-arrow-right" aria-hidden="true"></i>
+                        <span>@Localizer["Logout"]</span>
+                    </button>
+                </form>
+            </li>
+        </ul>
+    </div>
+}
+else
+{
+    <div class="d-flex align-items-center gap-2">
+        <a class="btn btn-outline-light btn-sm d-flex align-items-center gap-2" asp-page="/Account/Login" asp-route-returnUrl="@returnUrl">
+            <i class="bi bi-box-arrow-in-right" aria-hidden="true"></i>
+            <span>@Localizer["Login"]</span>
+        </a>
+        <a class="btn btn-primary btn-sm d-flex align-items-center gap-2" asp-page="/Account/Register" asp-route-returnUrl="@returnUrl">
+            <i class="bi bi-person-plus" aria-hidden="true"></i>
+            <span>@Localizer["Register"]</span>
+        </a>
+    </div>
+}
