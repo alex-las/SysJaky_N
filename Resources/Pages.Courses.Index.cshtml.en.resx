@@ -36,6 +36,36 @@
   <data name="FiltersButton" xml:space="preserve">
     <value>Filters</value>
   </data>
+  <data name="SearchPlaceholder" xml:space="preserve">
+    <value>What do you want to learn? Enter a course, tool, or skill</value>
+  </data>
+  <data name="SearchLabel" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="NormsLabel" xml:space="preserve">
+    <value>Standards</value>
+  </data>
+  <data name="CitiesLabel" xml:space="preserve">
+    <value>Cities</value>
+  </data>
+  <data name="LevelsLabel" xml:space="preserve">
+    <value>Levels</value>
+  </data>
+  <data name="TypesLabel" xml:space="preserve">
+    <value>Format</value>
+  </data>
+  <data name="PriceRangeLabel" xml:space="preserve">
+    <value>Price range</value>
+  </data>
+  <data name="PriceLabel" xml:space="preserve">
+    <value>Price</value>
+  </data>
+  <data name="SaveFilters" xml:space="preserve">
+    <value>Save filters</value>
+  </data>
+  <data name="FiltersSaved" xml:space="preserve">
+    <value>Filters have been saved.</value>
+  </data>
   <data name="CategoriesLabel" xml:space="preserve">
     <value>Course categories</value>
   </data>
@@ -56,6 +86,12 @@
   </data>
   <data name="CompareBarCta" xml:space="preserve">
     <value>Compare</value>
+  </data>
+  <data name="Compare" xml:space="preserve">
+    <value>Compare</value>
+  </data>
+  <data name="CompareLimit" xml:space="preserve">
+    <value>You can compare up to 3 courses.</value>
   </data>
   <data name="StartsInDays" xml:space="preserve">
     <value>Starts in {0} days</value>
@@ -105,6 +141,12 @@
   <data name="AdditionalInfo" xml:space="preserve">
     <value>More info</value>
   </data>
+  <data name="Details" xml:space="preserve">
+    <value>Details</value>
+  </data>
+  <data name="Enroll" xml:space="preserve">
+    <value>Enroll</value>
+  </data>
   <data name="MetaInformation" xml:space="preserve">
     <value>Course parameters</value>
   </data>
@@ -116,5 +158,17 @@
   </data>
   <data name="TypeAria" xml:space="preserve">
     <value>Type: {0}</value>
+  </data>
+  <data name="NoCoursesFound" xml:space="preserve">
+    <value>No courses match your selection.</value>
+  </data>
+  <data name="FetchError" xml:space="preserve">
+    <value>Failed to load courses.</value>
+  </data>
+  <data name="PageStatus" xml:space="preserve">
+    <value>Page {0} of {1}</value>
+  </data>
+  <data name="RemoveFilter" xml:space="preserve">
+    <value>Remove filter</value>
   </data>
 </root>
