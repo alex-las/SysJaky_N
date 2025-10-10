@@ -18,6 +18,9 @@
   <data name="StartsInDays" xml:space="preserve">
     <value>Začíná za {0} dní</value>
   </data>
+  <data name="CountdownBadgeTemplate" xml:space="preserve">
+    <value>Začíná za {0} dní</value>
+  </data>
   <data name="StartsToday" xml:space="preserve">
     <value>Začíná dnes</value>
   </data>
