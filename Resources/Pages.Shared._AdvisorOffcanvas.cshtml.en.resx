@@ -42,4 +42,7 @@
   <data name="CityHelp" xml:space="preserve">
     <value>Optional: preferred training location.</value>
   </data>
+  <data name="Close" xml:space="preserve">
+    <value>Close</value>
+  </data>
 </root>
