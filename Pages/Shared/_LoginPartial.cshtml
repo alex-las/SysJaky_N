@@ -7,7 +7,7 @@
     var accountLabel = User?.Identity?.Name;
     if (string.IsNullOrWhiteSpace(accountLabel))
     {
-        accountLabel = Localizer["AccountMenuLabel"];
+        accountLabel = Localizer["AccountMenuLabel"].Value;
     }
 
     var pathValue = Context.Request.Path.HasValue ? Context.Request.Path.Value : "/";
