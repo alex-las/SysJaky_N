@@ -78,6 +78,15 @@
   <data name="CalendarButton" xml:space="preserve">
     <value>Course calendar</value>
   </data>
+  <data name="ChipOnline" xml:space="preserve">
+    <value>Online</value>
+  </data>
+  <data name="ChipRetraining" xml:space="preserve">
+    <value>Retraining</value>
+  </data>
+  <data name="ChipCertificate" xml:space="preserve">
+    <value>With certificate</value>
+  </data>
   <data name="ChipAccreditation" xml:space="preserve">
     <value>Accreditation preparation</value>
   </data>
