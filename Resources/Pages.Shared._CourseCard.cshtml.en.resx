@@ -18,6 +18,9 @@
   <data name="StartsInDays" xml:space="preserve">
     <value>Starts in {0} days</value>
   </data>
+  <data name="CountdownBadgeTemplate" xml:space="preserve">
+    <value>Starts in {0} days</value>
+  </data>
   <data name="StartsToday" xml:space="preserve">
     <value>Starts today</value>
   </data>
