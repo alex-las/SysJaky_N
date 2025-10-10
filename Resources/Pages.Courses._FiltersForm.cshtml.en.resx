@@ -18,6 +18,9 @@
   <data name="SearchPlaceholder" xml:space="preserve">
     <value>What do you want to learn? Enter a course, tool, or skill</value>
   </data>
+  <data name="SearchLabel" xml:space="preserve">
+    <value>Search</value>
+  </data>
   <data name="SearchAria" xml:space="preserve">
     <value>Course search</value>
   </data>
@@ -51,7 +54,37 @@
   <data name="TagsAria" xml:space="preserve">
     <value>Select tags</value>
   </data>
+  <data name="CategoriesLabel" xml:space="preserve">
+    <value>Categories</value>
+  </data>
+  <data name="NormsLabel" xml:space="preserve">
+    <value>Standards</value>
+  </data>
+  <data name="CitiesLabel" xml:space="preserve">
+    <value>Cities</value>
+  </data>
+  <data name="LevelsLabel" xml:space="preserve">
+    <value>Levels</value>
+  </data>
+  <data name="TypesLabel" xml:space="preserve">
+    <value>Types</value>
+  </data>
+  <data name="PriceRangeLabel" xml:space="preserve">
+    <value>Price range</value>
+  </data>
+  <data name="PriceMinLabel" xml:space="preserve">
+    <value>Minimum price</value>
+  </data>
+  <data name="PriceMaxLabel" xml:space="preserve">
+    <value>Maximum price</value>
+  </data>
   <data name="Submit" xml:space="preserve">
     <value>Search courses</value>
+  </data>
+  <data name="SaveFilters" xml:space="preserve">
+    <value>Save filters</value>
+  </data>
+  <data name="ResetFilters" xml:space="preserve">
+    <value>Reset filters</value>
   </data>
 </root>
