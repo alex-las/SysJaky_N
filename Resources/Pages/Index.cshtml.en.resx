@@ -105,6 +105,18 @@
   <data name="RecommendedForYou" xml:space="preserve">
     <value>Courses recommended for your certification journey</value>
   </data>
+  <data name="SpecializationsHeading" xml:space="preserve">
+    <value>Our specializations</value>
+  </data>
+  <data name="SpecializationsDescription" xml:space="preserve">
+    <value>We deliver comprehensive consulting and training for the following standards.</value>
+  </data>
+  <data name="CoursesHeading" xml:space="preserve">
+    <value>Current training and courses</value>
+  </data>
+  <data name="CoursesDescription" xml:space="preserve">
+    <value>Choose from the most in-demand courses that help you meet standard requirements and move your team forward.</value>
+  </data>
   <data name="RecommendedViewAll" xml:space="preserve">
     <value>View all</value>
   </data>
@@ -147,8 +159,41 @@
   <data name="WhyChooseHeading" xml:space="preserve">
     <value>Why partner with Systémy jakosti?</value>
   </data>
+  <data name="TestimonialsHeading" xml:space="preserve">
+    <value>What participants say</value>
+  </data>
+  <data name="AboutHeading" xml:space="preserve">
+    <value>About Systémy jakosti s.r.o.</value>
+  </data>
+  <data name="AboutCtaLabel" xml:space="preserve">
+    <value>Learn more about us</value>
+  </data>
   <data name="ContactCtaHeading" xml:space="preserve">
     <value>Book a free consultation</value>
+  </data>
+  <data name="ContactHeading" xml:space="preserve">
+    <value>Contact us</value>
+  </data>
+  <data name="ContactDescription" xml:space="preserve">
+    <value>We are happy to answer your questions and help you choose the right training.</value>
+  </data>
+  <data name="ContactPhoneLabel" xml:space="preserve">
+    <value>Phone</value>
+  </data>
+  <data name="ContactPhoneValue" xml:space="preserve">
+    <value>+420 XXX XXX XXX</value>
+  </data>
+  <data name="ContactEmailLabel" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="ContactEmailValue" xml:space="preserve">
+    <value>info@systemy-jakosti.cz</value>
+  </data>
+  <data name="ContactAddressLabel" xml:space="preserve">
+    <value>Address</value>
+  </data>
+  <data name="ContactAddressValue" xml:space="preserve">
+    <value>Prague, Czech Republic</value>
   </data>
   <data name="Title" xml:space="preserve">
     <value>Home</value>

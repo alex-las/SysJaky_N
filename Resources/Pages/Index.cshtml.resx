@@ -152,6 +152,18 @@
   <data name="RecommendedForYou" xml:space="preserve">
     <value>Kurzy doporučené pro vaši certifikační cestu</value>
   </data>
+  <data name="SpecializationsHeading" xml:space="preserve">
+    <value>Naše specializace</value>
+  </data>
+  <data name="SpecializationsDescription" xml:space="preserve">
+    <value>Poskytujeme komplexní poradenství a školení pro následující normy.</value>
+  </data>
+  <data name="CoursesHeading" xml:space="preserve">
+    <value>Aktuální školení a kurzy</value>
+  </data>
+  <data name="CoursesDescription" xml:space="preserve">
+    <value>Vyberte si z nejžádanějších kurzů, které vám pomohou splnit požadavky norem a posunout váš tým o krok dál.</value>
+  </data>
   <data name="RecommendedViewAll" xml:space="preserve">
     <value>Zobrazit vše</value>
   </data>
@@ -194,8 +206,41 @@
   <data name="WhyChooseHeading" xml:space="preserve">
     <value>Proč spolupracovat se Systémy jakosti?</value>
   </data>
+  <data name="TestimonialsHeading" xml:space="preserve">
+    <value>Co říkají účastníci</value>
+  </data>
+  <data name="AboutHeading" xml:space="preserve">
+    <value>O společnosti Systémy jakosti s.r.o.</value>
+  </data>
+  <data name="AboutCtaLabel" xml:space="preserve">
+    <value>Více o nás</value>
+  </data>
   <data name="ContactCtaHeading" xml:space="preserve">
     <value>Nezávazná konzultace</value>
+  </data>
+  <data name="ContactHeading" xml:space="preserve">
+    <value>Kontaktujte nás</value>
+  </data>
+  <data name="ContactDescription" xml:space="preserve">
+    <value>Rádi zodpovíme vaše dotazy a poradíme s výběrem vhodného školení.</value>
+  </data>
+  <data name="ContactPhoneLabel" xml:space="preserve">
+    <value>Telefon</value>
+  </data>
+  <data name="ContactPhoneValue" xml:space="preserve">
+    <value>+420 XXX XXX XXX</value>
+  </data>
+  <data name="ContactEmailLabel" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="ContactEmailValue" xml:space="preserve">
+    <value>info@systemy-jakosti.cz</value>
+  </data>
+  <data name="ContactAddressLabel" xml:space="preserve">
+    <value>Adresa</value>
+  </data>
+  <data name="ContactAddressValue" xml:space="preserve">
+    <value>Praha, Česká republika</value>
   </data>
   <data name="Title" xml:space="preserve">
     <value>Domů</value>
