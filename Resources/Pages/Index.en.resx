@@ -156,4 +156,31 @@
   <data name="ISO13485" xml:space="preserve">
     <value>ISO 13485 — Medical Devices</value>
   </data>
+  <data name="ContactCtaHeading" xml:space="preserve">
+    <value>Book a free consultation</value>
+  </data>
+  <data name="ContactHeading" xml:space="preserve">
+    <value>Contact us</value>
+  </data>
+  <data name="ContactDescription" xml:space="preserve">
+    <value>We are happy to answer your questions and help you choose the right training.</value>
+  </data>
+  <data name="ContactPhoneLabel" xml:space="preserve">
+    <value>Phone</value>
+  </data>
+  <data name="ContactPhoneValue" xml:space="preserve">
+    <value>+420 XXX XXX XXX</value>
+  </data>
+  <data name="ContactEmailLabel" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="ContactEmailValue" xml:space="preserve">
+    <value>info@systemy-jakosti.cz</value>
+  </data>
+  <data name="ContactAddressLabel" xml:space="preserve">
+    <value>Address</value>
+  </data>
+  <data name="ContactAddressValue" xml:space="preserve">
+    <value>Prague, Czech Republic</value>
+  </data>
 </root>
