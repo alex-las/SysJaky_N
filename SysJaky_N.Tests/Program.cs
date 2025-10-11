@@ -1,13 +1,25 @@
 using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.RazorPages.Infrastructure;
+using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Routing;
 using SysJaky_N.Controllers;
 using SysJaky_N.Data;
 using SysJaky_N.Models;
+using SysJaky_N.Pages.Account;
 using SysJaky_N.Services;
 
 public static class TestHarness
@@ -27,7 +39,8 @@ internal sealed class CourseReminderServiceTester
         {
             ("Course reminders respect different time zones", RunCourseSelectionTestAsync),
             ("Course reminders avoid client-side evaluation warnings", RunClientEvaluationWarningTestAsync),
-            ("Analytics dashboard aggregates sales using SQL grouping", RunAnalyticsAggregationTestAsync)
+            ("Analytics dashboard aggregates sales using SQL grouping", RunAnalyticsAggregationTestAsync),
+            ("Account pages use localized validation and notifications", RunAccountLocalizationTestAsync)
         };
 
         var success = true;
@@ -288,6 +301,97 @@ internal sealed class CourseReminderServiceTester
             {
                 File.Delete(databasePath);
             }
+        }
+    }
+
+    private static async Task RunAccountLocalizationTestAsync()
+    {
+        using var cultureScope = new CultureScope(new CultureInfo("en"));
+
+        var services = new ServiceCollection();
+        services.AddLogging();
+        services.AddLocalization(options => options.ResourcesPath = "Resources");
+        services.AddSingleton<IEmailSender, NullEmailSender>();
+        services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+        services.AddSingleton<IUrlHelperFactory, UrlHelperFactory>();
+        services.AddDbContext<ApplicationDbContext>(options =>
+            options.UseInMemoryDatabase($"account-localization-{Guid.NewGuid():N}"));
+
+        services.AddIdentity<ApplicationUser, IdentityRole>()
+            .AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddDefaultTokenProviders();
+
+        await using var provider = services.BuildServiceProvider();
+        await using var scope = provider.CreateAsyncScope();
+        var scopedProvider = scope.ServiceProvider;
+
+        var registerLocalizer = scopedProvider.GetRequiredService<IStringLocalizer<RegisterModel>>();
+        var logoutLocalizer = scopedProvider.GetRequiredService<IStringLocalizer<LogoutModel>>();
+        var userManager = scopedProvider.GetRequiredService<UserManager<ApplicationUser>>();
+        var signInManager = scopedProvider.GetRequiredService<SignInManager<ApplicationUser>>();
+        var emailSender = scopedProvider.GetRequiredService<IEmailSender>();
+        var dbContext = scopedProvider.GetRequiredService<ApplicationDbContext>();
+
+        var registerHttpContext = new DefaultHttpContext { RequestServices = scopedProvider };
+        var registerActionContext = new ActionContext(registerHttpContext, new RouteData(), new PageActionDescriptor());
+        var registerModel = new RegisterModel(userManager, signInManager, emailSender, dbContext, registerLocalizer)
+        {
+            PageContext = new PageContext(registerActionContext),
+            Url = new UrlHelper(registerActionContext)
+        };
+
+        registerModel.Input = new RegisterModel.InputModel
+        {
+            Email = "localized.user@example.com",
+            Password = "Strong1Password!",
+            ConfirmPassword = "Strong1Password!",
+            Captcha = "token",
+            ReferralCode = "unknown"
+        };
+
+        var registerResult = await registerModel.OnPostAsync();
+        if (registerResult is not PageResult)
+        {
+            throw new InvalidOperationException("Registration should stay on the page when the referral code is unknown.");
+        }
+
+        var referralErrors = registerModel.ModelState[nameof(RegisterModel.InputModel.ReferralCode)]?.Errors;
+        if (referralErrors is null || referralErrors.Count == 0)
+        {
+            throw new InvalidOperationException("Expected a validation error for the referral code.");
+        }
+
+        var expectedReferralMessage = registerLocalizer["ReferralCodeNotFound"].Value;
+        var actualReferralMessage = referralErrors[0].ErrorMessage;
+        if (!string.Equals(expectedReferralMessage, actualReferralMessage, StringComparison.Ordinal))
+        {
+            throw new InvalidOperationException($"Expected referral message '{expectedReferralMessage}', but was '{actualReferralMessage}'.");
+        }
+
+        var logoutHttpContext = new DefaultHttpContext
+        {
+            RequestServices = scopedProvider,
+            User = new ClaimsPrincipal(new ClaimsIdentity())
+        };
+        var logoutActionContext = new ActionContext(logoutHttpContext, new RouteData(), new PageActionDescriptor());
+        var logoutModel = new LogoutModel(signInManager, logoutLocalizer)
+        {
+            PageContext = new PageContext(logoutActionContext),
+            Url = new UrlHelper(logoutActionContext),
+            TempData = new TempDataDictionary(logoutHttpContext, new DictionaryTempDataProvider())
+        };
+
+        var logoutResult = await logoutModel.OnPostAsync();
+        if (logoutResult is not RedirectToPageResult redirect || redirect.PageName != "/Index")
+        {
+            throw new InvalidOperationException("Logout should redirect to the home page when no return URL is supplied.");
+        }
+
+        var expectedLogoutMessage = logoutLocalizer["AlreadySignedOut"].Value;
+        var actualLogoutMessage = logoutModel.StatusMessage;
+        if (!string.Equals(expectedLogoutMessage, actualLogoutMessage, StringComparison.Ordinal))
+        {
+            throw new InvalidOperationException($"Expected logout message '{expectedLogoutMessage}', but was '{actualLogoutMessage}'.");
         }
     }
 
@@ -579,6 +683,43 @@ internal sealed class CourseReminderServiceTester
         });
 
         return services.BuildServiceProvider();
+    }
+
+    private sealed class NullEmailSender : IEmailSender
+    {
+        public Task SendEmailAsync<TModel>(string to, EmailTemplate template, TModel model, CancellationToken cancellationToken = default)
+            => Task.CompletedTask;
+    }
+
+    private sealed class DictionaryTempDataProvider : ITempDataProvider
+    {
+        private IDictionary<string, object?> _data = new Dictionary<string, object?>();
+
+        public IDictionary<string, object?> LoadTempData(HttpContext context)
+            => new Dictionary<string, object?>(_data);
+
+        public void SaveTempData(HttpContext context, IDictionary<string, object?> values)
+            => _data = new Dictionary<string, object?>(values);
+    }
+
+    private sealed class CultureScope : IDisposable
+    {
+        private readonly CultureInfo _originalCulture;
+        private readonly CultureInfo _originalUiCulture;
+
+        public CultureScope(CultureInfo culture)
+        {
+            _originalCulture = CultureInfo.CurrentCulture;
+            _originalUiCulture = CultureInfo.CurrentUICulture;
+            CultureInfo.CurrentCulture = culture;
+            CultureInfo.CurrentUICulture = culture;
+        }
+
+        public void Dispose()
+        {
+            CultureInfo.CurrentCulture = _originalCulture;
+            CultureInfo.CurrentUICulture = _originalUiCulture;
+        }
     }
 
     private sealed class ManualTimeProvider : TimeProvider
