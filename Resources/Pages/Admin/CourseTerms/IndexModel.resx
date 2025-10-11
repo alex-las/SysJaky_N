@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Title" xml:space="preserve">
+    <value>Termíny kurzů</value>
+  </data>
+  <data name="WorksheetEnrollments" xml:space="preserve">
+    <value>Přihlášky</value>
+  </data>
+  <data name="HeaderEnrollmentId" xml:space="preserve">
+    <value>ID přihlášky</value>
+  </data>
+  <data name="HeaderStatus" xml:space="preserve">
+    <value>Stav</value>
+  </data>
+  <data name="HeaderUserId" xml:space="preserve">
+    <value>ID uživatele</value>
+  </data>
+  <data name="HeaderUserEmail" xml:space="preserve">
+    <value>E-mail uživatele</value>
+  </data>
+  <data name="HeaderUserName" xml:space="preserve">
+    <value>Jméno uživatele</value>
+  </data>
+  <data name="HeaderUserPhoneNumber" xml:space="preserve">
+    <value>Telefon uživatele</value>
+  </data>
+  <data name="HeaderCourseTermId" xml:space="preserve">
+    <value>ID termínu kurzu</value>
+  </data>
+  <data name="HeaderCourseTitle" xml:space="preserve">
+    <value>Název kurzu</value>
+  </data>
+  <data name="HeaderStartUtc" xml:space="preserve">
+    <value>Začátek (UTC)</value>
+  </data>
+  <data name="HeaderEndUtc" xml:space="preserve">
+    <value>Konec (UTC)</value>
+  </data>
+  <data name="CourseTitleFallback" xml:space="preserve">
+    <value>Kurz {0}</value>
+  </data>
+  <data name="CourseFileNameFallback" xml:space="preserve">
+    <value>Kurz_{0}</value>
+  </data>
+  <data name="FileNameExportPattern" xml:space="preserve">
+    <value>{0}_termin_{1}_prihlaseni.xlsx</value>
+  </data>
+  <data name="ErrorImportFileRequired" xml:space="preserve">
+    <value>Vyberte XLSX soubor pro import.</value>
+  </data>
+  <data name="ErrorImportInvalidExtension" xml:space="preserve">
+    <value>Podporovány jsou pouze soubory XLSX.</value>
+  </data>
+  <data name="ErrorImportEmpty" xml:space="preserve">
+    <value>Nahraný soubor neobsahuje žádná data.</value>
+  </data>
+  <data name="ErrorMissingRequiredColumn" xml:space="preserve">
+    <value>Chybí povinný sloupec '{0}'.</value>
+  </data>
+  <data name="ErrorImportGeneral" xml:space="preserve">
+    <value>Import se nezdařil. Zkontrolujte zvýrazněné problémy.</value>
+  </data>
+  <data name="ErrorIdInvalid" xml:space="preserve">
+    <value>Neplatná hodnota ve sloupci Id.</value>
+  </data>
+  <data name="ErrorCourseIdRequired" xml:space="preserve">
+    <value>CourseId je povinný a musí být číslo.</value>
+  </data>
+  <data name="ErrorStartUtcRequired" xml:space="preserve">
+    <value>StartUtc je povinný a musí být platné datum a čas.</value>
+  </data>
+  <data name="ErrorEndUtcRequired" xml:space="preserve">
+    <value>EndUtc je povinný a musí být platné datum a čas.</value>
+  </data>
+  <data name="ErrorCapacityRequired" xml:space="preserve">
+    <value>Capacity je povinná a musí být číslo.</value>
+  </data>
+  <data name="ErrorCapacityMinimum" xml:space="preserve">
+    <value>Kapacita musí být alespoň 1.</value>
+  </data>
+  <data name="ErrorIsActiveBoolean" xml:space="preserve">
+    <value>IsActive musí být logická hodnota.</value>
+  </data>
+  <data name="ErrorInstructorIdNumber" xml:space="preserve">
+    <value>InstructorId musí být číslo.</value>
+  </data>
+  <data name="ErrorStartBeforeEnd" xml:space="preserve">
+    <value>StartUtc musí být dříve než EndUtc.</value>
+  </data>
+  <data name="ErrorRowSummary" xml:space="preserve">
+    <value>Řádek {0}: {1}</value>
+  </data>
+  <data name="StatusNoTermsFound" xml:space="preserve">
+    <value>V nahraném souboru nebyly nalezeny žádné termíny.</value>
+  </data>
+  <data name="ErrorCourseNotFound" xml:space="preserve">
+    <value>Kurz s ID {0} neexistuje.</value>
+  </data>
+  <data name="ErrorInstructorNotFound" xml:space="preserve">
+    <value>Lektor s ID {0} neexistuje.</value>
+  </data>
+  <data name="ErrorTermNotFound" xml:space="preserve">
+    <value>Termín s ID {0} neexistuje.</value>
+  </data>
+  <data name="ErrorRowCapacityLessThanSeats" xml:space="preserve">
+    <value>Řádek {0}: Kapacita {1} je menší než aktuálně obsazená místa ({2}).</value>
+  </data>
+  <data name="StatusImportSummary" xml:space="preserve">
+    <value>Importováno {0} nových termínů a aktualizováno {1} stávajících termínů.</value>
+  </data>
+  <data name="FileNameCourseFallback" xml:space="preserve">
+    <value>kurz</value>
+  </data>
+</root>

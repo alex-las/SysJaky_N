@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using SysJaky_N.Data;
 using SysJaky_N.Models;
 using SysJaky_N.Services;
@@ -14,11 +15,13 @@ public class DeleteModel : PageModel
 {
     private readonly ApplicationDbContext _context;
     private readonly ICacheService _cacheService;
+    private readonly IStringLocalizer<DeleteModel> _localizer;
 
-    public DeleteModel(ApplicationDbContext context, ICacheService cacheService)
+    public DeleteModel(ApplicationDbContext context, ICacheService cacheService, IStringLocalizer<DeleteModel> localizer)
     {
         _context = context;
         _cacheService = cacheService;
+        _localizer = localizer;
     }
 
     [BindProperty]
@@ -28,6 +31,7 @@ public class DeleteModel : PageModel
 
     public async Task<IActionResult> OnGetAsync(int id)
     {
+        ViewData["Title"] = _localizer["Title"];
         var term = await LoadTermAsync(id);
         if (term == null)
         {
@@ -40,6 +44,7 @@ public class DeleteModel : PageModel
 
     public async Task<IActionResult> OnPostAsync(int id)
     {
+        ViewData["Title"] = _localizer["Title"];
         var term = await _context.CourseTerms
             .Include(t => t.Course)
             .Include(t => t.Instructor)
@@ -52,7 +57,7 @@ public class DeleteModel : PageModel
 
         if (term.SeatsTaken > 0)
         {
-            ErrorMessage = "Termín nelze smazat, pokud jsou již obsazena místa.";
+            ErrorMessage = _localizer["ErrorCannotDeleteWithSeats"].Value;
             Term = term;
             return Page();
         }
