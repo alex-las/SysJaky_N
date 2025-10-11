@@ -209,11 +209,26 @@
   <data name="TestimonialsHeading" xml:space="preserve">
     <value>Co říkají účastníci</value>
   </data>
+  <data name="AboutEyebrow" xml:space="preserve">
+    <value>Kdo jsme</value>
+  </data>
   <data name="AboutHeading" xml:space="preserve">
-    <value>O společnosti Systémy jakosti s.r.o.</value>
+    <value>Váš prověřený partner pro systémy ISO a HACCP</value>
+  </data>
+  <data name="AboutDescription" xml:space="preserve">
+    <value>Více než 20 let pomáháme výrobním firmám, laboratořím i zdravotnickým zařízením navrhovat, zavádět a udržovat certifikované systémy řízení. Naši konzultanti propojují praxi vedoucích auditorů s reálnými zkušenostmi z desítek odvětví.</value>
+  </data>
+  <data name="AboutBulletConsulting" xml:space="preserve">
+    <value>Kompletní podpora od úvodní analýzy až po úspěšnou certifikaci.</value>
+  </data>
+  <data name="AboutBulletTraining" xml:space="preserve">
+    <value>Akreditovaná školení pro manažery kvality, auditory i odborné týmy.</value>
+  </data>
+  <data name="AboutBulletCare" xml:space="preserve">
+    <value>Dlouhodobá péče, interní audity a aktualizace při změnách norem.</value>
   </data>
   <data name="AboutCtaLabel" xml:space="preserve">
-    <value>Více o nás</value>
+    <value>Poznejte náš příběh</value>
   </data>
   <data name="ContactCtaHeading" xml:space="preserve">
     <value>Nezávazná konzultace</value>
