@@ -105,6 +105,12 @@
   <data name="RecommendedForYou" xml:space="preserve">
     <value>Courses recommended for your certification journey</value>
   </data>
+  <data name="CoursesHeading" xml:space="preserve">
+    <value>Current training and courses</value>
+  </data>
+  <data name="CoursesDescription" xml:space="preserve">
+    <value>Choose from the most in-demand courses that help you meet standard requirements and move your team forward.</value>
+  </data>
   <data name="RecommendedViewAll" xml:space="preserve">
     <value>View all</value>
   </data>

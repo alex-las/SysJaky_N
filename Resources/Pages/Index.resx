@@ -210,6 +210,12 @@
   <data name="RecommendedForYou" xml:space="preserve">
     <value>Kurzy doporučené pro vaši certifikační cestu</value>
   </data>
+  <data name="CoursesHeading" xml:space="preserve">
+    <value>Aktuální školení a kurzy</value>
+  </data>
+  <data name="CoursesDescription" xml:space="preserve">
+    <value>Vyberte si z nejžádanějších kurzů, které vám pomohou splnit požadavky norem a posunout váš tým o krok dál.</value>
+  </data>
   <data name="RecommendedViewAll" xml:space="preserve">
     <value>Zobrazit vše</value>
   </data>
