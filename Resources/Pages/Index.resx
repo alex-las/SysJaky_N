@@ -234,6 +234,30 @@
   <data name="TrustRating" xml:space="preserve">
     <value>Hodnocení {0} od účastníků kurzů</value>
   </data>
+  <data name="MetricExperienceLabel" xml:space="preserve">
+    <value>Let zkušeností</value>
+  </data>
+  <data name="MetricExperienceAriaLabel" xml:space="preserve">
+    <value>Více než {0} let zkušeností v oblasti systémů řízení</value>
+  </data>
+  <data name="MetricClientsLabel" xml:space="preserve">
+    <value>Spokojených klientů</value>
+  </data>
+  <data name="MetricClientsAriaLabel" xml:space="preserve">
+    <value>Více než {0} spokojených klientů</value>
+  </data>
+  <data name="MetricCoursesLabel" xml:space="preserve">
+    <value>Realizovaných školení</value>
+  </data>
+  <data name="MetricCoursesAriaLabel" xml:space="preserve">
+    <value>Více než {0} uskutečněných školení</value>
+  </data>
+  <data name="MetricInstructorsLabel" xml:space="preserve">
+    <value>Certifikovaných lektorů</value>
+  </data>
+  <data name="MetricInstructorsAriaLabel" xml:space="preserve">
+    <value>Více než {0} certifikovaných lektorů</value>
+  </data>
   <data name="WhyChooseDescription" xml:space="preserve">
     <value>20 let praxe v oboru, tým externích auditorů a know-how z desítek odvětví.</value>
   </data>

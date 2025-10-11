@@ -26,6 +26,7 @@ namespace SysJaky_N.Pages
         public IList<Course> FastSoonest { get; set; } = new List<Course>();
         public IList<Article> FreshNews { get; set; } = new List<Article>();
         public IList<Testimonial> FeaturedTestimonials { get; set; } = new List<Testimonial>();
+        public IReadOnlyList<HeroMetric> HeroMetrics { get; private set; } = System.Array.Empty<HeroMetric>();
 
         public async Task OnGetAsync(string? persona, string? goal)
         {
@@ -122,6 +123,45 @@ namespace SysJaky_N.Pages
                 .ThenBy(t => t.FullName)
                 .Take(8)
                 .ToListAsync();
+            HeroMetrics = new[]
+            {
+                new HeroMetric
+                {
+                    Value = "20+",
+                    Label = _localizer["MetricExperienceLabel"].Value,
+                    AriaLabel = _localizer["MetricExperienceAriaLabel", "20+"].Value,
+                    RevealDelay = 0
+                },
+                new HeroMetric
+                {
+                    Value = "500+",
+                    Label = _localizer["MetricClientsLabel"].Value,
+                    AriaLabel = _localizer["MetricClientsAriaLabel", "500+"].Value,
+                    RevealDelay = 50
+                },
+                new HeroMetric
+                {
+                    Value = "2000+",
+                    Label = _localizer["MetricCoursesLabel"].Value,
+                    AriaLabel = _localizer["MetricCoursesAriaLabel", "2000+"].Value,
+                    RevealDelay = 100
+                },
+                new HeroMetric
+                {
+                    Value = "15+",
+                    Label = _localizer["MetricInstructorsLabel"].Value,
+                    AriaLabel = _localizer["MetricInstructorsAriaLabel", "15+"].Value,
+                    RevealDelay = 150
+                }
+            };
+        }
+
+        public class HeroMetric
+        {
+            public string Value { get; init; } = string.Empty;
+            public string Label { get; init; } = string.Empty;
+            public string AriaLabel { get; init; } = string.Empty;
+            public int RevealDelay { get; init; }
         }
     }
 }
