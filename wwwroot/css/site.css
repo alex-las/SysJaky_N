@@ -1,3 +1,7 @@
+:root {
+  --nav-offset: 4.25rem;
+}
+
 .app-body {
   min-height: 100vh;
   display: flex;
@@ -179,7 +183,11 @@
 }
 
 .app-content {
-  padding-top: clamp(5.5rem, 12vw, 6.75rem);
+  padding-top: clamp(
+    var(--nav-offset, 4.25rem),
+    calc(var(--nav-offset, 4.25rem) + env(safe-area-inset-top, 0px)),
+    calc(var(--nav-offset, 4.25rem) + 1.5rem)
+  );
 }
 
 .site-footer {

@@ -196,6 +196,38 @@ document.addEventListener('DOMContentLoaded', () => {
         target.addEventListener('hidden.bs.collapse', () => updateAriaExpanded(toggle, false));
     });
 
+    const mainNav = document.getElementById('mainNav');
+    if (mainNav) {
+        const rootStyle = document.documentElement.style;
+        const updateNavOffset = () => {
+            const navHeight = Math.ceil(mainNav.getBoundingClientRect().height);
+            if (navHeight > 0) {
+                rootStyle.setProperty('--nav-offset', `${navHeight}px`);
+            }
+        };
+
+        const scheduleNavUpdate = () => {
+            window.requestAnimationFrame(updateNavOffset);
+        };
+
+        updateNavOffset();
+
+        if ('ResizeObserver' in window) {
+            const navResizeObserver = new ResizeObserver(scheduleNavUpdate);
+            navResizeObserver.observe(mainNav);
+        }
+
+        window.addEventListener('resize', scheduleNavUpdate, { passive: true });
+        window.addEventListener('orientationchange', scheduleNavUpdate);
+        window.addEventListener('load', updateNavOffset);
+
+        const navCollapse = mainNav.querySelector('.navbar-collapse');
+        if (navCollapse) {
+            navCollapse.addEventListener('shown.bs.collapse', updateNavOffset);
+            navCollapse.addEventListener('hidden.bs.collapse', updateNavOffset);
+        }
+    }
+
     const wishlistStorageKey = 'courseWishlist';
 
     const readWishlistState = () => {
