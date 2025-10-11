@@ -4,52 +4,69 @@
     ViewData["Title"] = "Kurzy";
 }
 
-<h1>Kurzy</h1>
+<section class="admin-page-header">
+    <div class="admin-page-header__title">
+        <h1>Kurzy</h1>
+    </div>
+    <div class="admin-page-header__actions">
+        <a class="btn btn-admin-primary" asp-page="/Courses/Create">Vytvořit kurz</a>
+    </div>
+</section>
 
-<form method="get" class="mb-3" role="search" aria-label="Filtr kurzů">
-    <input type="text" asp-for="SearchString" placeholder="Hledat..." class="form-control" style="width:auto;display:inline-block" aria-label="Hledat kurzy" />
-    <select asp-for="CourseGroupId" asp-items="Model.CourseGroups" class="form-control" style="width:auto;display:inline-block" aria-label="Filtrovat podle skupiny">
-        <option value="">Všechny skupiny</option>
-    </select>
-    <button type="submit" class="btn btn-primary">Filtrovat</button>
-    <a class="btn btn-secondary" asp-page="/Admin/Courses/Index">Resetovat</a>
+<form method="get" class="admin-card" role="search" aria-label="Filtr kurzů">
+    <div class="admin-filters">
+        <div class="flex-grow-1">
+            <label class="form-label visually-hidden" for="searchString">Hledat...</label>
+            <input id="searchString" type="text" asp-for="SearchString" placeholder="Hledat..." class="form-control" aria-label="Hledat kurzy" />
+        </div>
+        <div>
+            <label class="form-label visually-hidden" for="courseGroup">Filtrovat podle skupiny</label>
+            <select id="courseGroup" asp-for="CourseGroupId" asp-items="Model.CourseGroups" class="form-select" aria-label="Filtrovat podle skupiny">
+                <option value="">Všechny skupiny</option>
+            </select>
+        </div>
+    </div>
+    <div class="admin-form-actions">
+        <button type="submit" class="btn btn-admin-primary">Filtrovat</button>
+        <a class="btn btn-admin-ghost" asp-page="/Admin/Courses/Index">Resetovat</a>
+    </div>
 </form>
 
-<p>
-    <a asp-page="/Courses/Create">Vytvořit kurz</a>
-</p>
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>Název</th>
-            <th>Skupina</th>
-            <th>Cena</th>
-            <th>Datum</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-    @foreach (var item in Model.Courses)
-    {
-        <tr>
-            <td>@item.Title</td>
-            <td>@item.CourseGroup?.Name</td>
-            <td>@item.Price</td>
-            <td>@item.Date.ToString("d")</td>
-            <td>
-                <a asp-page="/Courses/Edit" asp-route-id="@item.Id">Upravit</a>
-                <a asp-page="/Courses/Delete" asp-route-id="@item.Id">Smazat</a>
-            </td>
-        </tr>
-    }
-    </tbody>
-</table>
+<div class="admin-table-wrapper table-responsive mt-4">
+    <table class="table admin-table align-middle mb-0">
+        <thead>
+            <tr>
+                <th scope="col">Název</th>
+                <th scope="col">Skupina</th>
+                <th scope="col">Cena</th>
+                <th scope="col">Datum</th>
+                <th scope="col" class="text-end"></th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model.Courses)
+        {
+            <tr>
+                <td>@item.Title</td>
+                <td>@item.CourseGroup?.Name</td>
+                <td>@item.Price</td>
+                <td>@item.Date.ToString("d")</td>
+                <td class="text-end">
+                    <div class="admin-table-actions justify-content-end">
+                        <a class="btn btn-sm btn-admin-ghost" asp-page="/Courses/Edit" asp-route-id="@item.Id">Upravit</a>
+                        <a class="btn btn-sm btn-admin-ghost" asp-page="/Courses/Delete" asp-route-id="@item.Id">Smazat</a>
+                    </div>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
 
 @if (Model.TotalPages > 1)
 {
-    <nav aria-label="Stránkování kurzů">
-        <ul class="pagination">
+    <nav aria-label="Stránkování kurzů" class="admin-pagination">
+        <ul class="pagination admin-pagination">
             <li class="page-item @(Model.PageNumber <= 1 ? "disabled" : "")">
                 <a class="page-link" asp-route-PageNumber="@(Model.PageNumber - 1)" asp-route-CourseGroupId="@Model.CourseGroupId" asp-route-SearchString="@Model.SearchString">Předchozí</a>
             </li>
