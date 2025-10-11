@@ -41,11 +41,17 @@
   <data name="Login" xml:space="preserve">
     <value>Přihlásit se</value>
   </data>
+  <data name="LoginSubtitle" xml:space="preserve">
+    <value>Přihlášením získáte personalizovaná doporučení a historii kurzů.</value>
+  </data>
   <data name="Logout" xml:space="preserve">
     <value>Odhlásit se</value>
   </data>
   <data name="ManageAccount" xml:space="preserve">
     <value>Správa účtu</value>
+  </data>
+  <data name="NoAccountQuestion" xml:space="preserve">
+    <value>Nemáte účet?</value>
   </data>
   <data name="Register" xml:space="preserve">
     <value>Registrace</value>
