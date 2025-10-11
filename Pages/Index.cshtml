@@ -318,8 +318,23 @@
 
     <section class="section about" id="about">
         <div class="about__card" data-reveal>
+            <span class="about__eyebrow">@T["AboutEyebrow"]</span>
             <h2>@T["AboutHeading"]</h2>
             <p>@T["AboutDescription"]</p>
+            <ul class="about__list" role="list">
+                <li>
+                    <span class="about__list-icon"><i class="bi bi-check2-circle" aria-hidden="true"></i></span>
+                    <span>@T["AboutBulletConsulting"]</span>
+                </li>
+                <li>
+                    <span class="about__list-icon"><i class="bi bi-mortarboard" aria-hidden="true"></i></span>
+                    <span>@T["AboutBulletTraining"]</span>
+                </li>
+                <li>
+                    <span class="about__list-icon"><i class="bi bi-arrow-repeat" aria-hidden="true"></i></span>
+                    <span>@T["AboutBulletCare"]</span>
+                </li>
+            </ul>
             <a class="btn btn-light hero__cta" href="/About">@T["AboutCtaLabel"]</a>
         </div>
     </section>
