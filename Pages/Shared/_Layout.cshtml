@@ -21,6 +21,7 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/dist/styles.min.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/lib/altcha/altcha.min.css" asp-append-version="true" />
+    @await RenderSectionAsync("Head", required: false)
 </head>
 <body>
     <a href="#main-content" class="visually-hidden-focusable">@Localizer["SkipToContent"]</a>
