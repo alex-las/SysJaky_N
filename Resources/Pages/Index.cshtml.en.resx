@@ -127,13 +127,13 @@
     <value>Certificates included with selected courses. Graduates receive official confirmation as auditors / internal auditors.</value>
   </data>
   <data name="TrustGraduates" xml:space="preserve">
-    <value>{0} certified experts</value>
+    <value>Trusted by {0} graduates</value>
   </data>
   <data name="TrustGuarantee" xml:space="preserve">
     <value>We guarantee successful certification or refund your tuition</value>
   </data>
   <data name="TrustRating" xml:space="preserve">
-    <value>Rating {0} certified experts</value>
+    <value>Rated {0} by course participants</value>
   </data>
   <data name="MetricExperienceLabel" xml:space="preserve">
     <value>Years of experience</value>

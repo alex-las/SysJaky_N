@@ -133,13 +133,13 @@
     <value>Certifikát v ceně vybraných kurzů. Absolventi získají oficiální potvrzení auditora / interního auditora.</value>
   </data>
   <data name="TrustGraduates" xml:space="preserve">
-    <value>{0} certifikovaných odborníků</value>
+    <value>Naše kurzy absolvovalo {0}</value>
   </data>
   <data name="TrustGuarantee" xml:space="preserve">
     <value>Zaručujeme úspěšnou certifikaci nebo vrátíme kurzovné</value>
   </data>
   <data name="TrustRating" xml:space="preserve">
-    <value>Hodnocení {0} certifikovaných odborníků</value>
+    <value>Hodnocení {0} od účastníků kurzů</value>
   </data>
   <data name="WhyChooseDescription" xml:space="preserve">
     <value>20 let praxe v oboru, tým externích auditorů a know-how z desítek odvětví.</value>
