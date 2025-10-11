@@ -137,7 +137,13 @@
         </div>
     </div>
 
-    <div class="app-content container-xxl px-3 px-md-4">
+    @{
+        var appContentClasses = ViewData["AppContentClasses"] as string;
+        var appContentClassList = string.IsNullOrWhiteSpace(appContentClasses)
+            ? "container-xxl px-3 px-md-4"
+            : appContentClasses;
+    }
+    <div class="app-content @appContentClassList">
         <main id="main-content" role="main" class="app-main" tabindex="-1">
             @RenderBody()
         </main>
