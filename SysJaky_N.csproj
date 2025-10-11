@@ -78,4 +78,8 @@
     <Message Importance="high" Text="Bundling static web assets" />
 
   </Target>
+
+  <ItemGroup>
+    <Compile Remove="SysJaky_N.Tests/**/*.cs" />
+  </ItemGroup>
 </Project>
