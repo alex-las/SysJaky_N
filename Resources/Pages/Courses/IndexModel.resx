@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="CategoryQualityManagement" xml:space="preserve">
+    <value>Systémy managementu kvality (ISO 9001)</value>
+  </data>
+  <data name="CategoryEnvironmentalManagement" xml:space="preserve">
+    <value>Environmentální management (ISO 14001)</value>
+  </data>
+  <data name="CategoryIntegratedSystems" xml:space="preserve">
+    <value>Integrované systémy</value>
+  </data>
+  <data name="CategoryLaboratoryAccreditation" xml:space="preserve">
+    <value>Laboratoře - Akreditace (ISO/IEC 17025, ISO 15189)</value>
+  </data>
+  <data name="CategoryOccupationalSafety" xml:space="preserve">
+    <value>BOZP (ISO 45001)</value>
+  </data>
+  <data name="CategoryInformationSecurity" xml:space="preserve">
+    <value>Informační bezpečnost (ISO 27001)</value>
+  </data>
+  <data name="CategoryAutomotive" xml:space="preserve">
+    <value>Automotive (IATF 16949)</value>
+  </data>
+  <data name="CategorySoftSkills" xml:space="preserve">
+    <value>Soft skills</value>
+  </data>
+  <data name="CourseLevel_Beginner" xml:space="preserve">
+    <value>Začátečník</value>
+  </data>
+  <data name="CourseLevel_Intermediate" xml:space="preserve">
+    <value>Středně pokročilý</value>
+  </data>
+  <data name="CourseLevel_Advanced" xml:space="preserve">
+    <value>Pokročilý</value>
+  </data>
+  <data name="CourseType_Online" xml:space="preserve">
+    <value>Online</value>
+  </data>
+  <data name="CourseType_InPerson" xml:space="preserve">
+    <value>Prezenční</value>
+  </data>
+  <data name="CourseType_Hybrid" xml:space="preserve">
+    <value>Hybridní</value>
+  </data>
+</root>

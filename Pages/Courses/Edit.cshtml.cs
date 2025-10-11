@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using SysJaky_N.Data;
 using SysJaky_N.Models;
 using SysJaky_N.Services;
@@ -17,15 +18,20 @@ public class EditModel : PageModel
     private readonly ApplicationDbContext _context;
     private readonly IAuditService _auditService;
     private readonly ICourseEditor _courseEditor;
+    private readonly IStringLocalizer<EditModel> _localizer;
+
+    public IStringLocalizer<EditModel> Localizer => _localizer;
 
     public EditModel(
         ApplicationDbContext context,
         IAuditService auditService,
-        ICourseEditor courseEditor)
+        ICourseEditor courseEditor,
+        IStringLocalizer<EditModel> localizer)
     {
         _context = context;
         _auditService = auditService;
         _courseEditor = courseEditor;
+        _localizer = localizer;
     }
 
     [BindProperty]

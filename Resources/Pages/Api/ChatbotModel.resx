@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="DisabledGeneric" xml:space="preserve">
+    <value>Virtuální poradce je momentálně vypnutý. Zkuste to prosím později.</value>
+  </data>
+  <data name="NoUnderstanding" xml:space="preserve">
+    <value>Omlouvám se, ale nerozuměl jsem dotazu. Můžete ho prosím zopakovat?</value>
+  </data>
+  <data name="RecommendationsFound" xml:space="preserve">
+    <value>Vybral jsem pro vás několik vhodných kurzů.</value>
+  </data>
+  <data name="NoMatch" xml:space="preserve">
+    <value>Momentálně jsem nenašel přesnou shodu. Můžete dotaz prosím upřesnit?</value>
+  </data>
+  <data name="NoMatchFollowUp" xml:space="preserve">
+    <value>Zkuste prosím přidat oblast, která vás zajímá, nebo napište klíčové slovo kurzu.</value>
+  </data>
+  <data name="DisabledEscalation" xml:space="preserve">
+    <value>Virtuální poradce je momentálně vypnutý. Prosím kontaktujte nás jinou cestou.</value>
+  </data>
+  <data name="EmailRequired" xml:space="preserve">
+    <value>E-mail je povinný.</value>
+  </data>
+  <data name="EscalationContactName" xml:space="preserve">
+    <value>Chatbot klient</value>
+  </data>
+  <data name="EscalationSuccess" xml:space="preserve">
+    <value>Děkujeme, předali jsme váš dotaz kolegům. Ozvou se vám na uvedený e-mail co nejdříve.</value>
+  </data>
+  <data name="TranscriptDefault" xml:space="preserve">
+    <value>Zákazník požádal o kontakt prostřednictvím chatbota.</value>
+  </data>
+  <data name="TranscriptHeading" xml:space="preserve">
+    <value>Přepis konverzace z chatbota:</value>
+  </data>
+  <data name="RoleAssistant" xml:space="preserve">
+    <value>Poradce</value>
+  </data>
+  <data name="RoleUser" xml:space="preserve">
+    <value>Zákazník</value>
+  </data>
+  <data name="RoleSystem" xml:space="preserve">
+    <value>Systém</value>
+  </data>
+</root>
