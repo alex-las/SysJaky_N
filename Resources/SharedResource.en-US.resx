@@ -126,6 +126,33 @@
   <data name="EmailAddressInvalid" xml:space="preserve">
     <value>The {0} field must contain a valid email address.</value>
   </data>
+  <data name="LanguageMenuLabel" xml:space="preserve">
+    <value>Language selection</value>
+  </data>
+  <data name="ChangeLanguageFormLabel" xml:space="preserve">
+    <value>Change language</value>
+  </data>
+  <data name="LanguageNameCs" xml:space="preserve">
+    <value>Czech</value>
+  </data>
+  <data name="LanguageNameEn" xml:space="preserve">
+    <value>English</value>
+  </data>
+  <data name="NavHome" xml:space="preserve">
+    <value>Home</value>
+  </data>
+  <data name="NavAbout" xml:space="preserve">
+    <value>About SysJaky</value>
+  </data>
+  <data name="NavServices" xml:space="preserve">
+    <value>Services &amp; consulting</value>
+  </data>
+  <data name="NavCourses" xml:space="preserve">
+    <value>Courses &amp; training</value>
+  </data>
+  <data name="NavArticles" xml:space="preserve">
+    <value>Articles &amp; case studies</value>
+  </data>
   <data name="ContactNameLabel" xml:space="preserve">
     <value>Name</value>
   </data>
