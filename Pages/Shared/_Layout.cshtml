@@ -25,103 +25,148 @@
 </head>
 <body>
     <a href="#main-content" class="visually-hidden-focusable">@Localizer["SkipToContent"]</a>
-    <header role="banner">
-        <nav class="navbar navbar-expand-lg app-navbar bg-gradient-to-r from-primary to-primary-dark py-3" role="navigation" aria-label='@Localizer["PrimaryNavigation"]'>
-            <div class="container-xxl">
-                <div class="d-flex align-items-center justify-content-between w-100">
-                    <a class="navbar-brand d-flex align-items-center gap-2 text-white" asp-area="" asp-page="/Index">
-                        <i class="bi bi-award-fill fs-3"></i>
-                        <span class="fw-bold fs-5">@Localizer["BrandName"]</span>
-                    </a>
-                    <button class="navbar-toggler text-white border-white" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label='@Localizer["ToggleNavigation"]'>
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                        <ul class="navbar-nav mx-auto mb-2 mb-lg-0 gap-1">
-                            <li class="nav-item">
-                                <a class="nav-link px-3 py-2 rounded-pill text-white" style="@(currentPage == "/Index" ? "background: rgba(255,255,255,0.2);" : string.Empty)" asp-area="" asp-page="/Index" aria-current="@(currentPage == "/Index" ? "page" : null)">@T["NavHome"]</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link px-3 py-2 rounded-pill text-white" style="@(currentPage == "/About" ? "background: rgba(255,255,255,0.2);" : string.Empty)" asp-area="" asp-page="/About" aria-current="@(currentPage == "/About" ? "page" : null)">@T["NavAbout"]</a>
-                            </li>
-                            <li class="nav-item">
-                                <!-- ✅ OPRAVENO: Změněno z asp-page="/About" na asp-page="/Services" -->
-                                <a class="nav-link px-3 py-2 rounded-pill text-white" style="@(currentPage == "/Services" ? "background: rgba(255,255,255,0.2);" : string.Empty)" asp-area="" asp-page="/Services" aria-current="@(currentPage == "/Services" ? "page" : null)">@T["NavServices"]</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link px-3 py-2 rounded-pill text-white" style="@(currentPage == "/Courses/Index" ? "background: rgba(255,255,255,0.2);" : string.Empty)" asp-area="" asp-page="/Courses/Index" aria-current="@(currentPage == "/Courses/Index" ? "page" : null)">@T["NavCourses"]</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link px-3 py-2 rounded-pill text-white" style="@(currentPage == "/Articles/Index" ? "background: rgba(255,255,255,0.2);" : string.Empty)" asp-area="" asp-page="/Articles/Index" aria-current="@(currentPage == "/Articles/Index" ? "page" : null)">@T["NavArticles"]</a>
-                            </li>
-                        </ul>
-                        <div class="d-flex align-items-center gap-2 ms-lg-auto flex-wrap">
-                            @if (canAccessAdmin)
-                            {
-                                <a class="btn btn-dark d-flex align-items-center gap-2 px-3"
-                                   asp-page="/Admin/Dashboard/Index"
-                                   aria-label='@Localizer["AdminDashboard"]'>
-                                    <i class="bi bi-speedometer2" aria-hidden="true"></i>
-                                    <span>@Localizer["AdminDashboard"]</span>
-                                </a>
-                            }
-                            <button class="btn btn-light btn-sm rounded-pill px-4 d-flex align-items-center gap-2"
-                                    data-bs-toggle="offcanvas" href="#advisor" role="button" aria-controls="advisor" aria-haspopup="dialog">
-                                <i class="bi bi-magic"></i>
-                                @Localizer["AdvisorButton"]
-                            </button>
-                            <partial name="_LanguageSwitcher" />
-                            <button type="button" class="btn btn-outline-light d-flex align-items-center justify-content-center gap-2 theme-toggle btn-nav-action"
-                                    title='@Localizer["ToggleTheme"]'>
-                                <i class="bi bi-sun-fill theme-icon-light"></i>
-                                <i class="bi bi-moon-fill theme-icon-dark"></i>
-                            </button>
-                            <partial name="_LoginPartial" />
-                        </div>
-                        <a class="d-block d-lg-none nav-link text-white" style="@(currentPage == "/Cart" ? "active" : null)" asp-area="" asp-page="/Cart" aria-label='@Localizer["CartAriaLabel"]'>
-                            <i class="bi bi-cart fs-5"></i>
-                            <span class="visually-hidden">@Localizer["Cart"]</span>
-                        </a>
-                    </div>
+    <header role="banner" class="site-header">
+        <nav class="navbar navbar-expand-lg glass-navbar fixed-top" role="navigation" aria-label='@Localizer["PrimaryNavigation"]'>
+            <div class="container-xxl align-items-center">
+                <a class="navbar-brand d-inline-flex align-items-center gap-2" asp-area="" asp-page="/Index">
+                    <span class="brand-icon" aria-hidden="true"><i class="bi bi-award-fill"></i></span>
+                    <span class="fw-semibold">@Localizer["BrandName"]</span>
+                </a>
+                <div class="d-none d-lg-flex align-items-center gap-2 ms-4 nav-links-wrapper" role="presentation">
+                    <a class="nav-link nav-link-pill @(currentPage == "/Index" ? "active" : string.Empty)" asp-area="" asp-page="/Index" aria-current="@(currentPage == "/Index" ? "page" : null)">@T["NavHome"]</a>
+                    <a class="nav-link nav-link-pill @(currentPage == "/About" ? "active" : string.Empty)" asp-area="" asp-page="/About" aria-current="@(currentPage == "/About" ? "page" : null)">@T["NavAbout"]</a>
+                    <a class="nav-link nav-link-pill @(currentPage == "/Services" ? "active" : string.Empty)" asp-area="" asp-page="/Services" aria-current="@(currentPage == "/Services" ? "page" : null)">@T["NavServices"]</a>
+                    <a class="nav-link nav-link-pill @(currentPage == "/Courses/Index" ? "active" : string.Empty)" asp-area="" asp-page="/Courses/Index" aria-current="@(currentPage == "/Courses/Index" ? "page" : null)">@T["NavCourses"]</a>
+                    <a class="nav-link nav-link-pill @(currentPage == "/Articles/Index" ? "active" : string.Empty)" asp-area="" asp-page="/Articles/Index" aria-current="@(currentPage == "/Articles/Index" ? "page" : null)">@T["NavArticles"]</a>
                 </div>
+                <div class="d-none d-lg-flex align-items-center gap-2 ms-auto nav-action-group">
+                    @if (canAccessAdmin)
+                    {
+                        <a class="btn btn-admin-highlight d-inline-flex align-items-center gap-2" asp-page="/Admin/Dashboard/Index" aria-label='@Localizer["AdminDashboard"]'>
+                            <i class="bi bi-speedometer2" aria-hidden="true"></i>
+                            <span>@Localizer["AdminDashboard"]</span>
+                        </a>
+                    }
+                    <button class="btn btn-gradient-cta d-inline-flex align-items-center gap-2" data-bs-toggle="offcanvas" href="#advisor" role="button" aria-controls="advisor" aria-haspopup="dialog">
+                        <i class="bi bi-magic"></i>
+                        @Localizer["AdvisorButton"]
+                    </button>
+                    <partial name="_LanguageSwitcher" />
+                    <a class="btn btn-icon" asp-area="" asp-page="/Cart" aria-label='@Localizer["CartAriaLabel"]'>
+                        <i class="bi bi-cart"></i>
+                        <span class="visually-hidden">@Localizer["Cart"]</span>
+                    </a>
+                    <button type="button" class="btn btn-outline-light d-inline-flex align-items-center justify-content-center gap-2 theme-toggle" title='@Localizer["ToggleTheme"]'>
+                        <i class="bi bi-sun-fill theme-icon-light"></i>
+                        <i class="bi bi-moon-fill theme-icon-dark"></i>
+                    </button>
+                    <partial name="_LoginPartial" />
+                </div>
+                <button class="navbar-toggler d-lg-none ms-auto" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileNav" aria-controls="mobileNav" aria-expanded="false" aria-label='@Localizer["ToggleNavigation"]'>
+                    <span class="navbar-toggler-icon"></span>
+                </button>
             </div>
         </nav>
     </header>
+
+    <div class="offcanvas offcanvas-end glass-offcanvas" tabindex="-1" id="mobileNav" aria-labelledby="mobileNavLabel">
+        <div class="offcanvas-header">
+            <div class="d-flex align-items-center gap-2">
+                <span class="brand-icon" aria-hidden="true"><i class="bi bi-award-fill"></i></span>
+                <span class="fw-semibold">@Localizer["BrandName"]</span>
+            </div>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body d-flex flex-column gap-4">
+            <nav class="mobile-nav" aria-label='@Localizer["PrimaryNavigation"]'>
+                <ul class="navbar-nav flex-column gap-2">
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-pill @(currentPage == "/Index" ? "active" : string.Empty)" asp-area="" asp-page="/Index" aria-current="@(currentPage == "/Index" ? "page" : null)">@T["NavHome"]</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-pill @(currentPage == "/About" ? "active" : string.Empty)" asp-area="" asp-page="/About" aria-current="@(currentPage == "/About" ? "page" : null)">@T["NavAbout"]</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-pill @(currentPage == "/Services" ? "active" : string.Empty)" asp-area="" asp-page="/Services" aria-current="@(currentPage == "/Services" ? "page" : null)">@T["NavServices"]</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-pill @(currentPage == "/Courses/Index" ? "active" : string.Empty)" asp-area="" asp-page="/Courses/Index" aria-current="@(currentPage == "/Courses/Index" ? "page" : null)">@T["NavCourses"]</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-pill @(currentPage == "/Articles/Index" ? "active" : string.Empty)" asp-area="" asp-page="/Articles/Index" aria-current="@(currentPage == "/Articles/Index" ? "page" : null)">@T["NavArticles"]</a>
+                    </li>
+                </ul>
+            </nav>
+            <div class="d-grid gap-3">
+                @if (canAccessAdmin)
+                {
+                    <a class="btn btn-admin-highlight w-100 d-inline-flex align-items-center justify-content-center gap-2" asp-page="/Admin/Dashboard/Index" aria-label='@Localizer["AdminDashboard"]'>
+                        <i class="bi bi-speedometer2" aria-hidden="true"></i>
+                        <span>@Localizer["AdminDashboard"]</span>
+                    </a>
+                }
+                <a class="btn btn-gradient-cta w-100 d-inline-flex align-items-center justify-content-center gap-2" data-bs-toggle="offcanvas" href="#advisor" role="button" aria-controls="advisor" aria-haspopup="dialog">
+                    <i class="bi bi-magic"></i>
+                    @Localizer["AdvisorButton"]
+                </a>
+                <a class="btn btn-icon w-100 justify-content-center" asp-area="" asp-page="/Cart" aria-label='@Localizer["CartAriaLabel"]'>
+                    <i class="bi bi-cart"></i>
+                    <span class="ms-2">@Localizer["Cart"]</span>
+                </a>
+                <div class="language-switcher-mobile">
+                    <partial name="_LanguageSwitcher" />
+                </div>
+                <button type="button" class="btn btn-outline-light d-inline-flex align-items-center justify-content-center gap-2 theme-toggle" title='@Localizer["ToggleTheme"]'>
+                    <i class="bi bi-sun-fill theme-icon-light"></i>
+                    <i class="bi bi-moon-fill theme-icon-dark"></i>
+                    <span class="ms-1">@Localizer["ToggleTheme"]</span>
+                </button>
+                <div class="login-mobile">
+                    <partial name="_LoginPartial" />
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="app-content container-xxl px-3 px-md-4">
         <main id="main-content" role="main" class="app-main" tabindex="-1">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="footer app-footer mt-5 bg-gray-900 text-white" role="contentinfo">
-        <div class="container-xxl py-5">
-            <div class="row gy-4">
-                <div class="col-12 col-md-4">
-                    <h5 class="text-uppercase fw-semibold fs-6 text-white-50">O společnosti</h5>
-                    <p class="mb-1">Systémy jakosti s.r.o.</p>
-                    <p class="mb-0">IČO: 123 456 78</p>
+    <footer class="site-footer" role="contentinfo">
+        <div class="footer-gradient"></div>
+        <div class="container-xxl py-5 position-relative">
+            <div class="row gy-4 align-items-start footer-sections">
+                <div class="col-12 col-lg-4">
+                    <div class="d-flex flex-column gap-2">
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="brand-icon" aria-hidden="true"><i class="bi bi-award-fill"></i></span>
+                            <span class="fw-semibold">@Localizer["BrandName"]</span>
+                        </div>
+                        <p class="text-white-75 mb-0">Systémy jakosti s.r.o.</p>
+                        <p class="text-white-50 mb-0">IČO: 123 456 78</p>
+                    </div>
                 </div>
-                <div class="col-12 col-md-4">
-                    <h5 class="text-uppercase fw-semibold fs-6 text-white-50">Služby</h5>
-                    <ul class="list-unstyled mb-0">
-                        <li class="mb-1">Poradenství pro systémy řízení kvality</li>
-                        <li class="mb-1">Interní audity a příprava na certifikaci</li>
-                        <li class="mb-1">Školení a kurzy ISO standardů</li>
-                        <li class="mb-0">Tvorba a revize dokumentace</li>
+                <div class="col-12 col-md-6 col-lg-4">
+                    <h5 class="footer-heading">Služby</h5>
+                    <ul class="list-unstyled footer-list mb-0">
+                        <li>Poradenství pro systémy řízení kvality</li>
+                        <li>Interní audity a příprava na certifikaci</li>
+                        <li>Školení a kurzy ISO standardů</li>
+                        <li>Tvorba a revize dokumentace</li>
                     </ul>
                 </div>
-                <div class="col-12 col-md-4">
-                    <h5 class="text-uppercase fw-semibold fs-6 text-white-50">Kontakt</h5>
-                    <ul class="list-unstyled mb-0">
-                        <li class="mb-1"><i class="bi bi-envelope me-2"></i>info@systemy-jakosti.cz</li>
-                        <li class="mb-0"><i class="bi bi-telephone me-2"></i>+420 XXX XXX XXX</li>
+                <div class="col-12 col-md-6 col-lg-4">
+                    <h5 class="footer-heading">Kontakt</h5>
+                    <ul class="list-unstyled footer-list mb-0">
+                        <li><i class="bi bi-envelope me-2"></i>info@systemy-jakosti.cz</li>
+                        <li><i class="bi bi-telephone me-2"></i>+420 XXX XXX XXX</li>
                     </ul>
                 </div>
             </div>
-            <div class="row mt-4 pt-4 border-top border-secondary">
-                <div class="col-12 text-center">
-                    <p class="mb-0 text-white-50">&copy; @DateTime.Now.Year Systémy jakosti s.r.o. Všechna práva vyhrazena.</p>
-                </div>
+            <div class="footer-bottom mt-5 pt-4">
+                <p class="mb-0 text-white-50 text-center">&copy; @DateTime.Now.Year Systémy jakosti s.r.o. Všechna práva vyhrazena.</p>
             </div>
         </div>
     </footer>
