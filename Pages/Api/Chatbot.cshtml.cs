@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using SysJaky_N.Data;
 using SysJaky_N.EmailTemplates.Models;
 using SysJaky_N.Models;
@@ -24,17 +25,20 @@ public class ChatbotModel : PageModel
     private readonly IEmailSender _emailSender;
     private readonly IConfiguration _configuration;
     private readonly IReadOnlyList<ChatbotKeywordEntry> _keywords;
+    private readonly IStringLocalizer<ChatbotModel> _localizer;
 
     public ChatbotModel(
         ApplicationDbContext context,
         IEmailSender emailSender,
         IConfiguration configuration,
-        IWebHostEnvironment environment)
+        IWebHostEnvironment environment,
+        IStringLocalizer<ChatbotModel> localizer)
     {
         _context = context;
         _emailSender = emailSender;
         _configuration = configuration;
         _keywords = LoadKeywordEntries(environment);
+        _localizer = localizer;
     }
 
     public IActionResult OnGet()
@@ -49,7 +53,7 @@ public class ChatbotModel : PageModel
         {
             return new JsonResult(new ChatbotResponse
             {
-                Reply = "Virtuální poradce je momentálně vypnutý. Zkuste to prosím později."
+                Reply = _localizer["DisabledGeneric"].Value
             });
         }
 
@@ -58,7 +62,7 @@ public class ChatbotModel : PageModel
         {
             return new JsonResult(new ChatbotResponse
             {
-                Reply = "Omlouvám se, ale nerozuměl jsem dotazu. Můžete ho prosím zopakovat?"
+                Reply = _localizer["NoUnderstanding"].Value
             });
         }
 
@@ -71,12 +75,12 @@ public class ChatbotModel : PageModel
         {
             Reply = matchedKeyword?.Response
                 ?? (recommendations.Count > 0
-                    ? "Vybral jsem pro vás několik vhodných kurzů."
-                    : "Momentálně jsem nenašel přesnou shodu. Můžete dotaz prosím upřesnit?"),
+                    ? _localizer["RecommendationsFound"].Value
+                    : _localizer["NoMatch"].Value),
             Courses = recommendations,
             FollowUp = matchedKeyword?.FollowUp
                 ?? (recommendations.Count == 0
-                    ? "Zkuste prosím přidat oblast, která vás zajímá, nebo napište klíčové slovo kurzu."
+                    ? _localizer["NoMatchFollowUp"].Value
                     : null)
         };
 
@@ -90,14 +94,14 @@ public class ChatbotModel : PageModel
         {
             return new JsonResult(new ChatbotResponse
             {
-                Reply = "Virtuální poradce je momentálně vypnutý. Prosím kontaktujte nás jinou cestou."
+                Reply = _localizer["DisabledEscalation"].Value
             });
         }
 
         var request = await JsonSerializer.DeserializeAsync<EscalationRequest>(Request.Body, SerializerOptions, cancellationToken);
         if (request is null || string.IsNullOrWhiteSpace(request.Email))
         {
-            return BadRequest(new { error = "E-mail je povinný." });
+            return BadRequest(new { error = _localizer["EmailRequired"].Value });
         }
 
         var email = request.Email.Trim();
@@ -105,7 +109,7 @@ public class ChatbotModel : PageModel
 
         var contactMessage = new ContactMessage
         {
-            Name = "Chatbot klient",
+            Name = _localizer["EscalationContactName"].Value,
             Email = email,
             Message = transcript,
             CreatedAt = DateTime.UtcNow
@@ -120,13 +124,13 @@ public class ChatbotModel : PageModel
             await _emailSender.SendEmailAsync(
                 adminEmail,
                 EmailTemplate.ContactMessageNotification,
-                new ContactMessageEmailModel("Chatbot klient", email, transcript),
+                new ContactMessageEmailModel(_localizer["EscalationContactName"].Value, email, transcript),
                 cancellationToken);
         }
 
         return new JsonResult(new ChatbotResponse
         {
-            Reply = "Děkujeme, předali jsme váš dotaz kolegům. Ozvou se vám na uvedený e-mail co nejdříve."
+            Reply = _localizer["EscalationSuccess"].Value
         });
     }
 
@@ -284,23 +288,23 @@ public class ChatbotModel : PageModel
         return entries;
     }
 
-    private static string BuildTranscript(IReadOnlyCollection<ChatbotHistoryMessage>? history)
+    private string BuildTranscript(IReadOnlyCollection<ChatbotHistoryMessage>? history)
     {
         if (history is null || history.Count == 0)
         {
-            return "Zákazník požádal o kontakt prostřednictvím chatbota.";
+            return _localizer["TranscriptDefault"].Value;
         }
 
         var builder = new StringBuilder();
-        builder.AppendLine("Přepis konverzace z chatbota:");
+        builder.AppendLine(_localizer["TranscriptHeading"].Value);
 
         foreach (var message in history)
         {
             var role = message.Role switch
             {
-                "assistant" => "Poradce",
-                "user" => "Zákazník",
-                _ => "Systém"
+                "assistant" => _localizer["RoleAssistant"].Value,
+                "user" => _localizer["RoleUser"].Value,
+                _ => _localizer["RoleSystem"].Value
             };
 
             builder.AppendLine($"{role}: {message.Content}");
