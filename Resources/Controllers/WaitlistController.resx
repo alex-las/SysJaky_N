@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="UserAlreadyEnrolled" xml:space="preserve">
+    <value>Uživatel je již zapsán na termínu.</value>
+  </data>
+  <data name="UserAlreadyInWaitlist" xml:space="preserve">
+    <value>Uživatel je již v pořadníku.</value>
+  </data>
+  <data name="TokenRequired" xml:space="preserve">
+    <value>Token je povinný.</value>
+  </data>
+  <data name="TokenInvalidOrExpired" xml:space="preserve">
+    <value>Token je neplatný nebo expiroval.</value>
+  </data>
+  <data name="TokenNoLongerValid" xml:space="preserve">
+    <value>Token již není platný.</value>
+  </data>
+  <data name="TokenAlreadyUsed" xml:space="preserve">
+    <value>Token již byl použit.</value>
+  </data>
+</root>

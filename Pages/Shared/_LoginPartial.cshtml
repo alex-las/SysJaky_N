@@ -1,5 +1,7 @@
 @using Microsoft.AspNetCore.Identity
 @using SysJaky_N.Models
+@using SysJaky_N.Models.ViewModels
+@using SysJaky_N.Pages.Account
 @inject SignInManager<ApplicationUser> SignInManager
 @inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
 
@@ -52,11 +54,47 @@
 }
 else
 {
+    var loginFormOptions = new LoginFormOptions
+    {
+        FormId = "navbar-login-form",
+        FormCssClass = "login-dropdown-form",
+        HeadingLocalizationKey = "LoginTitle",
+        HeadingTagName = "h2",
+        HeadingId = "navbar-login-heading",
+        ValidationSummaryCssClass = "text-danger small mb-3",
+        Action = Url.Page("/Account/Login", new { returnUrl }),
+        IncludeAntiforgery = true,
+        EmailInputId = "navbar-login-email",
+        PasswordInputId = "navbar-login-password",
+        RememberMeInputId = "navbar-login-remember",
+        AltchaId = "navbar-login-altcha",
+        AltchaChallengeUrl = "~/altcha/challenge",
+        AltchaWorkerVersionSuffix = string.Empty,
+        UseAbsoluteWorkerUrl = false,
+        AltchaWorkers = "1",
+        AltchaMaxNumber = "500000",
+        EnableRefetchOnExpire = true,
+        ShowRememberMe = true,
+        Input = new LoginModel.InputModel()
+    };
+
     <div class="d-flex align-items-center gap-2">
-        <a class="btn btn-outline-light btn-sm d-flex align-items-center gap-2" asp-page="/Account/Login" asp-route-returnUrl="@returnUrl">
-            <i class="bi bi-box-arrow-in-right" aria-hidden="true"></i>
-            <span>@Localizer["Login"]</span>
-        </a>
+        <div class="dropdown login-dropdown">
+            <button class="btn btn-outline-light btn-sm d-flex align-items-center gap-2"
+                    id="navbarLoginDropdown"
+                    type="button"
+                    data-bs-toggle="dropdown"
+                    data-bs-auto-close="outside"
+                    aria-expanded="false"
+                    aria-haspopup="true"
+                    aria-controls="navbar-login-menu">
+                <i class="bi bi-box-arrow-in-right" aria-hidden="true"></i>
+                <span>@Localizer["Login"]</span>
+            </button>
+            <div class="dropdown-menu dropdown-menu-end p-3 login-dropdown-menu" aria-labelledby="navbarLoginDropdown" id="navbar-login-menu">
+                <partial name="~/Pages/Shared/Account/_LoginForm.cshtml" model="loginFormOptions" />
+            </div>
+        </div>
         <a class="btn btn-primary btn-sm d-flex align-items-center gap-2" asp-page="/Account/Register" asp-route-returnUrl="@returnUrl">
             <i class="bi bi-person-plus" aria-hidden="true"></i>
             <span>@Localizer["Register"]</span>
