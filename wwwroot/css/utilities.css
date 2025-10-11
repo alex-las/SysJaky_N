@@ -78,16 +78,16 @@
 }
 
 .bg-gradient-primary {
-  background-color: var(--color-primary-600);
+  background-color: var(--color-brand-600);
   color: #fff;
 }
 
 .gradient-blue-cyan {
-  background-color: var(--color-primary-600);
+  background-color: var(--color-brand-600);
 }
 
 .gradient-stats {
-  background-color: var(--color-primary-600);
+  background-color: var(--color-brand-600);
 }
 
 /* Border + radius */
@@ -257,12 +257,12 @@
   width: 2.5rem;
   height: 2.5rem;
   border-radius: var(--radius-pill);
-  background: rgba(79, 70, 229, 0.1);
-  color: var(--color-primary-600);
+  background: rgba(21, 93, 230, 0.1);
+  color: var(--color-brand-600);
 }
 
 [data-theme="dark"] .icon-circle {
-  background: rgba(79, 70, 229, 0.25);
+  background: rgba(21, 93, 230, 0.25);
   color: rgba(226, 232, 240, 0.92);
 }
 
@@ -280,14 +280,14 @@
   gap: var(--space-2);
   background: var(--chip-bg);
   border: 1px solid var(--chip-border);
-  color: rgba(255, 255, 255, 0.9);
+  color: rgba(8, 31, 90, 0.82);
   transition: transform var(--transition-snappy), background-color var(--transition-snappy);
 }
 
 .chip:hover,
 .chip:focus-visible {
   transform: translateY(-1px);
-  background: rgba(15, 23, 42, 0.28);
+  background: rgba(12, 63, 174, 0.22);
 }
 
 [data-theme="dark"] .chip {
@@ -295,15 +295,15 @@
 }
 
 .badge-soft {
-  background: rgba(79, 70, 229, 0.14);
-  color: var(--color-primary-700);
+  background: rgba(21, 93, 230, 0.16);
+  color: var(--color-brand-700);
   border-radius: var(--radius-pill);
   padding: 0.35rem 0.85rem;
   font-weight: 600;
 }
 
 [data-theme="dark"] .badge-soft {
-  background: rgba(79, 70, 229, 0.28);
+  background: rgba(21, 93, 230, 0.28);
   color: rgba(226, 232, 240, 0.85);
 }
 
@@ -347,7 +347,7 @@
 }
 
 [data-theme="dark"] .outline-glow {
-  box-shadow: 0 0 0 6px rgba(59, 130, 246, 0.3);
+  box-shadow: 0 0 0 6px rgba(21, 93, 230, 0.3);
 }
 
 /* Responsive helpers */
