@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Subject.Welcome" xml:space="preserve">
+    <value>Vítejte</value>
+  </data>
+  <data name="Subject.OrderCreated" xml:space="preserve">
+    <value>Objednávka vytvořena</value>
+  </data>
+  <data name="Subject.ContactMessageNotification" xml:space="preserve">
+    <value>Nová zpráva z kontaktního formuláře</value>
+  </data>
+  <data name="Subject.CourseTermCreated" xml:space="preserve">
+    <value>Nový termín: {0}</value>
+  </data>
+  <data name="Subject.WaitlistSeatAvailable" xml:space="preserve">
+    <value>Uvolněné místo: {0}</value>
+  </data>
+  <data name="Subject.CourseReminder" xml:space="preserve">
+    <value>Připomínka: {0}</value>
+  </data>
+  <data name="Subject.CourseReviewRequest" xml:space="preserve">
+    <value>Ohodnoťte kurz {0}</value>
+  </data>
+  <data name="Subject.NewsletterConfirmation" xml:space="preserve">
+    <value>Potvrďte odběr newsletteru</value>
+  </data>
+  <data name="Status.Pending" xml:space="preserve">
+    <value>Čeká</value>
+  </data>
+  <data name="Status.Sent" xml:space="preserve">
+    <value>Odesláno</value>
+  </data>
+  <data name="Status.Failed" xml:space="preserve">
+    <value>Selhalo: {0}</value>
+  </data>
+</root>
