@@ -186,7 +186,7 @@
                         await handleErrorResponse(response);
                     }
                 } catch (err) {
-                    console.error('Check-in request failed.', err);
+                    console.error(@Html.Raw(JsonSerializer.Serialize(Model.CheckInRequestFailedLogMessage)), err);
                     showResult('alert-danger', resources.messageUnexpected);
                 }
             };
