@@ -5,62 +5,77 @@
     ViewData["Title"] = Localizer["PageTitle"];
 }
 
-<h1>@Localizer["PageTitle"]</h1>
+<section class="admin-page-header">
+    <div class="admin-page-header__title">
+        <h1>@Localizer["PageTitle"]</h1>
+    </div>
+</section>
 
 @if (TempData["StatusMessage"] is string statusMessage)
 {
-    <div class="alert alert-success" role="alert">@statusMessage</div>
+    <div class="admin-alert" role="alert">@statusMessage</div>
 }
 
-<form method="get" class="mb-3" role="search" aria-label="@Localizer["SearchFormAriaLabel"]">
-    <input type="text" name="Search" value="@Model.Search" placeholder="@Localizer["SearchPlaceholder"]" aria-label="@Localizer["SearchPlaceholder"]" />
-    <button type="submit">@Localizer["SearchButton"]</button>
+<form method="get" class="admin-card admin-form mt-4" role="search" aria-label="@Localizer["SearchFormAriaLabel"]">
+    <div class="admin-filters">
+        <div class="flex-grow-1">
+            <label class="form-label visually-hidden" for="userSearch">@Localizer["SearchPlaceholder"]</label>
+            <input id="userSearch" type="text" name="Search" value="@Model.Search" placeholder="@Localizer["SearchPlaceholder"]" aria-label="@Localizer["SearchPlaceholder"]" class="form-control" />
+        </div>
+        <div class="admin-form-actions">
+            <button type="submit" class="btn btn-admin-primary">@Localizer["SearchButton"]</button>
+        </div>
+    </div>
 </form>
 
-<form method="post">
-    <table class="table">
-        <thead>
-            <tr>
-                <th></th>
-                <th>@Localizer["EmailColumn"]</th>
-                <th>@Localizer["PhoneColumn"]</th>
-                <th>@Localizer["RolesColumn"]</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-        @foreach (var user in Model.Users)
-        {
-            <tr>
-                <td><input type="checkbox" name="SelectedUserIds" value="@user.Id" /></td>
-                <td>@user.Email</td>
-                <td>@user.PhoneNumber</td>
-                <td>@string.Join(", ", user.Roles)</td>
-                <td>
-                    <a asp-page="Edit" asp-route-id="@user.Id">@Localizer["EditLink"]</a> |
-                    <a asp-page="Delete" asp-route-id="@user.Id">@Localizer["DeleteLink"]</a>
-                </td>
-            </tr>
-        }
-        </tbody>
-    </table>
+<form method="post" class="admin-card admin-form mt-4">
+    <div class="admin-table-wrapper table-responsive">
+        <table class="table admin-table mb-0 align-middle">
+            <thead>
+                <tr>
+                    <th scope="col"></th>
+                    <th scope="col">@Localizer["EmailColumn"]</th>
+                    <th scope="col">@Localizer["PhoneColumn"]</th>
+                    <th scope="col">@Localizer["RolesColumn"]</th>
+                    <th scope="col" class="text-end"></th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var user in Model.Users)
+            {
+                <tr>
+                    <td><input type="checkbox" name="SelectedUserIds" value="@user.Id" /></td>
+                    <td>@user.Email</td>
+                    <td>@user.PhoneNumber</td>
+                    <td>@string.Join(", ", user.Roles)</td>
+                    <td class="text-end">
+                        <div class="admin-table-actions justify-content-end">
+                            <a class="btn btn-sm btn-admin-ghost" asp-page="Edit" asp-route-id="@user.Id">@Localizer["EditLink"]</a>
+                            <a class="btn btn-sm btn-admin-ghost" asp-page="Delete" asp-route-id="@user.Id">@Localizer["DeleteLink"]</a>
+                        </div>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
 
-    <div class="mb-3">
-        <select name="RoleName">
+    <div class="admin-form-actions">
+        <select name="RoleName" class="form-select w-auto">
             <option value="">@Localizer["SelectRolePlaceholder"]</option>
             @foreach (var role in Model.AllRoles)
             {
                 <option value="@role">@role</option>
             }
         </select>
-        <button formaction="?handler=AssignRole" type="submit">@Localizer["AssignRoleButton"]</button>
-        <button formaction="?handler=RemoveRole" type="submit">@Localizer["RemoveRoleButton"]</button>
-        <button formaction="?handler=Block" type="submit">@Localizer["BlockButton"]</button>
-        <button formaction="?handler=Unblock" type="submit">@Localizer["UnblockButton"]</button>
+        <button formaction="?handler=AssignRole" type="submit" class="btn btn-admin-primary">@Localizer["AssignRoleButton"]</button>
+        <button formaction="?handler=RemoveRole" type="submit" class="btn btn-admin-ghost">@Localizer["RemoveRoleButton"]</button>
+        <button formaction="?handler=Block" type="submit" class="btn btn-admin-ghost">@Localizer["BlockButton"]</button>
+        <button formaction="?handler=Unblock" type="submit" class="btn btn-admin-ghost">@Localizer["UnblockButton"]</button>
     </div>
 </form>
 
-<div role="navigation" aria-label="@Localizer["PaginationAriaLabel"]" class="d-flex gap-2">
+<div role="navigation" aria-label="@Localizer["PaginationAriaLabel"]" class="admin-pagination mt-4">
     @for (var i = 1; i <= Model.TotalPages; i++)
     {
         if (i == Model.PageIndex)
