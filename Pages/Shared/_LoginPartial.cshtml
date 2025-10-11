@@ -54,9 +54,21 @@
 }
 else
 {
+    var instanceKey = ViewData["LoginInstance"] as string;
+    string WithSuffix(string baseId) => string.IsNullOrWhiteSpace(instanceKey) ? baseId : $"{baseId}-{instanceKey}";
+
+    var formId = WithSuffix("navbar-login-form");
+    var emailId = WithSuffix("navbar-login-email");
+    var passwordId = WithSuffix("navbar-login-password");
+    var rememberId = WithSuffix("navbar-login-remember");
+    var altchaId = WithSuffix("navbar-login-altcha");
+    var dropdownId = WithSuffix("navbarLoginDropdown");
+    var menuId = WithSuffix("navbar-login-menu");
+    var headingId = WithSuffix("navbar-login-heading");
+
     var loginFormOptions = new LoginFormOptions
     {
-        FormId = "navbar-login-form",
+        FormId = formId,
         FormCssClass = "login-dropdown-form",
         HeadingLocalizationKey = null,
         HeadingTagName = null,
@@ -64,10 +76,10 @@ else
         ValidationSummaryCssClass = "text-danger small mb-3",
         AspPage = "/Account/Login",
         IncludeAntiforgery = true,
-        EmailInputId = "navbar-login-email",
-        PasswordInputId = "navbar-login-password",
-        RememberMeInputId = "navbar-login-remember",
-        AltchaId = "navbar-login-altcha",
+        EmailInputId = emailId,
+        PasswordInputId = passwordId,
+        RememberMeInputId = rememberId,
+        AltchaId = altchaId,
         AltchaChallengeUrl = "~/altcha/challenge",
         AltchaWorkerVersionSuffix = string.Empty,
         UseAbsoluteWorkerUrl = false,
@@ -81,17 +93,17 @@ else
     <div class="d-flex align-items-center gap-2">
         <div class="dropdown login-dropdown">
             <button class="btn btn-outline-light btn-sm d-flex align-items-center gap-2 login-dropdown-toggle"
-                    id="navbarLoginDropdown"
+                    id="@dropdownId"
                     type="button"
                     data-bs-toggle="dropdown"
                     data-bs-auto-close="outside"
                     aria-expanded="false"
                     aria-haspopup="true"
-                    aria-controls="navbar-login-menu">
+                    aria-controls="@menuId">
                 <i class="bi bi-box-arrow-in-right" aria-hidden="true"></i>
                 <span>@Localizer["Login"]</span>
             </button>
-            <div class="dropdown-menu dropdown-menu-end login-dropdown-menu" aria-labelledby="navbarLoginDropdown navbar-login-heading" id="navbar-login-menu">
+            <div class="dropdown-menu dropdown-menu-end login-dropdown-menu" aria-labelledby="@dropdownId @headingId" id="@menuId">
                 <div class="login-dropdown-card">
                     <div class="login-dropdown-header">
                         <div class="login-dropdown-icon" aria-hidden="true">
@@ -99,7 +111,7 @@ else
                         </div>
                         <div class="login-dropdown-heading">
                             <span class="login-dropdown-eyebrow text-uppercase fw-semibold">@Localizer["AccountMenuLabel"]</span>
-                            <h2 id="navbar-login-heading" class="login-dropdown-title mb-1">@Localizer["Login"]</h2>
+                            <h2 id="@headingId" class="login-dropdown-title mb-1">@Localizer["Login"]</h2>
                             <p class="login-dropdown-subtitle mb-0">@Localizer["LoginSubtitle"]</p>
                         </div>
                     </div>
