@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Localization;
 using SysJaky_N.Data;
 using System.Threading.Tasks;
 
@@ -13,11 +14,13 @@ public class VerifyController : ControllerBase
 {
     private readonly ApplicationDbContext _context;
     private readonly ILogger<VerifyController> _logger;
+    private readonly IStringLocalizer<VerifyController> _localizer;
 
-    public VerifyController(ApplicationDbContext context, ILogger<VerifyController> logger)
+    public VerifyController(ApplicationDbContext context, ILogger<VerifyController> logger, IStringLocalizer<VerifyController> localizer)
     {
         _context = context;
         _logger = logger;
+        _localizer = localizer;
     }
 
     [AllowAnonymous]
@@ -26,7 +29,7 @@ public class VerifyController : ControllerBase
     {
         if (string.IsNullOrWhiteSpace(number) || string.IsNullOrWhiteSpace(hash))
         {
-            return BadRequest(new { valid = false, message = "Number and hash are required." });
+            return BadRequest(new { valid = false, message = _localizer["NumberAndHashRequired"].Value });
         }
 
         var normalizedNumber = number.Trim();

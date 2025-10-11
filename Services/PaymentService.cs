@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Stripe;
@@ -24,14 +25,20 @@ public class PaymentService
     private readonly PaymentGatewayOptions _options;
     private readonly ApplicationDbContext _context;
     private readonly ILogger<PaymentService> _logger;
+    private readonly IStringLocalizer<PaymentService> _localizer;
 
     public bool IsEnabled => _options.Enabled;
 
-    public PaymentService(IOptions<PaymentGatewayOptions> options, ApplicationDbContext context, ILogger<PaymentService> logger)
+    public PaymentService(
+        IOptions<PaymentGatewayOptions> options,
+        ApplicationDbContext context,
+        ILogger<PaymentService> logger,
+        IStringLocalizer<PaymentService> localizer)
     {
         _options = options.Value;
         _context = context;
         _logger = logger;
+        _localizer = localizer;
 
         if (_options.Enabled)
             StripeConfiguration.ApiKey = _options.ApiKey;
@@ -68,7 +75,7 @@ public class PaymentService
                         UnitAmount = amount,
                         ProductData = new SessionLineItemPriceDataProductDataOptions
                         {
-                            Name = $"Order {order.Id}"
+                            Name = _localizer["LineItemName", order.Id]
                         }
                     },
                     Quantity = 1

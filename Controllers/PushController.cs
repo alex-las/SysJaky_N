@@ -5,6 +5,7 @@ using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 using SysJaky_N.Authorization;
 using SysJaky_N.Models;
@@ -20,15 +21,18 @@ public class PushController : ControllerBase
     private readonly IPushSubscriptionStore _subscriptionStore;
     private readonly ILogger<PushController> _logger;
     private readonly PushNotificationOptions _options;
+    private readonly IStringLocalizer<PushController> _localizer;
 
     public PushController(
         IPushSubscriptionStore subscriptionStore,
         IOptions<PushNotificationOptions> options,
-        ILogger<PushController> logger)
+        ILogger<PushController> logger,
+        IStringLocalizer<PushController> localizer)
     {
         _subscriptionStore = subscriptionStore;
         _logger = logger;
         _options = options.Value ?? new PushNotificationOptions();
+        _localizer = localizer;
     }
 
     [HttpPost("subscribe")]
@@ -36,12 +40,12 @@ public class PushController : ControllerBase
     {
         if (request is null || string.IsNullOrWhiteSpace(request.Endpoint))
         {
-            return BadRequest(new { message = "Subscription endpoint is required." });
+            return BadRequest(new { message = _localizer["SubscriptionEndpointRequired"].Value });
         }
 
         if (request.Keys is null || string.IsNullOrWhiteSpace(request.Keys.P256dh) || string.IsNullOrWhiteSpace(request.Keys.Auth))
         {
-            return BadRequest(new { message = "Invalid subscription keys." });
+            return BadRequest(new { message = _localizer["InvalidSubscriptionKeys"].Value });
         }
 
         var topics = request.Topics?.Where(topic => !string.IsNullOrWhiteSpace(topic))
@@ -65,7 +69,7 @@ public class PushController : ControllerBase
     {
         if (request is null || string.IsNullOrWhiteSpace(request.Endpoint))
         {
-            return BadRequest(new { message = "Subscription endpoint is required." });
+            return BadRequest(new { message = _localizer["SubscriptionEndpointRequired"].Value });
         }
 
         await _subscriptionStore.RemoveAsync(request.Endpoint, cancellationToken);
@@ -78,12 +82,12 @@ public class PushController : ControllerBase
     {
         if (request is null || string.IsNullOrWhiteSpace(request.Body))
         {
-            return BadRequest(new { message = "Notification payload is required." });
+            return BadRequest(new { message = _localizer["NotificationPayloadRequired"].Value });
         }
 
         if (string.IsNullOrWhiteSpace(_options.PublicKey) || string.IsNullOrWhiteSpace(_options.PrivateKey))
         {
-            return StatusCode(StatusCodes.Status503ServiceUnavailable, new { message = "Push notifications are not configured." });
+            return StatusCode(StatusCodes.Status503ServiceUnavailable, new { message = _localizer["PushNotConfigured"].Value });
         }
 
         var client = new WebPushClient();
@@ -98,7 +102,7 @@ public class PushController : ControllerBase
 
         if (subscriptions.Count == 0)
         {
-            return Ok(new { success = true, message = "No subscribers for the selected topic." });
+            return Ok(new { success = true, message = _localizer["NoSubscribers"].Value });
         }
 
         var payload = JsonSerializer.Serialize(new
@@ -109,7 +113,7 @@ public class PushController : ControllerBase
             tag = request.Topic,
             actions = new[]
             {
-                new { action = "open", title = "Otevřít" }
+                new { action = "open", title = _localizer["OpenActionTitle"].Value }
             }
         });
 
