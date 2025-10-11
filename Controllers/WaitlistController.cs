@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using SysJaky_N.Data;
 using SysJaky_N.Models;
 using SysJaky_N.Services;
@@ -16,17 +17,20 @@ public class WaitlistController : ControllerBase
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly WaitlistTokenService _tokenService;
     private readonly ILogger<WaitlistController> _logger;
+    private readonly IStringLocalizer<WaitlistController> _localizer;
 
     public WaitlistController(
         ApplicationDbContext context,
         UserManager<ApplicationUser> userManager,
         WaitlistTokenService tokenService,
-        ILogger<WaitlistController> logger)
+        ILogger<WaitlistController> logger,
+        IStringLocalizer<WaitlistController> localizer)
     {
         _context = context;
         _userManager = userManager;
         _tokenService = tokenService;
         _logger = logger;
+        _localizer = localizer;
     }
 
     [Authorize]
@@ -48,13 +52,13 @@ public class WaitlistController : ControllerBase
         var alreadyEnrolled = await _context.Enrollments.AnyAsync(e => e.UserId == userId && e.CourseTermId == courseTermId);
         if (alreadyEnrolled)
         {
-            return Conflict(new { message = "Uživatel je již zapsán na termínu." });
+            return Conflict(new { message = _localizer["UserAlreadyEnrolled"].Value });
         }
 
         var existingEntry = await _context.WaitlistEntries.FirstOrDefaultAsync(w => w.UserId == userId && w.CourseTermId == courseTermId);
         if (existingEntry != null)
         {
-            return Conflict(new { message = "Uživatel je již v pořadníku." });
+            return Conflict(new { message = _localizer["UserAlreadyInWaitlist"].Value });
         }
 
         var entry = new WaitlistEntry
@@ -98,12 +102,12 @@ public class WaitlistController : ControllerBase
     {
         if (string.IsNullOrWhiteSpace(token))
         {
-            return BadRequest(new { message = "Token je povinný." });
+            return BadRequest(new { message = _localizer["TokenRequired"].Value });
         }
 
         if (!_tokenService.TryValidateToken(token, out var entryId, out var reservationId))
         {
-            return BadRequest(new { message = "Token je neplatný nebo expiroval." });
+            return BadRequest(new { message = _localizer["TokenInvalidOrExpired"].Value });
         }
 
         var entry = await _context.WaitlistEntries.FirstOrDefaultAsync(w => w.Id == entryId);
@@ -114,12 +118,12 @@ public class WaitlistController : ControllerBase
 
         if (entry.ReservationToken != reservationId || entry.ReservationExpiresAtUtc == null || entry.ReservationExpiresAtUtc <= DateTime.UtcNow)
         {
-            return BadRequest(new { message = "Token již není platný." });
+            return BadRequest(new { message = _localizer["TokenNoLongerValid"].Value });
         }
 
         if (entry.ReservationConsumed)
         {
-            return BadRequest(new { message = "Token již byl použit." });
+            return BadRequest(new { message = _localizer["TokenAlreadyUsed"].Value });
         }
 
         entry.ReservationConsumed = true;
