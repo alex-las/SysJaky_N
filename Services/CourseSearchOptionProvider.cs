@@ -1,4 +1,6 @@
 using System.Collections.ObjectModel;
+using System.Linq;
+using Microsoft.Extensions.Localization;
 
 namespace SysJaky_N.Services
 {
@@ -15,30 +17,41 @@ namespace SysJaky_N.Services
 
     public class CourseSearchOptionProvider : ICourseSearchOptionProvider
     {
-        private static readonly IReadOnlyList<string> _personas = new ReadOnlyCollection<string>(new[]
+        private static readonly IReadOnlyList<string> PersonaResourceKeys = new ReadOnlyCollection<string>(new[]
         {
-            "Jednotlivec",
-            "HR / týmový leader",
-            "Laboratoř",
-            "Manažer kvality",
-            "Auditor",
-            "Začátečník v ISO"
+            "Persona_Individual",
+            "Persona_HRTeamLeader",
+            "Persona_Laboratory",
+            "Persona_QualityManager",
+            "Persona_Auditor",
+            "Persona_ISOBeginner"
         });
 
-        private static readonly IReadOnlyList<string> _goals = new ReadOnlyCollection<string>(new[]
+        private static readonly IReadOnlyList<string> GoalResourceKeys = new ReadOnlyCollection<string>(new[]
         {
-            "získat/obnovit certifikát",
-            "rychle doplnit dovednost",
-            "rekvalifikovat se",
-            "školení pro celý tým"
+            "Goal_GetCertificate",
+            "Goal_UpdateSkill",
+            "Goal_Retrain",
+            "Goal_TeamTraining"
         });
 
-        public IReadOnlyList<string> Personas => _personas;
+        private readonly IStringLocalizer<CourseSearchOptionProvider> _localizer;
 
-        public IReadOnlyList<string> Goals => _goals;
+        public CourseSearchOptionProvider(IStringLocalizer<CourseSearchOptionProvider> localizer)
+        {
+            _localizer = localizer;
+        }
 
-        public string PersonaPlaceholder => "Jsem…";
+        public IReadOnlyList<string> Personas => PersonaResourceKeys
+            .Select(key => _localizer[key].Value)
+            .ToArray();
 
-        public string GoalPlaceholder => "Chci…";
+        public IReadOnlyList<string> Goals => GoalResourceKeys
+            .Select(key => _localizer[key].Value)
+            .ToArray();
+
+        public string PersonaPlaceholder => _localizer["PersonaPlaceholder"].Value;
+
+        public string GoalPlaceholder => _localizer["GoalPlaceholder"].Value;
     }
 }
