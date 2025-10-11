@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Localization;
 using Microsoft.EntityFrameworkCore;
 using SysJaky_N.Authorization;
 using SysJaky_N.Data;
@@ -12,10 +13,12 @@ namespace SysJaky_N.Pages.Admin.Testimonials;
 public class DetailsModel : PageModel
 {
     private readonly ApplicationDbContext _context;
+    private readonly IStringLocalizer<DetailsModel> _localizer;
 
-    public DetailsModel(ApplicationDbContext context)
+    public DetailsModel(ApplicationDbContext context, IStringLocalizer<DetailsModel> localizer)
     {
         _context = context;
+        _localizer = localizer;
     }
 
     public Testimonial Testimonial { get; private set; } = null!;

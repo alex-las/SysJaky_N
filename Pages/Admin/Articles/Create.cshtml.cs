@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Localization;
 using SysJaky_N.Data;
 using SysJaky_N.Models;
 
@@ -12,11 +13,16 @@ public class CreateModel : PageModel
 {
     private readonly ApplicationDbContext _context;
     private readonly UserManager<ApplicationUser> _userManager;
+    private readonly IStringLocalizer<CreateModel> _localizer;
 
-    public CreateModel(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+    public CreateModel(
+        ApplicationDbContext context,
+        UserManager<ApplicationUser> userManager,
+        IStringLocalizer<CreateModel> localizer)
     {
         _context = context;
         _userManager = userManager;
+        _localizer = localizer;
     }
 
     [BindProperty]
