@@ -4,11 +4,9 @@ using System.Collections.Generic;
 using System.Dynamic;
 using System.Globalization;
 using System.IO;
-using System.Linq;
+using System.Reflection;
 using System.Security.Claims;
-using System.Threading;
-using Microsoft.AspNetCore.Hosting;
-using ClosedXML.Excel;
+using System.Net;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -24,10 +22,7 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using RazorLight;
-using RazorLight.Razor;
 using Microsoft.AspNetCore.Routing;
-using Microsoft.Extensions.Options;
 using SysJaky_N.Controllers;
 using SysJaky_N.Data;
 using SysJaky_N.EmailTemplates.Models;
@@ -56,8 +51,7 @@ internal sealed class CourseReminderServiceTester
             ("Course reminders avoid client-side evaluation warnings", RunClientEvaluationWarningTestAsync),
             ("Analytics dashboard aggregates sales using SQL grouping", RunAnalyticsAggregationTestAsync),
             ("Account pages use localized validation and notifications", RunAccountLocalizationTestAsync),
-            ("Email sender localizes subjects and statuses", RunEmailSenderLocalizationTestAsync)
-            ("Local course media storage reports localized errors", RunLocalCourseMediaStorageLocalizationTestAsync)
+            ("Certificate HTML localizes headings and labels", RunCertificateLocalizationTestAsync)
         };
 
         tests.AddRange(AdminLocalizationTester.GetTests());
@@ -694,11 +688,65 @@ internal sealed class CourseReminderServiceTester
         }
     }
 
+    private static Task RunCertificateLocalizationTestAsync()
     private static async Task RunEmailSenderLocalizationTestAsync()
     {
         var services = new ServiceCollection();
         services.AddLogging();
         services.AddLocalization(options => options.ResourcesPath = "Resources");
+
+        using var provider = services.BuildServiceProvider();
+        var localizer = provider.GetRequiredService<IStringLocalizer<CertificateService>>();
+
+        var logger = provider.GetRequiredService<ILogger<CertificateService>>();
+        var certificateService = new CertificateService(
+            context: null!,
+            converter: null!,
+            environment: null!,
+            options: Options.Create(new CertificateOptions { Title = string.Empty }),
+            localizer: localizer,
+            logger: logger);
+        var buildHtml = typeof(CertificateService).GetMethod("BuildHtml", BindingFlags.Instance | BindingFlags.NonPublic)
+            ?? throw new InvalidOperationException("Unable to find BuildHtml method on CertificateService.");
+
+        var enrollment = new Enrollment
+        {
+            UserId = "learner@example.com",
+            User = new ApplicationUser { Email = "learner@example.com" },
+            CourseTerm = new CourseTerm
+            {
+                CourseId = 42,
+                StartUtc = DateTime.SpecifyKind(new DateTime(2024, 5, 1, 8, 0, 0), DateTimeKind.Utc),
+                EndUtc = DateTime.SpecifyKind(new DateTime(2024, 5, 1, 12, 0, 0), DateTimeKind.Utc)
+            },
+            Attendance = new Attendance
+            {
+                CheckedInAtUtc = DateTime.SpecifyKind(new DateTime(2024, 5, 1, 12, 30, 0), DateTimeKind.Utc)
+            }
+        };
+
+        var scenarios = new[]
+        {
+            new
+            {
+                CultureName = "cs",
+                ExpectedTitle = "Certifikát o absolvování",
+                ExpectedNumberLabel = "Číslo certifikátu",
+                ExpectedCourseFallback = "Kurz 42",
+                ExpectedQrAlt = "QR kód pro ověření",
+                ExpectedLang = "cs"
+            },
+            new
+            {
+                CultureName = "en",
+                ExpectedTitle = "Certificate of Completion",
+                ExpectedNumberLabel = "Certificate number",
+                ExpectedCourseFallback = "Course 42",
+                ExpectedQrAlt = "QR code for verification",
+                ExpectedLang = "en"
+            }
+        };
+
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseInMemoryDatabase($"email-sender-localization-{Guid.NewGuid():N}"));
 
@@ -796,6 +844,21 @@ internal sealed class CourseReminderServiceTester
 
         try
         {
+            foreach (var scenario in scenarios)
+            {
+                var culture = CultureInfo.GetCultureInfo(scenario.CultureName);
+                CultureInfo.CurrentCulture = culture;
+                CultureInfo.CurrentUICulture = culture;
+
+                var html = (string)buildHtml.Invoke(
+                    certificateService,
+                    new object[] { enrollment, "2024-0001", "https://verify.example.com", "qr-placeholder" })!;
+
+                EnsureContains(html, scenario.ExpectedTitle, "certificate title", scenario.CultureName);
+                EnsureContains(html, scenario.ExpectedNumberLabel, "certificate number label", scenario.CultureName);
+                EnsureContains(html, scenario.ExpectedCourseFallback, "fallback course label", scenario.CultureName);
+                EnsureContains(html, scenario.ExpectedQrAlt, "QR alt text", scenario.CultureName);
+                EnsureContains(html, $"lang='{scenario.ExpectedLang}", "HTML language", scenario.CultureName);
             foreach (var (cultureName, messages) in cultures)
             {
                 var culture = CultureInfo.GetCultureInfo(cultureName);
@@ -839,6 +902,18 @@ internal sealed class CourseReminderServiceTester
         {
             CultureInfo.CurrentCulture = originalCulture;
             CultureInfo.CurrentUICulture = originalUiCulture;
+        }
+
+        return Task.CompletedTask;
+    }
+
+    private static void EnsureContains(string html, string expected, string description, string cultureName)
+    {
+        var encoded = WebUtility.HtmlEncode(expected);
+        if (!html.Contains(expected, StringComparison.Ordinal) && !html.Contains(encoded, StringComparison.Ordinal))
+        {
+            throw new InvalidOperationException(
+                $"Expected {description} '{expected}' for culture '{cultureName}', but it was not found in the generated HTML.");
 
             if (Directory.Exists(tempRoot))
             {

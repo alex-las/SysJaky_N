@@ -10,6 +10,7 @@ using DinkToPdf;
 using DinkToPdf.Contracts;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using QRCoder;
@@ -22,7 +23,7 @@ public class CertificateOptions
 {
     public string PublicBaseUrl { get; set; } = "https://localhost";
     public string OutputDirectory { get; set; } = "certificates";
-    public string Title { get; set; } = "Certifikát o absolvování";
+    public string Title { get; set; } = string.Empty;
 }
 
 public interface ICertificateService
@@ -37,12 +38,14 @@ public class CertificateService : ICertificateService
     private readonly IWebHostEnvironment _environment;
     private readonly ILogger<CertificateService> _logger;
     private readonly CertificateOptions _options;
+    private readonly IStringLocalizer<CertificateService> _localizer;
 
     public CertificateService(
         ApplicationDbContext context,
         IConverter converter,
         IWebHostEnvironment environment,
         IOptions<CertificateOptions> options,
+        IStringLocalizer<CertificateService> localizer,
         ILogger<CertificateService> logger)
     {
         _context = context;
@@ -50,6 +53,7 @@ public class CertificateService : ICertificateService
         _environment = environment;
         _logger = logger;
         _options = options.Value;
+        _localizer = localizer;
     }
 
     public async Task<int> IssueCertificatesForCompletedEnrollmentsAsync(CancellationToken cancellationToken = default)
@@ -261,9 +265,31 @@ public class CertificateService : ICertificateService
 
     private string BuildHtml(Enrollment enrollment, string number, string verifyUrl, string qrBase64)
     {
-        var culture = CultureInfo.GetCultureInfo("cs-CZ");
+        var culture = CultureInfo.CurrentCulture;
+        var uiCulture = CultureInfo.CurrentUICulture;
+        var htmlLanguage = string.IsNullOrWhiteSpace(uiCulture.Name) ? uiCulture.TwoLetterISOLanguageName : uiCulture.Name;
+
+        var title = string.IsNullOrWhiteSpace(_options.Title)
+            ? _localizer["Title"].Value
+            : _options.Title;
+
         var participant = enrollment.User?.Email ?? enrollment.UserId;
-        var courseTitle = enrollment.CourseTerm?.Course?.Title ?? $"Kurz {enrollment.CourseTerm?.CourseId}";
+
+        var courseIdValue = enrollment.CourseTerm?.CourseId;
+        var courseIdText = courseIdValue.HasValue
+            ? courseIdValue.Value.ToString(culture)
+            : "-";
+
+        var courseTitle = enrollment.CourseTerm?.Course?.Title
+            ?? _localizer["Fallback.Course", courseIdText].Value;
+
+        var certificateNumberLabel = _localizer["Label.CertificateNumber"].Value;
+        var participantLabel = _localizer["Label.Participant"].Value;
+        var courseLabel = _localizer["Label.Course"].Value;
+        var courseTermLabel = _localizer["Label.CourseTerm"].Value;
+        var completedOnLabel = _localizer["Label.CompletedOn"].Value;
+        var qrAltText = _localizer["Alt.QrCode"].Value;
+
         var start = enrollment.CourseTerm?.StartUtc.ToLocalTime();
         var end = enrollment.CourseTerm?.EndUtc.ToLocalTime();
         var completionUtc = enrollment.Attendance?.CheckedInAtUtc;
@@ -276,7 +302,7 @@ public class CertificateService : ICertificateService
 
         var sb = new StringBuilder();
         sb.AppendLine("<!DOCTYPE html>");
-        sb.AppendLine("<html lang='cs'>");
+        sb.AppendLine($"<html lang='{WebUtility.HtmlEncode(htmlLanguage)}'>");
         sb.AppendLine("<head>");
         sb.AppendLine("<meta charset='utf-8' />");
         sb.AppendLine("<style>");
@@ -290,14 +316,14 @@ public class CertificateService : ICertificateService
         sb.AppendLine("</head>");
         sb.AppendLine("<body>");
         sb.AppendLine("  <div class='certificate'>");
-        sb.AppendLine($"    <h1>{WebUtility.HtmlEncode(_options.Title)}</h1>");
-        sb.AppendLine($"    <p class='detail'>Číslo certifikátu: <strong>{WebUtility.HtmlEncode(number)}</strong></p>");
-        sb.AppendLine($"    <p class='detail'>Absolvent: <strong>{WebUtility.HtmlEncode(participant)}</strong></p>");
-        sb.AppendLine($"    <p class='detail'>Kurz: <strong>{WebUtility.HtmlEncode(courseTitle)}</strong></p>");
-        sb.AppendLine($"    <p class='detail'>Termín kurzu: <strong>{WebUtility.HtmlEncode(termInfo)}</strong></p>");
-        sb.AppendLine($"    <p class='detail'>Dokončeno dne: <strong>{WebUtility.HtmlEncode(completionInfo)}</strong></p>");
+        sb.AppendLine($"    <h1>{WebUtility.HtmlEncode(title)}</h1>");
+        sb.AppendLine($"    <p class='detail'>{WebUtility.HtmlEncode(certificateNumberLabel)}: <strong>{WebUtility.HtmlEncode(number)}</strong></p>");
+        sb.AppendLine($"    <p class='detail'>{WebUtility.HtmlEncode(participantLabel)}: <strong>{WebUtility.HtmlEncode(participant)}</strong></p>");
+        sb.AppendLine($"    <p class='detail'>{WebUtility.HtmlEncode(courseLabel)}: <strong>{WebUtility.HtmlEncode(courseTitle)}</strong></p>");
+        sb.AppendLine($"    <p class='detail'>{WebUtility.HtmlEncode(courseTermLabel)}: <strong>{WebUtility.HtmlEncode(termInfo)}</strong></p>");
+        sb.AppendLine($"    <p class='detail'>{WebUtility.HtmlEncode(completedOnLabel)}: <strong>{WebUtility.HtmlEncode(completionInfo)}</strong></p>");
         sb.AppendLine("    <div class='qr'>");
-        sb.AppendLine($"      <img src='data:image/png;base64,{qrBase64}' alt='QR kód pro ověření' />");
+        sb.AppendLine($"      <img src='data:image/png;base64,{qrBase64}' alt='{WebUtility.HtmlEncode(qrAltText)}' />");
         sb.AppendLine($"      <p>{WebUtility.HtmlEncode(verifyUrl)}</p>");
         sb.AppendLine("    </div>");
         sb.AppendLine("  </div>");
