@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Localization;
 using SysJaky_N.Authorization;
 using SysJaky_N.Data;
 using SysJaky_N.Models;
@@ -11,10 +12,12 @@ namespace SysJaky_N.Pages.Admin.Testimonials;
 public class CreateModel : PageModel
 {
     private readonly ApplicationDbContext _context;
+    private readonly IStringLocalizer<CreateModel> _localizer;
 
-    public CreateModel(ApplicationDbContext context)
+    public CreateModel(ApplicationDbContext context, IStringLocalizer<CreateModel> localizer)
     {
         _context = context;
+        _localizer = localizer;
     }
 
     [BindProperty]
@@ -28,7 +31,7 @@ public class CreateModel : PageModel
     {
         if (Testimonial.IsPublished && !Testimonial.ConsentGranted)
         {
-            ModelState.AddModelError(nameof(Testimonial.ConsentGranted), "Bez souhlasu nelze referenci publikovat.");
+            ModelState.AddModelError(nameof(Testimonial.ConsentGranted), _localizer["ConsentRequired"]);
         }
 
         if (!ModelState.IsValid)
