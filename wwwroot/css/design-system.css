@@ -85,7 +85,7 @@
 
   /* Surfaces */
   --surface-page: #f4f2e7;
-  --surface-page-gradient: linear-gradient(180deg, #f9f7ee 0%, #f0efe7 100%);
+  --surface-page-gradient: var(--surface-page);
   --surface-card: #ffffff;
   --surface-elevated: #ffffff;
   --surface-muted: #eceff3;
@@ -138,32 +138,27 @@
   --transition-scale: 0.25s cubic-bezier(0.2, 0.6, 0.2, 1);
 
   /* Gradients */
-  --gradient-brand: linear-gradient(
-    135deg,
-    var(--color-primary-600) 0%,
-    color-mix(in oklab, var(--color-primary-600) 60%, var(--color-highlight-400)) 55%,
-    var(--color-highlight-400) 115%
-  );
-  --gradient-brand-horizontal: linear-gradient(90deg, var(--color-primary-600) 0%, var(--color-highlight-400) 100%);
+  --gradient-brand: var(--color-primary-600);
+  --gradient-brand-horizontal: var(--color-primary-600);
   --gradient-primary: var(--gradient-brand);
-  --gradient-hero: radial-gradient(1200px 400px at 50% -120px, rgba(255, 255, 255, 0.12), transparent), var(--gradient-brand);
-  --gradient-overlay: radial-gradient(circle at top, rgba(255, 255, 255, 0.22), transparent 55%);
+  --gradient-hero: var(--color-primary-650);
+  --gradient-overlay: rgba(255, 255, 255, 0.12);
 
   /* Navigation glass values */
-  --nav-glass-bg: rgba(15, 23, 42, 0.68);
-  --nav-glass-border: rgba(148, 163, 184, 0.2);
-  --nav-glass-shadow: 0 16px 48px rgba(15, 23, 42, 0.22);
-  --nav-glass-scrolled-bg: rgba(15, 23, 42, 0.85);
-  --nav-glass-scrolled-border: rgba(148, 163, 184, 0.28);
-  --nav-glass-scrolled-shadow: 0 20px 60px rgba(15, 23, 42, 0.28);
+  --nav-glass-bg: rgba(28, 31, 38, 0.72);
+  --nav-glass-border: rgba(255, 255, 255, 0.18);
+  --nav-glass-shadow: 0 16px 48px rgba(28, 31, 38, 0.22);
+  --nav-glass-scrolled-bg: rgba(244, 242, 231, 0.9);
+  --nav-glass-scrolled-border: rgba(28, 31, 38, 0.12);
+  --nav-glass-scrolled-shadow: 0 20px 60px rgba(28, 31, 38, 0.18);
 
   /* Component tokens */
-  --hero-gradient-start: #0035a8;
-  --hero-gradient-mid: #2a74ff;
-  --hero-gradient-end: #f7b500;
+  --hero-gradient-start: var(--color-primary-650);
+  --hero-gradient-mid: var(--color-primary-600);
+  --hero-gradient-end: var(--color-primary-600);
   --surface-elevated-dark: rgba(15, 23, 42, 0.85);
   --progress-track: rgba(148, 163, 184, 0.25);
-  --progress-fill: linear-gradient(90deg, var(--color-accent-500), var(--color-primary-600));
+  --progress-fill: var(--color-accent-500);
   --chip-bg: rgba(15, 23, 42, 0.18);
   --chip-border: rgba(255, 255, 255, 0.24);
 
@@ -279,7 +274,7 @@ button:focus-visible,
   --color-neutral-100: #111827;
   --color-neutral-50: #0b1220;
   --surface-page: #0f172a;
-  --surface-page-gradient: linear-gradient(180deg, #0f172a 0%, #111827 100%);
+  --surface-page-gradient: var(--surface-page);
   --surface-card: #111827;
   --surface-elevated: #0f172a;
   --surface-muted: #1f2937;
