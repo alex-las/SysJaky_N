@@ -133,8 +133,8 @@
     <section class="landing-section specializations" id="specializations">
         <header class="section-header">
             <span class="section-eyebrow">@T["HeroTitle"]</span>
-            <h2>Naše specializace</h2>
-            <p>Poskytujeme komplexní poradenství a školení pro následující normy.</p>
+            <h2>@T["SpecializationsHeading"]</h2>
+            <p>@T["SpecializationsDescription"]</p>
         </header>
         <div class="specialization-list">
             @foreach (var specialization in specializations)
@@ -155,8 +155,8 @@
     <section class="landing-section courses" id="courses">
         <header class="section-header">
             <span class="section-eyebrow">@T["RecommendedForYou"]</span>
-            <h2>Aktuální školení a kurzy</h2>
-            <p>Vyberte si z nejžádanějších kurzů, které vám pomohou splnit požadavky norem a posunout váš tým o krok dál.</p>
+            <h2>@T["CoursesHeading"]</h2>
+            <p>@T["CoursesDescription"]</p>
         </header>
 
         <div class="courses-grid">
@@ -231,7 +231,7 @@
         <section class="landing-section testimonials">
             <header class="section-header">
                 <span class="section-eyebrow">@T["WhyChooseHeading"]</span>
-                <h2>Co říkají účastníci</h2>
+                <h2>@T["TestimonialsHeading"]</h2>
                 <p>@T["WhyChooseDescription"]</p>
             </header>
             <div class="testimonial-grid">
@@ -258,9 +258,9 @@
 
     <section class="landing-section about" id="about">
         <div class="about-card">
-            <h2>O společnosti Systémy jakosti s.r.o.</h2>
+            <h2>@T["AboutHeading"]</h2>
             <p>@T["HeroSubheading"]</p>
-            <a class="btn btn-light" href="/About">Více o nás</a>
+            <a class="btn btn-light" href="/About">@T["AboutCtaLabel"]</a>
         </div>
     </section>
 
@@ -291,24 +291,24 @@
     <section class="landing-section contact" id="contact">
         <header class="section-header">
             <span class="section-eyebrow">@T["ContactCtaHeading"]</span>
-            <h2>Kontaktujte nás</h2>
-            <p>Rádi zodpovíme vaše dotazy a poradíme s výběrem vhodného školení.</p>
+            <h2>@T["ContactHeading"]</h2>
+            <p>@T["ContactDescription"]</p>
         </header>
         <div class="contact-grid">
             <article class="contact-card">
                 <div class="contact-icon"><i class="bi bi-telephone" aria-hidden="true"></i></div>
-                <h3>Telefon</h3>
-                <p>+420 XXX XXX XXX</p>
+                <h3>@T["ContactPhoneLabel"]</h3>
+                <p>@T["ContactPhoneValue"]</p>
             </article>
             <article class="contact-card">
                 <div class="contact-icon"><i class="bi bi-envelope" aria-hidden="true"></i></div>
-                <h3>Email</h3>
-                <p>info@systemy-jakosti.cz</p>
+                <h3>@T["ContactEmailLabel"]</h3>
+                <p>@T["ContactEmailValue"]</p>
             </article>
             <article class="contact-card">
                 <div class="contact-icon"><i class="bi bi-geo-alt" aria-hidden="true"></i></div>
-                <h3>Adresa</h3>
-                <p>Praha, Česká republika</p>
+                <h3>@T["ContactAddressLabel"]</h3>
+                <p>@T["ContactAddressValue"]</p>
             </article>
         </div>
     </section>
