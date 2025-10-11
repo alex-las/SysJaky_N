@@ -1,24 +1,30 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Dynamic;
+using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Security.Claims;
+using System.Threading;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using System.Globalization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.RazorPages.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
-using Microsoft.AspNetCore.Routing;
-using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Options;
+using RazorLight;
+using RazorLight.Razor;
 using SysJaky_N.Controllers;
 using SysJaky_N.Data;
+using SysJaky_N.EmailTemplates.Models;
 using SysJaky_N.Models;
 using SysJaky_N.Pages.Account;
 using SysJaky_N.Services;
@@ -42,7 +48,8 @@ internal sealed class CourseReminderServiceTester
             ("Course reminders respect different time zones", RunCourseSelectionTestAsync),
             ("Course reminders avoid client-side evaluation warnings", RunClientEvaluationWarningTestAsync),
             ("Analytics dashboard aggregates sales using SQL grouping", RunAnalyticsAggregationTestAsync),
-            ("Account pages use localized validation and notifications", RunAccountLocalizationTestAsync)
+            ("Account pages use localized validation and notifications", RunAccountLocalizationTestAsync),
+            ("Email sender localizes subjects and statuses", RunEmailSenderLocalizationTestAsync)
         };
 
         tests.AddRange(AdminLocalizationTester.GetTests());
@@ -390,7 +397,7 @@ internal sealed class CourseReminderServiceTester
         var registerActionContext = new ActionContext(registerHttpContext, new RouteData(), new PageActionDescriptor());
         var registerModel = new RegisterModel(userManager, signInManager, emailSender, dbContext, registerLocalizer)
         {
-            PageContext = new PageContext(registerActionContext),
+            PageContext = new Microsoft.AspNetCore.Mvc.RazorPages.PageContext(registerActionContext),
             Url = new UrlHelper(registerActionContext)
         };
 
@@ -430,7 +437,7 @@ internal sealed class CourseReminderServiceTester
         var logoutActionContext = new ActionContext(logoutHttpContext, new RouteData(), new PageActionDescriptor());
         var logoutModel = new LogoutModel(signInManager, logoutLocalizer)
         {
-            PageContext = new PageContext(logoutActionContext),
+            PageContext = new Microsoft.AspNetCore.Mvc.RazorPages.PageContext(logoutActionContext),
             Url = new UrlHelper(logoutActionContext),
             TempData = new TempDataDictionary(logoutHttpContext, new DictionaryTempDataProvider())
         };
@@ -446,6 +453,85 @@ internal sealed class CourseReminderServiceTester
         if (!string.Equals(expectedLogoutMessage, actualLogoutMessage, StringComparison.Ordinal))
         {
             throw new InvalidOperationException($"Expected logout message '{expectedLogoutMessage}', but was '{actualLogoutMessage}'.");
+        }
+    }
+
+    private static async Task RunEmailSenderLocalizationTestAsync()
+    {
+        var services = new ServiceCollection();
+        services.AddLogging();
+        services.AddLocalization(options => options.ResourcesPath = "Resources");
+        services.AddDbContext<ApplicationDbContext>(options =>
+            options.UseInMemoryDatabase($"email-sender-localization-{Guid.NewGuid():N}"));
+
+        await using var provider = services.BuildServiceProvider();
+
+        var dbContext = provider.GetRequiredService<ApplicationDbContext>();
+        await dbContext.Database.EnsureCreatedAsync();
+
+        var logger = provider.GetRequiredService<ILogger<EmailSender>>();
+        var localizer = provider.GetRequiredService<IStringLocalizer<EmailSender>>();
+
+        var options = Options.Create(new SmtpOptions
+        {
+            From = "noreply@example.com",
+            Server = "localhost",
+            Port = 25,
+            User = "user",
+            Password = "password"
+        });
+
+        var engine = new StubRazorLightEngine();
+        var sender = new TestEmailSender(options, engine, dbContext, logger, localizer);
+
+        var sampleModel = new CourseTermCreatedEmailModel(
+            "Azure Fundamentals",
+            DateTime.UtcNow,
+            DateTime.UtcNow.AddHours(1),
+            "https://example.com/courses/azure-fundamentals");
+
+        var expectations = new (CultureInfo Culture, string ExpectedSubject, string ExpectedSentStatus, string ExpectedFailedPrefix)[]
+        {
+            (CultureInfo.GetCultureInfo("cs"), "Nový termín: Azure Fundamentals", "Odesláno", "Selhalo"),
+            (CultureInfo.GetCultureInfo("en"), "New term: Azure Fundamentals", "Sent", "Failed")
+        };
+
+        foreach (var expectation in expectations)
+        {
+            using var cultureScope = new CultureScope(expectation.Culture);
+
+            sender.ShouldFail = false;
+            await sender.SendEmailAsync("student@example.com", EmailTemplate.CourseTermCreated, sampleModel);
+
+            var sentLog = dbContext.EmailLogs.OrderBy(e => e.Id).Last();
+            if (!string.Equals(sender.LastSubject, expectation.ExpectedSubject, StringComparison.Ordinal))
+            {
+                throw new InvalidOperationException(
+                    $"Expected subject '{expectation.ExpectedSubject}' but received '{sender.LastSubject}'.");
+            }
+
+            if (!string.Equals(sentLog.Status, expectation.ExpectedSentStatus, StringComparison.Ordinal))
+            {
+                throw new InvalidOperationException(
+                    $"Expected sent status '{expectation.ExpectedSentStatus}' but received '{sentLog.Status}'.");
+            }
+
+            sender.ShouldFail = true;
+            try
+            {
+                await sender.SendEmailAsync("student@example.com", EmailTemplate.CourseTermCreated, sampleModel);
+                throw new InvalidOperationException("Expected the simulated email send to fail.");
+            }
+            catch (InvalidOperationException ex) when (ex.Message == TestEmailSender.SimulatedFailureMessage)
+            {
+            }
+
+            var failedLog = dbContext.EmailLogs.OrderBy(e => e.Id).Last();
+            if (!failedLog.Status.StartsWith(expectation.ExpectedFailedPrefix, StringComparison.Ordinal))
+            {
+                throw new InvalidOperationException(
+                    $"Expected failure status to start with '{expectation.ExpectedFailedPrefix}' but received '{failedLog.Status}'.");
+            }
         }
     }
 
@@ -791,6 +877,98 @@ internal sealed class CourseReminderServiceTester
         }
 
         public override DateTimeOffset GetUtcNow() => _utcNow;
+    }
+
+    private sealed class TestEmailSender : EmailSender
+    {
+        public const string SimulatedFailureMessage = "Simulated failure.";
+
+        public bool ShouldFail { get; set; }
+
+        public string? LastSubject { get; private set; }
+
+        public TestEmailSender(
+            IOptions<SmtpOptions> options,
+            IRazorLightEngine razorLightEngine,
+            ApplicationDbContext context,
+            ILogger<EmailSender> logger,
+            IStringLocalizer<EmailSender> localizer)
+            : base(options, razorLightEngine, context, logger, localizer)
+        {
+        }
+
+        protected override Task SendMimeMessageAsync(string to, string subject, string body, CancellationToken cancellationToken)
+        {
+            LastSubject = subject;
+
+            if (ShouldFail)
+            {
+                throw new InvalidOperationException(SimulatedFailureMessage);
+            }
+
+            return Task.CompletedTask;
+        }
+    }
+
+    private sealed class StubRazorLightEngine : IRazorLightEngine
+    {
+        public StubRazorLightEngine()
+        {
+            Handler = new StubEngineHandler();
+        }
+
+        public RazorLightOptions Options { get; } = new();
+
+        public IEngineHandler Handler { get; }
+
+        public Task<string> CompileRenderAsync<T>(string key, T model, ExpandoObject viewBag)
+            => Task.FromResult("Body");
+
+        public Task<string> CompileRenderAsync(string key, object model, Type modelType, ExpandoObject viewBag)
+            => Task.FromResult("Body");
+
+        public Task<string> CompileRenderStringAsync<T>(string key, string content, T model, ExpandoObject viewBag)
+            => Task.FromResult(content);
+
+        public Task<ITemplatePage> CompileTemplateAsync(string key)
+            => throw new NotSupportedException();
+
+        public Task<string> RenderTemplateAsync(ITemplatePage templatePage, object model, Type modelType, ExpandoObject viewBag)
+            => throw new NotSupportedException();
+
+        public Task<string> RenderTemplateAsync<T>(ITemplatePage templatePage, T model, ExpandoObject viewBag)
+            => throw new NotSupportedException();
+
+        public Task RenderTemplateAsync(ITemplatePage templatePage, object model, Type modelType, TextWriter textWriter, ExpandoObject viewBag)
+            => throw new NotSupportedException();
+
+        public Task RenderTemplateAsync<T>(ITemplatePage templatePage, T model, TextWriter textWriter, ExpandoObject viewBag)
+            => throw new NotSupportedException();
+
+        private sealed class StubEngineHandler : IEngineHandler
+        {
+            public RazorLightOptions Options { get; } = new();
+
+            public bool IsCachingEnabled => false;
+
+            public RazorLight.Caching.ICachingProvider Cache => throw new NotSupportedException();
+
+            public RazorLight.Compilation.IRazorTemplateCompiler Compiler => throw new NotSupportedException();
+
+            public RazorLight.Compilation.ITemplateFactoryProvider FactoryProvider => throw new NotSupportedException();
+
+            public Task<ITemplatePage> CompileTemplateAsync(string key) => throw new NotSupportedException();
+
+            public Task<string> CompileRenderAsync<T>(string key, T model, ExpandoObject viewBag) => throw new NotSupportedException();
+
+            public Task<string> CompileRenderStringAsync<T>(string key, string content, T model, ExpandoObject viewBag) => throw new NotSupportedException();
+
+            public Task<string> RenderTemplateAsync<T>(ITemplatePage templatePage, T model, ExpandoObject viewBag) => throw new NotSupportedException();
+
+            public Task RenderTemplateAsync<T>(ITemplatePage templatePage, T model, TextWriter textWriter, ExpandoObject viewBag) => throw new NotSupportedException();
+
+            public Task RenderIncludedTemplateAsync<T>(ITemplatePage templatePage, T model, TextWriter textWriter, ExpandoObject viewBag, TemplateRenderer templateRenderer) => throw new NotSupportedException();
+        }
     }
 
     private sealed class TestableCourseReminderService : CourseReminderService

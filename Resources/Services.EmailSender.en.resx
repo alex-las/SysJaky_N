@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Subject.Welcome" xml:space="preserve">
+    <value>Welcome</value>
+  </data>
+  <data name="Subject.OrderCreated" xml:space="preserve">
+    <value>Order Created</value>
+  </data>
+  <data name="Subject.ContactMessageNotification" xml:space="preserve">
+    <value>New contact message</value>
+  </data>
+  <data name="Subject.CourseTermCreated" xml:space="preserve">
+    <value>New term: {0}</value>
+  </data>
+  <data name="Subject.WaitlistSeatAvailable" xml:space="preserve">
+    <value>Seat available: {0}</value>
+  </data>
+  <data name="Subject.CourseReminder" xml:space="preserve">
+    <value>Reminder: {0}</value>
+  </data>
+  <data name="Subject.CourseReviewRequest" xml:space="preserve">
+    <value>Review course {0}</value>
+  </data>
+  <data name="Subject.NewsletterConfirmation" xml:space="preserve">
+    <value>Confirm newsletter subscription</value>
+  </data>
+  <data name="Status.Pending" xml:space="preserve">
+    <value>Pending</value>
+  </data>
+  <data name="Status.Sent" xml:space="preserve">
+    <value>Sent</value>
+  </data>
+  <data name="Status.Failed" xml:space="preserve">
+    <value>Failed: {0}</value>
+  </data>
+</root>
