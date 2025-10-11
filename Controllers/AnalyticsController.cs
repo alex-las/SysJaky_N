@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ClosedXML.Excel;
 using System.IO;
+using Microsoft.Extensions.Localization;
 using SysJaky_N.Data;
 using SysJaky_N.Models;
 
@@ -31,9 +32,11 @@ public class AnalyticsController : ControllerBase
     };
 
     private readonly ApplicationDbContext _context;
-    public AnalyticsController(ApplicationDbContext context)
+    private readonly IStringLocalizer<AnalyticsController> _localizer;
+    public AnalyticsController(ApplicationDbContext context, IStringLocalizer<AnalyticsController> localizer)
     {
         _context = context;
+        _localizer = localizer;
     }
 
     [HttpGet("filters")]
@@ -80,38 +83,38 @@ public class AnalyticsController : ControllerBase
         var dashboard = await BuildDashboardAsync(query, cancellationToken);
 
         using var workbook = new XLWorkbook();
-        var summarySheet = workbook.Worksheets.Add("Přehled");
+        var summarySheet = workbook.Worksheets.Add(_localizer["SummaryWorksheetName"].Value);
 
-        summarySheet.Cell(1, 1).Value = "Období";
+        summarySheet.Cell(1, 1).Value = _localizer["PeriodLabel"].Value;
         summarySheet.Cell(1, 2).Value = $"{dashboard.ObdobiOd:yyyy-MM-dd} – {dashboard.ObdobiDo:yyyy-MM-dd}";
 
-        summarySheet.Cell(3, 1).Value = "Souhrn";
-        summarySheet.Cell(4, 1).Value = "Tržby celkem";
+        summarySheet.Cell(3, 1).Value = _localizer["SummarySectionLabel"].Value;
+        summarySheet.Cell(4, 1).Value = _localizer["TotalRevenueLabel"].Value;
         summarySheet.Cell(4, 2).Value = dashboard.Souhrn.CelkoveTrzby;
-        summarySheet.Cell(5, 1).Value = "Změna tržeb";
+        summarySheet.Cell(5, 1).Value = _localizer["RevenueChangeLabel"].Value;
         summarySheet.Cell(5, 2).Value = dashboard.Souhrn.ZmenaTrzebProcenta / 100d;
         summarySheet.Cell(5, 2).Style.NumberFormat.Format = "0.00%";
-        summarySheet.Cell(6, 1).Value = "Objednávky";
+        summarySheet.Cell(6, 1).Value = _localizer["OrdersLabel"].Value;
         summarySheet.Cell(6, 2).Value = dashboard.Souhrn.Objednavky;
-        summarySheet.Cell(7, 1).Value = "Průměrná hodnota objednávky";
+        summarySheet.Cell(7, 1).Value = _localizer["AverageOrderValueLabel"].Value;
         summarySheet.Cell(7, 2).Value = dashboard.Souhrn.PrumernaObjednavka;
-        summarySheet.Cell(8, 1).Value = "Prodáno míst";
+        summarySheet.Cell(8, 1).Value = _localizer["SeatsSoldLabel"].Value;
         summarySheet.Cell(8, 2).Value = dashboard.Souhrn.ProdanaMista;
-        summarySheet.Cell(9, 1).Value = "Průměrná obsazenost";
+        summarySheet.Cell(9, 1).Value = _localizer["AverageOccupancyLabel"].Value;
         summarySheet.Cell(9, 2).Value = dashboard.Souhrn.PrumernaObsazenost / 100d;
         summarySheet.Cell(9, 2).Style.NumberFormat.Format = "0.00%";
-        summarySheet.Cell(10, 1).Value = "Aktivní zákazníci";
+        summarySheet.Cell(10, 1).Value = _localizer["ActiveCustomersLabel"].Value;
         summarySheet.Cell(10, 2).Value = dashboard.Souhrn.AktivniZakaznici;
-        summarySheet.Cell(11, 1).Value = "Noví zákazníci";
+        summarySheet.Cell(11, 1).Value = _localizer["NewCustomersLabel"].Value;
         summarySheet.Cell(11, 2).Value = dashboard.Souhrn.NoviZakaznici;
 
         summarySheet.Cell(4, 2).Style.NumberFormat.Format = "#,##0.00";
         summarySheet.Cell(7, 2).Style.NumberFormat.Format = "#,##0.00";
 
-        summarySheet.Cell(13, 1).Value = "Top kurzy podle tržeb";
-        summarySheet.Cell(14, 1).Value = "Kurz";
-        summarySheet.Cell(14, 2).Value = "Tržby";
-        summarySheet.Cell(14, 3).Value = "Prodáno míst";
+        summarySheet.Cell(13, 1).Value = _localizer["TopCoursesByRevenueLabel"].Value;
+        summarySheet.Cell(14, 1).Value = _localizer["CourseHeader"].Value;
+        summarySheet.Cell(14, 2).Value = _localizer["RevenueHeader"].Value;
+        summarySheet.Cell(14, 3).Value = _localizer["SeatsSoldHeader"].Value;
 
         var topRow = 15;
         foreach (var kurz in dashboard.TopKurzy)
@@ -123,11 +126,11 @@ public class AnalyticsController : ControllerBase
             topRow++;
         }
 
-        summarySheet.Cell(topRow + 1, 1).Value = "Vývoj tržeb";
-        summarySheet.Cell(topRow + 2, 1).Value = "Datum";
-        summarySheet.Cell(topRow + 2, 2).Value = "Tržby";
-        summarySheet.Cell(topRow + 2, 3).Value = "Objednávky";
-        summarySheet.Cell(topRow + 2, 4).Value = "Průměrná objednávka";
+        summarySheet.Cell(topRow + 1, 1).Value = _localizer["RevenueTrendSectionLabel"].Value;
+        summarySheet.Cell(topRow + 2, 1).Value = _localizer["DateHeader"].Value;
+        summarySheet.Cell(topRow + 2, 2).Value = _localizer["RevenueHeader"].Value;
+        summarySheet.Cell(topRow + 2, 3).Value = _localizer["OrdersHeader"].Value;
+        summarySheet.Cell(topRow + 2, 4).Value = _localizer["AverageOrderHeader"].Value;
 
         var trendRow = topRow + 3;
         foreach (var bod in dashboard.Trend)
@@ -146,7 +149,7 @@ public class AnalyticsController : ControllerBase
 
         using var stream = new MemoryStream();
         workbook.SaveAs(stream);
-        var fileName = $"report-{DateTime.UtcNow:yyyyMMdd-HHmm}.xlsx";
+        var fileName = $"{_localizer["ExportFileNamePrefix"].Value}-{DateTime.UtcNow:yyyyMMdd-HHmm}.xlsx";
         return File(stream.ToArray(),
             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
             fileName);

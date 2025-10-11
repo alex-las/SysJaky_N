@@ -4,6 +4,7 @@ using System.Text.Json;
 using System.Threading;
 using MailKit.Net.Smtp;
 using MailKit.Security;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MimeKit;
@@ -46,30 +47,43 @@ public class EmailSender : IEmailSender
     private readonly IRazorLightEngine _razorLightEngine;
     private readonly ApplicationDbContext _context;
     private readonly ILogger<EmailSender> _logger;
+    private readonly IStringLocalizer<EmailSender> _localizer;
+    private readonly IReadOnlyDictionary<EmailTemplate, EmailTemplateDescriptor> _templateMap;
     private readonly JsonSerializerOptions _serializerOptions = new(JsonSerializerDefaults.Web);
 
-    private static readonly IReadOnlyDictionary<EmailTemplate, EmailTemplateDescriptor> TemplateMap =
-        new Dictionary<EmailTemplate, EmailTemplateDescriptor>
+    public EmailSender(
+        IOptions<SmtpOptions> options,
+        IRazorLightEngine razorLightEngine,
+        ApplicationDbContext context,
+        ILogger<EmailSender> logger,
+        IStringLocalizer<EmailSender> localizer)
+    {
+        _options = options.Value;
+        _razorLightEngine = razorLightEngine;
+        _context = context;
+        _logger = logger;
+        _localizer = localizer;
+        _templateMap = new Dictionary<EmailTemplate, EmailTemplateDescriptor>
         {
             [EmailTemplate.Welcome] = new(
                 "Welcome.cshtml",
                 typeof(WelcomeEmailModel),
-                _ => "Welcome"),
+                _ => _localizer["Subject.Welcome"].Value),
             [EmailTemplate.OrderCreated] = new(
                 "OrderCreated.cshtml",
                 typeof(OrderCreatedEmailModel),
-                _ => "Order Created"),
+                _ => _localizer["Subject.OrderCreated"].Value),
             [EmailTemplate.ContactMessageNotification] = new(
                 "ContactMessageNotification.cshtml",
                 typeof(ContactMessageEmailModel),
-                _ => "New contact message"),
+                _ => _localizer["Subject.ContactMessageNotification"].Value),
             [EmailTemplate.CourseTermCreated] = new(
                 "CourseTermCreated.cshtml",
                 typeof(CourseTermCreatedEmailModel),
                 model =>
                 {
                     var data = (CourseTermCreatedEmailModel)model;
-                    return $"Nový termín: {data.CourseTitle}";
+                    return _localizer["Subject.CourseTermCreated", data.CourseTitle].Value;
                 }),
             [EmailTemplate.WaitlistSeatAvailable] = new(
                 "WaitlistSeatAvailable.cshtml",
@@ -77,7 +91,7 @@ public class EmailSender : IEmailSender
                 model =>
                 {
                     var data = (WaitlistSeatAvailableEmailModel)model;
-                    return $"Uvolněné místo: {data.CourseTitle}";
+                    return _localizer["Subject.WaitlistSeatAvailable", data.CourseTitle].Value;
                 }),
             [EmailTemplate.CourseReminder] = new(
                 "CourseReminder.cshtml",
@@ -85,7 +99,7 @@ public class EmailSender : IEmailSender
                 model =>
                 {
                     var data = (CourseReminderEmailModel)model;
-                    return $"Reminder: {data.CourseTitle}";
+                    return _localizer["Subject.CourseReminder", data.CourseTitle].Value;
                 }),
             [EmailTemplate.CourseReviewRequest] = new(
                 "CourseReviewRequest.cshtml",
@@ -93,24 +107,13 @@ public class EmailSender : IEmailSender
                 model =>
                 {
                     var data = (CourseReviewRequestEmailModel)model;
-                    return $"Ohodnoťte kurz {data.CourseTitle}";
+                    return _localizer["Subject.CourseReviewRequest", data.CourseTitle].Value;
                 }),
             [EmailTemplate.NewsletterConfirmation] = new(
                 "NewsletterConfirmation.cshtml",
                 typeof(NewsletterConfirmationEmailModel),
-                _ => "Potvrďte odběr newsletteru")
+                _ => _localizer["Subject.NewsletterConfirmation"].Value)
         };
-
-    public EmailSender(
-        IOptions<SmtpOptions> options,
-        IRazorLightEngine razorLightEngine,
-        ApplicationDbContext context,
-        ILogger<EmailSender> logger)
-    {
-        _options = options.Value;
-        _razorLightEngine = razorLightEngine;
-        _context = context;
-        _logger = logger;
     }
 
     public async Task SendEmailAsync<TModel>(string to, EmailTemplate template, TModel model, CancellationToken cancellationToken = default)
@@ -118,7 +121,7 @@ public class EmailSender : IEmailSender
         ArgumentException.ThrowIfNullOrWhiteSpace(to);
         ArgumentNullException.ThrowIfNull(model);
 
-        if (!TemplateMap.TryGetValue(template, out var descriptor))
+        if (!_templateMap.TryGetValue(template, out var descriptor))
         {
             throw new InvalidOperationException($"Template {template} is not configured.");
         }
@@ -137,7 +140,7 @@ public class EmailSender : IEmailSender
             Template = template.ToString(),
             PayloadJson = payloadJson,
             SentUtc = DateTime.UtcNow,
-            Status = NormalizeStatus("Pending")
+            Status = NormalizeStatus(_localizer["Status.Pending"].Value)
         };
 
         _context.EmailLogs.Add(log);
@@ -149,11 +152,11 @@ public class EmailSender : IEmailSender
 
             await SendMimeMessageAsync(to, subject, body, cancellationToken);
 
-            log.Status = NormalizeStatus("Sent");
+            log.Status = NormalizeStatus(_localizer["Status.Sent"].Value);
         }
         catch (Exception ex)
         {
-            log.Status = NormalizeStatus($"Failed: {ex.Message}");
+            log.Status = NormalizeStatus(_localizer["Status.Failed", ex.Message].Value);
             _logger.LogError(ex, "Failed to send email using template {Template} to {Recipient}.", template, to);
             throw;
         }
@@ -164,7 +167,7 @@ public class EmailSender : IEmailSender
         }
     }
 
-    private async Task SendMimeMessageAsync(string to, string subject, string body, CancellationToken cancellationToken)
+    protected virtual async Task SendMimeMessageAsync(string to, string subject, string body, CancellationToken cancellationToken)
     {
         var message = new MimeMessage();
         message.From.Add(MailboxAddress.Parse(_options.From));
