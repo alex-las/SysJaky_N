@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Security.Claims;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using System.Globalization;
@@ -17,6 +18,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.Options;
 using SysJaky_N.Controllers;
 using SysJaky_N.Data;
 using SysJaky_N.Models;
@@ -43,7 +45,8 @@ internal sealed class CourseReminderServiceTester
             ("Course reminders respect different time zones", RunCourseSelectionTestAsync),
             ("Course reminders avoid client-side evaluation warnings", RunClientEvaluationWarningTestAsync),
             ("Analytics dashboard aggregates sales using SQL grouping", RunAnalyticsAggregationTestAsync),
-            ("Account pages use localized validation and notifications", RunAccountLocalizationTestAsync)
+            ("Account pages use localized validation and notifications", RunAccountLocalizationTestAsync),
+            ("API controllers return localized responses", RunApiLocalizationTestAsync)
         };
 
         tests.AddRange(AdminLocalizationTester.GetTests());
@@ -116,16 +119,8 @@ internal sealed class CourseReminderServiceTester
         return Task.CompletedTask;
     }
 
-    private static Task RunPaymentServiceLocalizationTestAsync()
+    private static async Task RunApiLocalizationTestAsync()
     {
-        var services = new ServiceCollection();
-        services.AddLogging();
-        services.AddLocalization(options => options.ResourcesPath = "Resources");
-
-        using var provider = services.BuildServiceProvider();
-        var factory = provider.GetRequiredService<IStringLocalizerFactory>();
-        var localizer = factory.Create(typeof(PaymentService));
-
         var cultures = new[] { "cs", "en" };
         var originalCulture = CultureInfo.CurrentCulture;
         var originalUiCulture = CultureInfo.CurrentUICulture;
@@ -138,16 +133,76 @@ internal sealed class CourseReminderServiceTester
                 CultureInfo.CurrentCulture = culture;
                 CultureInfo.CurrentUICulture = culture;
 
-                var lineItem = localizer["LineItemName", 123];
-                if (lineItem.ResourceNotFound || string.IsNullOrWhiteSpace(lineItem.Value))
+                var services = new ServiceCollection();
+                services.AddLogging();
+                services.AddLocalization(options => options.ResourcesPath = "Resources");
+                services.AddDataProtection();
+
+                using var provider = services.BuildServiceProvider();
+
+                // AttendanceController
+                var attendanceLogger = provider.GetRequiredService<ILogger<AttendanceController>>();
+                var attendanceLocalizer = provider.GetRequiredService<IStringLocalizer<AttendanceController>>();
+                await using (var attendanceContext = new ApplicationDbContext(new DbContextOptionsBuilder<ApplicationDbContext>()
+                    .UseInMemoryDatabase($"attendance-{cultureName}-{Guid.NewGuid():N}")
+                    .Options))
                 {
-                    throw new InvalidOperationException($"Missing LineItemName resource for culture '{cultureName}'.");
+                    var attendanceController = new AttendanceController(attendanceContext, attendanceLogger, attendanceLocalizer);
+                    var attendanceResult = await attendanceController.CheckInAsync(new AttendanceController.CheckInRequest(" "), CancellationToken.None);
+                    AssertMessage(attendanceResult, attendanceLocalizer["CodeRequired"].Value, $"AttendanceController ({cultureName})");
                 }
 
-                if (!lineItem.Value.Contains("123", StringComparison.Ordinal))
+                // VerifyController
+                var verifyLogger = provider.GetRequiredService<ILogger<VerifyController>>();
+                var verifyLocalizer = provider.GetRequiredService<IStringLocalizer<VerifyController>>();
+                await using (var verifyContext = new ApplicationDbContext(new DbContextOptionsBuilder<ApplicationDbContext>()
+                    .UseInMemoryDatabase($"verify-{cultureName}-{Guid.NewGuid():N}")
+                    .Options))
                 {
-                    throw new InvalidOperationException($"LineItemName resource for culture '{cultureName}' does not include the order identifier: '{lineItem.Value}'.");
+                    var verifyController = new VerifyController(verifyContext, verifyLogger, verifyLocalizer);
+                    var verifyResult = await verifyController.VerifyAsync(" ", " ");
+                    AssertMessage(verifyResult, verifyLocalizer["NumberAndHashRequired"].Value, $"VerifyController ({cultureName})");
                 }
+
+                // WaitlistController
+                var waitlistLogger = provider.GetRequiredService<ILogger<WaitlistController>>();
+                var waitlistLocalizer = provider.GetRequiredService<IStringLocalizer<WaitlistController>>();
+                var dataProtectionProvider = provider.GetRequiredService<IDataProtectionProvider>();
+                var waitlistTokenService = new WaitlistTokenService(dataProtectionProvider, provider.GetRequiredService<ILogger<WaitlistTokenService>>());
+                await using (var waitlistContext = new ApplicationDbContext(new DbContextOptionsBuilder<ApplicationDbContext>()
+                    .UseInMemoryDatabase($"waitlist-{cultureName}-{Guid.NewGuid():N}")
+                    .Options))
+                {
+                    var waitlistController = new WaitlistController(waitlistContext, null!, waitlistTokenService, waitlistLogger, waitlistLocalizer);
+                    var waitlistResult = await waitlistController.ClaimAsync(string.Empty);
+                    AssertMessage(waitlistResult, waitlistLocalizer["TokenRequired"].Value, $"WaitlistController ({cultureName})");
+                }
+
+                // PushController
+                var pushLogger = provider.GetRequiredService<ILogger<PushController>>();
+                var pushLocalizer = provider.GetRequiredService<IStringLocalizer<PushController>>();
+
+                var pushStore = new FakePushSubscriptionStore();
+                var pushController = new PushController(pushStore, Options.Create(new PushNotificationOptions()), pushLogger, pushLocalizer);
+
+                var pushSubscribeResult = await pushController.Subscribe(new PushController.PushSubscriptionRequest(), CancellationToken.None);
+                AssertMessage(pushSubscribeResult, pushLocalizer["SubscriptionEndpointRequired"].Value, $"PushController subscribe ({cultureName})");
+
+                var pushNotifyMissingBody = await pushController.Notify(new PushController.PushMessageRequest { Body = string.Empty }, CancellationToken.None);
+                AssertMessage(pushNotifyMissingBody, pushLocalizer["NotificationPayloadRequired"].Value, $"PushController notify missing body ({cultureName})");
+
+                var pushNotifyNotConfigured = await pushController.Notify(new PushController.PushMessageRequest { Body = "Test" }, CancellationToken.None);
+                AssertMessage(pushNotifyNotConfigured, pushLocalizer["PushNotConfigured"].Value, $"PushController notify not configured ({cultureName})");
+
+                var configuredStore = new FakePushSubscriptionStore();
+                var configuredController = new PushController(
+                    configuredStore,
+                    Options.Create(new PushNotificationOptions { PublicKey = "pk", PrivateKey = "sk", Subject = "mailto:test@example.com" }),
+                    pushLogger,
+                    pushLocalizer);
+
+                var pushNotifyNoSubscribers = await configuredController.Notify(new PushController.PushMessageRequest { Body = "Test" }, CancellationToken.None);
+                AssertMessage(pushNotifyNoSubscribers, pushLocalizer["NoSubscribers"].Value, $"PushController notify no subscribers ({cultureName})");
             }
         }
         finally
@@ -155,8 +210,33 @@ internal sealed class CourseReminderServiceTester
             CultureInfo.CurrentCulture = originalCulture;
             CultureInfo.CurrentUICulture = originalUiCulture;
         }
+    }
 
-        return Task.CompletedTask;
+    private static void AssertMessage(IActionResult result, string expected, string scenario)
+    {
+        var actual = ExtractMessage(result);
+        if (!string.Equals(actual, expected, StringComparison.Ordinal))
+        {
+            throw new InvalidOperationException($"Expected '{expected}' for {scenario}, but was '{actual ?? "<null>"}'.");
+        }
+    }
+
+    private static string? ExtractMessage(IActionResult result) => result switch
+    {
+        BadRequestObjectResult badRequest => ExtractMessageFromValue(badRequest.Value),
+        ObjectResult objectResult => ExtractMessageFromValue(objectResult.Value),
+        _ => null
+    };
+
+    private static string? ExtractMessageFromValue(object? value)
+    {
+        if (value is null)
+        {
+            return null;
+        }
+
+        var property = value.GetType().GetProperty("message");
+        return property?.GetValue(value)?.ToString();
     }
 
     private static async Task RunCourseSelectionTestAsync()
@@ -491,6 +571,23 @@ internal sealed class CourseReminderServiceTester
         {
             throw new InvalidOperationException($"Expected logout message '{expectedLogoutMessage}', but was '{actualLogoutMessage}'.");
         }
+    }
+
+    private sealed class FakePushSubscriptionStore : IPushSubscriptionStore
+    {
+        public IReadOnlyCollection<PushSubscriptionRecord> Subscriptions { get; set; } = Array.Empty<PushSubscriptionRecord>();
+
+        public Task SaveAsync(PushSubscriptionRecord subscription, CancellationToken cancellationToken = default)
+            => Task.CompletedTask;
+
+        public Task<IReadOnlyCollection<PushSubscriptionRecord>> GetAllAsync(CancellationToken cancellationToken = default)
+            => Task.FromResult(Subscriptions);
+
+        public Task<IReadOnlyCollection<PushSubscriptionRecord>> GetByTopicAsync(string topic, CancellationToken cancellationToken = default)
+            => Task.FromResult(Subscriptions);
+
+        public Task RemoveAsync(string endpoint, CancellationToken cancellationToken = default)
+            => Task.CompletedTask;
     }
 
     private static async Task SeedCoursesForSelectionTestAsync(IServiceProvider provider)

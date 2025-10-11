@@ -2,6 +2,7 @@ using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using SysJaky_N.Data;
 using SysJaky_N.Models;
 
@@ -14,11 +15,16 @@ public class AttendanceController : ControllerBase
 {
     private readonly ApplicationDbContext _context;
     private readonly ILogger<AttendanceController> _logger;
+    private readonly IStringLocalizer<AttendanceController> _localizer;
 
-    public AttendanceController(ApplicationDbContext context, ILogger<AttendanceController> logger)
+    public AttendanceController(
+        ApplicationDbContext context,
+        ILogger<AttendanceController> logger,
+        IStringLocalizer<AttendanceController> localizer)
     {
         _context = context;
         _logger = logger;
+        _localizer = localizer;
     }
 
     public record CheckInRequest(string? Code);
@@ -28,14 +34,15 @@ public class AttendanceController : ControllerBase
     {
         if (request == null || string.IsNullOrWhiteSpace(request.Code))
         {
-            return BadRequest(new { message = "Code is required." });
+            return BadRequest(new { message = _localizer["CodeRequired"].Value });
         }
 
         var code = request.Code.Trim();
         var (foundEnrollment, error) = await FindEnrollmentAsync(code, cancellationToken);
         if (foundEnrollment == null)
         {
-            var message = error ?? "Enrollment was not found for the provided code.";
+            var messageKey = error ?? "EnrollmentNotFoundForCode";
+            var message = _localizer[messageKey].Value;
             _logger.LogWarning("Attendance check-in failed. Code: {Code}. Reason: {Reason}", code, message);
             return NotFound(new { message });
         }
@@ -58,7 +65,7 @@ public class AttendanceController : ControllerBase
 
         var response = new
         {
-            status = created ? "checked-in" : "already-checked-in",
+            status = created ? _localizer["StatusCheckedIn"].Value : _localizer["StatusAlreadyCheckedIn"].Value,
             checkedInAtUtc = attendance.CheckedInAtUtc,
             enrollment = new
             {
@@ -73,7 +80,7 @@ public class AttendanceController : ControllerBase
         return Ok(response);
     }
 
-    private async Task<(Enrollment? enrollment, string? error)> FindEnrollmentAsync(string code, CancellationToken cancellationToken)
+    private async Task<(Enrollment? enrollment, string? errorKey)> FindEnrollmentAsync(string code, CancellationToken cancellationToken)
     {
         if (TryParseEnrollmentId(code, out var enrollmentId))
         {
@@ -83,7 +90,7 @@ public class AttendanceController : ControllerBase
                 return (foundEnrollment, null);
             }
 
-            return (null, "Enrollment was not found.");
+            return (null, "EnrollmentNotFound");
         }
 
         var normalized = code.Trim().ToUpperInvariant();
@@ -93,12 +100,12 @@ public class AttendanceController : ControllerBase
 
         if (seatToken == null)
         {
-            return (null, "Enrollment was not found for the provided code.");
+            return (null, "EnrollmentNotFoundForCode");
         }
 
         if (seatToken.RedeemedByUserId == null)
         {
-            return (null, "Seat token has not been redeemed yet.");
+            return (null, "SeatTokenNotRedeemed");
         }
 
         var enrollments = await _context.Enrollments
@@ -122,7 +129,7 @@ public class AttendanceController : ControllerBase
             .FirstOrDefault();
 
         return selectedEnrollment == null
-            ? (null, "Enrollment was not found for the provided code.")
+            ? (null, "EnrollmentNotFoundForCode")
             : (selectedEnrollment, null);
     }
 
