@@ -1,11 +1,14 @@
-@media (max-width: 991.98px) {
+@media (max-width: 1399.98px) {
+  .site-header .container-xxl,
+  .app-content.container-xxl {
+    padding-inline: 1.5rem;
+  }
+}
+
+@media (max-width: 1199.98px) {
   #mainNav .nav-pill-group,
   #mainNav .nav-action-group {
     display: none !important;
-  }
-
-  .glass-offcanvas {
-    padding-bottom: 3rem;
   }
 
   .site-footer {
@@ -15,6 +18,54 @@
   .site-footer .brand-icon {
     margin-inline: auto;
   }
+
+  .hero__inner {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .hero__media {
+    order: -1;
+  }
+}
+
+@media (max-width: 991.98px) {
+  .glass-offcanvas {
+    padding-bottom: 3rem;
+  }
+
+  .hero {
+    padding: clamp(2.5rem, 8vw, 4rem);
+  }
+
+  .feature-grid {
+    grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  }
+
+  .course-card__actions {
+    width: 100%;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .app-content.container-xxl {
+    padding-inline: 1.25rem;
+  }
+
+  .hero__usp span,
+  .chip,
+  .badge-pill {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .course-card__schedule {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .course-card__price {
+    text-align: left;
+  }
 }
 
 @media (max-width: 575.98px) {
@@ -23,5 +74,28 @@
   .btn-icon,
   .theme-toggle {
     padding-block: 0.65rem;
+  }
+
+  .hero {
+    border-radius: var(--radius-2xl);
+  }
+
+  .hero__actions {
+    flex-direction: column;
+  }
+
+  .site-footer .footer-sections {
+    text-align: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card-hover,
+  .surface-card,
+  .feature-card,
+  .course-card,
+  .btn,
+  .chip {
+    transition-duration: 0.01ms !important;
   }
 }

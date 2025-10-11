@@ -10,7 +10,15 @@ const distPath = path.join(webRoot, 'dist');
 
 const cssSources = [
   path.join('lib', 'bootstrap', 'dist', 'css', 'bootstrap.min.css'),
-  path.join('css', 'site.css')
+  path.join('css', 'design-system.css'),
+  path.join('css', 'utilities.css'),
+  path.join('css', 'components', 'buttons.css'),
+  path.join('css', 'components', 'forms.css'),
+  path.join('css', 'components', 'modals.css'),
+  path.join('css', 'responsive.css'),
+  path.join('css', 'site.css'),
+  path.join('css', 'home.css'),
+  path.join('css', 'admin.css')
 ];
 
 const jsSources = [
