@@ -12,40 +12,39 @@
     <link rel="stylesheet" href="~/css/home.css" asp-append-version="true" />
 }
 
-<section class="home-hero">
-    <div class="container-xxl">
-        <div class="home-hero__grid">
-            <div class="home-hero__copy">
-                <h1 class="home-hero__title">@T["HeroMainHeading"]</h1>
-                <p class="home-hero__subtitle">@T["HeroSubheading"]</p>
+<div class="landing-page">
+    <section class="landing-hero">
+        <div class="landing-hero__inner">
+            <div class="landing-hero__copy">
+                <span class="eyebrow-pill">
+                    <i class="bi bi-stars" aria-hidden="true"></i>
+                    @T["HeroUSP2"]
+                </span>
+                <h1>@T["HeroMainHeading"]</h1>
+                <p class="lead">@T["HeroSubheading"]</p>
 
-                <div class="home-hero__usp-grid">
-                    <article class="home-hero__usp glass-card">
-                        <div class="home-hero__usp-icon" aria-hidden="true">
-                            <i class="bi bi-stars"></i>
-                        </div>
-                        <p class="home-hero__usp-text">@T["HeroUSP1"]</p>
-                    </article>
-                    <article class="home-hero__usp glass-card">
-                        <div class="home-hero__usp-icon" aria-hidden="true">
-                            <i class="bi bi-mortarboard"></i>
-                        </div>
-                        <p class="home-hero__usp-text">@T["HeroUSP2"]</p>
-                    </article>
-                    <article class="home-hero__usp glass-card">
-                        <div class="home-hero__usp-icon" aria-hidden="true">
-                            <i class="bi bi-shield-check"></i>
-                        </div>
-                        <p class="home-hero__usp-text">@T["HeroUSP3"]</p>
-                    </article>
+                <div class="landing-hero__usp">
+                    <span>
+                        <i class="bi bi-patch-check" aria-hidden="true"></i>
+                        @T["HeroUSP1"]
+                    </span>
+                    <span>
+                        <i class="bi bi-people" aria-hidden="true"></i>
+                        @T["HeroUSP3"]
+                    </span>
                 </div>
 
-                <div class="home-hero__actions">
-                    <a class="btn btn-light btn-lg fw-semibold shadow-sm" href="/Courses/Index">@T["HeroPrimaryCTA"]</a>
-                    <a class="btn btn-outline-light btn-lg fw-semibold" href="/About">@T["HeroSecondaryCTA"]</a>
+                <div class="landing-hero__actions">
+                    <a class="btn btn-primary btn-gradient" href="/Courses/Index">
+                        <span>@T["HeroPrimaryCTA"]</span>
+                        <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                    </a>
+                    <a class="btn btn-outline-light btn-soft" href="/Corporate">
+                        @T["HeroSecondaryCTA"]
+                    </a>
                 </div>
 
-                <div class="home-hero__chips" aria-label="@T["HeroSubheading"]">
+                <div class="landing-hero__chips" aria-label="@T["HeroTitle"]">
                     <span class="chip">@T["ChipOnline"]</span>
                     <span class="chip">@T["ChipRetraining"]</span>
                     <span class="chip">@T["ChipCertificate"]</span>
@@ -54,269 +53,263 @@
                 </div>
             </div>
 
-            <aside class="home-hero__aside" aria-label="@T["HeroSearchLabel"]">
-                <form class="home-search glass-panel" method="get" action="/Courses/Search" role="search">
+            <aside class="landing-hero__panel" aria-label="@T["HeroSearchLabel"]">
+                <div class="certificate-card">
+                    <div class="certificate-card__header">
+                        <div class="certificate-card__badge">
+                            <i class="bi bi-shield-check" aria-hidden="true"></i>
+                        </div>
+                        <div>
+                            <div class="certificate-card__eyebrow">@T["TrustGuarantee"]</div>
+                            <div class="certificate-card__title">ISO 9001</div>
+                        </div>
+                    </div>
+                    <div class="certificate-card__progress">
+                        <div class="progress-group">
+                            <div class="progress-label">@T["HeroUSP1"]</div>
+                            <div class="progress-bar"><span style="--progress: 92%"></span></div>
+                        </div>
+                        <div class="progress-group">
+                            <div class="progress-label">@T["HeroUSP2"]</div>
+                            <div class="progress-bar"><span style="--progress: 78%"></span></div>
+                        </div>
+                        <div class="progress-group">
+                            <div class="progress-label">@T["HeroUSP3"]</div>
+                            <div class="progress-bar"><span style="--progress: 85%"></span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <form class="landing-search" method="get" action="/Courses/Search" role="search">
                     <label class="visually-hidden" for="hero-search-input">@T["HeroSearchLabel"]</label>
-                    <div class="home-search__fields">
+                    <div class="landing-search__field">
+                        <i class="bi bi-search" aria-hidden="true"></i>
                         <input type="search"
-                               class="form-control form-control-lg"
                                id="hero-search-input"
                                name="query"
                                placeholder="@T["HeroSearchPlaceholder"]"
-                               aria-label="@T["HeroSearchAriaLabel"]">
-                        <button type="submit" class="btn btn-primary btn-lg fw-semibold">@T["HeroSubmit"]</button>
+                               aria-label="@T["HeroSearchAriaLabel"]" />
                     </div>
+                    <button type="submit" class="btn btn-primary btn-gradient">@T["HeroSubmit"]</button>
                 </form>
 
-                <div class="home-hero__insight glass-panel">
-                    <div class="home-hero__insight-item">
-                        <i class="bi bi-award" aria-hidden="true"></i>
-                        <p class="mb-0">@Html.Raw(T["TrustRating", "<span class=\"stat-number\" data-target=\"4.8\" data-decimals=\"1\" data-suffix=\"/5\">4.8</span>"])</p>
+                <dl class="landing-hero__insights">
+                    <div>
+                        <dt><i class="bi bi-award" aria-hidden="true"></i></dt>
+                        <dd>@Html.Raw(T["TrustRating", "<strong>4.8/5</strong>"])</dd>
                     </div>
-                    <div class="home-hero__insight-item">
-                        <i class="bi bi-people" aria-hidden="true"></i>
-                        <p class="mb-0">@Html.Raw(T["TrustGraduates", "<span class=\"stat-number\" data-target=\"10000\" data-suffix=\"+\">10000</span>"])</p>
+                    <div>
+                        <dt><i class="bi bi-people" aria-hidden="true"></i></dt>
+                        <dd>@Html.Raw(T["TrustGraduates", "<strong>10 000+</strong>"])</dd>
                     </div>
-                    <div class="home-hero__insight-item">
-                        <i class="bi bi-shield-check" aria-hidden="true"></i>
-                        <p class="mb-0">@T["TrustGuarantee"]</p>
+                    <div>
+                        <dt><i class="bi bi-patch-check" aria-hidden="true"></i></dt>
+                        <dd>@T["TrustCertificate"]</dd>
                     </div>
-                    <div class="home-hero__insight-item">
-                        <i class="bi bi-patch-check" aria-hidden="true"></i>
-                        <p class="mb-0">@T["TrustCertificate"]</p>
-                    </div>
-                </div>
+                </dl>
             </aside>
         </div>
 
-        <div class="home-hero__metrics glass-panel">
-            <div class="metric-card">
-                <span class="metric-card__value">20+</span>
-                <span class="metric-card__label">Let zkušeností</span>
-            </div>
-            <div class="metric-card">
-                <span class="metric-card__value">500+</span>
-                <span class="metric-card__label">Spokojených klientů</span>
-            </div>
-            <div class="metric-card">
-                <span class="metric-card__value">2000+</span>
-                <span class="metric-card__label">Realizovaných školení</span>
-            </div>
-            <div class="metric-card">
-                <span class="metric-card__value">15</span>
-                <span class="metric-card__label">Certifikovaných lektorů</span>
-            </div>
+        <div class="landing-hero__metrics" aria-label="@T["WhyChooseHeading"]">
+            <article>
+                <span class="metric-value">20+</span>
+                <span class="metric-label">@T["MetricExperienceLabel"]</span>
+            </article>
+            <article>
+                <span class="metric-value">500+</span>
+                <span class="metric-label">@T["MetricClientsLabel"]</span>
+            </article>
+            <article>
+                <span class="metric-value">2000+</span>
+                <span class="metric-label">@T["MetricCoursesLabel"]</span>
+            </article>
+            <article>
+                <span class="metric-value">15+</span>
+                <span class="metric-label">@T["MetricInstructorsLabel"]</span>
+            </article>
         </div>
-    </div>
-</section>
+    </section>
 
-<section class="home-section home-specializations">
-    <div class="container-xxl">
-        <div class="home-section__header">
+    <section class="landing-section specializations" id="specializations">
+        <header class="section-header">
             <span class="section-eyebrow">@T["HeroTitle"]</span>
-            <h2 class="home-section__title">Naše specializace</h2>
-            <p class="home-section__subtitle">Poskytujeme komplexní poradenství a školení pro následující normy.</p>
-        </div>
-        <div class="specialization-grid">
+            <h2>Naše specializace</h2>
+            <p>Poskytujeme komplexní poradenství a školení pro následující normy.</p>
+        </header>
+        <div class="specialization-list">
             @foreach (var specialization in specializations)
             {
-                <article class="specialization-card @specialization.IconColorClass">
-                    <div class="specialization-card__icon" aria-hidden="true">
+                <article class="specialization-card">
+                    <div class="specialization-card__icon @specialization.IconColorClass" aria-hidden="true">
                         <i class="@specialization.CardIconClass"></i>
                     </div>
                     <div class="specialization-card__body">
-                        <h3 class="specialization-card__title">@specialization.Name</h3>
-                        <p class="specialization-card__summary">@specialization.Summary</p>
+                        <h3>@specialization.Name</h3>
+                        <p>@specialization.Summary</p>
                     </div>
                 </article>
             }
         </div>
-    </div>
-</section>
+    </section>
 
-<section class="home-section home-courses">
-    <div class="container-xxl">
-        <div class="home-section__header">
-            <span class="section-eyebrow">@T["HowItWorksTitle"]</span>
-            <h2 class="home-section__title">Aktuální školení a kurzy</h2>
-            <p class="home-section__subtitle">Vyberte si z nejžádanějších kurzů, které vám pomohou splnit požadavky norem a posunout váš tým o krok dál.</p>
-        </div>
-        <div class="home-courses__grid">
-            <div class="home-courses__primary glass-panel">
-                <div class="home-courses__primary-header">
-                    <h3 class="h5 mb-0">@T["RecommendedForYou"]</h3>
-                    <a class="btn btn-outline-primary btn-sm" href="/Courses/Index">@T["RecommendedViewAll"]</a>
-                </div>
-                <div class="row g-3">
-                    @foreach (var c in Model.PicksForPersona)
-                    {
-                        <div class="col-12 col-md-6">
-                            @await Html.PartialAsync("/Pages/Shared/_CourseCard.cshtml", c)
+    <section class="landing-section courses" id="courses">
+        <header class="section-header">
+            <span class="section-eyebrow">@T["RecommendedForYou"]</span>
+            <h2>Aktuální školení a kurzy</h2>
+            <p>Vyberte si z nejžádanějších kurzů, které vám pomohou splnit požadavky norem a posunout váš tým o krok dál.</p>
+        </header>
+
+        <div class="courses-grid">
+            @if (Model.PicksForPersona.Any())
+            {
+                foreach (var course in Model.PicksForPersona)
+                {
+                    <article class="course-pill">
+                        <div class="course-pill__header">
+                            <h3>@course.Title</h3>
+                            <span class="badge">@course.Level</span>
                         </div>
-                    }
-                    @if (!Model.PicksForPersona.Any())
-                    {
-                        <div class="col-12 text-muted">@T["RecommendedEmpty"]</div>
-                    }
-                </div>
-            </div>
-            <aside class="home-courses__sidebar glass-panel">
-                <h3 class="h6 mb-3">@T["StartingSoon"]</h3>
-                <ul class="list-unstyled mb-4">
+                        <div class="course-pill__meta">
+                            <span><i class="bi bi-broadcast" aria-hidden="true"></i>@course.Mode</span>
+                            <span><i class="bi bi-geo-alt" aria-hidden="true"></i>@course.Type</span>
+                            <span><i class="bi bi-calendar" aria-hidden="true"></i>@course.DateDisplay</span>
+                        </div>
+                        <div class="course-pill__footer">
+                            <div>
+                                <div class="course-pill__duration">@course.DurationDisplay</div>
+                                <div class="course-pill__price">@course.PriceDisplay</div>
+                            </div>
+                            <div class="course-pill__actions">
+                                <a class="btn btn-outline-primary" href="@course.DetailsUrl">@T["CourseDetailsCTA"]</a>
+                                <form method="post" action="@course.AddToCartUrl" class="d-inline">
+                                    <input type="hidden" name="courseId" value="@course.Id" />
+                                    <button type="submit" class="btn btn-primary btn-gradient">@T["CourseEnrollCTA"]</button>
+                                </form>
+                            </div>
+                        </div>
+                    </article>
+                }
+            }
+            else
+            {
+                <div class="course-empty">@T["RecommendedEmpty"]</div>
+            }
+        </div>
+
+        <aside class="courses-sidebar">
+            <div class="sidebar-card">
+                <h3>@T["StartingSoon"]</h3>
+                <ul>
                     @foreach (var c in Model.FastSoonest)
                     {
-                        <li class="home-courses__list-item">
+                        <li>
                             <a asp-page="/Courses/Details" asp-route-id="@c.Id">@c.Title</a>
-                            <span class="text-muted">— @c.Date.ToString("d")</span>
+                            <span>@c.Date.ToString("d")</span>
                         </li>
                     }
                 </ul>
-                <a class="btn btn-outline-primary btn-sm" href="/Courses/Calendar"><i class="bi bi-calendar3"></i> @T["CalendarButton"]</a>
-            </aside>
-        </div>
-        <div class="home-courses__news glass-panel">
-            <h3 class="h6 mb-3">@T["NewsHeading"]</h3>
-            <div class="home-courses__news-pills">
-                @foreach (var a in Model.FreshNews)
+                <a class="btn btn-outline-light btn-soft" href="/Courses/Calendar">
+                    <i class="bi bi-calendar3" aria-hidden="true"></i>
+                    @T["CalendarButton"]
+                </a>
+            </div>
+
+            <div class="sidebar-card">
+                <h3>@T["NewsHeading"]</h3>
+                <div class="news-chips">
+                    @foreach (var article in Model.FreshNews)
+                    {
+                        <a class="news-chip" asp-page="/Articles/Details" asp-route-id="@article.Id">@article.Title</a>
+                    }
+                </div>
+            </div>
+        </aside>
+    </section>
+
+    @if (Model.FeaturedTestimonials.Any())
+    {
+        <section class="landing-section testimonials">
+            <header class="section-header">
+                <span class="section-eyebrow">@T["WhyChooseHeading"]</span>
+                <h2>Co říkají účastníci</h2>
+                <p>@T["WhyChooseDescription"]</p>
+            </header>
+            <div class="testimonial-grid">
+                @foreach (var testimonial in Model.FeaturedTestimonials)
                 {
-                    <a class="news-pill" asp-page="/Articles/Details" asp-route-id="@a.Id">@a.Title</a>
+                    <blockquote class="testimonial-card">
+                        <p>“@testimonial.Quote”</p>
+                        <footer>
+                            <strong>@testimonial.FullName</strong>
+                            @if (!string.IsNullOrWhiteSpace(testimonial.Position))
+                            {
+                                <span>@testimonial.Position</span>
+                            }
+                            @if (!string.IsNullOrWhiteSpace(testimonial.Company))
+                            {
+                                <span>@testimonial.Company</span>
+                            }
+                        </footer>
+                    </blockquote>
                 }
             </div>
-        </div>
-    </div>
-</section>
+        </section>
+    }
 
-<section class="home-section home-journey">
-    <div class="container-xxl">
-        <div class="home-section__header">
-            <span class="section-eyebrow">@T["HowItWorksTitle"]</span>
-            <h2 class="home-section__title">@T["HowItWorksTitle"]</h2>
-            <p class="home-section__subtitle">@T["StepRegisterDescription"]</p>
+    <section class="landing-section about" id="about">
+        <div class="about-card">
+            <h2>O společnosti Systémy jakosti s.r.o.</h2>
+            <p>@T["HeroSubheading"]</p>
+            <a class="btn btn-light" href="/About">Více o nás</a>
         </div>
-        <div class="home-journey__grid">
-            <article class="journey-card glass-card">
-                <div class="journey-card__icon" aria-hidden="true"><i class="bi bi-clipboard-data"></i></div>
-                <h3 class="journey-card__title">@T["StepSelectTitle"]</h3>
-                <p class="journey-card__text">@T["StepSelectDescription"]</p>
+    </section>
+
+    <section class="landing-section contact" id="contact">
+        <header class="section-header">
+            <span class="section-eyebrow">@T["ContactCtaHeading"]</span>
+            <h2>Kontaktujte nás</h2>
+            <p>Rádi zodpovíme vaše dotazy a poradíme s výběrem vhodného školení.</p>
+        </header>
+        <div class="contact-grid">
+            <article class="contact-card">
+                <div class="contact-icon"><i class="bi bi-telephone" aria-hidden="true"></i></div>
+                <h3>Telefon</h3>
+                <p>+420 XXX XXX XXX</p>
             </article>
-            <article class="journey-card glass-card">
-                <div class="journey-card__icon" aria-hidden="true"><i class="bi bi-calendar-check"></i></div>
-                <h3 class="journey-card__title">@T["StepRegisterTitle"]</h3>
-                <p class="journey-card__text">@T["StepRegisterDescription"]</p>
+            <article class="contact-card">
+                <div class="contact-icon"><i class="bi bi-envelope" aria-hidden="true"></i></div>
+                <h3>Email</h3>
+                <p>info@systemy-jakosti.cz</p>
             </article>
-            <article class="journey-card glass-card">
-                <div class="journey-card__icon" aria-hidden="true"><i class="bi bi-patch-check"></i></div>
-                <h3 class="journey-card__title">@T["StepPayTitle"]</h3>
-                <p class="journey-card__text">@T["StepPayDescription"]</p>
+            <article class="contact-card">
+                <div class="contact-icon"><i class="bi bi-geo-alt" aria-hidden="true"></i></div>
+                <h3>Adresa</h3>
+                <p>Praha, Česká republika</p>
             </article>
         </div>
-    </div>
-</section>
+    </section>
 
-<section class="home-section home-why">
-    <div class="container-xxl">
-        <div class="home-why__panel glass-panel">
-            <div class="home-why__content">
-                <h2 class="home-section__title mb-3">@T["WhyChooseHeading"]</h2>
-                <p class="home-section__subtitle">@T["WhyChooseDescription"]</p>
-            </div>
-            <div class="home-why__highlights">
-                <span class="chip chip--accent">@T["HeroUSP1"]</span>
-                <span class="chip chip--accent">@T["HeroUSP2"]</span>
-                <span class="chip chip--accent">@T["HeroUSP3"]</span>
-            </div>
+    <section class="landing-section why-us" id="why-us">
+        <header class="section-header">
+            <h2>@T["WhyChooseHeading"]</h2>
+            <p>@T["WhyChooseDescription"]</p>
+        </header>
+        <div class="why-us__grid">
+            <article class="why-us__card">
+                <div class="why-us__icon"><i class="bi bi-briefcase" aria-hidden="true"></i></div>
+                <h3>@T["HeroUSP1"]</h3>
+                <p>@T["StepSelectDescription"]</p>
+            </article>
+            <article class="why-us__card">
+                <div class="why-us__icon"><i class="bi bi-bullseye" aria-hidden="true"></i></div>
+                <h3>@T["HeroUSP2"]</h3>
+                <p>@T["StepRegisterDescription"]</p>
+            </article>
+            <article class="why-us__card">
+                <div class="why-us__icon"><i class="bi bi-people" aria-hidden="true"></i></div>
+                <h3>@T["HeroUSP3"]</h3>
+                <p>@T["StepPayDescription"]</p>
+            </article>
         </div>
-    </div>
-</section>
-
-@await Html.PartialAsync("/Pages/Shared/_CertificationTimeline.cshtml")
-
-@await Html.PartialAsync("/Pages/Shared/_TestimonialsCarousel.cshtml", Model.FeaturedTestimonials)
-
-<section class="home-section home-contact">
-    <div class="container-xxl">
-        <div class="home-contact__panel glass-panel">
-            <div>
-                <h2 class="home-section__title">@T["ContactCtaHeading"]</h2>
-                <p class="home-section__subtitle">@T["HeroSubheading"]</p>
-            </div>
-            <div class="home-contact__actions">
-                <a class="btn btn-primary btn-lg" href="/Contact">@T["HeroSecondaryCTA"]</a>
-                <a class="btn btn-outline-light btn-lg" href="/Services">@T["HeroPrimaryCTA"]</a>
-            </div>
-        </div>
-    </div>
-</section>
-
-@section Scripts {
-    <script src="~/js/testimonials.js" asp-append-version="true"></script>
-    <script>
-        (() => {
-            const locale = document.documentElement.lang || 'cs';
-
-            const animateStats = () => {
-                const stats = document.querySelectorAll('.stat-number');
-                if (!stats.length) return;
-
-                const duration = 2000;
-
-                const startAnimation = (el) => {
-                    const target = Number(el.getAttribute('data-target')) || 0;
-                    const decimals = Number(el.getAttribute('data-decimals')) || 0;
-                    const prefix = el.getAttribute('data-prefix') || '';
-                    const suffix = el.getAttribute('data-suffix') || '';
-
-                    const startTimestamp = performance.now();
-
-                    const renderValue = (value) => {
-                        const formatted = value.toLocaleString(locale, {
-                            minimumFractionDigits: decimals,
-                            maximumFractionDigits: decimals
-                        });
-                        el.textContent = `${prefix}${formatted}${suffix}`;
-                    };
-
-                    renderValue(0);
-
-                    const tick = (now) => {
-                        const progress = Math.min((now - startTimestamp) / duration, 1);
-                        const current = target * progress;
-                        renderValue(current);
-                        if (progress < 1) {
-                            requestAnimationFrame(tick);
-                        }
-                    };
-
-                    requestAnimationFrame(tick);
-                };
-
-                if (!('IntersectionObserver' in window)) {
-                    stats.forEach(startAnimation);
-                    return;
-                }
-
-                const observer = new IntersectionObserver((entries, obs) => {
-                    entries.forEach((entry) => {
-                        if (!entry.isIntersecting) return;
-                        startAnimation(entry.target);
-                        obs.unobserve(entry.target);
-                    });
-                }, {
-                    threshold: 0.4
-                });
-
-                stats.forEach((el) => observer.observe(el));
-            };
-
-            const init = () => {
-                animateStats();
-            };
-
-            if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', init);
-            } else {
-                init();
-            }
-        })();
-    </script>
-}
+    </section>
+</div>
