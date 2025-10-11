@@ -41,11 +41,17 @@
   <data name="Login" xml:space="preserve">
     <value>Sign in</value>
   </data>
+  <data name="LoginSubtitle" xml:space="preserve">
+    <value>Sign in to access personalised recommendations and your course history.</value>
+  </data>
   <data name="Logout" xml:space="preserve">
     <value>Sign out</value>
   </data>
   <data name="ManageAccount" xml:space="preserve">
     <value>Manage account</value>
+  </data>
+  <data name="NoAccountQuestion" xml:space="preserve">
+    <value>Don't have an account?</value>
   </data>
   <data name="Register" xml:space="preserve">
     <value>Create account</value>

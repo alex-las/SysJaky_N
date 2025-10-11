@@ -58,9 +58,9 @@ else
     {
         FormId = "navbar-login-form",
         FormCssClass = "login-dropdown-form",
-        HeadingLocalizationKey = "LoginTitle",
-        HeadingTagName = "h2",
-        HeadingId = "navbar-login-heading",
+        HeadingLocalizationKey = null,
+        HeadingTagName = null,
+        HeadingId = null,
         ValidationSummaryCssClass = "text-danger small mb-3",
         AspPage = "/Account/Login",
         IncludeAntiforgery = true,
@@ -80,7 +80,7 @@ else
 
     <div class="d-flex align-items-center gap-2">
         <div class="dropdown login-dropdown">
-            <button class="btn btn-outline-light btn-sm d-flex align-items-center gap-2"
+            <button class="btn btn-outline-light btn-sm d-flex align-items-center gap-2 login-dropdown-toggle"
                     id="navbarLoginDropdown"
                     type="button"
                     data-bs-toggle="dropdown"
@@ -91,11 +91,32 @@ else
                 <i class="bi bi-box-arrow-in-right" aria-hidden="true"></i>
                 <span>@Localizer["Login"]</span>
             </button>
-            <div class="dropdown-menu dropdown-menu-end p-3 login-dropdown-menu" aria-labelledby="navbarLoginDropdown" id="navbar-login-menu">
-                <partial name="~/Pages/Shared/Account/_LoginForm.cshtml" model="loginFormOptions" />
+            <div class="dropdown-menu dropdown-menu-end login-dropdown-menu" aria-labelledby="navbarLoginDropdown navbar-login-heading" id="navbar-login-menu">
+                <div class="login-dropdown-card">
+                    <div class="login-dropdown-header">
+                        <div class="login-dropdown-icon" aria-hidden="true">
+                            <i class="bi bi-shield-lock"></i>
+                        </div>
+                        <div class="login-dropdown-heading">
+                            <span class="login-dropdown-eyebrow text-uppercase fw-semibold">@Localizer["AccountMenuLabel"]</span>
+                            <h2 id="navbar-login-heading" class="login-dropdown-title mb-1">@Localizer["Login"]</h2>
+                            <p class="login-dropdown-subtitle mb-0">@Localizer["LoginSubtitle"]</p>
+                        </div>
+                    </div>
+                    <div class="login-dropdown-body">
+                        <partial name="~/Pages/Shared/Account/_LoginForm.cshtml" model="loginFormOptions" />
+                    </div>
+                    <div class="login-dropdown-footer">
+                        <span class="login-dropdown-footer-text">@Localizer["NoAccountQuestion"]</span>
+                        <a class="login-dropdown-footer-link" asp-page="/Account/Register" asp-route-returnUrl="@returnUrl">
+                            <span>@Localizer["Register"]</span>
+                            <i class="bi bi-arrow-right-short" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
-        <a class="btn btn-primary btn-sm d-flex align-items-center gap-2" asp-page="/Account/Register" asp-route-returnUrl="@returnUrl">
+        <a class="btn btn-light btn-sm d-flex align-items-center gap-2 login-register-button" asp-page="/Account/Register" asp-route-returnUrl="@returnUrl">
             <i class="bi bi-person-plus" aria-hidden="true"></i>
             <span>@Localizer["Register"]</span>
         </a>
