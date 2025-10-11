@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Persona_Individual" xml:space="preserve">
+    <value>Jednotlivec</value>
+  </data>
+  <data name="Persona_HRTeamLeader" xml:space="preserve">
+    <value>HR / týmový leader</value>
+  </data>
+  <data name="Persona_Laboratory" xml:space="preserve">
+    <value>Laboratoř</value>
+  </data>
+  <data name="Persona_QualityManager" xml:space="preserve">
+    <value>Manažer kvality</value>
+  </data>
+  <data name="Persona_Auditor" xml:space="preserve">
+    <value>Auditor</value>
+  </data>
+  <data name="Persona_ISOBeginner" xml:space="preserve">
+    <value>Začátečník v ISO</value>
+  </data>
+  <data name="Goal_GetOrRenewCertificate" xml:space="preserve">
+    <value>získat/obnovit certifikát</value>
+  </data>
+  <data name="Goal_QuicklyGainSkill" xml:space="preserve">
+    <value>rychle doplnit dovednost</value>
+  </data>
+  <data name="Goal_Retrain" xml:space="preserve">
+    <value>rekvalifikovat se</value>
+  </data>
+  <data name="Goal_TrainWholeTeam" xml:space="preserve">
+    <value>školení pro celý tým</value>
+  </data>
+  <data name="PersonaPlaceholder" xml:space="preserve">
+    <value>Jsem…</value>
+  </data>
+  <data name="GoalPlaceholder" xml:space="preserve">
+    <value>Chci…</value>
+  </data>
+</root>

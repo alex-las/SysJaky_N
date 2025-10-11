@@ -2,6 +2,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Security.Claims;
+using System.Linq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using System.Globalization;
@@ -16,7 +17,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Routing;
-using Microsoft.Extensions.Localization;
 using SysJaky_N.Controllers;
 using SysJaky_N.Data;
 using SysJaky_N.Models;
@@ -42,7 +42,8 @@ internal sealed class CourseReminderServiceTester
             ("Course reminders respect different time zones", RunCourseSelectionTestAsync),
             ("Course reminders avoid client-side evaluation warnings", RunClientEvaluationWarningTestAsync),
             ("Analytics dashboard aggregates sales using SQL grouping", RunAnalyticsAggregationTestAsync),
-            ("Account pages use localized validation and notifications", RunAccountLocalizationTestAsync)
+            ("Account pages use localized validation and notifications", RunAccountLocalizationTestAsync),
+            ("Course search dropdowns localize personas and goals", RunCourseSearchOptionsLocalizationTestAsync)
         };
 
         tests.AddRange(AdminLocalizationTester.GetTests());
@@ -226,6 +227,114 @@ internal sealed class CourseReminderServiceTester
             if (File.Exists(evaluationDatabasePath))
             {
                 File.Delete(evaluationDatabasePath);
+            }
+        }
+    }
+
+    private static Task RunCourseSearchOptionsLocalizationTestAsync()
+    {
+        var services = new ServiceCollection();
+        services.AddLogging();
+        services.AddLocalization(options => options.ResourcesPath = "Resources");
+        services.AddSingleton<ICourseSearchOptionProvider, SysJaky_N.Services.CourseSearchOptionProvider>();
+
+        using var serviceProvider = services.BuildServiceProvider();
+        var optionsProvider = serviceProvider.GetRequiredService<ICourseSearchOptionProvider>();
+
+        var originalCulture = CultureInfo.CurrentCulture;
+        var originalUiCulture = CultureInfo.CurrentUICulture;
+
+        try
+        {
+            VerifyCulture(
+                optionsProvider,
+                cultureName: "cs",
+                expectedPersonas: new[]
+                {
+                    "Jednotlivec",
+                    "HR / týmový leader",
+                    "Laboratoř",
+                    "Manažer kvality",
+                    "Auditor",
+                    "Začátečník v ISO"
+                },
+                expectedGoals: new[]
+                {
+                    "získat/obnovit certifikát",
+                    "rychle doplnit dovednost",
+                    "rekvalifikovat se",
+                    "školení pro celý tým"
+                },
+                expectedPersonaPlaceholder: "Jsem…",
+                expectedGoalPlaceholder: "Chci…");
+
+            VerifyCulture(
+                optionsProvider,
+                cultureName: "en",
+                expectedPersonas: new[]
+                {
+                    "Individual",
+                    "HR / Team Leader",
+                    "Laboratory",
+                    "Quality Manager",
+                    "Auditor",
+                    "ISO Beginner"
+                },
+                expectedGoals: new[]
+                {
+                    "obtain/renew a certificate",
+                    "quickly build a skill",
+                    "retrain",
+                    "train the whole team"
+                },
+                expectedPersonaPlaceholder: "I am…",
+                expectedGoalPlaceholder: "I want…");
+        }
+        finally
+        {
+            CultureInfo.CurrentCulture = originalCulture;
+            CultureInfo.CurrentUICulture = originalUiCulture;
+        }
+
+        return Task.CompletedTask;
+
+        static void VerifyCulture(
+            ICourseSearchOptionProvider provider,
+            string cultureName,
+            IReadOnlyList<string> expectedPersonas,
+            IReadOnlyList<string> expectedGoals,
+            string expectedPersonaPlaceholder,
+            string expectedGoalPlaceholder)
+        {
+            var culture = CultureInfo.GetCultureInfo(cultureName);
+            CultureInfo.CurrentCulture = culture;
+            CultureInfo.CurrentUICulture = culture;
+
+            EnsureSequenceEqual(provider.Personas, expectedPersonas, cultureName, "Personas");
+            EnsureSequenceEqual(provider.Goals, expectedGoals, cultureName, "Goals");
+            EnsureEqual(provider.PersonaPlaceholder, expectedPersonaPlaceholder, cultureName, "PersonaPlaceholder");
+            EnsureEqual(provider.GoalPlaceholder, expectedGoalPlaceholder, cultureName, "GoalPlaceholder");
+        }
+
+        static void EnsureSequenceEqual(
+            IReadOnlyList<string> actual,
+            IReadOnlyList<string> expected,
+            string cultureName,
+            string propertyName)
+        {
+            if (!actual.SequenceEqual(expected))
+            {
+                throw new InvalidOperationException(
+                    $"Expected {propertyName} for culture '{cultureName}' to equal [{string.Join(", ", expected)}], but found [{string.Join(", ", actual)}].");
+            }
+        }
+
+        static void EnsureEqual(string actual, string expected, string cultureName, string propertyName)
+        {
+            if (!string.Equals(actual, expected, StringComparison.Ordinal))
+            {
+                throw new InvalidOperationException(
+                    $"Expected {propertyName} for culture '{cultureName}' to equal '{expected}', but found '{actual}'.");
             }
         }
     }

@@ -1,4 +1,6 @@
-using System.Collections.ObjectModel;
+using System;
+using System.Linq;
+using Microsoft.Extensions.Localization;
 
 namespace SysJaky_N.Services
 {
@@ -15,30 +17,66 @@ namespace SysJaky_N.Services
 
     public class CourseSearchOptionProvider : ICourseSearchOptionProvider
     {
-        private static readonly IReadOnlyList<string> _personas = new ReadOnlyCollection<string>(new[]
+        private static readonly string[] PersonaKeys =
         {
-            "Jednotlivec",
-            "HR / týmový leader",
-            "Laboratoř",
-            "Manažer kvality",
-            "Auditor",
-            "Začátečník v ISO"
-        });
+            "Persona_Individual",
+            "Persona_HRTeamLeader",
+            "Persona_Laboratory",
+            "Persona_QualityManager",
+            "Persona_Auditor",
+            "Persona_ISOBeginner"
+        };
 
-        private static readonly IReadOnlyList<string> _goals = new ReadOnlyCollection<string>(new[]
+        private static readonly string[] GoalKeys =
         {
-            "získat/obnovit certifikát",
-            "rychle doplnit dovednost",
-            "rekvalifikovat se",
-            "školení pro celý tým"
-        });
+            "Goal_GetOrRenewCertificate",
+            "Goal_QuicklyGainSkill",
+            "Goal_Retrain",
+            "Goal_TrainWholeTeam"
+        };
 
-        public IReadOnlyList<string> Personas => _personas;
+        private readonly IStringLocalizer _localizer;
 
-        public IReadOnlyList<string> Goals => _goals;
+        public CourseSearchOptionProvider(IStringLocalizer<CourseSearchOptionProvider> localizer, IStringLocalizerFactory localizerFactory)
+        {
+            if (localizer is null)
+            {
+                throw new ArgumentNullException(nameof(localizer));
+            }
 
-        public string PersonaPlaceholder => "Jsem…";
+            if (localizerFactory is null)
+            {
+                throw new ArgumentNullException(nameof(localizerFactory));
+            }
 
-        public string GoalPlaceholder => "Chci…";
+            _localizer = ResolveLocalizer(localizer, localizerFactory);
+        }
+
+        public IReadOnlyList<string> Personas => PersonaKeys.Select(GetString).ToArray();
+
+        public IReadOnlyList<string> Goals => GoalKeys.Select(GetString).ToArray();
+
+        public string PersonaPlaceholder => GetString("PersonaPlaceholder");
+
+        public string GoalPlaceholder => GetString("GoalPlaceholder");
+
+        private string GetString(string key)
+        {
+            return _localizer[key].Value;
+        }
+
+        private static IStringLocalizer ResolveLocalizer(IStringLocalizer<CourseSearchOptionProvider> typedLocalizer, IStringLocalizerFactory localizerFactory)
+        {
+            var placeholder = typedLocalizer[nameof(PersonaPlaceholder)];
+            if (!placeholder.ResourceNotFound)
+            {
+                return typedLocalizer;
+            }
+
+            var assemblyName = typeof(CourseSearchOptionProvider).Assembly.GetName().Name
+                ?? throw new InvalidOperationException("Unable to determine assembly name for localization resources.");
+
+            return localizerFactory.Create("Resources.Services.CourseSearchOptionProvider", assemblyName);
+        }
     }
 }

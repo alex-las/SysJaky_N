@@ -60,6 +60,15 @@
     <NpmInstallInput Include="package-lock.json" />
   </ItemGroup>
 
+  <ItemGroup>
+    <EmbeddedResource Update="Resources/Services/CourseSearchOptionProvider.resx">
+      <LogicalName>SysJaky_N.Resources.Services.CourseSearchOptionProvider.resources</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources/Services/CourseSearchOptionProvider.en.resx">
+      <LogicalName>SysJaky_N.Resources.Services.CourseSearchOptionProvider.en.resources</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+
   <Target Name="EnsureNodeModules"
           Inputs="@(NpmInstallInput)"
           Outputs="node_modules/.install-stamp"
