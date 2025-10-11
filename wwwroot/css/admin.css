@@ -75,13 +75,13 @@ body.admin-shell {
 
 .btn-admin-primary,
 .admin-nav__cta .btn {
-  background-color: var(--color-primary-600);
+  background-color: var(--color-brand-600);
   color: #fff;
   border: 0;
   border-radius: var(--radius-pill);
   padding: 0.65rem 1.5rem;
   font-weight: 600;
-  box-shadow: 0 12px 24px rgba(42, 116, 255, 0.28);
+  box-shadow: 0 12px 24px rgba(21, 93, 230, 0.28);
   transition: transform var(--transition-snappy), box-shadow var(--transition-snappy);
 }
 
@@ -97,14 +97,14 @@ body.admin-shell {
 .admin-nav__cta .btn:hover,
 .admin-nav__cta .btn:focus-visible {
   transform: translateY(-1px);
-  box-shadow: 0 16px 36px rgba(79, 70, 229, 0.35);
+  box-shadow: 0 16px 36px rgba(15, 78, 210, 0.35);
   color: #fff;
 }
 
 .btn-admin-secondary {
-  background: rgba(42, 116, 255, 0.08);
+  background: rgba(21, 93, 230, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.4);
-  color: var(--color-primary-700);
+  color: var(--color-brand-700);
   border-radius: var(--radius-pill);
   padding: 0.65rem 1.5rem;
   font-weight: 600;
@@ -113,8 +113,8 @@ body.admin-shell {
 
 .btn-admin-secondary:hover,
 .btn-admin-secondary:focus-visible {
-  background: rgba(79, 70, 229, 0.15);
-  color: var(--color-primary-800);
+  background: rgba(15, 78, 210, 0.18);
+  color: var(--color-brand-800);
   transform: translateY(-1px);
 }
 
@@ -130,9 +130,9 @@ body.admin-shell {
 
 .btn-admin-ghost:hover,
 .btn-admin-ghost:focus-visible {
-  background: rgba(79, 70, 229, 0.08);
-  border-color: var(--color-primary-500);
-  color: var(--color-primary-700);
+  background: rgba(15, 78, 210, 0.1);
+  border-color: var(--color-brand-500);
+  color: var(--color-brand-700);
 }
 
 main.admin-main {
@@ -244,7 +244,7 @@ main.admin-main {
 }
 
 .admin-table tbody tr:hover {
-  background: rgba(79, 70, 229, 0.05);
+  background: rgba(15, 78, 210, 0.08);
 }
 
 .admin-pagination {
@@ -268,9 +268,9 @@ main.admin-main {
 .admin-pagination .page-item.active .page-link,
 .admin-pagination a:hover,
 .admin-pagination a:focus-visible {
-  background: rgba(79, 70, 229, 0.1);
-  color: var(--color-primary-700);
-  border-color: var(--color-primary-500);
+  background: rgba(15, 78, 210, 0.12);
+  color: var(--color-brand-700);
+  border-color: var(--color-brand-500);
 }
 
 .admin-status-badge {
@@ -407,7 +407,7 @@ main.admin-main {
 }
 
 [data-theme="dark"] .admin-table tbody tr:hover {
-  background: rgba(79, 70, 229, 0.22);
+  background: rgba(21, 93, 230, 0.28);
 }
 
 [data-theme="dark"] .btn-admin-ghost {
@@ -417,7 +417,7 @@ main.admin-main {
 
 [data-theme="dark"] .btn-admin-ghost:hover,
 [data-theme="dark"] .btn-admin-ghost:focus-visible {
-  background: rgba(79, 70, 229, 0.22);
+  background: rgba(21, 93, 230, 0.28);
   border-color: rgba(129, 140, 248, 0.8);
   color: rgba(255, 255, 255, 0.94);
 }

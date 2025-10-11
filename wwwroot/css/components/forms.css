@@ -12,8 +12,8 @@
 .form-select:focus,
 .form-control:focus-visible,
 .form-select:focus-visible {
-  border-color: var(--color-primary-600);
-  box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.25);
+  border-color: var(--color-brand-600);
+  box-shadow: 0 0 0 4px rgba(21, 93, 230, 0.25);
   background-color: var(--surface-card);
   color: var(--color-neutral-700);
 }
@@ -32,13 +32,13 @@ textarea.form-control {
 }
 
 .form-check-input:focus {
-  box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.25);
-  border-color: var(--color-primary-600);
+  box-shadow: 0 0 0 4px rgba(21, 93, 230, 0.25);
+  border-color: var(--color-brand-600);
 }
 
 .form-check-input:checked {
-  background-color: var(--color-primary-600);
-  border-color: var(--color-primary-600);
+  background-color: var(--color-brand-600);
+  border-color: var(--color-brand-600);
 }
 
 .input-group-text {
@@ -51,7 +51,7 @@ textarea.form-control {
 .dropdown-item:focus-visible,
 .navbar-toggler:focus-visible,
 .form-select:focus-visible {
-  outline: 3px solid rgba(6, 182, 212, 0.55);
+  outline: 3px solid rgba(40, 179, 159, 0.55);
   outline-offset: 2px;
   background-color: rgba(15, 23, 42, 0.85);
   color: var(--surface-card);
@@ -139,8 +139,8 @@ textarea.form-control {
 
 .login-dropdown-card .form-control:focus {
   background-color: rgba(15, 23, 42, 0.65);
-  border-color: rgba(96, 165, 250, 0.75);
-  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.24);
+  border-color: rgba(21, 93, 230, 0.75);
+  box-shadow: 0 0 0 4px rgba(21, 93, 230, 0.24);
 }
 
 .login-dropdown-footer {
@@ -156,7 +156,7 @@ textarea.form-control {
 
 .login-dropdown-footer-link:hover,
 .login-dropdown-footer-link:focus-visible {
-  color: rgba(59, 130, 246, 0.95);
+  color: rgba(21, 93, 230, 0.95);
 }
 
 [data-theme="dark"] .form-control,
@@ -170,8 +170,8 @@ textarea.form-control {
 [data-theme="dark"] .form-control:focus,
 [data-theme="dark"] .form-select:focus {
   background-color: rgba(30, 41, 59, 0.75);
-  border-color: rgba(96, 165, 250, 0.75);
-  box-shadow: 0 0 0 4px rgba(96, 165, 250, 0.28);
+  border-color: rgba(21, 93, 230, 0.75);
+  box-shadow: 0 0 0 4px rgba(21, 93, 230, 0.28);
 }
 
 [data-theme="dark"] .form-text {
