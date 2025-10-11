@@ -41,6 +41,7 @@ internal sealed class CourseReminderServiceTester
         var tests = new List<(string Name, Func<Task> Execute)>
         {
             ("Page model localizers resolve resources", RunPageModelLocalizationTestAsync),
+            ("Payment service formats localized line items", RunPaymentServiceLocalizationTestAsync),
             ("Course reminders respect different time zones", RunCourseSelectionTestAsync),
             ("Course reminders avoid client-side evaluation warnings", RunClientEvaluationWarningTestAsync),
             ("Analytics dashboard aggregates sales using SQL grouping", RunAnalyticsAggregationTestAsync),
