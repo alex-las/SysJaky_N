@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="CourseImageAlt" xml:space="preserve">
+    <value>Obrázek kurzu {0}</value>
+  </data>
+  <data name="OutcomeFallback1" xml:space="preserve">
+    <value>Praktické postupy pro každodenní práci</value>
+  </data>
+  <data name="OutcomeFallback2" xml:space="preserve">
+    <value>Aktuální normy a legislativní změny</value>
+  </data>
+  <data name="OutcomeFallback3" xml:space="preserve">
+    <value>Ověřené tipy a doporučení z praxe</value>
+  </data>
+  <data name="LevelSummaryBeginner" xml:space="preserve">
+    <value>Začínající profesionály, kteří se chtějí rychle zorientovat.</value>
+  </data>
+  <data name="LevelSummaryIntermediate" xml:space="preserve">
+    <value>Specialisty se základní zkušeností, kteří potřebují posunout své dovednosti dál.</value>
+  </data>
+  <data name="LevelSummaryAdvanced" xml:space="preserve">
+    <value>Zkušené odborníky hledající detailní vhled do pokročilých témat.</value>
+  </data>
+  <data name="LevelSummaryDefault" xml:space="preserve">
+    <value>Odborníky se zájmem o prohloubení znalostí.</value>
+  </data>
+  <data name="LevelLimitationBeginner" xml:space="preserve">
+    <value>Účastníky očekávající velmi pokročilé nebo strategické know-how.</value>
+  </data>
+  <data name="LevelLimitationIntermediate" xml:space="preserve">
+    <value>Úplné začátečníky bez předchozích zkušeností v dané oblasti.</value>
+  </data>
+  <data name="LevelLimitationAdvanced" xml:space="preserve">
+    <value>Účastníky hledající jen úvodní seznámení s problematikou.</value>
+  </data>
+  <data name="LevelLimitationDefault" xml:space="preserve">
+    <value>Účastníky mimo zaměření kurzu.</value>
+  </data>
+  <data name="ModePreferenceSelfPaced" xml:space="preserve">
+    <value>Lidi, kteří preferují studium vlastním tempem s možností vracet se k materiálům.</value>
+  </data>
+  <data name="ModePreferenceInstructorLed" xml:space="preserve">
+    <value>Účastníky, kteří chtějí interaktivní vedení lektorem a prostor pro dotazy.</value>
+  </data>
+  <data name="ModePreferenceBlended" xml:space="preserve">
+    <value>Týmy, které ocení kombinaci samostudia a živých setkání.</value>
+  </data>
+  <data name="ModePreferenceDefault" xml:space="preserve">
+    <value>Zájemce o flexibilní vzdělávání.</value>
+  </data>
+  <data name="ModeLimitationSelfPaced" xml:space="preserve">
+    <value>Zájemce vyžadující intenzivní osobní vedení lektora v reálném čase.</value>
+  </data>
+  <data name="ModeLimitationInstructorLed" xml:space="preserve">
+    <value>Ty, kteří preferují zcela samostatné tempo bez pevně daných termínů.</value>
+  </data>
+  <data name="ModeLimitationBlended" xml:space="preserve">
+    <value>Účastníky, kteří nemohou kombinovat online studium se živými setkáními.</value>
+  </data>
+  <data name="ModeLimitationDefault" xml:space="preserve">
+    <value>Účastníky s odlišnými preferencemi formy výuky.</value>
+  </data>
+  <data name="AudienceCourseGroup" xml:space="preserve">
+    <value>Členy vzdělávacího bloku „{0}“ hledající navazující obsah.</value>
+  </data>
+  <data name="AudienceInactive" xml:space="preserve">
+    <value>Zájemce o aktuálně otevřený termín – kurz je dočasně pozastaven.</value>
+  </data>
+  <data name="UpcomingTermsHeading" xml:space="preserve">
+    <value>Nejbližší termíny</value>
+  </data>
+  <data name="TermDate" xml:space="preserve">
+    <value>Datum</value>
+  </data>
+  <data name="TermLocation" xml:space="preserve">
+    <value>Místo</value>
+  </data>
+  <data name="TermAvailability" xml:space="preserve">
+    <value>Dostupnost</value>
+  </data>
+  <data name="ScarceSeatsOne" xml:space="preserve">
+    <value>Poslední {0} místo</value>
+  </data>
+  <data name="ScarceSeatsFew" xml:space="preserve">
+    <value>Poslední {0} místa</value>
+  </data>
+  <data name="ScarceSeatsMany" xml:space="preserve">
+    <value>Poslední {0} míst</value>
+  </data>
+  <data name="TermOnline" xml:space="preserve">
+    <value>Online</value>
+  </data>
+  <data name="TermFull" xml:space="preserve">
+    <value>Obsazeno</value>
+  </data>
+  <data name="TermAvailable" xml:space="preserve">
+    <value>Volno</value>
+  </data>
+  <data name="TermDetailButton" xml:space="preserve">
+    <value>Detail</value>
+  </data>
+  <data name="TermIcsButton" xml:space="preserve">
+    <value>.ics</value>
+  </data>
+  <data name="AboutCourse" xml:space="preserve">
+    <value>O kurzu</value>
+  </data>
+  <data name="LearningHeading" xml:space="preserve">
+    <value>Co se naučíte</value>
+  </data>
+  <data name="AudienceForHeading" xml:space="preserve">
+    <value>Pro koho je</value>
+  </data>
+  <data name="AudienceNotForHeading" xml:space="preserve">
+    <value>Pro koho není</value>
+  </data>
+  <data name="DetailsHeading" xml:space="preserve">
+    <value>Detaily</value>
+  </data>
+  <data name="DetailDateLabel" xml:space="preserve">
+    <value>Termín</value>
+  </data>
+  <data name="DetailDurationLabel" xml:space="preserve">
+    <value>Délka</value>
+  </data>
+  <data name="MinutesValue" xml:space="preserve">
+    <value>{0} min</value>
+  </data>
+  <data name="NextTermPlaceholder" xml:space="preserve">
+    <value>Termíny budou brzy doplněny.</value>
+  </data>
+  <data name="DetailLevelLabel" xml:space="preserve">
+    <value>Úroveň</value>
+  </data>
+  <data name="DetailModeLabel" xml:space="preserve">
+    <value>Forma</value>
+  </data>
+  <data name="PlaceholderText" xml:space="preserve">
+    <value>Informace budou doplněny.</value>
+  </data>
+  <data name="TabAudienceTitle" xml:space="preserve">
+    <value>Pro koho je kurz určen</value>
+  </data>
+  <data name="TabLearningTitle" xml:space="preserve">
+    <value>Co se naučíte</value>
+  </data>
+  <data name="TabProgramTitle" xml:space="preserve">
+    <value>Program kurzu</value>
+  </data>
+  <data name="TabInstructorTitle" xml:space="preserve">
+    <value>Lektor</value>
+  </data>
+  <data name="TabOrganizationTitle" xml:space="preserve">
+    <value>Organizační pokyny</value>
+  </data>
+  <data name="TabFollowUpTitle" xml:space="preserve">
+    <value>Navazující kurzy</value>
+  </data>
+  <data name="TabCertificateTitle" xml:space="preserve">
+    <value>Certifikát</value>
+  </data>
+  <data name="LearningKeyKnowledgeTitle" xml:space="preserve">
+    <value>Klíčové znalosti</value>
+  </data>
+  <data name="LearningCaseStudiesTitle" xml:space="preserve">
+    <value>Případové studie a cvičení</value>
+  </data>
+  <data name="LearningCertificationsTitle" xml:space="preserve">
+    <value>Certifikace</value>
+  </data>
+  <data name="BlockHeading" xml:space="preserve">
+    <value>Součást vzdělávacího bloku</value>
+  </data>
+  <data name="BlockNameLabel" xml:space="preserve">
+    <value>Název bloku</value>
+  </data>
+  <data name="BlockPriceLabel" xml:space="preserve">
+    <value>Cena bloku</value>
+  </data>
+  <data name="OrderBlockButton" xml:space="preserve">
+    <value>Objednat celý blok</value>
+  </data>
+  <data name="LessonsHeading" xml:space="preserve">
+    <value>Lekce</value>
+  </data>
+  <data name="LessonOrderLabel" xml:space="preserve">
+    <value>Lekce pořadí: {0}</value>
+  </data>
+  <data name="LessonTypeLabel" xml:space="preserve">
+    <value>Typ</value>
+  </data>
+  <data name="LessonOpenContent" xml:space="preserve">
+    <value>Otevřít obsah</value>
+  </data>
+  <data name="LessonCompletion" xml:space="preserve">
+    <value>{0}% dokončeno</value>
+  </data>
+  <data name="LessonLastSeen" xml:space="preserve">
+    <value>Naposledy {0}</value>
+  </data>
+  <data name="LessonProgressLabel" xml:space="preserve">
+    <value>Progres</value>
+  </data>
+  <data name="LessonProgressAria" xml:space="preserve">
+    <value>Procento dokončení lekce pořadí {0}</value>
+  </data>
+  <data name="LessonSave" xml:space="preserve">
+    <value>Uložit</value>
+  </data>
+  <data name="LessonMarkDone" xml:space="preserve">
+    <value>Dokončeno</value>
+  </data>
+  <data name="SignInToTrack" xml:space="preserve">
+    <value>Přihlaste se pro sledování postupu.</value>
+  </data>
+  <data name="NoLessons" xml:space="preserve">
+    <value>Pro tento kurz zatím nejsou dostupné lekce.</value>
+  </data>
+  <data name="PriceHeading" xml:space="preserve">
+    <value>Cena</value>
+  </data>
+  <data name="CoursePriceLabel" xml:space="preserve">
+    <value>Cena kurzu</value>
+  </data>
+  <data name="PriceBenefitCertificate" xml:space="preserve">
+    <value>Certifikát v ceně (pokud je u termínu uvedeno)</value>
+  </data>
+  <data name="PriceBenefitMaterials" xml:space="preserve">
+    <value>Materiály ke stažení</value>
+  </data>
+  <data name="PriceBenefitCancellation" xml:space="preserve">
+    <value>Snadné storno do 5 pracovních dnů</value>
+  </data>
+  <data name="EnrollButton" xml:space="preserve">
+    <value>Přihlásit se</value>
+  </data>
+  <data name="ContactSubject" xml:space="preserve">
+    <value>Firemní poptávka: {0}</value>
+  </data>
+  <data name="TeamButton" xml:space="preserve">
+    <value>Pro tým</value>
+  </data>
+  <data name="WishlistButton" xml:space="preserve">
+    <value>Přidat do wishlistu</value>
+  </data>
+  <data name="AvailableTermsHeading" xml:space="preserve">
+    <value>Dostupné termíny</value>
+  </data>
+  <data name="TermsComingSoon" xml:space="preserve">
+    <value>Termíny budou doplněny.</value>
+  </data>
+  <data name="ReviewsHeading" xml:space="preserve">
+    <value>Hodnocení</value>
+  </data>
+  <data name="AddReviewHeading" xml:space="preserve">
+    <value>Přidat hodnocení</value>
+  </data>
+  <data name="SubmitReviewButton" xml:space="preserve">
+    <value>Odeslat hodnocení</value>
+  </data>
+  <data name="SignInLinkText" xml:space="preserve">
+    <value>Přihlaste se</value>
+  </data>
+  <data name="ReviewSignInSuffix" xml:space="preserve">
+    <value>pro přidání hodnocení.</value>
+  </data>
+</root>

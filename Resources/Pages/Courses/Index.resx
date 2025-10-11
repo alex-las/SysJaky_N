@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Title" xml:space="preserve">
+    <value>Kurzy a školení</value>
+  </data>
+  <data name="BreadcrumbHome" xml:space="preserve">
+    <value>Domů</value>
+  </data>
+  <data name="BreadcrumbCourses" xml:space="preserve">
+    <value>Kurzy</value>
+  </data>
+  <data name="TabList" xml:space="preserve">
+    <value>Seznam</value>
+  </data>
+  <data name="TabCalendar" xml:space="preserve">
+    <value>Kalendář</value>
+  </data>
+  <data name="ResultCount" xml:space="preserve">
+    <value>{0} výsledků</value>
+  </data>
+  <data name="ResetFilters" xml:space="preserve">
+    <value>Zrušit filtry</value>
+  </data>
+  <data name="FiltersButton" xml:space="preserve">
+    <value>Filtry</value>
+  </data>
+  <data name="SearchPlaceholder" xml:space="preserve">
+    <value>Co se chcete naučit? Zadejte kurz, nástroj nebo dovednost</value>
+  </data>
+  <data name="SearchLabel" xml:space="preserve">
+    <value>Hledat</value>
+  </data>
+  <data name="NormsLabel" xml:space="preserve">
+    <value>Normy</value>
+  </data>
+  <data name="CitiesLabel" xml:space="preserve">
+    <value>Města</value>
+  </data>
+  <data name="LevelsLabel" xml:space="preserve">
+    <value>Úrovně</value>
+  </data>
+  <data name="TypesLabel" xml:space="preserve">
+    <value>Forma</value>
+  </data>
+  <data name="PriceRangeLabel" xml:space="preserve">
+    <value>Rozsah ceny</value>
+  </data>
+  <data name="PriceLabel" xml:space="preserve">
+    <value>Cena</value>
+  </data>
+  <data name="SaveFilters" xml:space="preserve">
+    <value>Uložit filtry</value>
+  </data>
+  <data name="FiltersSaved" xml:space="preserve">
+    <value>Filtry byly uloženy.</value>
+  </data>
+  <data name="CategoriesLabel" xml:space="preserve">
+    <value>Kategorie kurzů</value>
+  </data>
+  <data name="CategoryCountFormat" xml:space="preserve">
+    <value>{0} ({1})</value>
+  </data>
+  <data name="PaginationLabel" xml:space="preserve">
+    <value>Stránkování kurzů</value>
+  </data>
+  <data name="Previous" xml:space="preserve">
+    <value>Předchozí</value>
+  </data>
+  <data name="Next" xml:space="preserve">
+    <value>Další</value>
+  </data>
+  <data name="CompareBarCountFormat" xml:space="preserve">
+    <value>{0} vybráno</value>
+  </data>
+  <data name="CompareBarCta" xml:space="preserve">
+    <value>Porovnat</value>
+  </data>
+  <data name="Compare" xml:space="preserve">
+    <value>Porovnat</value>
+  </data>
+  <data name="CompareLimit" xml:space="preserve">
+    <value>Můžete porovnat maximálně 3 kurzy.</value>
+  </data>
+  <data name="StartsInDays" xml:space="preserve">
+    <value>Začíná za {0} dní</value>
+  </data>
+  <data name="StartsToday" xml:space="preserve">
+    <value>Začíná dnes</value>
+  </data>
+  <data name="AlreadyStarted" xml:space="preserve">
+    <value>Kurz probíhá</value>
+  </data>
+  <data name="OccupancyLabel" xml:space="preserve">
+    <value>Obsazenost</value>
+  </data>
+  <data name="OccupancyAria" xml:space="preserve">
+    <value>Obsazenost {0}%</value>
+  </data>
+  <data name="WishlistAdd" xml:space="preserve">
+    <value>Přidat do oblíbených</value>
+  </data>
+  <data name="WishlistRemove" xml:space="preserve">
+    <value>Odebrat z oblíbených</value>
+  </data>
+  <data name="PreviewLabel" xml:space="preserve">
+    <value>Rychlý náhled</value>
+  </data>
+  <data name="IsoBadgeAria" xml:space="preserve">
+    <value>Certifikace {0}</value>
+  </data>
+  <data name="IsoBadgeListAria" xml:space="preserve">
+    <value>ISO certifikace</value>
+  </data>
+  <data name="ModeAria" xml:space="preserve">
+    <value>Režim: {0}</value>
+  </data>
+  <data name="LevelAria" xml:space="preserve">
+    <value>Úroveň: {0}</value>
+  </data>
+  <data name="CertificateAria" xml:space="preserve">
+    <value>Informace o certifikátu</value>
+  </data>
+  <data name="CertificateAvailable" xml:space="preserve">
+    <value>Certifikát</value>
+  </data>
+  <data name="CertificateUnavailable" xml:space="preserve">
+    <value>Bez certifikátu</value>
+  </data>
+  <data name="AdditionalInfo" xml:space="preserve">
+    <value>Podrobnosti</value>
+  </data>
+  <data name="Details" xml:space="preserve">
+    <value>Detail</value>
+  </data>
+  <data name="Enroll" xml:space="preserve">
+    <value>Přihlásit</value>
+  </data>
+  <data name="MetaInformation" xml:space="preserve">
+    <value>Parametry kurzu</value>
+  </data>
+  <data name="CourseDateAria" xml:space="preserve">
+    <value>Datum konání {0}</value>
+  </data>
+  <data name="CourseDateLabel" xml:space="preserve">
+    <value>Datum</value>
+  </data>
+  <data name="TypeAria" xml:space="preserve">
+    <value>Typ: {0}</value>
+  </data>
+  <data name="NoCoursesFound" xml:space="preserve">
+    <value>Žádné kurzy neodpovídají výběru.</value>
+  </data>
+  <data name="FetchError" xml:space="preserve">
+    <value>Nepodařilo se načíst kurzy.</value>
+  </data>
+  <data name="PageStatus" xml:space="preserve">
+    <value>Strana {0} z {1}</value>
+  </data>
+  <data name="RemoveFilter" xml:space="preserve">
+    <value>Odebrat filtr</value>
+  </data>
+</root>

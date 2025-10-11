@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Heading" xml:space="preserve">
+    <value>Přehled klíčových norem ISO a IATF</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>Vyberte si normu a objevte doporučené kurzy, které vám pomohou splnit požadavky na kvalitu, bezpečnost a compliance.</value>
+  </data>
+  <data name="RecommendedCoursesHeading" xml:space="preserve">
+    <value>Doporučené kurzy</value>
+  </data>
+  <data name="StandardsJson" xml:space="preserve">
+    <value><![CDATA[[
+  {
+    "Title": "ISO 9001 - Systém managementu kvality",
+    "Icon": "bi-patch-check-fill",
+    "Description": "Pro všechny typy organizací usilujících o zvyšování kvality výrobků a služeb. Zaměření na procesní řízení, management rizik, spokojenost zákazníků a kontinuální zlepšování.",
+    "Courses": [
+      {
+        "Name": "Úvod do ISO 9001",
+        "Url": "/Courses/Index?search=ISO%209001"
+      },
+      {
+        "Name": "Manažer kvality",
+        "Url": "/Courses/Index?search=Mana%C5%BEer%20kvality"
+      },
+      {
+        "Name": "Interní auditor kvality",
+        "Url": "/Courses/Index?search=Intern%C3%AD%20auditor%20kvality"
+      }
+    ]
+  },
+  {
+    "Title": "ISO 14001 - Environmentální management",
+    "Icon": "bi-globe2",
+    "Description": "Pro organizace, které chtějí systematicky řídit environmentální dopady své činnosti. Snižování ekologické stopy, compliance s legislativou, šetrné hospodaření se zdroji.",
+    "Courses": [
+      {
+        "Name": "Interní auditor EMS",
+        "Url": "/Courses/Index?search=Intern%C3%AD%20auditor%20EMS"
+      },
+      {
+        "Name": "Manažer integrovaného systému",
+        "Url": "/Courses/Index?search=Mana%C5%BEer%20integrovan%C3%A9ho%20syst%C3%A9mu"
+      }
+    ]
+  },
+  {
+    "Title": "ISO/IEC 17025 - Akreditace laboratoří",
+    "Icon": "bi-diagram-3",
+    "Description": "Mezinárodně uznávaný standard pro zkušební a kalibrační laboratoře. Zajišťuje technickou způsobilost, validitu výsledků a srovnatelnost měření.",
+    "Courses": [
+      {
+        "Name": "Manažer kvality laboratoře",
+        "Url": "/Courses/Index?search=Mana%C5%BEer%20kvality%20laborato%C5%99e"
+      },
+      {
+        "Name": "Interní auditor laboratoře",
+        "Url": "/Courses/Index?search=Intern%C3%AD%20auditor%20laborato%C5%99e"
+      },
+      {
+        "Name": "Metrolog",
+        "Url": "/Courses/Index?search=Metrolog"
+      }
+    ]
+  },
+  {
+    "Title": "ISO 15189 - Zdravotnické laboratoře",
+    "Icon": "bi-hospital",
+    "Description": "Specifické požadavky pro zdravotnické laboratoře. Kombinuje technické požadavky s managementem kvality zaměřeným na bezpečnost pacientů.",
+    "Courses": [
+      {
+        "Name": "Manažer kvality zdravotnické laboratoře",
+        "Url": "/Courses/Index?search=Mana%C5%BEer%20kvality%20zdravotnick%C3%A9%20laborato%C5%99e"
+      },
+      {
+        "Name": "Interní auditor zdravotnické laboratoře",
+        "Url": "/Courses/Index?search=Intern%C3%AD%20auditor%20zdravotnick%C3%A9%20laborato%C5%99e"
+      }
+    ]
+  },
+  {
+    "Title": "ISO 45001 - BOZP",
+    "Icon": "bi-shield-plus",
+    "Description": "Systém managementu bezpečnosti a ochrany zdraví při práci. Prevence pracovních úrazů, identifikace rizik, zapojení zaměstnanců.",
+    "Courses": [
+      {
+        "Name": "Interní auditor BOZP",
+        "Url": "/Courses/Index?search=Intern%C3%AD%20auditor%20BOZP"
+      },
+      {
+        "Name": "Manažer integrovaného systému",
+        "Url": "/Courses/Index?search=Mana%C5%BEer%20integrovan%C3%A9ho%20syst%C3%A9mu"
+      }
+    ]
+  },
+  {
+    "Title": "ISO 27001 - Informační bezpečnost",
+    "Icon": "bi-shield-lock-fill",
+    "Description": "Ochrana citlivých informací, řízení kybernetických rizik, compliance s GDPR a dalšími předpisy o ochraně dat.",
+    "Courses": [
+      {
+        "Name": "Úvod do ISO 27001",
+        "Url": "/Courses/Index?search=ISO%2027001"
+      },
+      {
+        "Name": "Interní auditor ISMS",
+        "Url": "/Courses/Index?search=Intern%C3%AD%20auditor%20ISMS"
+      }
+    ]
+  },
+  {
+    "Title": "IATF 16949 - Automobilový průmysl",
+    "Icon": "bi-gear-wide-connected",
+    "Description": "Specifický standard kvality pro dodavatele automobilového průmyslu. Nástroje jako APQP, PPAP, FMEA, SPC.",
+    "Courses": [
+      {
+        "Name": "Manažer kvality automotive",
+        "Url": "/Courses/Index?search=Mana%C5%BEer%20kvality%20automotive"
+      },
+      {
+        "Name": "APQP a PPAP",
+        "Url": "/Courses/Index?search=APQP%20PPAP"
+      },
+      {
+        "Name": "Core Tools",
+        "Url": "/Courses/Index?search=Core%20Tools"
+      }
+    ]
+  },
+  {
+    "Title": "ISO 13485 - Zdravotnické prostředky",
+    "Icon": "bi-heart-pulse-fill",
+    "Description": "Pro výrobce a distributory zdravotnických prostředků. Zaměření na bezpečnost, regulatory compliance a řízení rizik.",
+    "Courses": [
+      {
+        "Name": "Úvod do ISO 13485",
+        "Url": "/Courses/Index?search=ISO%2013485"
+      },
+      {
+        "Name": "Manažer kvality zdravotnických prostředků",
+        "Url": "/Courses/Index?search=Mana%C5%BEer%20kvality%20zdravotnick%C3%BDch%20prost%C5%99edk%C5%AF"
+      }
+    ]
+  }
+]]]></value>
+  </data>
+</root>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Title" xml:space="preserve">
+    <value>Course comparison</value>
+  </data>
+  <data name="EmptySelection" xml:space="preserve">
+    <value>Select at least two courses to compare.</value>
+  </data>
+  <data name="ColumnName" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="ColumnDuration" xml:space="preserve">
+    <value>Duration</value>
+  </data>
+  <data name="ColumnLevel" xml:space="preserve">
+    <value>Level</value>
+  </data>
+  <data name="ColumnMode" xml:space="preserve">
+    <value>Format</value>
+  </data>
+  <data name="ColumnPrice" xml:space="preserve">
+    <value>Price</value>
+  </data>
+  <data name="DurationWithUnit" xml:space="preserve">
+    <value>{0} min</value>
+  </data>
+</root>

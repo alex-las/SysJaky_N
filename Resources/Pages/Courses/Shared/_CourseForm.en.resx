@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="TitlePlaceholder" xml:space="preserve">
+    <value>Course title</value>
+  </data>
+  <data name="CourseTitleLabel" xml:space="preserve">
+    <value>Title</value>
+  </data>
+  <data name="DescriptionPlaceholder" xml:space="preserve">
+    <value>Describe the course content</value>
+  </data>
+  <data name="CourseDescriptionLabel" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="MetaTitlePlaceholder" xml:space="preserve">
+    <value>Meta title for search engines</value>
+  </data>
+  <data name="MetaTitleLabel" xml:space="preserve">
+    <value>Meta title</value>
+  </data>
+  <data name="MetaDescriptionPlaceholder" xml:space="preserve">
+    <value>Short SEO description</value>
+  </data>
+  <data name="MetaDescriptionLabel" xml:space="preserve">
+    <value>Meta description</value>
+  </data>
+  <data name="OpenGraphImagePlaceholder" xml:space="preserve">
+    <value>Image URL for social sharing</value>
+  </data>
+  <data name="OpenGraphImageLabel" xml:space="preserve">
+    <value>Open Graph image</value>
+  </data>
+  <data name="SelectGroup" xml:space="preserve">
+    <value>Select a group</value>
+  </data>
+  <data name="CourseGroupLabel" xml:space="preserve">
+    <value>Group</value>
+  </data>
+  <data name="PricePlaceholder" xml:space="preserve">
+    <value>Enter the price</value>
+  </data>
+  <data name="PriceLabel" xml:space="preserve">
+    <value>Price</value>
+  </data>
+  <data name="DatePlaceholder" xml:space="preserve">
+    <value>Start date</value>
+  </data>
+  <data name="DateLabel" xml:space="preserve">
+    <value>Date</value>
+  </data>
+  <data name="SelectLevel" xml:space="preserve">
+    <value>Select a level</value>
+  </data>
+  <data name="LevelLabel" xml:space="preserve">
+    <value>Level</value>
+  </data>
+  <data name="SelectMode" xml:space="preserve">
+    <value>Select a mode</value>
+  </data>
+  <data name="ModeLabel" xml:space="preserve">
+    <value>Mode</value>
+  </data>
+  <data name="DurationPlaceholder" xml:space="preserve">
+    <value>Duration in hours</value>
+  </data>
+  <data name="DurationLabel" xml:space="preserve">
+    <value>Duration</value>
+  </data>
+  <data name="CoverImageLabel" xml:space="preserve">
+    <value>Cover image</value>
+  </data>
+  <data name="IsoStandardLabel" xml:space="preserve">
+    <value>ISO standard</value>
+  </data>
+  <data name="IsoStandardPlaceholder" xml:space="preserve">
+    <value>ISO 9001</value>
+  </data>
+  <data name="DurationTextLabel" xml:space="preserve">
+    <value>Duration (text)</value>
+  </data>
+  <data name="DurationTextPlaceholder" xml:space="preserve">
+    <value>3 days / 24 hours</value>
+  </data>
+  <data name="DeliveryFormLabel" xml:space="preserve">
+    <value>Delivery format</value>
+  </data>
+  <data name="DeliveryFormPlaceholder" xml:space="preserve">
+    <value>In person</value>
+  </data>
+  <data name="TargetAudienceLabel" xml:space="preserve">
+    <value>Target audience</value>
+  </data>
+  <data name="TargetAudiencePlaceholder" xml:space="preserve">
+    <value>quality managers, team leads</value>
+  </data>
+  <data name="LearningOutcomesLabel" xml:space="preserve">
+    <value>Learning outcomes</value>
+  </data>
+  <data name="LearningOutcomesPlaceholder" xml:space="preserve">
+    <value>Enter each item on a new line</value>
+  </data>
+  <data name="CaseStudiesLabel" xml:space="preserve">
+    <value>Case studies</value>
+  </data>
+  <data name="CaseStudiesPlaceholder" xml:space="preserve">
+    <value>Describe practical exercises</value>
+  </data>
+  <data name="CertificationsLabel" xml:space="preserve">
+    <value>Certifications</value>
+  </data>
+  <data name="CertificationsPlaceholder" xml:space="preserve">
+    <value>Certificates obtained</value>
+  </data>
+  <data name="CourseProgramLabel" xml:space="preserve">
+    <value>Course agenda</value>
+  </data>
+  <data name="CourseProgramPlaceholder" xml:space="preserve">
+    <value>Day 1 (9:00-16:00): ...</value>
+  </data>
+  <data name="InstructorNameLabel" xml:space="preserve">
+    <value>Instructor name</value>
+  </data>
+  <data name="InstructorNamePlaceholder" xml:space="preserve">
+    <value>Instructor name</value>
+  </data>
+  <data name="InstructorBioLabel" xml:space="preserve">
+    <value>Instructor bio</value>
+  </data>
+  <data name="InstructorBioPlaceholder" xml:space="preserve">
+    <value>Qualifications and experience</value>
+  </data>
+  <data name="OrganizationalNotesLabel" xml:space="preserve">
+    <value>Organizational notes</value>
+  </data>
+  <data name="OrganizationalNotesPlaceholder" xml:space="preserve">
+    <value>One instruction per line</value>
+  </data>
+  <data name="FollowUpCoursesLabel" xml:space="preserve">
+    <value>Follow-up courses</value>
+  </data>
+  <data name="FollowUpCoursesPlaceholder" xml:space="preserve">
+    <value>Recommended courses</value>
+  </data>
+  <data name="CertificateInfoLabel" xml:space="preserve">
+    <value>Certificate information</value>
+  </data>
+  <data name="CertificateInfoPlaceholder" xml:space="preserve">
+    <value>Details about the certificate</value>
+  </data>
+</root>

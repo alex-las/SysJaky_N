@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Heading" xml:space="preserve">
+    <value>Articles</value>
+  </data>
+  <data name="HeroBadge" xml:space="preserve">
+    <value>Inspiration library</value>
+  </data>
+  <data name="HeroHeadline" xml:space="preserve">
+    <value>Articles that streamline your management systems</value>
+  </data>
+  <data name="HeroIntro" xml:space="preserve">
+    <value>Discover best practices for ISO 9001 and ISO 14001, download auditor checklists, and stay current with legislative changes affecting your certifications.</value>
+  </data>
+  <data name="HeroSubheadline" xml:space="preserve">
+    <value>Browse a curated selection of articles on ISO standards, audits and process management. Filter by category, search key topics and switch between grid and list views.</value>
+  </data>
+  <data name="Next" xml:space="preserve">
+    <value>Next</value>
+  </data>
+  <data name="PaginationAriaLabel" xml:space="preserve">
+    <value>Articles pagination</value>
+  </data>
+  <data name="PageTitle" xml:space="preserve">
+    <value>Articles &amp; inspiration</value>
+  </data>
+  <data name="Previous" xml:space="preserve">
+    <value>Previous</value>
+  </data>
+  <data name="SearchAriaLabel" xml:space="preserve">
+    <value>Search articles</value>
+  </data>
+  <data name="SearchLabel" xml:space="preserve">
+    <value>Search articles</value>
+  </data>
+  <data name="SearchButton" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="SearchInputAriaLabel" xml:space="preserve">
+    <value>Search articles</value>
+  </data>
+  <data name="SearchHelpText" xml:space="preserve">
+    <value>We search in the title, teaser and article tags.</value>
+  </data>
+  <data name="SearchPlaceholder" xml:space="preserve">
+    <value>Enter a title, topic or tag</value>
+  </data>
+  <data name="PageStatus" xml:space="preserve">
+    <value>Page {0} of {1}</value>
+  </data>
+  <data name="Title" xml:space="preserve">
+    <value>Articles</value>
+  </data>
+  <data name="ToolbarAriaLabel" xml:space="preserve">
+    <value>Articles control panel</value>
+  </data>
+  <data name="FilterLabel" xml:space="preserve">
+    <value>Filter by categories</value>
+  </data>
+  <data name="ViewToggleAriaLabel" xml:space="preserve">
+    <value>Switch view</value>
+  </data>
+  <data name="GridView" xml:space="preserve">
+    <value>Grid</value>
+  </data>
+  <data name="ListView" xml:space="preserve">
+    <value>List</value>
+  </data>
+  <data name="TagsAriaLabel" xml:space="preserve">
+    <value>Article tags</value>
+  </data>
+  <data name="PreviewAriaLabel" xml:space="preserve">
+    <value>Show more about the article {0}</value>
+  </data>
+  <data name="PreviewLink" xml:space="preserve">
+    <value>Read preview</value>
+  </data>
+  <data name="LiveRegionSingular" xml:space="preserve">
+    <value>Showing 1 article.</value>
+  </data>
+  <data name="LiveRegionPlural" xml:space="preserve">
+    <value>Showing {0} articles.</value>
+  </data>
+  <data name="EmptyState" xml:space="preserve">
+    <value>We couldn't find any articles for the selected search and filter combination. Please adjust the criteria and try again.</value>
+  </data>
+  <data name="CtaHeading" xml:space="preserve">
+    <value>Advance your knowledge with related courses</value>
+  </data>
+  <data name="CtaDescription" xml:space="preserve">
+    <value>Each article links to practical courses that guide you through implementing standards step by step. Gain access to bonus materials, specialist Q&amp;A sessions and community workshops.</value>
+  </data>
+  <data name="CtaPrimaryButton" xml:space="preserve">
+    <value>Explore all courses</value>
+  </data>
+  <data name="CtaSecondaryButton" xml:space="preserve">
+    <value>Contact a consultant</value>
+  </data>
+  <data name="CtaHighlight" xml:space="preserve">
+    <value>Certified instructors and up-to-date syllabi</value>
+  </data>
+</root>

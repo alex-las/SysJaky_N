@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="TitlePlaceholder" xml:space="preserve">
+    <value>Název kurzu</value>
+  </data>
+  <data name="CourseTitleLabel" xml:space="preserve">
+    <value>Název</value>
+  </data>
+  <data name="DescriptionPlaceholder" xml:space="preserve">
+    <value>Stručně popište obsah kurzu</value>
+  </data>
+  <data name="CourseDescriptionLabel" xml:space="preserve">
+    <value>Popis</value>
+  </data>
+  <data name="MetaTitlePlaceholder" xml:space="preserve">
+    <value>Meta titulek pro vyhledávače</value>
+  </data>
+  <data name="MetaTitleLabel" xml:space="preserve">
+    <value>Meta titulek</value>
+  </data>
+  <data name="MetaDescriptionPlaceholder" xml:space="preserve">
+    <value>Krátký popis pro SEO</value>
+  </data>
+  <data name="MetaDescriptionLabel" xml:space="preserve">
+    <value>Meta popis</value>
+  </data>
+  <data name="OpenGraphImagePlaceholder" xml:space="preserve">
+    <value>URL obrázku pro sdílení na sociálních sítích</value>
+  </data>
+  <data name="OpenGraphImageLabel" xml:space="preserve">
+    <value>Open Graph obrázek</value>
+  </data>
+  <data name="SelectGroup" xml:space="preserve">
+    <value>Vyberte skupinu</value>
+  </data>
+  <data name="CourseGroupLabel" xml:space="preserve">
+    <value>Skupina</value>
+  </data>
+  <data name="PricePlaceholder" xml:space="preserve">
+    <value>Zadejte cenu</value>
+  </data>
+  <data name="PriceLabel" xml:space="preserve">
+    <value>Cena</value>
+  </data>
+  <data name="DatePlaceholder" xml:space="preserve">
+    <value>Datum zahájení</value>
+  </data>
+  <data name="DateLabel" xml:space="preserve">
+    <value>Datum</value>
+  </data>
+  <data name="SelectLevel" xml:space="preserve">
+    <value>Zvolte úroveň</value>
+  </data>
+  <data name="LevelLabel" xml:space="preserve">
+    <value>Úroveň</value>
+  </data>
+  <data name="SelectMode" xml:space="preserve">
+    <value>Zvolte formu</value>
+  </data>
+  <data name="ModeLabel" xml:space="preserve">
+    <value>Forma</value>
+  </data>
+  <data name="DurationPlaceholder" xml:space="preserve">
+    <value>Délka v hodinách</value>
+  </data>
+  <data name="DurationLabel" xml:space="preserve">
+    <value>Délka</value>
+  </data>
+  <data name="CoverImageLabel" xml:space="preserve">
+    <value>Úvodní obrázek</value>
+  </data>
+  <data name="IsoStandardLabel" xml:space="preserve">
+    <value>Norma ISO</value>
+  </data>
+  <data name="IsoStandardPlaceholder" xml:space="preserve">
+    <value>ISO 9001</value>
+  </data>
+  <data name="DurationTextLabel" xml:space="preserve">
+    <value>Délka (text)</value>
+  </data>
+  <data name="DurationTextPlaceholder" xml:space="preserve">
+    <value>3 dny / 24 hodin</value>
+  </data>
+  <data name="DeliveryFormLabel" xml:space="preserve">
+    <value>Forma výuky</value>
+  </data>
+  <data name="DeliveryFormPlaceholder" xml:space="preserve">
+    <value>Prezenční</value>
+  </data>
+  <data name="TargetAudienceLabel" xml:space="preserve">
+    <value>Cílová skupina</value>
+  </data>
+  <data name="TargetAudiencePlaceholder" xml:space="preserve">
+    <value>manažeři kvality, vedoucí pracovníci</value>
+  </data>
+  <data name="LearningOutcomesLabel" xml:space="preserve">
+    <value>Cíle učení</value>
+  </data>
+  <data name="LearningOutcomesPlaceholder" xml:space="preserve">
+    <value>Každý bod na nový řádek</value>
+  </data>
+  <data name="CaseStudiesLabel" xml:space="preserve">
+    <value>Praktické příklady</value>
+  </data>
+  <data name="CaseStudiesPlaceholder" xml:space="preserve">
+    <value>Popis praktických cvičení</value>
+  </data>
+  <data name="CertificationsLabel" xml:space="preserve">
+    <value>Certifikace</value>
+  </data>
+  <data name="CertificationsPlaceholder" xml:space="preserve">
+    <value>Získaná osvědčení</value>
+  </data>
+  <data name="CourseProgramLabel" xml:space="preserve">
+    <value>Program kurzu</value>
+  </data>
+  <data name="CourseProgramPlaceholder" xml:space="preserve">
+    <value>1. den (9:00-16:00): ...</value>
+  </data>
+  <data name="InstructorNameLabel" xml:space="preserve">
+    <value>Jméno lektora</value>
+  </data>
+  <data name="InstructorNamePlaceholder" xml:space="preserve">
+    <value>Jméno lektora</value>
+  </data>
+  <data name="InstructorBioLabel" xml:space="preserve">
+    <value>Profil lektora</value>
+  </data>
+  <data name="InstructorBioPlaceholder" xml:space="preserve">
+    <value>Kvalifikace a zkušenosti</value>
+  </data>
+  <data name="OrganizationalNotesLabel" xml:space="preserve">
+    <value>Organizační informace</value>
+  </data>
+  <data name="OrganizationalNotesPlaceholder" xml:space="preserve">
+    <value>Každý pokyn na nový řádek</value>
+  </data>
+  <data name="FollowUpCoursesLabel" xml:space="preserve">
+    <value>Navazující kurzy</value>
+  </data>
+  <data name="FollowUpCoursesPlaceholder" xml:space="preserve">
+    <value>Doporučené kurzy</value>
+  </data>
+  <data name="CertificateInfoLabel" xml:space="preserve">
+    <value>Informace o certifikátu</value>
+  </data>
+  <data name="CertificateInfoPlaceholder" xml:space="preserve">
+    <value>Informace o certifikátu</value>
+  </data>
+</root>

@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="HeroTitle" xml:space="preserve">
+    <value>ISO Training, Courses and Certification</value>
+  </data>
+  <data name="HeroDescription" xml:space="preserve">
+    <value>Professional quality management training for your organization</value>
+  </data>
+  <data name="HeroMainHeading" xml:space="preserve">
+    <value>Implementation, audits, and training for quality systems</value>
+  </data>
+  <data name="HeroSubheading" xml:space="preserve">
+    <value>We guide organizations through the entire ISO 9001, ISO 14001, ISO/IEC 17025, ISO 15189, HACCP, ISO 45001, ISO 27001, IATF 16949, and ISO 13485 lifecycle — from analysis to certification.</value>
+  </data>
+  <data name="HeroUSP1" xml:space="preserve">
+    <value>Seasoned auditors and consultants with years of experience</value>
+  </data>
+  <data name="HeroUSP2" xml:space="preserve">
+    <value>Practical know-how drawn from real-world audits</value>
+  </data>
+  <data name="HeroUSP3" xml:space="preserve">
+    <value>Internal workshops delivered directly at your company</value>
+  </data>
+  <data name="HeroPrimaryCTA" xml:space="preserve">
+    <value>Browse ISO course offering</value>
+  </data>
+  <data name="HeroSecondaryCTA" xml:space="preserve">
+    <value>Request a tailored corporate solution</value>
+  </data>
+  <data name="HeroSearchLabel" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="HeroSearchPlaceholder" xml:space="preserve">
+    <value>Search for a course, tool, or skill…</value>
+  </data>
+  <data name="HeroSearchAriaLabel" xml:space="preserve">
+    <value>Search courses</value>
+  </data>
+  <data name="HeroSubmit" xml:space="preserve">
+    <value>Suggest courses</value>
+  </data>
+  <data name="HowItWorksTitle" xml:space="preserve">
+    <value>How it works</value>
+  </data>
+  <data name="PersonaAriaLabel" xml:space="preserve">
+    <value>I am</value>
+  </data>
+  <data name="StepSelectTitle" xml:space="preserve">
+    <value>Analyze the current state</value>
+  </data>
+  <data name="StepSelectDescription" xml:space="preserve">
+    <value>Perform a gap analysis, map your processes and identify areas that need improvement.</value>
+  </data>
+  <data name="StepRegisterTitle" xml:space="preserve">
+    <value>Plan training and audits</value>
+  </data>
+  <data name="StepRegisterDescription" xml:space="preserve">
+    <value>Build a training plan for your team, schedule the internal audit and assign responsibilities.</value>
+  </data>
+  <data name="StepPayTitle" xml:space="preserve">
+    <value>Achieve certification with confidence</value>
+  </data>
+  <data name="StepPayDescription" xml:space="preserve">
+    <value>Prepare the documentation, coordinate the certification audit and guide everyone through the process stress-free.</value>
+  </data>
+  <data name="CalendarButton" xml:space="preserve">
+    <value>Course calendar</value>
+  </data>
+  <data name="ChipOnline" xml:space="preserve">
+    <value>Online</value>
+  </data>
+  <data name="ChipRetraining" xml:space="preserve">
+    <value>Retraining</value>
+  </data>
+  <data name="ChipCertificate" xml:space="preserve">
+    <value>With certificate</value>
+  </data>
+  <data name="ChipAccreditation" xml:space="preserve">
+    <value>Accreditation preparation</value>
+  </data>
+  <data name="ChipInternalAudits" xml:space="preserve">
+    <value>Internal audits</value>
+  </data>
+  <data name="GoalAriaLabel" xml:space="preserve">
+    <value>I want to</value>
+  </data>
+  <data name="NewsHeading" xml:space="preserve">
+    <value>ISO updates</value>
+  </data>
+  <data name="RecommendedEmpty" xml:space="preserve">
+    <value>Select a standard and goal above to see tailored course suggestions.</value>
+  </data>
+  <data name="RecommendedForYou" xml:space="preserve">
+    <value>Courses recommended for your certification journey</value>
+  </data>
+  <data name="RecommendedViewAll" xml:space="preserve">
+    <value>View all</value>
+  </data>
+  <data name="StartingSoon" xml:space="preserve">
+    <value>Starting soon</value>
+  </data>
+  <data name="TrustCertificate" xml:space="preserve">
+    <value>Certificates included with selected courses. Graduates receive official confirmation as auditors / internal auditors.</value>
+  </data>
+  <data name="TrustGraduates" xml:space="preserve">
+    <value>{0} certified experts</value>
+  </data>
+  <data name="TrustGuarantee" xml:space="preserve">
+    <value>We guarantee successful certification or refund your tuition</value>
+  </data>
+  <data name="TrustRating" xml:space="preserve">
+    <value>Rating {0} certified experts</value>
+  </data>
+  <data name="WhyChooseDescription" xml:space="preserve">
+    <value>20 years of experience, a team of external auditors, and know-how from dozens of industries.</value>
+  </data>
+  <data name="WhyChooseHeading" xml:space="preserve">
+    <value>Why partner with Systémy jakosti?</value>
+  </data>
+  <data name="Title" xml:space="preserve">
+    <value>Home</value>
+  </data>
+  <data name="ISO9001" xml:space="preserve">
+    <value>ISO 9001 — Quality Management System</value>
+  </data>
+  <data name="ISO14001" xml:space="preserve">
+    <value>ISO 14001 — Environmental Management</value>
+  </data>
+  <data name="ISO17025" xml:space="preserve">
+    <value>ISO/IEC 17025 — Laboratory Accreditation</value>
+  </data>
+  <data name="ISO15189" xml:space="preserve">
+    <value>ISO 15189 — Medical Laboratories</value>
+  </data>
+  <data name="ISO45001" xml:space="preserve">
+    <value>ISO 45001 — Occupational Health &amp; Safety</value>
+  </data>
+  <data name="ISO27001" xml:space="preserve">
+    <value>ISO 27001 — Information Security</value>
+  </data>
+  <data name="IATF16949" xml:space="preserve">
+    <value>IATF 16949 — Automotive Quality</value>
+  </data>
+  <data name="ISO13485" xml:space="preserve">
+    <value>ISO 13485 — Medical Devices</value>
+  </data>
+</root>

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="DetailCheckedIn" xml:space="preserve">
+    <value>Zapsáno v</value>
+  </data>
+  <data name="DetailCourse" xml:space="preserve">
+    <value>Kurz</value>
+  </data>
+  <data name="DetailEnrollmentId" xml:space="preserve">
+    <value>ID přihlášky</value>
+  </data>
+  <data name="DetailParticipant" xml:space="preserve">
+    <value>Účastník</value>
+  </data>
+  <data name="DetailTermEnd" xml:space="preserve">
+    <value>Konec termínu</value>
+  </data>
+  <data name="DetailTermStart" xml:space="preserve">
+    <value>Začátek termínu</value>
+  </data>
+  <data name="ErrorCameraAccess" xml:space="preserve">
+    <value>Kamera není dostupná.</value>
+  </data>
+  <data name="ErrorCameraInit" xml:space="preserve">
+    <value>Inicializace kamery selhala.</value>
+  </data>
+  <data name="ErrorQrUnavailable" xml:space="preserve">
+    <value>Knihovna pro čtení QR kódů není k dispozici.</value>
+  </data>
+  <data name="ErrorQrUnsupported" xml:space="preserve">
+    <value>QR kódy nejsou v tomto prohlížeči podporovány.</value>
+  </data>
+  <data name="Heading" xml:space="preserve">
+    <value>Označení docházky</value>
+  </data>
+  <data name="Intro" xml:space="preserve">
+    <value>Skenujte QR kód nebo ručně zadejte kód a označte účastníka jako přítomného.</value>
+  </data>
+  <data name="LogParseError" xml:space="preserve">
+    <value>Nelze zpracovat odpověď s chybou.</value>
+  </data>
+  <data name="ManualCodeLabel" xml:space="preserve">
+    <value>Kód přihlášky</value>
+  </data>
+  <data name="ManualEntry" xml:space="preserve">
+    <value>Ruční zadání</value>
+  </data>
+  <data name="ManualHelper" xml:space="preserve">
+    <value>Zadejte číselné ID přihlášky nebo kód, který jej obsahuje (například {0}).</value>
+  </data>
+  <data name="ManualSubmit" xml:space="preserve">
+    <value>Zapsat docházku</value>
+  </data>
+  <data name="MessageAlreadyCheckedIn" xml:space="preserve">
+    <value>Tato přihláška již byla označena.</value>
+  </data>
+  <data name="MessageAttendanceFailed" xml:space="preserve">
+    <value>Docházku se nepodařilo zaznamenat.</value>
+  </data>
+  <data name="MessageCheckedIn" xml:space="preserve">
+    <value>Docházka zaznamenána.</value>
+  </data>
+  <data name="MessageMissingCode" xml:space="preserve">
+    <value>Zadejte kód pro označení docházky.</value>
+  </data>
+  <data name="MessageUnexpected" xml:space="preserve">
+    <value>Při záznamu docházky došlo k neočekávané chybě.</value>
+  </data>
+  <data name="PlaceholderCameraInitialising" xml:space="preserve">
+    <value>Inicializuji kameru…</value>
+  </data>
+  <data name="ScanQr" xml:space="preserve">
+    <value>Skenovat QR kód</value>
+  </data>
+  <data name="Title" xml:space="preserve">
+    <value>Docházka</value>
+  </data>
+</root>

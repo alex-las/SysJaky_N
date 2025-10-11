@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Step4Title" xml:space="preserve">
+    <value>Step 4 – Summary</value>
+  </data>
+  <data name="Step4Description" xml:space="preserve">
+    <value>Review the provided information and submit your inquiry.</value>
+  </data>
+  <data name="SummaryTitle" xml:space="preserve">
+    <value>Inquiry summary</value>
+  </data>
+  <data name="SummaryServiceType" xml:space="preserve">
+    <value>Service type</value>
+  </data>
+  <data name="SummaryTrainingTypes" xml:space="preserve">
+    <value>ISO standards</value>
+  </data>
+  <data name="SummaryParticipantCount" xml:space="preserve">
+    <value>Participants</value>
+  </data>
+  <data name="SummaryPreferredDate" xml:space="preserve">
+    <value>Preferred date</value>
+  </data>
+  <data name="SummaryMode" xml:space="preserve">
+    <value>Mode</value>
+  </data>
+  <data name="SummaryTrainingLevel" xml:space="preserve">
+    <value>Training level</value>
+  </data>
+  <data name="SummaryLocation" xml:space="preserve">
+    <value>Location</value>
+  </data>
+  <data name="SummarySpecialRequirements" xml:space="preserve">
+    <value>Special requirements</value>
+  </data>
+  <data name="SummaryCompanyId" xml:space="preserve">
+    <value>Company ID</value>
+  </data>
+  <data name="SummaryCompanyName" xml:space="preserve">
+    <value>Company name</value>
+  </data>
+  <data name="SummaryContactPerson" xml:space="preserve">
+    <value>Contact person</value>
+  </data>
+  <data name="SummaryContactEmail" xml:space="preserve">
+    <value>Contact e-mail</value>
+  </data>
+  <data name="SummaryContactPhone" xml:space="preserve">
+    <value>Contact phone</value>
+  </data>
+  <data name="SummaryPrice" xml:space="preserve">
+    <value>Estimated price</value>
+  </data>
+  <data name="SummaryPlaceholder" xml:space="preserve">
+    <value>Not provided</value>
+  </data>
+  <data name="PriceUnavailable" xml:space="preserve">
+    <value>Enter details</value>
+  </data>
+</root>

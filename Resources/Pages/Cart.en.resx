@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Title" xml:space="preserve">
+    <value>Cart</value>
+  </data>
+  <data name="Empty" xml:space="preserve">
+    <value>Your cart is empty.</value>
+  </data>
+  <data name="CourseHeader" xml:space="preserve">
+    <value>Course</value>
+  </data>
+  <data name="CartTableCaption" xml:space="preserve">
+    <value>Items in your shopping cart</value>
+  </data>
+  <data name="QuantityHeader" xml:space="preserve">
+    <value>Quantity</value>
+  </data>
+  <data name="PriceHeader" xml:space="preserve">
+    <value>Price</value>
+  </data>
+  <data name="TotalHeader" xml:space="preserve">
+    <value>Total</value>
+  </data>
+  <data name="BundleOffers" xml:space="preserve">
+    <value>Bundle offers</value>
+  </data>
+  <data name="BundleDescription" xml:space="preserve">
+    <value>You have all modules of <strong>{0}</strong>. Bundle price: {1} (save {2}).</value>
+  </data>
+  <data name="ApplyBundle" xml:space="preserve">
+    <value>Apply bundle</value>
+  </data>
+  <data name="ApplyBundleAria" xml:space="preserve">
+    <value>Apply bundle {0}</value>
+  </data>
+  <data name="AppliedBundles" xml:space="preserve">
+    <value>Applied bundles</value>
+  </data>
+  <data name="VoucherPlaceholder" xml:space="preserve">
+    <value>Voucher code</value>
+  </data>
+  <data name="Apply" xml:space="preserve">
+    <value>Apply</value>
+  </data>
+  <data name="VoucherFormLabel" xml:space="preserve">
+    <value>Voucher code form</value>
+  </data>
+  <data name="VoucherCodeLabel" xml:space="preserve">
+    <value>Voucher code</value>
+  </data>
+  <data name="VoucherHelpText" xml:space="preserve">
+    <value>Enter your discount voucher code and confirm.</value>
+  </data>
+  <data name="VoucherApplied" xml:space="preserve">
+    <value>Voucher applied: {0} ({1})</value>
+  </data>
+  <data name="TotalLine" xml:space="preserve">
+    <value>Total: {0}</value>
+  </data>
+  <data name="CheckoutFormLabel" xml:space="preserve">
+    <value>Create order</value>
+  </data>
+  <data name="CreateOrder" xml:space="preserve">
+    <value>Create order</value>
+  </data>
+</root>

@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Heading" xml:space="preserve">
+    <value>Články</value>
+  </data>
+  <data name="HeroBadge" xml:space="preserve">
+    <value>Inspirační knihovna</value>
+  </data>
+  <data name="HeroHeadline" xml:space="preserve">
+    <value>Články, které zefektivní vaše systémy řízení</value>
+  </data>
+  <data name="HeroIntro" xml:space="preserve">
+    <value>Zjistěte osvědčené postupy pro ISO 9001 a ISO 14001, stáhněte si kontrolní seznamy pro auditory a sledujte legislativní novinky ovlivňující vaše certifikace.</value>
+  </data>
+  <data name="HeroSubheadline" xml:space="preserve">
+    <value>Vyberte si z kurátorovaného výběru článků o ISO normách, auditech i procesním řízení. Filtrujte podle kategorií, vyhledávejte klíčová témata a přepínejte mezi dlaždicovým a seznamovým zobrazením.</value>
+  </data>
+  <data name="Next" xml:space="preserve">
+    <value>Další</value>
+  </data>
+  <data name="PaginationAriaLabel" xml:space="preserve">
+    <value>Stránkování článků</value>
+  </data>
+  <data name="PageTitle" xml:space="preserve">
+    <value>Články a inspirace</value>
+  </data>
+  <data name="Previous" xml:space="preserve">
+    <value>Předchozí</value>
+  </data>
+  <data name="SearchAriaLabel" xml:space="preserve">
+    <value>Vyhledávání článků</value>
+  </data>
+  <data name="SearchLabel" xml:space="preserve">
+    <value>Hledat články</value>
+  </data>
+  <data name="SearchButton" xml:space="preserve">
+    <value>Hledat</value>
+  </data>
+  <data name="SearchInputAriaLabel" xml:space="preserve">
+    <value>Hledat články</value>
+  </data>
+  <data name="SearchHelpText" xml:space="preserve">
+    <value>Vyhledáváme v názvu, perexu i značkách článků.</value>
+  </data>
+  <data name="SearchPlaceholder" xml:space="preserve">
+    <value>Zadejte název, téma nebo tag</value>
+  </data>
+  <data name="PageStatus" xml:space="preserve">
+    <value>Stránka {0} z {1}</value>
+  </data>
+  <data name="Title" xml:space="preserve">
+    <value>Články</value>
+  </data>
+  <data name="ToolbarAriaLabel" xml:space="preserve">
+    <value>Ovládací panel článků</value>
+  </data>
+  <data name="FilterLabel" xml:space="preserve">
+    <value>Filtrovat podle kategorií</value>
+  </data>
+  <data name="ViewToggleAriaLabel" xml:space="preserve">
+    <value>Přepnout zobrazení</value>
+  </data>
+  <data name="GridView" xml:space="preserve">
+    <value>Dlaždice</value>
+  </data>
+  <data name="ListView" xml:space="preserve">
+    <value>Seznam</value>
+  </data>
+  <data name="TagsAriaLabel" xml:space="preserve">
+    <value>Tagy článku</value>
+  </data>
+  <data name="PreviewAriaLabel" xml:space="preserve">
+    <value>Zobrazit více o článku {0}</value>
+  </data>
+  <data name="PreviewLink" xml:space="preserve">
+    <value>Číst náhled</value>
+  </data>
+  <data name="LiveRegionSingular" xml:space="preserve">
+    <value>Zobrazuje se 1 článek.</value>
+  </data>
+  <data name="LiveRegionPlural" xml:space="preserve">
+    <value>Zobrazuje se {0} článků.</value>
+  </data>
+  <data name="EmptyState" xml:space="preserve">
+    <value>Nenašli jsme žádné články pro zadanou kombinaci vyhledávání a filtrů. Upravte prosím podmínky a zkuste to znovu.</value>
+  </data>
+  <data name="CtaHeading" xml:space="preserve">
+    <value>Posuňte znalosti díky navazujícím kurzům</value>
+  </data>
+  <data name="CtaDescription" xml:space="preserve">
+    <value>Každý článek navazuje na praktické kurzy, které vás provedou implementací standardů krok za krokem. Získejte přístup k bonusovým materiálům, Q&amp;A se specialisty i komunitním workshopům.</value>
+  </data>
+  <data name="CtaPrimaryButton" xml:space="preserve">
+    <value>Prozkoumat všechny kurzy</value>
+  </data>
+  <data name="CtaSecondaryButton" xml:space="preserve">
+    <value>Spojit se s konzultantem</value>
+  </data>
+  <data name="CtaHighlight" xml:space="preserve">
+    <value>Certifikovaní lektoři a aktuální sylaby</value>
+  </data>
+</root>
