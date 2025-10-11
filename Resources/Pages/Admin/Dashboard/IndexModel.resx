@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="PageTitle" xml:space="preserve">
+    <value>Řídicí panel</value>
+  </data>
+  <data name="ChatbotSettingsSavedMessage" xml:space="preserve">
+    <value>Nastavení chatbota bylo úspěšně uloženo.</value>
+  </data>
+  <data name="OverviewFilterTitle" xml:space="preserve">
+    <value>Filtr přehledu</value>
+  </data>
+  <data name="OverviewFilterDescription" xml:space="preserve">
+    <value>Zvolte období, normy a města, pro která chcete zobrazit statistiky.</value>
+  </data>
+  <data name="PresetLast7Days" xml:space="preserve">
+    <value>Posledních 7 dní</value>
+  </data>
+  <data name="PresetLast30Days" xml:space="preserve">
+    <value>Posledních 30 dní</value>
+  </data>
+  <data name="PresetLast12Months" xml:space="preserve">
+    <value>Posledních 12 měsíců</value>
+  </data>
+  <data name="FilterFromLabel" xml:space="preserve">
+    <value>Od</value>
+  </data>
+  <data name="FilterToLabel" xml:space="preserve">
+    <value>Do</value>
+  </data>
+  <data name="FilterNormsLabel" xml:space="preserve">
+    <value>Norma</value>
+  </data>
+  <data name="FilterNormsHelp" xml:space="preserve">
+    <value>Podržením Ctrl vyberete více norem.</value>
+  </data>
+  <data name="FilterCitiesLabel" xml:space="preserve">
+    <value>Město</value>
+  </data>
+  <data name="FilterCitiesHelp" xml:space="preserve">
+    <value>Podržením Ctrl vyberete více měst.</value>
+  </data>
+  <data name="ApplyFiltersButton" xml:space="preserve">
+    <value>Aktualizovat přehled</value>
+  </data>
+  <data name="ExportReportButton" xml:space="preserve">
+    <value>Exportovat do Excelu</value>
+  </data>
+  <data name="FiltersStatusReady" xml:space="preserve">
+    <value>Připraveno</value>
+  </data>
+  <data name="SummaryRevenue" xml:space="preserve">
+    <value>Tržby celkem</value>
+  </data>
+  <data name="SummaryOrders" xml:space="preserve">
+    <value>Objednávky</value>
+  </data>
+  <data name="SummarySeats" xml:space="preserve">
+    <value>Prodáno míst</value>
+  </data>
+  <data name="SummaryCustomers" xml:space="preserve">
+    <value>Aktivní zákazníci</value>
+  </data>
+  <data name="SalesTrendTitle" xml:space="preserve">
+    <value>Vývoj tržeb a objednávek</value>
+  </data>
+  <data name="SalesTrendChartLabel" xml:space="preserve">
+    <value>Graf vývoje tržeb</value>
+  </data>
+  <data name="SalesTrendEmpty" xml:space="preserve">
+    <value>Pro zvolené období nejsou dostupná data.</value>
+  </data>
+  <data name="TopCoursesTitle" xml:space="preserve">
+    <value>Top kurzy podle tržeb</value>
+  </data>
+  <data name="TopCoursesChartLabel" xml:space="preserve">
+    <value>Graf nejúspěšnějších kurzů</value>
+  </data>
+  <data name="TopCoursesColumnCourse" xml:space="preserve">
+    <value>Kurz</value>
+  </data>
+  <data name="TopCoursesColumnRevenue" xml:space="preserve">
+    <value>Tržby</value>
+  </data>
+  <data name="TopCoursesColumnSeats" xml:space="preserve">
+    <value>Počet míst</value>
+  </data>
+  <data name="Loading" xml:space="preserve">
+    <value>Načítám…</value>
+  </data>
+  <data name="ConversionFunnelTitle" xml:space="preserve">
+    <value>Konverzní trychtýř</value>
+  </data>
+  <data name="ConversionChartLabel" xml:space="preserve">
+    <value>Graf konverzí</value>
+  </data>
+  <data name="TermPopularityTitle" xml:space="preserve">
+    <value>Oblíbenost termínů</value>
+  </data>
+  <data name="TermPopularityChartLabel" xml:space="preserve">
+    <value>Heatmapa oblíbenosti termínů</value>
+  </data>
+  <data name="TermPopularityEmpty" xml:space="preserve">
+    <value>Pro vybraný filtr nejsou dostupné žádné termíny.</value>
+  </data>
+  <data name="RealtimeStatsTitle" xml:space="preserve">
+    <value>Real-time statistiky</value>
+  </data>
+  <data name="RealtimeUsersLabel" xml:space="preserve">
+    <value>Online uživatelé</value>
+  </data>
+  <data name="RealtimeCartsLabel" xml:space="preserve">
+    <value>Aktuální košíky</value>
+  </data>
+  <data name="RealtimeCartValueLabel" xml:space="preserve">
+    <value>Hodnota v košících</value>
+  </data>
+</root>

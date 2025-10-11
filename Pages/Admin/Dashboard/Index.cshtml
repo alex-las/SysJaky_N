@@ -1,15 +1,16 @@
 @page
 @model SysJaky_N.Pages.Admin.Dashboard.IndexModel
+@inject IStringLocalizer<SysJaky_N.Pages.Admin.Dashboard.IndexModel> Localizer
 @{
-    ViewData["Title"] = "Řídicí panel";
+    ViewData["Title"] = Localizer["PageTitle"];
 }
 
-<h1 class="mb-4">Řídicí panel</h1>
+<h1 class="mb-4">@Localizer["PageTitle"]</h1>
 
-@if (TempData["ChatbotSettingsSaved"] is bool saved && saved)
+@if (TempData["ChatbotSettingsSavedMessage"] is string savedMessage)
 {
     <div class="alert alert-success" role="alert">
-        Nastavení chatbota bylo úspěšně uloženo.
+        @savedMessage
     </div>
 }
 
@@ -19,18 +20,18 @@
             <div class="card-header py-3">
                 <div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-lg-between gap-3">
                     <div>
-                        <h2 class="h5 mb-1">Filtr přehledu</h2>
-                        <p class="text-muted mb-0">Zvolte období, normy a města, pro která chcete zobrazit statistiky.</p>
+                        <h2 class="h5 mb-1">@Localizer["OverviewFilterTitle"]</h2>
+                        <p class="text-muted mb-0">@Localizer["OverviewFilterDescription"]</p>
                     </div>
                     <div class="d-flex flex-wrap gap-2">
                         <button id="preset7" type="button" class="btn btn-outline-secondary btn-sm" data-range="7">
-                            Posledních 7 dní
+                            @Localizer["PresetLast7Days"]
                         </button>
                         <button id="preset30" type="button" class="btn btn-outline-secondary btn-sm" data-range="30">
-                            Posledních 30 dní
+                            @Localizer["PresetLast30Days"]
                         </button>
                         <button id="preset365" type="button" class="btn btn-outline-secondary btn-sm" data-range="365">
-                            Posledních 12 měsíců
+                            @Localizer["PresetLast12Months"]
                         </button>
                     </div>
                 </div>
@@ -38,33 +39,33 @@
             <div class="card-body">
                 <form id="dashboardFilters" class="row g-3 align-items-end" autocomplete="off">
                     <div class="col-sm-6 col-lg-3">
-                        <label class="form-label" for="filterFrom">Od</label>
+                        <label class="form-label" for="filterFrom">@Localizer["FilterFromLabel"]</label>
                         <input id="filterFrom" type="date" class="form-control" required />
                     </div>
                     <div class="col-sm-6 col-lg-3">
-                        <label class="form-label" for="filterTo">Do</label>
+                        <label class="form-label" for="filterTo">@Localizer["FilterToLabel"]</label>
                         <input id="filterTo" type="date" class="form-control" required />
                     </div>
                     <div class="col-sm-6 col-lg-3">
-                        <label class="form-label" for="filterNorms">Norma</label>
+                        <label class="form-label" for="filterNorms">@Localizer["FilterNormsLabel"]</label>
                         <select id="filterNorms" class="form-select" multiple size="4" aria-describedby="filterNormsHelp"></select>
-                        <div id="filterNormsHelp" class="form-text">Podržením Ctrl vyberete více norem.</div>
+                        <div id="filterNormsHelp" class="form-text">@Localizer["FilterNormsHelp"]</div>
                     </div>
                     <div class="col-sm-6 col-lg-3">
-                        <label class="form-label" for="filterCities">Město</label>
+                        <label class="form-label" for="filterCities">@Localizer["FilterCitiesLabel"]</label>
                         <select id="filterCities" class="form-select" multiple size="4" aria-describedby="filterCitiesHelp"></select>
-                        <div id="filterCitiesHelp" class="form-text">Podržením Ctrl vyberete více měst.</div>
+                        <div id="filterCitiesHelp" class="form-text">@Localizer["FilterCitiesHelp"]</div>
                     </div>
                     <div class="col-12 d-flex flex-wrap gap-2">
                         <button id="applyFilters" type="submit" class="btn btn-primary">
-                            <i class="bi bi-arrow-repeat"></i> Aktualizovat přehled
+                            <i class="bi bi-arrow-repeat"></i> @Localizer["ApplyFiltersButton"]
                         </button>
                         <button id="exportReport" type="button" class="btn btn-outline-success">
-                            <i class="bi bi-file-earmark-excel"></i> Exportovat do Excelu
+                            <i class="bi bi-file-earmark-excel"></i> @Localizer["ExportReportButton"]
                         </button>
                         <div id="filtersStatus" class="text-muted small align-self-center">
                             <span class="spinner-border spinner-border-sm me-2 d-none" id="filtersSpinner" role="status" aria-hidden="true"></span>
-                            <span id="filtersStatusText">Připraveno</span>
+                            <span id="filtersStatusText">@Localizer["FiltersStatusReady"]</span>
                         </div>
                     </div>
                 </form>
@@ -75,7 +76,7 @@
             <div class="col-sm-6 col-xl-3">
                 <div class="card shadow-sm h-100">
                     <div class="card-body">
-                        <p class="text-muted text-uppercase fw-semibold mb-1">Tržby celkem</p>
+                        <p class="text-muted text-uppercase fw-semibold mb-1">@Localizer["SummaryRevenue"]</p>
                         <p class="display-6 mb-0" id="summaryRevenue">—</p>
                         <p class="text-success small mb-0" id="summaryRevenueChange"></p>
                     </div>
@@ -84,7 +85,7 @@
             <div class="col-sm-6 col-xl-3">
                 <div class="card shadow-sm h-100">
                     <div class="card-body">
-                        <p class="text-muted text-uppercase fw-semibold mb-1">Objednávky</p>
+                        <p class="text-muted text-uppercase fw-semibold mb-1">@Localizer["SummaryOrders"]</p>
                         <p class="display-6 mb-0" id="summaryOrders">—</p>
                         <p class="text-muted small mb-0" id="summaryAverageOrder">—</p>
                     </div>
@@ -93,7 +94,7 @@
             <div class="col-sm-6 col-xl-3">
                 <div class="card shadow-sm h-100">
                     <div class="card-body">
-                        <p class="text-muted text-uppercase fw-semibold mb-1">Prodáno míst</p>
+                        <p class="text-muted text-uppercase fw-semibold mb-1">@Localizer["SummarySeats"]</p>
                         <p class="display-6 mb-0" id="summarySeats">—</p>
                         <p class="text-muted small mb-0" id="summaryOccupancy">—</p>
                     </div>
@@ -102,7 +103,7 @@
             <div class="col-sm-6 col-xl-3">
                 <div class="card shadow-sm h-100">
                     <div class="card-body">
-                        <p class="text-muted text-uppercase fw-semibold mb-1">Aktivní zákazníci</p>
+                        <p class="text-muted text-uppercase fw-semibold mb-1">@Localizer["SummaryCustomers"]</p>
                         <p class="display-6 mb-0" id="summaryCustomers">—</p>
                         <p class="text-muted small mb-0" id="summaryNewCustomers">—</p>
                     </div>
@@ -113,37 +114,37 @@
         <div class="card shadow-sm mb-4">
             <div class="card-header d-flex flex-column flex-md-row align-items-md-center justify-content-md-between gap-2">
                 <div>
-                    <h2 class="h5 mb-0">Vývoj tržeb a objednávek</h2>
+                    <h2 class="h5 mb-0">@Localizer["SalesTrendTitle"]</h2>
                     <small class="text-muted" id="salesRangeLabel">—</small>
                 </div>
                 <div class="text-muted small" id="salesAggregateLabel"></div>
             </div>
             <div class="card-body">
-                <canvas id="salesTrendChart" height="280" role="img" aria-label="Graf vývoje tržeb"></canvas>
+                <canvas id="salesTrendChart" height="280" role="img" aria-label="@Localizer["SalesTrendChartLabel"]"></canvas>
                 <p class="text-muted small mt-3 mb-0" id="salesEmpty" hidden>
-                    Pro zvolené období nejsou dostupná data.
+                    @Localizer["SalesTrendEmpty"]
                 </p>
             </div>
         </div>
 
         <div class="card shadow-sm mb-4">
             <div class="card-header d-flex flex-column flex-md-row align-items-md-center justify-content-md-between gap-2">
-                <h2 class="h5 mb-0">Top kurzy podle tržeb</h2>
+                <h2 class="h5 mb-0">@Localizer["TopCoursesTitle"]</h2>
                 <small class="text-muted" id="topCoursesTotal">—</small>
             </div>
             <div class="card-body">
-                <canvas id="topCoursesChart" height="240" role="img" aria-label="Graf nejúspěšnějších kurzů"></canvas>
+                <canvas id="topCoursesChart" height="240" role="img" aria-label="@Localizer["TopCoursesChartLabel"]"></canvas>
                 <div class="table-responsive mt-4">
                     <table class="table table-sm mb-0 align-middle">
                         <thead>
                             <tr>
-                                <th scope="col">Kurz</th>
-                                <th scope="col" class="text-end">Tržby</th>
-                                <th scope="col" class="text-end">Počet míst</th>
+                                <th scope="col">@Localizer["TopCoursesColumnCourse"]</th>
+                                <th scope="col" class="text-end">@Localizer["TopCoursesColumnRevenue"]</th>
+                                <th scope="col" class="text-end">@Localizer["TopCoursesColumnSeats"]</th>
                             </tr>
                         </thead>
                         <tbody id="topCoursesTable">
-                            <tr><td colspan="3" class="text-center text-muted py-3">Načítám…</td></tr>
+                            <tr><td colspan="3" class="text-center text-muted py-3">@Localizer["Loading"]</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -154,13 +155,13 @@
             <div class="col-lg-6">
                 <div class="card shadow-sm h-100">
                     <div class="card-header d-flex flex-column flex-md-row align-items-md-center justify-content-md-between gap-2">
-                        <h2 class="h5 mb-0">Konverzní trychtýř</h2>
+                        <h2 class="h5 mb-0">@Localizer["ConversionFunnelTitle"]</h2>
                         <small class="text-muted" id="conversionRates">—</small>
                     </div>
                     <div class="card-body">
-                        <canvas id="conversionChart" height="240" role="img" aria-label="Graf konverzí"></canvas>
+                        <canvas id="conversionChart" height="240" role="img" aria-label="@Localizer["ConversionChartLabel"]"></canvas>
                         <ul class="list-unstyled mt-3 mb-0" id="conversionDetails">
-                            <li class="text-muted">Načítám…</li>
+                            <li class="text-muted">@Localizer["Loading"]</li>
                         </ul>
                     </div>
                 </div>
@@ -168,12 +169,12 @@
             <div class="col-lg-6">
                 <div class="card shadow-sm h-100">
                     <div class="card-header">
-                        <h2 class="h5 mb-0">Oblíbenost termínů</h2>
+                        <h2 class="h5 mb-0">@Localizer["TermPopularityTitle"]</h2>
                     </div>
                     <div class="card-body">
-                        <canvas id="heatmapChart" height="260" role="img" aria-label="Heatmapa oblíbenosti termínů"></canvas>
+                        <canvas id="heatmapChart" height="260" role="img" aria-label="@Localizer["TermPopularityChartLabel"]"></canvas>
                         <p class="text-muted small mt-3 mb-0" id="heatmapEmpty" hidden>
-                            Pro vybraný filtr nejsou dostupné žádné termíny.
+                            @Localizer["TermPopularityEmpty"]
                         </p>
                     </div>
                 </div>
@@ -183,19 +184,19 @@
     <div class="col-12 col-xxl-3">
         <div class="card shadow-sm mb-4">
             <div class="card-header">
-                <h2 class="h5 mb-0">Real-time statistiky</h2>
+                <h2 class="h5 mb-0">@Localizer["RealtimeStatsTitle"]</h2>
             </div>
             <div class="card-body">
                 <p class="mb-2">
-                    <span class="text-muted d-block">Online uživatelé</span>
+                    <span class="text-muted d-block">@Localizer["RealtimeUsersLabel"]</span>
                     <span class="fs-3 fw-semibold" id="realtimeUsers">—</span>
                 </p>
                 <p class="mb-2">
-                    <span class="text-muted d-block">Aktuální košíky</span>
+                    <span class="text-muted d-block">@Localizer["RealtimeCartsLabel"]</span>
                     <span class="fs-3 fw-semibold" id="realtimeCarts">—</span>
                 </p>
                 <p class="mb-0">
-                    <span class="text-muted d-block">Hodnota v košících</span>
+                    <span class="text-muted d-block">@Localizer["RealtimeCartValueLabel"]</span>
                     <span class="fs-5" id="realtimeCartValue">—</span>
                 </p>
                 <p class="text-muted small mt-3 mb-0" id="realtimeUpdated">Čekám na připojení…</p>

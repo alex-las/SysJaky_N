@@ -1,14 +1,20 @@
 @page
 @model SysJaky_N.Pages.Admin.Users.IndexModel
+@inject IStringLocalizer<SysJaky_N.Pages.Admin.Users.IndexModel> Localizer
 @{
-    ViewData["Title"] = "Uživatelé";
+    ViewData["Title"] = Localizer["PageTitle"];
 }
 
-<h1>Uživatelé</h1>
+<h1>@Localizer["PageTitle"]</h1>
 
-<form method="get" class="mb-3" role="search" aria-label="Vyhledávání uživatelů">
-    <input type="text" name="Search" value="@Model.Search" placeholder="Hledat uživatele" aria-label="Hledat uživatele" />
-    <button type="submit">Hledat</button>
+@if (TempData["StatusMessage"] is string statusMessage)
+{
+    <div class="alert alert-success" role="alert">@statusMessage</div>
+}
+
+<form method="get" class="mb-3" role="search" aria-label="@Localizer["SearchFormAriaLabel"]">
+    <input type="text" name="Search" value="@Model.Search" placeholder="@Localizer["SearchPlaceholder"]" aria-label="@Localizer["SearchPlaceholder"]" />
+    <button type="submit">@Localizer["SearchButton"]</button>
 </form>
 
 <form method="post">
@@ -16,9 +22,9 @@
         <thead>
             <tr>
                 <th></th>
-                <th>E-mail</th>
-                <th>Telefon</th>
-                <th>Role</th>
+                <th>@Localizer["EmailColumn"]</th>
+                <th>@Localizer["PhoneColumn"]</th>
+                <th>@Localizer["RolesColumn"]</th>
                 <th></th>
             </tr>
         </thead>
@@ -31,8 +37,8 @@
                 <td>@user.PhoneNumber</td>
                 <td>@string.Join(", ", user.Roles)</td>
                 <td>
-                    <a asp-page="Edit" asp-route-id="@user.Id">Upravit</a> |
-                    <a asp-page="Delete" asp-route-id="@user.Id">Smazat</a>
+                    <a asp-page="Edit" asp-route-id="@user.Id">@Localizer["EditLink"]</a> |
+                    <a asp-page="Delete" asp-route-id="@user.Id">@Localizer["DeleteLink"]</a>
                 </td>
             </tr>
         }
@@ -41,20 +47,20 @@
 
     <div class="mb-3">
         <select name="RoleName">
-            <option value="">-- vyberte roli --</option>
+            <option value="">@Localizer["SelectRolePlaceholder"]</option>
             @foreach (var role in Model.AllRoles)
             {
                 <option value="@role">@role</option>
             }
         </select>
-        <button formaction="?handler=AssignRole" type="submit">Přidělit roli</button>
-        <button formaction="?handler=RemoveRole" type="submit">Odebrat roli</button>
-        <button formaction="?handler=Block" type="submit">Zablokovat</button>
-        <button formaction="?handler=Unblock" type="submit">Odblokovat</button>
+        <button formaction="?handler=AssignRole" type="submit">@Localizer["AssignRoleButton"]</button>
+        <button formaction="?handler=RemoveRole" type="submit">@Localizer["RemoveRoleButton"]</button>
+        <button formaction="?handler=Block" type="submit">@Localizer["BlockButton"]</button>
+        <button formaction="?handler=Unblock" type="submit">@Localizer["UnblockButton"]</button>
     </div>
 </form>
 
-<div role="navigation" aria-label="Stránkování uživatelů" class="d-flex gap-2">
+<div role="navigation" aria-label="@Localizer["PaginationAriaLabel"]" class="d-flex gap-2">
     @for (var i = 1; i <= Model.TotalPages; i++)
     {
         if (i == Model.PageIndex)

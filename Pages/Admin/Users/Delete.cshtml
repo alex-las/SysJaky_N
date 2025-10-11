@@ -1,18 +1,19 @@
 @page "{id}"
 @model SysJaky_N.Pages.Admin.Users.DeleteModel
+@inject IStringLocalizer<SysJaky_N.Pages.Admin.Users.DeleteModel> Localizer
 @{
-    ViewData["Title"] = "Smazat uživatele";
+    ViewData["Title"] = Localizer["PageTitle"];
 }
 
-<h1>Smazat uživatele</h1>
+<h1>@Localizer["PageTitle"]</h1>
 
-<h3>Opravdu chcete smazat tohoto uživatele?</h3>
+<h3>@Localizer["ConfirmationPrompt"]</h3>
 <div>
     <strong>@Model.UserEntity.Email</strong>
 </div>
 
 <form method="post">
     <input type="hidden" asp-for="UserEntity.Id" />
-    <button type="submit" class="btn btn-danger">Smazat</button>
-    <a asp-page="Index" class="btn btn-secondary">Zrušit</a>
+    <button type="submit" class="btn btn-danger">@Localizer["DeleteButton"]</button>
+    <a asp-page="Index" class="btn btn-secondary">@Localizer["CancelButton"]</a>
 </form>

@@ -1,10 +1,11 @@
 @page "{id}"
 @model SysJaky_N.Pages.Admin.Users.EditModel
+@inject IStringLocalizer<SysJaky_N.Pages.Admin.Users.EditModel> Localizer
 @{
-    ViewData["Title"] = "Upravit uživatele";
+    ViewData["Title"] = Localizer["PageTitle"];
 }
 
-<h1>Upravit uživatele</h1>
+<h1>@Localizer["PageTitle"]</h1>
 
 <form method="post">
     <div class="form-group">
@@ -20,7 +21,7 @@
         <label asp-for="Input.IsLocked" class="form-check-label"></label>
     </div>
     <div class="form-group">
-        <label>Role</label>
+        <label>@Localizer["RolesLabel"]</label>
         @for (int i = 0; i < Model.Input.Roles.Count; i++)
         {
             <div class="form-check">
@@ -30,6 +31,6 @@
             </div>
         }
     </div>
-    <button type="submit" class="btn btn-primary">Uložit</button>
-    <a asp-page="Index" class="btn btn-secondary">Zpět</a>
+    <button type="submit" class="btn btn-primary">@Localizer["SaveButton"]</button>
+    <a asp-page="Index" class="btn btn-secondary">@Localizer["BackButton"]</a>
 </form>
