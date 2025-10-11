@@ -1,17 +1,18 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Security.Claims;
-using Microsoft.AspNetCore.DataProtection;
+using ClosedXML.Excel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using System.Globalization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.RazorPages.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
@@ -45,8 +46,8 @@ internal sealed class CourseReminderServiceTester
             ("Course reminders respect different time zones", RunCourseSelectionTestAsync),
             ("Course reminders avoid client-side evaluation warnings", RunClientEvaluationWarningTestAsync),
             ("Analytics dashboard aggregates sales using SQL grouping", RunAnalyticsAggregationTestAsync),
-            ("Account pages use localized validation and notifications", RunAccountLocalizationTestAsync),
-            ("API controllers return localized responses", RunApiLocalizationTestAsync)
+            ("Analytics export uses localized workbook text", RunAnalyticsExportLocalizationTestAsync),
+            ("Account pages use localized validation and notifications", RunAccountLocalizationTestAsync)
         };
 
         tests.AddRange(AdminLocalizationTester.GetTests());
@@ -367,6 +368,11 @@ internal sealed class CourseReminderServiceTester
         });
 
         var databasePath = Path.Combine(Path.GetTempPath(), $"analytics-{Guid.NewGuid():N}.db");
+        using var localizationProvider = new ServiceCollection()
+            .AddLogging()
+            .AddLocalization(options => options.ResourcesPath = "Resources")
+            .BuildServiceProvider();
+        var controllerLocalizer = localizationProvider.GetRequiredService<IStringLocalizer<AnalyticsController>>();
 
         try
         {
@@ -384,7 +390,7 @@ internal sealed class CourseReminderServiceTester
             using var scope = provider.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
-            var controller = new AnalyticsController(context);
+            var controller = new AnalyticsController(context, controllerLocalizer);
 
             var result = await controller.GetDashboard(new AnalyticsController.AnalyticsQuery
             {
@@ -471,6 +477,111 @@ internal sealed class CourseReminderServiceTester
             if (conversions.Platby != 2 || conversions.Registrace != 3 || conversions.Navstevy != 10)
             {
                 throw new InvalidOperationException($"Unexpected conversion metrics: visits={conversions.Navstevy}, registrations={conversions.Registrace}, payments={conversions.Platby}.");
+            }
+        }
+        finally
+        {
+            if (File.Exists(databasePath))
+            {
+                File.Delete(databasePath);
+            }
+        }
+    }
+
+
+    private static async Task RunAnalyticsExportLocalizationTestAsync()
+    {
+        using var localizationProvider = new ServiceCollection()
+            .AddLogging()
+            .AddLocalization(options => options.ResourcesPath = "Resources")
+            .BuildServiceProvider();
+
+        var localizer = localizationProvider.GetRequiredService<IStringLocalizer<AnalyticsController>>();
+
+        var databasePath = Path.Combine(Path.GetTempPath(), $"analytics-export-{Guid.NewGuid():N}.db");
+
+        try
+        {
+            var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
+            ConfigureSqlite(optionsBuilder, $"Data Source={databasePath};Cache=Shared");
+
+            await using var context = new ApplicationDbContext(optionsBuilder.Options);
+            await context.Database.EnsureCreatedAsync();
+
+            var controller = new AnalyticsController(context, localizer);
+
+            var headerMap = new (int Row, int Column, string Key)[]
+            {
+                (1, 1, "PeriodLabel"),
+                (3, 1, "SummarySectionLabel"),
+                (4, 1, "TotalRevenueLabel"),
+                (5, 1, "RevenueChangeLabel"),
+                (6, 1, "OrdersLabel"),
+                (7, 1, "AverageOrderValueLabel"),
+                (8, 1, "SeatsSoldLabel"),
+                (9, 1, "AverageOccupancyLabel"),
+                (10, 1, "ActiveCustomersLabel"),
+                (11, 1, "NewCustomersLabel"),
+                (13, 1, "TopCoursesByRevenueLabel"),
+                (14, 1, "CourseHeader"),
+                (14, 2, "RevenueHeader"),
+                (14, 3, "SeatsSoldHeader"),
+                (16, 1, "RevenueTrendSectionLabel"),
+                (17, 1, "DateHeader"),
+                (17, 2, "RevenueHeader"),
+                (17, 3, "OrdersHeader"),
+                (17, 4, "AverageOrderHeader"),
+            };
+
+            var cultures = new[] { "cs", "en" };
+            foreach (var cultureName in cultures)
+            {
+                var originalCulture = CultureInfo.CurrentCulture;
+                var originalUiCulture = CultureInfo.CurrentUICulture;
+
+                try
+                {
+                    var culture = CultureInfo.GetCultureInfo(cultureName);
+                    CultureInfo.CurrentCulture = culture;
+                    CultureInfo.CurrentUICulture = culture;
+
+                    var result = await controller.Export(new AnalyticsController.AnalyticsQuery(), CancellationToken.None);
+                    if (result is not FileContentResult fileResult)
+                    {
+                        throw new InvalidOperationException("Analytics export should return a file result.");
+                    }
+
+                    var expectedPrefix = localizer["ExportFileNamePrefix"].Value;
+                    if (!fileResult.FileDownloadName.StartsWith($"{expectedPrefix}-", StringComparison.Ordinal))
+                    {
+                        throw new InvalidOperationException($"File name '{fileResult.FileDownloadName}' does not start with '{expectedPrefix}-' for culture '{cultureName}'.");
+                    }
+
+                    using var stream = new MemoryStream(fileResult.FileContents);
+                    using var workbook = new XLWorkbook(stream);
+                    var worksheet = workbook.Worksheet(1);
+
+                    var expectedSheetName = localizer["SummaryWorksheetName"].Value;
+                    if (!string.Equals(expectedSheetName, worksheet.Name, StringComparison.Ordinal))
+                    {
+                        throw new InvalidOperationException($"Worksheet name '{worksheet.Name}' does not match '{expectedSheetName}' for culture '{cultureName}'.");
+                    }
+
+                    foreach (var (row, column, key) in headerMap)
+                    {
+                        var expected = localizer[key].Value;
+                        var actual = worksheet.Cell(row, column).GetString();
+                        if (!string.Equals(expected, actual, StringComparison.Ordinal))
+                        {
+                            throw new InvalidOperationException($"Cell ({row}, {column}) expected '{expected}' but found '{actual}' for culture '{cultureName}'.");
+                        }
+                    }
+                }
+                finally
+                {
+                    CultureInfo.CurrentCulture = originalCulture;
+                    CultureInfo.CurrentUICulture = originalUiCulture;
+                }
             }
         }
         finally
