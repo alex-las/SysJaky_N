@@ -1,9 +1,15 @@
 @page
 @model SysJaky_N.Pages.Admin.Companies.IndexModel
+@inject IStringLocalizer<SysJaky_N.Pages.Admin.Companies.IndexModel> Localizer
 @{
-    ViewData["Title"] = "Společnosti";
+    ViewData["Title"] = Localizer["PageTitle"];
 }
-<h1>Společnosti</h1>
+<h1>@Localizer["PageTitle"]</h1>
+
+@if (TempData["StatusMessage"] is string statusMessage)
+{
+    <div class="alert alert-success" role="alert">@statusMessage</div>
+}
 
 <form method="post">
     <div class="mb-3">
@@ -18,12 +24,12 @@
         <label asp-for="NewCompany.ManagerId"></label>
         <input asp-for="NewCompany.ManagerId" class="form-control" />
     </div>
-    <button type="submit" class="btn btn-primary">Vytvořit</button>
+    <button type="submit" class="btn btn-primary">@Localizer["CreateButton"]</button>
 </form>
 
 <table class="table mt-3">
     <thead>
-        <tr><th>Název</th><th>Referenční kód</th><th>Správce</th></tr>
+        <tr><th>@Localizer["TableHeaderName"]</th><th>@Localizer["TableHeaderReferenceCode"]</th><th>@Localizer["TableHeaderManager"]</th></tr>
     </thead>
     <tbody>
     @foreach (var company in Model.Companies)

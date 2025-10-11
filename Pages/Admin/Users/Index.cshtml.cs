@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using SysJaky_N.Data;
 using SysJaky_N.Models;
 using SysJaky_N.Services;
@@ -19,13 +20,20 @@ public class IndexModel : PageModel
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly RoleManager<IdentityRole> _roleManager;
     private readonly IAuditService _auditService;
+    private readonly IStringLocalizer<IndexModel> _localizer;
 
-    public IndexModel(ApplicationDbContext context, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IAuditService auditService)
+    public IndexModel(
+        ApplicationDbContext context,
+        UserManager<ApplicationUser> userManager,
+        RoleManager<IdentityRole> roleManager,
+        IAuditService auditService,
+        IStringLocalizer<IndexModel> localizer)
     {
         _context = context;
         _userManager = userManager;
         _roleManager = roleManager;
         _auditService = auditService;
+        _localizer = localizer;
     }
 
     public IList<UserViewModel> Users { get; set; } = new List<UserViewModel>();
@@ -84,16 +92,27 @@ public class IndexModel : PageModel
         if (SelectedUserIds.Any() && !string.IsNullOrEmpty(RoleName))
         {
             var adminId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var assignments = 0;
+
             foreach (var id in SelectedUserIds)
             {
                 var user = await _userManager.FindByIdAsync(id);
                 if (user == null)
+                {
                     continue;
+                }
+
                 if (!await _userManager.IsInRoleAsync(user, RoleName))
                 {
                     await _userManager.AddToRoleAsync(user, RoleName);
-                    await _auditService.LogAsync(adminId, "RoleAssigned", $"User {user.Id} assigned role {RoleName}");
+                    await _auditService.LogAsync(adminId, "RoleAssigned", _localizer["AuditRoleAssigned", user.Id, RoleName].Value);
+                    assignments++;
                 }
+            }
+
+            if (assignments > 0)
+            {
+                TempData["StatusMessage"] = _localizer["RolesAssignedStatus", assignments, RoleName].Value;
             }
         }
         return RedirectToPage(new { Search, PageIndex });
@@ -104,16 +123,27 @@ public class IndexModel : PageModel
         if (SelectedUserIds.Any() && !string.IsNullOrEmpty(RoleName))
         {
             var adminId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var removals = 0;
+
             foreach (var id in SelectedUserIds)
             {
                 var user = await _userManager.FindByIdAsync(id);
                 if (user == null)
+                {
                     continue;
+                }
+
                 if (await _userManager.IsInRoleAsync(user, RoleName))
                 {
                     await _userManager.RemoveFromRoleAsync(user, RoleName);
-                    await _auditService.LogAsync(adminId, "RoleRemoved", $"User {user.Id} removed from role {RoleName}");
+                    await _auditService.LogAsync(adminId, "RoleRemoved", _localizer["AuditRoleRemoved", user.Id, RoleName].Value);
+                    removals++;
                 }
+            }
+
+            if (removals > 0)
+            {
+                TempData["StatusMessage"] = _localizer["RolesRemovedStatus", removals, RoleName].Value;
             }
         }
         return RedirectToPage(new { Search, PageIndex });
@@ -124,13 +154,24 @@ public class IndexModel : PageModel
         if (SelectedUserIds.Any())
         {
             var adminId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var blockedUsers = 0;
+
             foreach (var id in SelectedUserIds)
             {
                 var user = await _userManager.FindByIdAsync(id);
                 if (user == null)
+                {
                     continue;
+                }
+
                 await _userManager.SetLockoutEndDateAsync(user, DateTimeOffset.MaxValue);
-                await _auditService.LogAsync(adminId, "AccountDeactivated", $"User {user.Id} blocked");
+                await _auditService.LogAsync(adminId, "AccountDeactivated", _localizer["AuditUserBlocked", user.Id].Value);
+                blockedUsers++;
+            }
+
+            if (blockedUsers > 0)
+            {
+                TempData["StatusMessage"] = _localizer["UsersBlockedStatus", blockedUsers].Value;
             }
         }
         return RedirectToPage(new { Search, PageIndex });
@@ -141,13 +182,24 @@ public class IndexModel : PageModel
         if (SelectedUserIds.Any())
         {
             var adminId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var unblockedUsers = 0;
+
             foreach (var id in SelectedUserIds)
             {
                 var user = await _userManager.FindByIdAsync(id);
                 if (user == null)
+                {
                     continue;
+                }
+
                 await _userManager.SetLockoutEndDateAsync(user, null);
-                await _auditService.LogAsync(adminId, "AccountActivated", $"User {user.Id} unblocked");
+                await _auditService.LogAsync(adminId, "AccountActivated", _localizer["AuditUserUnblocked", user.Id].Value);
+                unblockedUsers++;
+            }
+
+            if (unblockedUsers > 0)
+            {
+                TempData["StatusMessage"] = _localizer["UsersUnblockedStatus", unblockedUsers].Value;
             }
         }
         return RedirectToPage(new { Search, PageIndex });

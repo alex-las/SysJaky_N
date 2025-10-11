@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using SysJaky_N.Models;
 using SysJaky_N.Services;
 using System.ComponentModel.DataAnnotations;
@@ -17,12 +18,18 @@ public class EditModel : PageModel
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly RoleManager<IdentityRole> _roleManager;
     private readonly IAuditService _auditService;
+    private readonly IStringLocalizer<EditModel> _localizer;
 
-    public EditModel(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IAuditService auditService)
+    public EditModel(
+        UserManager<ApplicationUser> userManager,
+        RoleManager<IdentityRole> roleManager,
+        IAuditService auditService,
+        IStringLocalizer<EditModel> localizer)
     {
         _userManager = userManager;
         _roleManager = roleManager;
         _auditService = auditService;
+        _localizer = localizer;
     }
 
     [BindProperty]
@@ -107,18 +114,21 @@ public class EditModel : PageModel
         var adminId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         foreach (var role in selectedRoles.Except(userRoles))
         {
-            await _auditService.LogAsync(adminId, "RoleAssigned", $"User {user.Id} assigned role {role}");
+            await _auditService.LogAsync(adminId, "RoleAssigned", _localizer["AuditRoleAssigned", user.Id, role].Value);
         }
         foreach (var role in userRoles.Except(selectedRoles))
         {
-            await _auditService.LogAsync(adminId, "RoleRemoved", $"User {user.Id} removed from role {role}");
+            await _auditService.LogAsync(adminId, "RoleRemoved", _localizer["AuditRoleRemoved", user.Id, role].Value);
         }
 
         var isLocked = Input.IsLocked;
         if (isLocked != wasLocked)
         {
-            await _auditService.LogAsync(adminId, isLocked ? "AccountDeactivated" : "AccountActivated", $"User {user.Id} {(isLocked ? "locked" : "unlocked")}");
+            var auditMessage = _localizer[isLocked ? "AuditUserLocked" : "AuditUserUnlocked", user.Id].Value;
+            await _auditService.LogAsync(adminId, isLocked ? "AccountDeactivated" : "AccountActivated", auditMessage);
         }
+
+        TempData["StatusMessage"] = _localizer["UserUpdatedStatus", user.Email ?? user.Id].Value;
 
         return RedirectToPage("Index");
     }

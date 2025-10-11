@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Localization;
 using SysJaky_N.Models;
 
 namespace SysJaky_N.Pages.Admin.Users;
@@ -10,10 +11,12 @@ namespace SysJaky_N.Pages.Admin.Users;
 public class DeleteModel : PageModel
 {
     private readonly UserManager<ApplicationUser> _userManager;
+    private readonly IStringLocalizer<DeleteModel> _localizer;
 
-    public DeleteModel(UserManager<ApplicationUser> userManager)
+    public DeleteModel(UserManager<ApplicationUser> userManager, IStringLocalizer<DeleteModel> localizer)
     {
         _userManager = userManager;
+        _localizer = localizer;
     }
 
     [BindProperty]
@@ -38,6 +41,10 @@ public class DeleteModel : PageModel
             return NotFound();
         }
         await _userManager.DeleteAsync(user);
+
+        var identifier = user.Email ?? user.Id;
+        TempData["StatusMessage"] = _localizer["UserDeletedStatus", identifier].Value;
+
         return RedirectToPage("Index");
     }
 }

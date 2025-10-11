@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using SysJaky_N.Authorization;
 using SysJaky_N.Data;
 
@@ -11,10 +12,12 @@ namespace SysJaky_N.Pages.Admin.Dashboard;
 public class IndexModel : PageModel
 {
     private readonly ApplicationDbContext _context;
+    private readonly IStringLocalizer<IndexModel> _localizer;
 
-    public IndexModel(ApplicationDbContext context)
+    public IndexModel(ApplicationDbContext context, IStringLocalizer<IndexModel> localizer)
     {
         _context = context;
+        _localizer = localizer;
     }
 
     [BindProperty]
@@ -63,7 +66,7 @@ public class IndexModel : PageModel
 
         await _context.SaveChangesAsync();
 
-        TempData["ChatbotSettingsSaved"] = true;
+        TempData["ChatbotSettingsSavedMessage"] = _localizer["ChatbotSettingsSavedMessage"].Value;
 
         return RedirectToPage();
     }

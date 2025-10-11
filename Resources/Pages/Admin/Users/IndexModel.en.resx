@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="PageTitle" xml:space="preserve">
+    <value>Users</value>
+  </data>
+  <data name="SearchFormAriaLabel" xml:space="preserve">
+    <value>User search</value>
+  </data>
+  <data name="SearchPlaceholder" xml:space="preserve">
+    <value>Search users</value>
+  </data>
+  <data name="SearchButton" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="EmailColumn" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="PhoneColumn" xml:space="preserve">
+    <value>Phone</value>
+  </data>
+  <data name="RolesColumn" xml:space="preserve">
+    <value>Roles</value>
+  </data>
+  <data name="EditLink" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="DeleteLink" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="SelectRolePlaceholder" xml:space="preserve">
+    <value>-- select a role --</value>
+  </data>
+  <data name="AssignRoleButton" xml:space="preserve">
+    <value>Assign role</value>
+  </data>
+  <data name="RemoveRoleButton" xml:space="preserve">
+    <value>Remove role</value>
+  </data>
+  <data name="BlockButton" xml:space="preserve">
+    <value>Block</value>
+  </data>
+  <data name="UnblockButton" xml:space="preserve">
+    <value>Unblock</value>
+  </data>
+  <data name="PaginationAriaLabel" xml:space="preserve">
+    <value>User pagination</value>
+  </data>
+  <data name="AuditRoleAssigned" xml:space="preserve">
+    <value>User {0} was assigned role {1}.</value>
+  </data>
+  <data name="AuditRoleRemoved" xml:space="preserve">
+    <value>User {0} was removed from role {1}.</value>
+  </data>
+  <data name="AuditUserBlocked" xml:space="preserve">
+    <value>User {0} was blocked.</value>
+  </data>
+  <data name="AuditUserUnblocked" xml:space="preserve">
+    <value>User {0} was unblocked.</value>
+  </data>
+  <data name="RolesAssignedStatus" xml:space="preserve">
+    <value>Role {1} was assigned to {0} selected users.</value>
+  </data>
+  <data name="RolesRemovedStatus" xml:space="preserve">
+    <value>Role {1} was removed from {0} selected users.</value>
+  </data>
+  <data name="UsersBlockedStatus" xml:space="preserve">
+    <value>{0} selected users were blocked.</value>
+  </data>
+  <data name="UsersUnblockedStatus" xml:space="preserve">
+    <value>{0} selected users were unblocked.</value>
+  </data>
+</root>
