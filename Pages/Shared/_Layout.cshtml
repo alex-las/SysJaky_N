@@ -137,6 +137,8 @@
 
     <partial name="_AdvisorOffcanvas" />
 
+    <vc:chatbot-widget />
+
     <footer class="site-footer" role="contentinfo">
         <div class="footer-gradient"></div>
         <div class="container-xxl py-5 position-relative">
@@ -178,6 +180,7 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script type="module" src="~/lib/altcha/altcha.min.js" asp-append-version="true"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/chatbot.js" asp-append-version="true"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>
