@@ -210,6 +210,12 @@
   <data name="RecommendedForYou" xml:space="preserve">
     <value>Kurzy doporučené pro vaši certifikační cestu</value>
   </data>
+  <data name="CoursesHeading" xml:space="preserve">
+    <value>Aktuální školení a kurzy</value>
+  </data>
+  <data name="CoursesDescription" xml:space="preserve">
+    <value>Vyberte si z nejžádanějších kurzů, které vám pomohou splnit požadavky norem a posunout váš tým o krok dál.</value>
+  </data>
   <data name="RecommendedViewAll" xml:space="preserve">
     <value>Zobrazit vše</value>
   </data>
@@ -220,13 +226,13 @@
     <value>Certifikát v ceně vybraných kurzů. Absolventi získají oficiální potvrzení auditora / interního auditora.</value>
   </data>
   <data name="TrustGraduates" xml:space="preserve">
-    <value>{0} certifikovaných odborníků</value>
+    <value>Naše kurzy absolvovalo {0}</value>
   </data>
   <data name="TrustGuarantee" xml:space="preserve">
     <value>Zaručujeme úspěšnou certifikaci nebo vrátíme kurzovné</value>
   </data>
   <data name="TrustRating" xml:space="preserve">
-    <value>Hodnocení {0} certifikovaných odborníků</value>
+    <value>Hodnocení {0} od účastníků kurzů</value>
   </data>
   <data name="WhyChooseDescription" xml:space="preserve">
     <value>20 let praxe v oboru, tým externích auditorů a know-how z desítek odvětví.</value>
@@ -260,5 +266,32 @@
   </data>
   <data name="ISO13485" xml:space="preserve">
     <value>ISO 13485 — Medical Devices</value>
+  </data>
+  <data name="ContactCtaHeading" xml:space="preserve">
+    <value>Nezávazná konzultace</value>
+  </data>
+  <data name="ContactHeading" xml:space="preserve">
+    <value>Kontaktujte nás</value>
+  </data>
+  <data name="ContactDescription" xml:space="preserve">
+    <value>Rádi zodpovíme vaše dotazy a poradíme s výběrem vhodného školení.</value>
+  </data>
+  <data name="ContactPhoneLabel" xml:space="preserve">
+    <value>Telefon</value>
+  </data>
+  <data name="ContactPhoneValue" xml:space="preserve">
+    <value>+420 XXX XXX XXX</value>
+  </data>
+  <data name="ContactEmailLabel" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="ContactEmailValue" xml:space="preserve">
+    <value>info@systemy-jakosti.cz</value>
+  </data>
+  <data name="ContactAddressLabel" xml:space="preserve">
+    <value>Adresa</value>
+  </data>
+  <data name="ContactAddressValue" xml:space="preserve">
+    <value>Praha, Česká republika</value>
   </data>
 </root>

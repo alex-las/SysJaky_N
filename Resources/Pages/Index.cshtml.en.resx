@@ -127,25 +127,37 @@
     <value>Certificates included with selected courses. Graduates receive official confirmation as auditors / internal auditors.</value>
   </data>
   <data name="TrustGraduates" xml:space="preserve">
-    <value>{0} certified experts</value>
+    <value>Trusted by {0} graduates</value>
   </data>
   <data name="TrustGuarantee" xml:space="preserve">
     <value>We guarantee successful certification or refund your tuition</value>
   </data>
   <data name="TrustRating" xml:space="preserve">
-    <value>Rating {0} certified experts</value>
+    <value>Rated {0} by course participants</value>
   </data>
   <data name="MetricExperienceLabel" xml:space="preserve">
     <value>Years of experience</value>
   </data>
+  <data name="MetricExperienceAriaLabel" xml:space="preserve">
+    <value>Over {0} years of experience in management systems</value>
+  </data>
   <data name="MetricClientsLabel" xml:space="preserve">
     <value>Satisfied clients</value>
+  </data>
+  <data name="MetricClientsAriaLabel" xml:space="preserve">
+    <value>Over {0} satisfied clients</value>
   </data>
   <data name="MetricCoursesLabel" xml:space="preserve">
     <value>Training sessions delivered</value>
   </data>
+  <data name="MetricCoursesAriaLabel" xml:space="preserve">
+    <value>Over {0} training courses delivered</value>
+  </data>
   <data name="MetricInstructorsLabel" xml:space="preserve">
     <value>Certified instructors</value>
+  </data>
+  <data name="MetricInstructorsAriaLabel" xml:space="preserve">
+    <value>Over {0} certified instructors</value>
   </data>
   <data name="CourseDetailsCTA" xml:space="preserve">
     <value>Course details</value>
@@ -179,6 +191,9 @@
   </data>
   <data name="AboutBulletCare" xml:space="preserve">
     <value>Long-term care, internal audits, and updates whenever the standards change.</value>
+  </data>
+  <data name="AboutDescription" xml:space="preserve">
+    <value>We guide organizations through the entire ISO 9001, ISO 14001, ISO/IEC 17025, ISO 15189, HACCP, ISO 45001, ISO 27001, IATF 16949, and ISO 13485 lifecycle — from analysis to certification.</value>
   </data>
   <data name="AboutCtaLabel" xml:space="preserve">
     <value>Discover our story</value>

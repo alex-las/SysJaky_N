@@ -105,6 +105,12 @@
   <data name="RecommendedForYou" xml:space="preserve">
     <value>Courses recommended for your certification journey</value>
   </data>
+  <data name="CoursesHeading" xml:space="preserve">
+    <value>Current training and courses</value>
+  </data>
+  <data name="CoursesDescription" xml:space="preserve">
+    <value>Choose from the most in-demand courses that help you meet standard requirements and move your team forward.</value>
+  </data>
   <data name="RecommendedViewAll" xml:space="preserve">
     <value>View all</value>
   </data>
@@ -115,13 +121,13 @@
     <value>Certificates included with selected courses. Graduates receive official confirmation as auditors / internal auditors.</value>
   </data>
   <data name="TrustGraduates" xml:space="preserve">
-    <value>{0} certified experts</value>
+    <value>Trusted by {0} graduates</value>
   </data>
   <data name="TrustGuarantee" xml:space="preserve">
     <value>We guarantee successful certification or refund your tuition</value>
   </data>
   <data name="TrustRating" xml:space="preserve">
-    <value>Rating {0} certified experts</value>
+    <value>Rated {0} by course participants</value>
   </data>
   <data name="WhyChooseDescription" xml:space="preserve">
     <value>20 years of experience, a team of external auditors, and know-how from dozens of industries.</value>
@@ -155,5 +161,32 @@
   </data>
   <data name="ISO13485" xml:space="preserve">
     <value>ISO 13485 — Medical Devices</value>
+  </data>
+  <data name="ContactCtaHeading" xml:space="preserve">
+    <value>Book a free consultation</value>
+  </data>
+  <data name="ContactHeading" xml:space="preserve">
+    <value>Contact us</value>
+  </data>
+  <data name="ContactDescription" xml:space="preserve">
+    <value>We are happy to answer your questions and help you choose the right training.</value>
+  </data>
+  <data name="ContactPhoneLabel" xml:space="preserve">
+    <value>Phone</value>
+  </data>
+  <data name="ContactPhoneValue" xml:space="preserve">
+    <value>+420 XXX XXX XXX</value>
+  </data>
+  <data name="ContactEmailLabel" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="ContactEmailValue" xml:space="preserve">
+    <value>info@systemy-jakosti.cz</value>
+  </data>
+  <data name="ContactAddressLabel" xml:space="preserve">
+    <value>Address</value>
+  </data>
+  <data name="ContactAddressValue" xml:space="preserve">
+    <value>Prague, Czech Republic</value>
   </data>
 </root>

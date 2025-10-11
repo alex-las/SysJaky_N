@@ -158,49 +158,26 @@
         </div>
 
         <div class="hero__metrics" aria-label="@T["WhyChooseHeading"]">
-            <article data-reveal>
+            <article data-reveal aria-label="@T["MetricExperienceAriaLabel", "20+"]">
                 <span class="metric-value">20+</span>
                 <span class="metric-label">@T["MetricExperienceLabel"]</span>
             </article>
-            <article data-reveal data-reveal-delay="50">
+            <article data-reveal data-reveal-delay="50" aria-label="@T["MetricClientsAriaLabel", "500+"]">
                 <span class="metric-value">500+</span>
                 <span class="metric-label">@T["MetricClientsLabel"]</span>
             </article>
-            <article data-reveal data-reveal-delay="100">
+            <article data-reveal data-reveal-delay="100" aria-label="@T["MetricCoursesAriaLabel", "2000+"]">
                 <span class="metric-value">2000+</span>
                 <span class="metric-label">@T["MetricCoursesLabel"]</span>
             </article>
-            <article data-reveal data-reveal-delay="150">
+            <article data-reveal data-reveal-delay="150" aria-label="@T["MetricInstructorsAriaLabel", "15+"]">
                 <span class="metric-value">15+</span>
                 <span class="metric-label">@T["MetricInstructorsLabel"]</span>
             </article>
         </div>
     </section>
 
-    <section class="section specializations" id="specializations">
-        <header class="section__header" data-reveal>
-            <span class="section__eyebrow">@T["HeroTitle"]</span>
-            <h2>@T["SpecializationsHeading"]</h2>
-            <p>@T["SpecializationsDescription"]</p>
-        </header>
-        <div class="specializations__grid">
-            @foreach (var specialization in specializations)
-            {
-                <article class="specialization-card" data-reveal>
-                    <div class="specialization-card__icon @specialization.IconColorClass" aria-hidden="true">
-                        <i class="@specialization.CardIconClass"></i>
-                    </div>
-                    <div class="specialization-card__body">
-                        <h3>@specialization.Name</h3>
-                        <p>@specialization.Summary</p>
-                    </div>
-                    <span class="specialization-card__cta">
-                        <i class="bi bi-arrow-up-right"></i>
-                    </span>
-                </article>
-            }
-        </div>
-    </section>
+    @await Html.PartialAsync("/Pages/Shared/_SpecializationsSection.cshtml", specializations)
 
     <section class="section courses" id="courses">
         <header class="section__header" data-reveal>
