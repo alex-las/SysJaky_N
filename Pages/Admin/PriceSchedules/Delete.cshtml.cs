@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using SysJaky_N.Data;
 using SysJaky_N.Models;
 
@@ -13,9 +14,12 @@ public class DeleteModel : PageModel
 {
     private readonly ApplicationDbContext _context;
 
-    public DeleteModel(ApplicationDbContext context)
+    private readonly IStringLocalizer<DeleteModel> _localizer;
+
+    public DeleteModel(ApplicationDbContext context, IStringLocalizer<DeleteModel> localizer)
     {
         _context = context;
+        _localizer = localizer;
     }
 
     [BindProperty]
@@ -29,7 +33,7 @@ public class DeleteModel : PageModel
 
         if (schedule == null)
         {
-            return NotFound();
+            return NotFound(_localizer["PriceScheduleNotFound"]);
         }
 
         schedule.FromUtc = DateTime.SpecifyKind(schedule.FromUtc, DateTimeKind.Utc).ToLocalTime();
@@ -44,11 +48,11 @@ public class DeleteModel : PageModel
         var schedule = await _context.PriceSchedules.FindAsync(PriceSchedule.Id);
         if (schedule == null)
         {
-            return NotFound();
+            return NotFound(_localizer["PriceScheduleNotFound"]);
         }
 
         _context.PriceSchedules.Remove(schedule);
         await _context.SaveChangesAsync();
-        return RedirectToPage("Index");
+        return RedirectToPage(_localizer["IndexPageName"]);
     }
 }

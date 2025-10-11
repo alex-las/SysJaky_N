@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using SysJaky_N.Data;
 using SysJaky_N.Models;
 
@@ -15,9 +16,12 @@ public class EditModel : PageModel
 {
     private readonly ApplicationDbContext _context;
 
-    public EditModel(ApplicationDbContext context)
+    private readonly IStringLocalizer<EditModel> _localizer;
+
+    public EditModel(ApplicationDbContext context, IStringLocalizer<EditModel> localizer)
     {
         _context = context;
+        _localizer = localizer;
     }
 
     [BindProperty]
@@ -33,7 +37,7 @@ public class EditModel : PageModel
 
         if (schedule == null)
         {
-            return NotFound();
+            return NotFound(_localizer["PriceScheduleNotFound"]);
         }
 
         if (schedule.FromUtc != default)
@@ -60,7 +64,7 @@ public class EditModel : PageModel
 
         if (toUtc <= fromUtc)
         {
-            ModelState.AddModelError("PriceSchedule.ToUtc", "Koncový čas musí následovat po začátku.");
+            ModelState.AddModelError("PriceSchedule.ToUtc", _localizer["EndTimeMustFollowStart"]);
         }
 
         if (!ModelState.IsValid)
@@ -71,7 +75,7 @@ public class EditModel : PageModel
         var schedule = await _context.PriceSchedules.FindAsync(PriceSchedule.Id);
         if (schedule == null)
         {
-            return NotFound();
+            return NotFound(_localizer["PriceScheduleNotFound"]);
         }
 
         schedule.CourseId = PriceSchedule.CourseId;
@@ -80,7 +84,7 @@ public class EditModel : PageModel
         schedule.NewPriceExcl = PriceSchedule.NewPriceExcl;
 
         await _context.SaveChangesAsync();
-        return RedirectToPage("Index");
+        return RedirectToPage(_localizer["IndexPageName"]);
     }
 
     private async Task LoadCoursesAsync()

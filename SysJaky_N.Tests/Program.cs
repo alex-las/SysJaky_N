@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.IO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -23,12 +24,14 @@ internal sealed class CourseReminderServiceTester
 {
     public async Task<int> RunAsync()
     {
-        var tests = new (string Name, Func<Task> Execute)[]
+        var tests = new List<(string Name, Func<Task> Execute)>
         {
             ("Course reminders respect different time zones", RunCourseSelectionTestAsync),
             ("Course reminders avoid client-side evaluation warnings", RunClientEvaluationWarningTestAsync),
             ("Analytics dashboard aggregates sales using SQL grouping", RunAnalyticsAggregationTestAsync)
         };
+
+        tests.AddRange(AdminLocalizationTester.GetTests());
 
         var success = true;
         foreach (var (name, execute) in tests)

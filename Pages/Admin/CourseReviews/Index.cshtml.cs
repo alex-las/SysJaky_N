@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using SysJaky_N.Data;
 using SysJaky_N.Models;
 
@@ -12,9 +13,12 @@ public class IndexModel : PageModel
 {
     private readonly ApplicationDbContext _context;
 
-    public IndexModel(ApplicationDbContext context)
+    private readonly IStringLocalizer<IndexModel> _localizer;
+
+    public IndexModel(ApplicationDbContext context, IStringLocalizer<IndexModel> localizer)
     {
         _context = context;
+        _localizer = localizer;
     }
 
     public IList<CourseReview> Reviews { get; set; } = new List<CourseReview>();
@@ -31,11 +35,13 @@ public class IndexModel : PageModel
     public async Task<IActionResult> OnPostDeleteAsync(int id)
     {
         var review = await _context.CourseReviews.FindAsync(id);
-        if (review != null)
+        if (review == null)
         {
-            _context.CourseReviews.Remove(review);
-            await _context.SaveChangesAsync();
+            return NotFound(_localizer["CourseReviewNotFound"]);
         }
+
+        _context.CourseReviews.Remove(review);
+        await _context.SaveChangesAsync();
         return RedirectToPage();
     }
 }
