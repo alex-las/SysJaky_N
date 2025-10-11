@@ -1,6 +1,7 @@
 using System.Globalization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using SysJaky_N.Data;
@@ -12,16 +13,19 @@ namespace SysJaky_N.Services;
 public class CourseReviewRequestService : ScopedRecurringBackgroundService<CourseReviewRequestService>
 {
     private readonly ILogger<CourseReviewRequestService> _logger;
+    private readonly IStringLocalizer<CourseReviewRequestService> _localizer;
     private readonly Uri _baseUri;
     private readonly string _formPathTemplate;
 
     public CourseReviewRequestService(
         IServiceScopeFactory scopeFactory,
         IOptions<CourseReviewRequestOptions> options,
-        ILogger<CourseReviewRequestService> logger)
+        ILogger<CourseReviewRequestService> logger,
+        IStringLocalizer<CourseReviewRequestService> localizer)
         : base(scopeFactory, logger, RecurringSchedule.FixedDelay(GetInterval(options)))
     {
         _logger = logger;
+        _localizer = localizer;
 
         var opts = options.Value ?? new CourseReviewRequestOptions();
         if (!Uri.TryCreate(string.IsNullOrWhiteSpace(opts.PublicBaseUrl) ? "https://localhost" : opts.PublicBaseUrl, UriKind.Absolute, out var parsedBase))
@@ -68,13 +72,10 @@ public class CourseReviewRequestService : ScopedRecurringBackgroundService<Cours
 
         foreach (var term in terms)
         {
-            var courseTitle = term.Course?.Title;
-            if (string.IsNullOrWhiteSpace(courseTitle))
-            {
-                courseTitle = $"Termín #{term.Id}";
-            }
-
-            var resolvedCourseTitle = courseTitle!;
+            var title = term.Course?.Title;
+            var resolvedCourseTitle = string.IsNullOrWhiteSpace(title)
+                ? _localizer["FallbackTerm", term.Id].Value
+                : title;
             var reviewUri = BuildReviewUri(term.CourseId);
             var emailModel = new CourseReviewRequestEmailModel(resolvedCourseTitle, reviewUri.ToString());
 

@@ -3,6 +3,7 @@ using System.Net;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using SysJaky_N.Data;
@@ -16,6 +17,7 @@ public class WaitlistNotificationService : BackgroundService
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly WaitlistTokenService _tokenService;
     private readonly ILogger<WaitlistNotificationService> _logger;
+    private readonly IStringLocalizer<WaitlistNotificationService> _localizer;
     private readonly Uri _baseUri;
     private readonly string _claimPath;
     private readonly TimeSpan _pollInterval;
@@ -26,11 +28,13 @@ public class WaitlistNotificationService : BackgroundService
         IServiceScopeFactory scopeFactory,
         WaitlistTokenService tokenService,
         IOptions<WaitlistOptions> options,
-        ILogger<WaitlistNotificationService> logger)
+        ILogger<WaitlistNotificationService> logger,
+        IStringLocalizer<WaitlistNotificationService> localizer)
     {
         _scopeFactory = scopeFactory;
         _tokenService = tokenService;
         _logger = logger;
+        _localizer = localizer;
 
         var opts = options.Value ?? new WaitlistOptions();
         if (!Uri.TryCreate(string.IsNullOrWhiteSpace(opts.PublicBaseUrl) ? "https://localhost" : opts.PublicBaseUrl, UriKind.Absolute, out var parsedBase))
@@ -134,7 +138,9 @@ public class WaitlistNotificationService : BackgroundService
 
             var expiration = now.Add(_tokenLifetime);
             var updated = false;
-            var courseTitle = string.IsNullOrWhiteSpace(term.CourseTitle) ? $"Termín #{term.Id}" : term.CourseTitle;
+            var courseTitle = string.IsNullOrWhiteSpace(term.CourseTitle)
+                ? _localizer["FallbackTerm", term.Id].Value
+                : term.CourseTitle;
             var notificationsSent = 0;
 
             foreach (var entry in candidates)

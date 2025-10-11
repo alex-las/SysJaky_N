@@ -1,6 +1,8 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -13,10 +15,12 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.DataProtection;
+using SysJaky_N.EmailTemplates.Models;
 using SysJaky_N.Controllers;
 using SysJaky_N.Data;
 using SysJaky_N.Models;
@@ -42,7 +46,9 @@ internal sealed class CourseReminderServiceTester
             ("Course reminders respect different time zones", RunCourseSelectionTestAsync),
             ("Course reminders avoid client-side evaluation warnings", RunClientEvaluationWarningTestAsync),
             ("Analytics dashboard aggregates sales using SQL grouping", RunAnalyticsAggregationTestAsync),
-            ("Account pages use localized validation and notifications", RunAccountLocalizationTestAsync)
+            ("Account pages use localized validation and notifications", RunAccountLocalizationTestAsync),
+            ("Waitlist notifications localize fallback course titles", RunWaitlistFallbackLocalizationTestAsync),
+            ("Course review requests localize fallback course titles", RunCourseReviewFallbackLocalizationTestAsync)
         };
 
         tests.AddRange(AdminLocalizationTester.GetTests());
@@ -449,6 +455,301 @@ internal sealed class CourseReminderServiceTester
         }
     }
 
+    private static async Task RunWaitlistFallbackLocalizationTestAsync()
+    {
+        var testCases = new (string Culture, Func<int, string> TitleFactory)[]
+        {
+            ("cs", id => $"Termín #{id}"),
+            ("en", id => $"Term #{id}")
+        };
+
+        foreach (var (culture, titleFactory) in testCases)
+        {
+            using var cultureScope = new CultureScope(new CultureInfo(culture));
+            var emailSender = new RecordingEmailSender();
+
+            var databaseName = $"waitlist-fallback-{culture}-{Guid.NewGuid():N}";
+            var dbOptions = new DbContextOptionsBuilder<ApplicationDbContext>()
+                .UseInMemoryDatabase(databaseName)
+                .Options;
+            var context = new ApplicationDbContext(dbOptions);
+
+            try
+            {
+                context.Database.EnsureCreated();
+
+                var user = new ApplicationUser
+                {
+                    Id = $"waitlist-user-{culture}",
+                    Email = $"waitlist-{culture}@example.com",
+                    UserName = $"waitlist-{culture}@example.com"
+                };
+                context.Users.Add(user);
+
+                var course = new Course
+                {
+                    Title = string.Empty,
+                    Date = DateTime.UtcNow.Date,
+                    Type = CourseType.Online,
+                    ReminderDays = 0,
+                    IsActive = true
+                };
+                context.Courses.Add(course);
+                await context.SaveChangesAsync();
+
+                var term = new CourseTerm
+                {
+                    Course = course,
+                    CourseId = course.Id,
+                    StartUtc = DateTime.UtcNow.AddHours(-2),
+                    EndUtc = DateTime.UtcNow.AddHours(2),
+                    Capacity = 1,
+                    SeatsTaken = 0,
+                    IsActive = true
+                };
+                context.CourseTerms.Add(term);
+
+                var waitlistEntry = new WaitlistEntry
+                {
+                    CourseTerm = term,
+                    UserId = user.Id,
+                    User = user,
+                    CreatedAtUtc = DateTime.UtcNow.AddHours(-3)
+                };
+                context.WaitlistEntries.Add(waitlistEntry);
+
+                await context.SaveChangesAsync();
+                if (waitlistEntry.CourseTermId == 0)
+                {
+                    waitlistEntry.CourseTermId = term.Id;
+                    await context.SaveChangesAsync();
+                }
+
+                if (waitlistEntry.CourseTermId != term.Id)
+                {
+                    throw new InvalidOperationException($"Waitlist entry for culture '{culture}' was not associated with the expected term.");
+                }
+
+                var now = DateTime.UtcNow;
+                var candidates = await context.WaitlistEntries
+                    .Include(e => e.User)
+                    .Where(e => e.CourseTermId == term.Id && !e.ReservationConsumed && (!e.ReservationExpiresAtUtc.HasValue || e.ReservationExpiresAtUtc <= now))
+                    .ToListAsync();
+
+                if (candidates.Count == 0)
+                {
+                    throw new InvalidOperationException($"No waitlist candidates were found for culture '{culture}'.");
+                }
+
+                var entryCount = await context.WaitlistEntries.CountAsync();
+                if (entryCount != 1)
+                {
+                    throw new InvalidOperationException($"Expected a single waitlist entry for culture '{culture}', but found {entryCount}.");
+                }
+
+                var termId = term.Id;
+                var termCapacity = term.Capacity;
+                var expectedTitle = titleFactory(termId);
+
+                var services = new ServiceCollection();
+                services.AddLogging();
+                services.AddLocalization(options => options.ResourcesPath = "Resources");
+                services.AddSingleton<IEmailSender>(emailSender);
+                services.AddDbContext<ApplicationDbContext>(options => options.UseInMemoryDatabase(databaseName));
+
+                await using var provider = services.BuildServiceProvider();
+
+                var scopeFactory = provider.GetRequiredService<IServiceScopeFactory>();
+                var waitlistLogger = provider.GetRequiredService<ILogger<WaitlistNotificationService>>();
+                var tokenLogger = provider.GetRequiredService<ILogger<WaitlistTokenService>>();
+                var tokenService = new WaitlistTokenService(new EphemeralDataProtectionProvider(), tokenLogger);
+                var options = Options.Create(new WaitlistOptions
+                {
+                    PublicBaseUrl = "https://example.com",
+                    ClaimPath = "/waitlist/claim",
+                    PollIntervalSeconds = 60
+                });
+                var localizer = provider.GetRequiredService<IStringLocalizer<WaitlistNotificationService>>();
+                var service = new WaitlistNotificationService(scopeFactory, tokenService, options, waitlistLogger, localizer);
+
+                var seatsField = typeof(WaitlistNotificationService).GetField("_lastKnownSeats", BindingFlags.Instance | BindingFlags.NonPublic);
+                if (seatsField?.GetValue(service) is Dictionary<int, int> seatCache)
+                {
+                    seatCache[termId] = termCapacity;
+                }
+                else
+                {
+                    throw new InvalidOperationException("Unable to access seat cache for waitlist service.");
+                }
+
+                var processMethod = typeof(WaitlistNotificationService).GetMethod("ProcessAsync", BindingFlags.Instance | BindingFlags.NonPublic);
+                if (processMethod is null)
+                {
+                    throw new InvalidOperationException("Waitlist service implementation changed and ProcessAsync could not be located.");
+                }
+
+                var processTask = (Task?)processMethod.Invoke(service, new object[] { CancellationToken.None });
+                if (processTask is null)
+                {
+                    throw new InvalidOperationException("Waitlist service did not return a task when invoking ProcessAsync.");
+                }
+
+                await processTask;
+
+                await context.Entry(waitlistEntry).ReloadAsync();
+                var processedEntry = await context.WaitlistEntries.Include(e => e.User).SingleAsync();
+
+                if (processedEntry.ReservationToken is null)
+                {
+                    throw new InvalidOperationException($"Waitlist entry for culture '{culture}' was not processed.");
+                }
+
+                if (emailSender.SentMessages.Count != 1)
+                {
+                    throw new InvalidOperationException($"Expected 1 waitlist email for culture '{culture}', but found {emailSender.SentMessages.Count}.");
+                }
+
+                var message = emailSender.SentMessages.Single();
+                if (message.Template != EmailTemplate.WaitlistSeatAvailable)
+                {
+                    throw new InvalidOperationException($"Unexpected email template '{message.Template}' for culture '{culture}'.");
+                }
+
+                if (message.Model is not WaitlistSeatAvailableEmailModel waitlistModel)
+                {
+                    throw new InvalidOperationException("Waitlist email model was not of the expected type.");
+                }
+
+                if (!string.Equals(expectedTitle, waitlistModel.CourseTitle, StringComparison.Ordinal))
+                {
+                    throw new InvalidOperationException($"Expected course title '{expectedTitle}' for culture '{culture}', but was '{waitlistModel.CourseTitle}'.");
+                }
+            }
+            finally
+            {
+                await context.DisposeAsync();
+            }
+        }
+    }
+
+    private static async Task RunCourseReviewFallbackLocalizationTestAsync()
+    {
+        var testCases = new (string Culture, Func<int, string> TitleFactory)[]
+        {
+            ("cs", id => $"Termín #{id}"),
+            ("en", id => $"Term #{id}")
+        };
+
+        foreach (var (culture, titleFactory) in testCases)
+        {
+            using var cultureScope = new CultureScope(new CultureInfo(culture));
+            var emailSender = new RecordingEmailSender();
+
+            var dbOptions = new DbContextOptionsBuilder<ApplicationDbContext>()
+                .UseInMemoryDatabase($"review-fallback-{culture}-{Guid.NewGuid():N}")
+                .Options;
+            var context = new ApplicationDbContext(dbOptions);
+
+            try
+            {
+                context.Database.EnsureCreated();
+
+                var user = new ApplicationUser
+                {
+                    Id = $"review-user-{culture}",
+                    Email = $"review-{culture}@example.com",
+                    UserName = $"review-{culture}@example.com"
+                };
+                context.Users.Add(user);
+
+                var course = new Course
+                {
+                    Title = string.Empty,
+                    Date = DateTime.UtcNow.Date
+                };
+                context.Courses.Add(course);
+
+                var referenceTime = DateTime.UtcNow;
+                var term = new CourseTerm
+                {
+                    Course = course,
+                    CourseId = course.Id,
+                    StartUtc = referenceTime.AddDays(-2),
+                    EndUtc = referenceTime.AddHours(-1),
+                    Capacity = 5,
+                    SeatsTaken = 5,
+                    IsActive = true
+                };
+                context.CourseTerms.Add(term);
+
+                var enrollment = new Enrollment
+                {
+                    CourseTerm = term,
+                    UserId = user.Id,
+                    User = user,
+                    Status = EnrollmentStatus.Confirmed
+                };
+                context.Enrollments.Add(enrollment);
+
+                await context.SaveChangesAsync();
+                if (enrollment.CourseTermId == 0)
+                {
+                    enrollment.CourseTermId = term.Id;
+                    await context.SaveChangesAsync();
+                }
+
+                var termId = term.Id;
+                var expectedTitle = titleFactory(termId);
+
+                var services = new ServiceCollection();
+                services.AddLogging();
+                services.AddLocalization(options => options.ResourcesPath = "Resources");
+                services.AddSingleton<IEmailSender>(emailSender);
+                services.AddSingleton(context);
+
+                await using var provider = services.BuildServiceProvider();
+
+                var scopeFactory = provider.GetRequiredService<IServiceScopeFactory>();
+                var logger = provider.GetRequiredService<ILogger<CourseReviewRequestService>>();
+                var localizer = provider.GetRequiredService<IStringLocalizer<CourseReviewRequestService>>();
+                var options = Options.Create(new CourseReviewRequestOptions
+                {
+                    PublicBaseUrl = "https://example.com",
+                    FormPathTemplate = "/Courses/Details/{courseId}",
+                    CheckIntervalHours = 1
+                });
+
+                var service = new TestableCourseReviewRequestService(scopeFactory, options, logger, localizer);
+                await service.InvokeExecuteInScopeAsync(provider, CancellationToken.None);
+
+                if (emailSender.SentMessages.Count != 1)
+                {
+                    throw new InvalidOperationException($"Expected 1 course review email for culture '{culture}', but found {emailSender.SentMessages.Count}.");
+                }
+
+                var message = emailSender.SentMessages.Single();
+                if (message.Template != EmailTemplate.CourseReviewRequest)
+                {
+                    throw new InvalidOperationException($"Unexpected email template '{message.Template}' for culture '{culture}'.");
+                }
+
+                if (message.Model is not CourseReviewRequestEmailModel reviewModel)
+                {
+                    throw new InvalidOperationException("Course review email model was not of the expected type.");
+                }
+
+                if (!string.Equals(expectedTitle, reviewModel.CourseTitle, StringComparison.Ordinal))
+                {
+                    throw new InvalidOperationException($"Expected course title '{expectedTitle}' for culture '{culture}', but was '{reviewModel.CourseTitle}'.");
+                }
+            }
+            finally
+            {
+                await context.DisposeAsync();
+            }
+        }
+    }
+
     private static async Task SeedCoursesForSelectionTestAsync(IServiceProvider provider)
     {
         using var scope = provider.CreateScope();
@@ -804,6 +1105,21 @@ internal sealed class CourseReminderServiceTester
             => ExecuteInScopeAsync(provider, token);
     }
 
+    private sealed class TestableCourseReviewRequestService : CourseReviewRequestService
+    {
+        public TestableCourseReviewRequestService(
+            IServiceScopeFactory scopeFactory,
+            IOptions<CourseReviewRequestOptions> options,
+            ILogger<CourseReviewRequestService> logger,
+            IStringLocalizer<CourseReviewRequestService> localizer)
+            : base(scopeFactory, options, logger, localizer)
+        {
+        }
+
+        public Task InvokeExecuteInScopeAsync(IServiceProvider provider, CancellationToken token)
+            => ExecuteInScopeAsync(provider, token);
+    }
+
     private sealed class NoopScopeFactory : IServiceScopeFactory
     {
         public IServiceScope CreateScope()
@@ -818,7 +1134,7 @@ internal sealed class CourseReminderServiceTester
 
         public Task SendEmailAsync<TModel>(string to, EmailTemplate template, TModel model, CancellationToken cancellationToken = default)
         {
-            _messages.Add(new SentEmail(to, template));
+            _messages.Add(new SentEmail(to, template, model!));
             return Task.CompletedTask;
         }
     }
@@ -847,7 +1163,7 @@ internal sealed class CourseReminderServiceTester
         }
     }
 
-    private sealed record SentEmail(string To, EmailTemplate Template);
+    private sealed record SentEmail(string To, EmailTemplate Template, object Model);
 
     internal sealed record LogEntry(string Category, LogLevel Level, EventId EventId, string Message, Exception? Exception);
 
