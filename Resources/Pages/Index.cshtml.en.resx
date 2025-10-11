@@ -138,14 +138,26 @@
   <data name="MetricExperienceLabel" xml:space="preserve">
     <value>Years of experience</value>
   </data>
+  <data name="MetricExperienceAriaLabel" xml:space="preserve">
+    <value>Over {0} years of experience in management systems</value>
+  </data>
   <data name="MetricClientsLabel" xml:space="preserve">
     <value>Satisfied clients</value>
+  </data>
+  <data name="MetricClientsAriaLabel" xml:space="preserve">
+    <value>Over {0} satisfied clients</value>
   </data>
   <data name="MetricCoursesLabel" xml:space="preserve">
     <value>Training sessions delivered</value>
   </data>
+  <data name="MetricCoursesAriaLabel" xml:space="preserve">
+    <value>Over {0} training courses delivered</value>
+  </data>
   <data name="MetricInstructorsLabel" xml:space="preserve">
     <value>Certified instructors</value>
+  </data>
+  <data name="MetricInstructorsAriaLabel" xml:space="preserve">
+    <value>Over {0} certified instructors</value>
   </data>
   <data name="CourseDetailsCTA" xml:space="preserve">
     <value>Course details</value>
