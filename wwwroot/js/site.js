@@ -512,5 +512,16 @@ document.addEventListener('DOMContentLoaded', () => {
         activateStep(activeIndex);
     };
 
+    const mainNav = document.getElementById('mainNav');
+    if (mainNav) {
+        const toggleNavScrolled = () => {
+            const shouldBeScrolled = window.scrollY > 24;
+            mainNav.classList.toggle('scrolled', shouldBeScrolled);
+        };
+
+        toggleNavScrolled();
+        window.addEventListener('scroll', toggleNavScrolled, { passive: true });
+    }
+
     initCertificationTimeline();
 });

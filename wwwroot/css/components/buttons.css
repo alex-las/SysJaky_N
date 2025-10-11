@@ -1,0 +1,111 @@
+.btn-gradient-cta {
+  background-image: var(--gradient-primary);
+  border: none;
+  color: #fff;
+  border-radius: 999px;
+  padding: 0.55rem 1.1rem;
+  font-weight: 600;
+  box-shadow: 0 18px 32px rgba(37, 99, 235, 0.32);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-gradient-cta:hover,
+.btn-gradient-cta:focus-visible {
+  transform: translateY(-2px);
+  box-shadow: 0 20px 36px rgba(37, 99, 235, 0.38);
+  color: #fff;
+}
+
+.btn-admin-highlight {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.32);
+  border-radius: 999px;
+  padding: 0.55rem 1.1rem;
+  font-weight: 600;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.btn-admin-highlight:hover,
+.btn-admin-highlight:focus-visible {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.45);
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.btn-icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 999px;
+  color: #fff;
+  padding: 0.55rem 0.95rem;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.btn-icon:hover,
+.btn-icon:focus-visible {
+  background: rgba(255, 255, 255, 0.18);
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.theme-toggle {
+  min-width: 2.5rem;
+  min-height: 2.5rem;
+  border-radius: 999px;
+  padding: 0.5rem;
+}
+
+.theme-toggle i {
+  font-size: 1.05rem;
+}
+
+.btn:focus-visible,
+button:focus-visible {
+  box-shadow: 0 0 0 3px rgba(248, 250, 252, 0.9), 0 0 0 6px rgba(6, 182, 212, 0.45);
+  outline: 3px solid transparent;
+}
+
+.login-register-button {
+  border-color: rgba(255, 255, 255, 0.7);
+  color: var(--primary-900);
+  background-color: rgba(248, 250, 252, 0.85);
+  font-weight: 600;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.login-register-button:hover,
+.login-register-button:focus-visible {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 32px rgba(15, 23, 42, 0.18);
+}
+
+[data-theme="dark"] .btn-admin-highlight {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(148, 163, 184, 0.28);
+}
+
+[data-theme="dark"] .btn-icon {
+  background: rgba(15, 23, 42, 0.45);
+  border-color: rgba(148, 163, 184, 0.32);
+}
+
+[data-theme="dark"] .btn-icon:hover,
+[data-theme="dark"] .btn-icon:focus-visible {
+  background: rgba(71, 85, 105, 0.65);
+}
+
+[data-theme="dark"] .login-register-button {
+  background-color: rgba(30, 41, 59, 0.75);
+  color: rgba(226, 232, 240, 0.92);
+  border-color: rgba(148, 163, 184, 0.55);
+}
+
+[data-theme="dark"] .login-register-button:hover,
+[data-theme="dark"] .login-register-button:focus-visible {
+  background-color: rgba(51, 65, 85, 0.85);
+}
