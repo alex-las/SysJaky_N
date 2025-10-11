@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Title" xml:space="preserve">
+    <value>Certifikát o absolvování</value>
+  </data>
+  <data name="Label.CertificateNumber" xml:space="preserve">
+    <value>Číslo certifikátu</value>
+  </data>
+  <data name="Label.Participant" xml:space="preserve">
+    <value>Absolvent</value>
+  </data>
+  <data name="Label.Course" xml:space="preserve">
+    <value>Kurz</value>
+  </data>
+  <data name="Label.CourseTerm" xml:space="preserve">
+    <value>Termín kurzu</value>
+  </data>
+  <data name="Label.CompletedOn" xml:space="preserve">
+    <value>Dokončeno dne</value>
+  </data>
+  <data name="Alt.QrCode" xml:space="preserve">
+    <value>QR kód pro ověření</value>
+  </data>
+  <data name="Fallback.Course" xml:space="preserve">
+    <value>Kurz {0}</value>
+  </data>
+</root>

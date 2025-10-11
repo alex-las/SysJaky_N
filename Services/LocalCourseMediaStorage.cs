@@ -3,18 +3,26 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Localization;
 
 namespace SysJaky_N.Services;
 
 public class LocalCourseMediaStorage : ICourseMediaStorage
 {
-    private readonly IWebHostEnvironment _environment;
+    private readonly IStringLocalizer<LocalCourseMediaStorage> _localizer;
     private readonly string _webRootPath;
 
-    public LocalCourseMediaStorage(IWebHostEnvironment environment)
+    public LocalCourseMediaStorage(
+        IWebHostEnvironment environment,
+        IStringLocalizer<LocalCourseMediaStorage> localizer)
     {
-        _environment = environment;
-        _webRootPath = environment.WebRootPath ?? throw new InvalidOperationException("Web root path is not configured.");
+        if (environment is null)
+        {
+            throw new ArgumentNullException(nameof(environment));
+        }
+        _localizer = localizer ?? throw new ArgumentNullException(nameof(localizer));
+        _webRootPath = environment.WebRootPath
+                       ?? throw new InvalidOperationException(_localizer["Error.WebRootMissing"].Value);
     }
 
     public async Task<string> SaveCoverImageAsync(int courseId, Stream imageStream, string contentType, CancellationToken cancellationToken = default)
@@ -26,7 +34,7 @@ public class LocalCourseMediaStorage : ICourseMediaStorage
 
         if (!string.Equals(contentType, "image/jpeg", StringComparison.OrdinalIgnoreCase))
         {
-            throw new InvalidOperationException("Only JPEG cover images are supported for local storage.");
+            throw new InvalidOperationException(_localizer["Error.InvalidFormat"].Value);
         }
 
         var courseDirectory = Path.Combine(_webRootPath, "media", "courses", courseId.ToString());
