@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="SummaryWorksheetName" xml:space="preserve">
+    <value>Overview</value>
+  </data>
+  <data name="PeriodLabel" xml:space="preserve">
+    <value>Period</value>
+  </data>
+  <data name="SummarySectionLabel" xml:space="preserve">
+    <value>Summary</value>
+  </data>
+  <data name="TotalRevenueLabel" xml:space="preserve">
+    <value>Total revenue</value>
+  </data>
+  <data name="RevenueChangeLabel" xml:space="preserve">
+    <value>Revenue change</value>
+  </data>
+  <data name="OrdersLabel" xml:space="preserve">
+    <value>Orders</value>
+  </data>
+  <data name="AverageOrderValueLabel" xml:space="preserve">
+    <value>Average order value</value>
+  </data>
+  <data name="SeatsSoldLabel" xml:space="preserve">
+    <value>Seats sold</value>
+  </data>
+  <data name="AverageOccupancyLabel" xml:space="preserve">
+    <value>Average occupancy</value>
+  </data>
+  <data name="ActiveCustomersLabel" xml:space="preserve">
+    <value>Active customers</value>
+  </data>
+  <data name="NewCustomersLabel" xml:space="preserve">
+    <value>New customers</value>
+  </data>
+  <data name="TopCoursesByRevenueLabel" xml:space="preserve">
+    <value>Top courses by revenue</value>
+  </data>
+  <data name="CourseHeader" xml:space="preserve">
+    <value>Course</value>
+  </data>
+  <data name="RevenueHeader" xml:space="preserve">
+    <value>Revenue</value>
+  </data>
+  <data name="SeatsSoldHeader" xml:space="preserve">
+    <value>Seats sold</value>
+  </data>
+  <data name="RevenueTrendSectionLabel" xml:space="preserve">
+    <value>Revenue trend</value>
+  </data>
+  <data name="DateHeader" xml:space="preserve">
+    <value>Date</value>
+  </data>
+  <data name="OrdersHeader" xml:space="preserve">
+    <value>Orders</value>
+  </data>
+  <data name="AverageOrderHeader" xml:space="preserve">
+    <value>Average order</value>
+  </data>
+  <data name="ExportFileNamePrefix" xml:space="preserve">
+    <value>report</value>
+  </data>
+</root>
