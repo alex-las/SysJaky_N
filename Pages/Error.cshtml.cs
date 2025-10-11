@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Localization;
 using SysJaky_N.Middleware;
 
 namespace SysJaky_N.Pages
@@ -14,14 +15,17 @@ namespace SysJaky_N.Pages
         public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
 
         private readonly ILogger<ErrorModel> _logger;
+        private readonly IStringLocalizer<ErrorModel> _localizer;
 
-        public ErrorModel(ILogger<ErrorModel> logger)
+        public ErrorModel(ILogger<ErrorModel> logger, IStringLocalizer<ErrorModel> localizer)
         {
             _logger = logger;
+            _localizer = localizer;
         }
 
         public void OnGet(string? correlationId)
         {
+            ViewData["Title"] = _localizer["Title"];
             RequestId = ResolveCorrelationId(correlationId);
             if (!string.IsNullOrEmpty(RequestId))
             {

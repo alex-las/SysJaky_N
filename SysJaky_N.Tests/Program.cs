@@ -5,6 +5,7 @@ using System.IO;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using System.Globalization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.RazorPages.Infrastructure;
@@ -16,6 +17,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.Localization;
 using SysJaky_N.Controllers;
 using SysJaky_N.Data;
 using SysJaky_N.Models;
@@ -37,6 +39,7 @@ internal sealed class CourseReminderServiceTester
     {
         var tests = new (string Name, Func<Task> Execute)[]
         {
+            ("Page model localizers resolve resources", RunPageModelLocalizationTestAsync),
             ("Course reminders respect different time zones", RunCourseSelectionTestAsync),
             ("Course reminders avoid client-side evaluation warnings", RunClientEvaluationWarningTestAsync),
             ("Analytics dashboard aggregates sales using SQL grouping", RunAnalyticsAggregationTestAsync),
@@ -59,6 +62,56 @@ internal sealed class CourseReminderServiceTester
         }
 
         return success ? 0 : 1;
+    }
+
+    private static Task RunPageModelLocalizationTestAsync()
+    {
+        var services = new ServiceCollection();
+        services.AddLogging();
+        services.AddLocalization(options => options.ResourcesPath = "Resources");
+
+        using var provider = services.BuildServiceProvider();
+        var factory = provider.GetRequiredService<IStringLocalizerFactory>();
+
+        var modelTypes = new[]
+        {
+            typeof(SysJaky_N.Pages.OfflineModel),
+            typeof(SysJaky_N.Pages.PrivacyModel),
+            typeof(SysJaky_N.Pages.ErrorModel),
+            typeof(SysJaky_N.Pages.IndexModel)
+        };
+
+        var cultures = new[] { "cs", "en" };
+
+        var originalCulture = CultureInfo.CurrentCulture;
+        var originalUiCulture = CultureInfo.CurrentUICulture;
+
+        try
+        {
+            foreach (var cultureName in cultures)
+            {
+                var culture = new CultureInfo(cultureName);
+                CultureInfo.CurrentCulture = culture;
+                CultureInfo.CurrentUICulture = culture;
+
+                foreach (var modelType in modelTypes)
+                {
+                    var localizer = factory.Create(modelType);
+                    var title = localizer["Title"];
+                    if (title.ResourceNotFound || string.IsNullOrWhiteSpace(title.Value))
+                    {
+                        throw new InvalidOperationException($"Missing Title resource for {modelType.Name} in culture '{cultureName}'.");
+                    }
+                }
+            }
+        }
+        finally
+        {
+            CultureInfo.CurrentCulture = originalCulture;
+            CultureInfo.CurrentUICulture = originalUiCulture;
+        }
+
+        return Task.CompletedTask;
     }
 
     private static async Task RunCourseSelectionTestAsync()
