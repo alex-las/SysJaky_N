@@ -8,756 +8,315 @@
     var specializations = IsoMetadataProvider.GetAll();
 }
 
-<style>
-    .hero-gradient {
-        background: linear-gradient(135deg, #2563eb 0%, #06b6d4 55%, #f59e0b 130%);
-        color: #f8fafc;
-        position: relative;
-        overflow: hidden;
-    }
+@section Head {
+    <link rel="stylesheet" href="~/css/home.css" asp-append-version="true" />
+}
 
-    .hero-gradient::after {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background: radial-gradient(circle at top right, rgba(255, 255, 255, 0.2), transparent 55%),
-            radial-gradient(circle at 20% 80%, rgba(15, 23, 42, 0.15), transparent 50%);
-        pointer-events: none;
-    }
+<section class="home-hero">
+    <div class="container-xxl">
+        <div class="home-hero__grid">
+            <div class="home-hero__copy">
+                <h1 class="home-hero__title">@T["HeroMainHeading"]</h1>
+                <p class="home-hero__subtitle">@T["HeroSubheading"]</p>
 
-    .hero-content {
-        position: relative;
-        z-index: 1;
-    }
-
-    .hero-gradient-heading {
-        font-size: clamp(2.8rem, 4vw + 1rem, 4.75rem);
-        font-weight: 800;
-        line-height: 1.05;
-        background: linear-gradient(135deg, #f8fafc 10%, rgba(255, 255, 255, 0.82) 45%, #fde68a 100%);
-        -webkit-background-clip: text;
-        background-clip: text;
-        color: transparent;
-        margin-bottom: 1.5rem;
-    }
-
-    .hero-subheading {
-        font-size: clamp(1.125rem, 1.5vw + 0.75rem, 1.5rem);
-        font-weight: 500;
-        max-width: 44rem;
-        color: rgba(248, 250, 252, 0.9);
-    }
-
-    .hero-usp-card {
-        backdrop-filter: blur(18px);
-        background-color: rgba(15, 23, 42, 0.22);
-        border: 1px solid rgba(255, 255, 255, 0.12);
-        border-radius: 1rem;
-        color: #e2e8f0;
-        padding: 1rem 1.25rem;
-        box-shadow: 0 20px 45px rgba(15, 23, 42, 0.2);
-    }
-
-    .hero-usp-card i {
-        font-size: 1.75rem;
-        color: #fef3c7;
-    }
-
-    .hero-search {
-        background: rgba(15, 23, 42, 0.35);
-        border-radius: 1.5rem;
-        border: 1px solid rgba(255, 255, 255, 0.18);
-        padding: 1rem;
-        box-shadow: 0 25px 60px rgba(15, 23, 42, 0.25);
-        backdrop-filter: blur(12px);
-    }
-
-    .hero-search .form-control {
-        border-radius: 1rem;
-        border: 0;
-        padding: 0.95rem 1.2rem;
-        font-size: 1.05rem;
-    }
-
-    .hero-search .btn {
-        border-radius: 1rem;
-        padding-inline: 1.5rem;
-        font-weight: 600;
-    }
-
-    .hero-chips-wrapper {
-        position: relative;
-        z-index: 1;
-    }
-
-    .hero-chip {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.4rem;
-        padding: 0.55rem 1.25rem;
-        border-radius: 999px;
-        background-color: rgba(255, 255, 255, 0.32);
-        color: #0f172a;
-        font-weight: 500;
-        letter-spacing: 0.01em;
-        border: 1px solid rgba(255, 255, 255, 0.45);
-        transition: background-color 0.2s ease, transform 0.2s ease, color 0.2s ease;
-        backdrop-filter: blur(8px);
-    }
-
-    .hero-chip:hover,
-    .hero-chip:focus-visible {
-        background-color: rgba(255, 255, 255, 0.5);
-        color: #0f172a;
-        transform: translateY(-2px);
-        text-decoration: none;
-    }
-
-    .specializations-section {
-        background: #f8fafc;
-    }
-
-    .specializations-section .section-heading {
-        font-size: clamp(2rem, 3vw + 1rem, 2.75rem);
-        font-weight: 700;
-        color: #0f172a;
-    }
-
-    .training-section {
-        background: #ffffff;
-    }
-
-    .training-section .section-heading {
-        font-size: clamp(2rem, 3vw + 1rem, 2.5rem);
-        font-weight: 700;
-        color: #0f172a;
-    }
-
-    .training-section .section-subheading {
-        color: #475569;
-        max-width: 52rem;
-        margin: 0 auto;
-    }
-
-    .training-card {
-        border: 1px solid rgba(15, 23, 42, 0.08);
-        border-radius: 1.25rem;
-        box-shadow: 0 12px 35px rgba(15, 23, 42, 0.08);
-        transition: transform 0.25s ease, box-shadow 0.25s ease;
-        background-color: #f8fafc;
-    }
-
-    .training-card:hover,
-    .training-card:focus-within {
-        transform: translateY(-6px);
-        box-shadow: 0 25px 55px rgba(15, 23, 42, 0.15);
-    }
-
-    .training-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.35rem;
-        font-weight: 600;
-        letter-spacing: 0.01em;
-        color: #1d4ed8;
-        background: rgba(37, 99, 235, 0.1);
-        border-radius: 999px;
-        padding: 0.35rem 0.85rem;
-    }
-
-    .training-meta {
-        color: #475569;
-    }
-
-    .training-meta i {
-        color: #2563eb;
-    }
-
-    .training-mode {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.35rem;
-        border-radius: 999px;
-        padding: 0.35rem 0.85rem;
-        font-weight: 600;
-    }
-
-    .training-mode.online {
-        background: rgba(59, 130, 246, 0.12);
-        color: #1d4ed8;
-    }
-
-    .training-mode.onsite {
-        background: rgba(34, 197, 94, 0.12);
-        color: #15803d;
-    }
-
-    .training-price {
-        font-size: clamp(1.5rem, 1vw + 1.25rem, 2rem);
-        font-weight: 700;
-        color: #1d4ed8;
-    }
-
-    .specializations-section .section-subheading {
-        max-width: 48rem;
-        margin: 0 auto;
-        color: #475569;
-        font-size: clamp(1rem, 1vw + 0.85rem, 1.25rem);
-    }
-
-    .specialization-card {
-        background: #ffffff;
-        border-radius: 1.25rem;
-        border: 1px solid rgba(15, 23, 42, 0.08);
-        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
-        transition: transform 0.25s ease, box-shadow 0.25s ease;
-    }
-
-    .specialization-card:hover,
-    .specialization-card:focus-within {
-        transform: translateY(-6px) scale(1.02);
-        box-shadow: 0 24px 50px rgba(15, 23, 42, 0.15);
-    }
-
-    .specialization-icon {
-        width: 3.25rem;
-        height: 3.25rem;
-        border-radius: 999px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        color: #ffffff;
-        font-size: 1.5rem;
-        box-shadow: 0 15px 25px rgba(15, 23, 42, 0.12);
-    }
-
-    .specialization-icon.iso-9001 {
-        background: #2563eb;
-    }
-
-    .specialization-icon.iso-14001 {
-        background: #22c55e;
-    }
-
-    .specialization-icon.iso-17025 {
-        background: #7c3aed;
-    }
-
-    .specialization-icon.iso-15189 {
-        background: #ef4444;
-    }
-
-    .specialization-icon.haccp {
-        background: #f97316;
-    }
-
-    .specialization-icon.iso-45001 {
-        background: #facc15;
-        color: #78350f;
-    }
-
-    .specialization-icon.iso-27001 {
-        background: #4338ca;
-    }
-
-    .specialization-icon.iatf-16949 {
-        background: #6b7280;
-    }
-
-    .specialization-icon.iso-13485 {
-        background: #ec4899;
-    }
-
-    .stats-section {
-        background: linear-gradient(135deg, #1d4ed8 0%, #06b6d4 100%);
-        color: #ffffff;
-    }
-
-    .stats-card {
-        border-radius: 1.25rem;
-        background: rgba(255, 255, 255, 0.08);
-        border: 1px solid rgba(255, 255, 255, 0.18);
-        padding: 2rem 1.5rem;
-        height: 100%;
-        backdrop-filter: blur(8px);
-    }
-
-    .stats-number {
-        font-size: clamp(2.5rem, 4vw + 1rem, 3.75rem);
-        font-weight: 800;
-        letter-spacing: -0.02em;
-    }
-
-    .stats-label {
-        font-size: clamp(1rem, 0.8vw + 0.9rem, 1.15rem);
-        font-weight: 500;
-        color: rgba(255, 255, 255, 0.9);
-        margin-bottom: 0;
-    }
-
-    .hover-lift:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 12px 24px rgba(37, 99, 235, 0.15) !important;
-    }
-
-    @@media (max-width: 575.98px) {
-        .specialization-card {
-            text-align: center;
-        }
-    }
-
-    @@media (max-width: 767.98px) {
-        .hero-usp-card {
-            text-align: center;
-        }
-
-        .hero-search {
-            padding: 0.75rem;
-        }
-
-        .hero-search .btn {
-            width: 100%;
-        }
-    }
-</style>
-
-<section class="hero-gradient py-5">
-    <div class="container-xl hero-content">
-        <div class="row justify-content-between align-items-center g-5">
-            <div class="col-lg-7">
-                <h1 class="hero-gradient-heading">@T["HeroMainHeading"]</h1>
-                <p class="hero-subheading mb-4">@T["HeroSubheading"]</p>
-
-                <div class="row g-3 g-lg-4 mb-4 mb-lg-5">
-                    <div class="col-md-4">
-                        <div class="hero-usp-card h-100 d-flex align-items-start gap-3">
-                            <i class="bi bi-stars" aria-hidden="true"></i>
-                            <span>@T["HeroUSP1"]</span>
+                <div class="home-hero__usp-grid">
+                    <article class="home-hero__usp glass-card">
+                        <div class="home-hero__usp-icon" aria-hidden="true">
+                            <i class="bi bi-stars"></i>
                         </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="hero-usp-card h-100 d-flex align-items-start gap-3">
-                            <i class="bi bi-mortarboard" aria-hidden="true"></i>
-                            <span>@T["HeroUSP2"]</span>
+                        <p class="home-hero__usp-text">@T["HeroUSP1"]</p>
+                    </article>
+                    <article class="home-hero__usp glass-card">
+                        <div class="home-hero__usp-icon" aria-hidden="true">
+                            <i class="bi bi-mortarboard"></i>
                         </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="hero-usp-card h-100 d-flex align-items-start gap-3">
-                            <i class="bi bi-shield-check" aria-hidden="true"></i>
-                            <span>@T["HeroUSP3"]</span>
+                        <p class="home-hero__usp-text">@T["HeroUSP2"]</p>
+                    </article>
+                    <article class="home-hero__usp glass-card">
+                        <div class="home-hero__usp-icon" aria-hidden="true">
+                            <i class="bi bi-shield-check"></i>
                         </div>
-                    </div>
+                        <p class="home-hero__usp-text">@T["HeroUSP3"]</p>
+                    </article>
                 </div>
 
-                <div class="d-flex flex-column flex-sm-row gap-3 mb-4">
-                    <a class="btn btn-lg btn-light text-primary fw-semibold shadow-sm" href="/Courses/Index">@T["HeroPrimaryCTA"]</a>
-                    <a class="btn btn-lg btn-outline-light fw-semibold" href="/About">@T["HeroSecondaryCTA"]</a>
+                <div class="home-hero__actions">
+                    <a class="btn btn-light btn-lg fw-semibold shadow-sm" href="/Courses/Index">@T["HeroPrimaryCTA"]</a>
+                    <a class="btn btn-outline-light btn-lg fw-semibold" href="/About">@T["HeroSecondaryCTA"]</a>
+                </div>
+
+                <div class="home-hero__chips" aria-label="@T["HeroSubheading"]">
+                    <span class="chip">@T["ChipOnline"]</span>
+                    <span class="chip">@T["ChipRetraining"]</span>
+                    <span class="chip">@T["ChipCertificate"]</span>
+                    <span class="chip">@T["ChipAccreditation"]</span>
+                    <span class="chip">@T["ChipInternalAudits"]</span>
                 </div>
             </div>
 
-            <div class="col-lg-5">
-                <form class="hero-search" method="get" action="/Courses/Search" role="search">
+            <aside class="home-hero__aside" aria-label="@T["HeroSearchLabel"]">
+                <form class="home-search glass-panel" method="get" action="/Courses/Search" role="search">
                     <label class="visually-hidden" for="hero-search-input">@T["HeroSearchLabel"]</label>
-                    <div class="d-flex flex-column flex-md-row gap-3">
+                    <div class="home-search__fields">
                         <input type="search"
-                               class="form-control form-control-lg flex-grow-1"
+                               class="form-control form-control-lg"
                                id="hero-search-input"
                                name="query"
                                placeholder="@T["HeroSearchPlaceholder"]"
                                aria-label="@T["HeroSearchAriaLabel"]">
-                        <button type="submit" class="btn btn-primary btn-lg flex-shrink-0">@T["HeroSubmit"]</button>
+                        <button type="submit" class="btn btn-primary btn-lg fw-semibold">@T["HeroSubmit"]</button>
                     </div>
                 </form>
-            </div>
+
+                <div class="home-hero__insight glass-panel">
+                    <div class="home-hero__insight-item">
+                        <i class="bi bi-award" aria-hidden="true"></i>
+                        <p class="mb-0">@Html.Raw(T["TrustRating", "<span class=\"stat-number\" data-target=\"4.8\" data-decimals=\"1\" data-suffix=\"/5\">4.8</span>"])</p>
+                    </div>
+                    <div class="home-hero__insight-item">
+                        <i class="bi bi-people" aria-hidden="true"></i>
+                        <p class="mb-0">@Html.Raw(T["TrustGraduates", "<span class=\"stat-number\" data-target=\"10000\" data-suffix=\"+\">10000</span>"])</p>
+                    </div>
+                    <div class="home-hero__insight-item">
+                        <i class="bi bi-shield-check" aria-hidden="true"></i>
+                        <p class="mb-0">@T["TrustGuarantee"]</p>
+                    </div>
+                    <div class="home-hero__insight-item">
+                        <i class="bi bi-patch-check" aria-hidden="true"></i>
+                        <p class="mb-0">@T["TrustCertificate"]</p>
+                    </div>
+                </div>
+            </aside>
         </div>
 
-        <div class="hero-chips-wrapper mt-5">
-            <div class="d-flex flex-wrap gap-2 justify-content-center justify-content-lg-start">
-                <span class="hero-chip">@T["ChipOnline"]</span>
-                <span class="hero-chip">@T["ChipRetraining"]</span>
-                <span class="hero-chip">@T["ChipCertificate"]</span>
-                <span class="hero-chip">@T["ChipAccreditation"]</span>
-                <span class="hero-chip">@T["ChipInternalAudits"]</span>
+        <div class="home-hero__metrics glass-panel">
+            <div class="metric-card">
+                <span class="metric-card__value">20+</span>
+                <span class="metric-card__label">Let zkušeností</span>
+            </div>
+            <div class="metric-card">
+                <span class="metric-card__value">500+</span>
+                <span class="metric-card__label">Spokojených klientů</span>
+            </div>
+            <div class="metric-card">
+                <span class="metric-card__value">2000+</span>
+                <span class="metric-card__label">Realizovaných školení</span>
+            </div>
+            <div class="metric-card">
+                <span class="metric-card__value">15</span>
+                <span class="metric-card__label">Certifikovaných lektorů</span>
             </div>
         </div>
     </div>
 </section>
 
-<section class="py-5 mb-5">
-    <div class="container-xl">
-
-        <!-- Nadpis sekce -->
-        <div class="text-center mb-5">
-            <h2 class="display-5 fw-bold mb-3" style="color: #2563eb;">
-                Naše specializace
-            </h2>
-            <p class="lead text-muted">
-                Poskytujeme komplexní poradenství a školení pro následující normy
-            </p>
+<section class="home-section home-specializations">
+    <div class="container-xxl">
+        <div class="home-section__header">
+            <span class="section-eyebrow">@T["HeroTitle"]</span>
+            <h2 class="home-section__title">Naše specializace</h2>
+            <p class="home-section__subtitle">Poskytujeme komplexní poradenství a školení pro následující normy.</p>
         </div>
-
-        <!-- Grid s ISO normami -->
-        <div class="row g-4">
+        <div class="specialization-grid">
             @foreach (var specialization in specializations)
             {
-                <div class="col-12 col-md-6 col-lg-4">
-                    <div class="card h-100 border-0 shadow-sm hover-lift" style="border-radius: 1rem; transition: transform 0.2s, box-shadow 0.2s; cursor: pointer;">
-                        <div class="card-body p-4">
-                            <div class="d-flex align-items-center mb-3">
-                                <div class="rounded-3 p-3 me-3" style="background: @specialization.CardGradient;">
-                                    <i class="@specialization.CardIconClass text-white" style="font-size: 1.5rem;"></i>
-                                </div>
-                                <h3 class="h4 mb-0 fw-bold">@specialization.Name</h3>
-                            </div>
-                            <p class="text-muted mb-0">@specialization.Summary</p>
-                        </div>
+                <article class="specialization-card @specialization.IconColorClass">
+                    <div class="specialization-card__icon" aria-hidden="true">
+                        <i class="@specialization.CardIconClass"></i>
                     </div>
-                </div>
+                    <div class="specialization-card__body">
+                        <h3 class="specialization-card__title">@specialization.Name</h3>
+                        <p class="specialization-card__summary">@specialization.Summary</p>
+                    </div>
+                </article>
             }
         </div>
     </div>
 </section>
 
-<section class="container-xl mb-4">
-    <div class="trust-stripe rounded-4 p-3">
-        <div class="row row-cols-2 row-cols-md-4 g-3 g-md-0 align-items-center text-center text-md-start">
-            <div class="col">
-                <div class="trust-item d-flex align-items-center justify-content-center justify-content-md-start gap-2" role="status" aria-live="polite">
-                    <i class="bi bi-star-fill"></i>
-                    <span>@Html.Raw(T["TrustRating", "<span class=\"stat-number\" data-target=\"4.8\" data-decimals=\"1\" data-suffix=\"/5\">4.8</span>"])</span>
-                </div>
-            </div>
-            <div class="col">
-                <div class="trust-item d-flex align-items-center justify-content-center justify-content-md-start gap-2" role="status" aria-live="polite">
-                    <i class="bi bi-people"></i>
-                    <span>@Html.Raw(T["TrustGraduates", "<span class=\"stat-number\" data-target=\"10000\" data-suffix=\"+\">10 000</span>"])</span>
-                </div>
-            </div>
-            <div class="col">
-                <div class="trust-item d-flex align-items-center justify-content-center justify-content-md-start gap-2">
-                    <i class="bi bi-shield-check"></i>
-                    <span>@T["TrustGuarantee"]</span>
-                </div>
-            </div>
-            <div class="col">
-                <div class="trust-item d-flex align-items-center justify-content-center justify-content-md-start gap-2">
-                    <i class="bi bi-patch-check"></i>
-                    <span>@T["TrustCertificate"]</span>
-                </div>
-            </div>
+<section class="home-section home-courses">
+    <div class="container-xxl">
+        <div class="home-section__header">
+            <span class="section-eyebrow">@T["HowItWorksTitle"]</span>
+            <h2 class="home-section__title">Aktuální školení a kurzy</h2>
+            <p class="home-section__subtitle">Vyberte si z nejžádanějších kurzů, které vám pomohou splnit požadavky norem a posunout váš tým o krok dál.</p>
         </div>
-    </div>
-</section>
-
-<section class="specializations-section py-5">
-    <div class="container-xl">
-        <div class="text-center mb-5">
-            <h2 class="section-heading mb-3">Naše specializace</h2>
-            <p class="section-subheading lead">Odborně vás provedeme certifikací podle nejžádanějších mezinárodních norem.</p>
-        </div>
-        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-            @foreach (var specialization in specializations)
-            {
-                <div class="col">
-                    <div class="specialization-card h-100 text-center p-4">
-                        <div class="specialization-icon @specialization.IconColorClass mb-3">
-                            <i class="@specialization.SecondaryIconClass" aria-hidden="true"></i>
+        <div class="home-courses__grid">
+            <div class="home-courses__primary glass-panel">
+                <div class="home-courses__primary-header">
+                    <h3 class="h5 mb-0">@T["RecommendedForYou"]</h3>
+                    <a class="btn btn-outline-primary btn-sm" href="/Courses/Index">@T["RecommendedViewAll"]</a>
+                </div>
+                <div class="row g-3">
+                    @foreach (var c in Model.PicksForPersona)
+                    {
+                        <div class="col-12 col-md-6">
+                            @await Html.PartialAsync("/Pages/Shared/_CourseCard.cshtml", c)
                         </div>
-                        <h3 class="h4 fw-bold mb-2">@specialization.IconLabel</h3>
-                        <p class="text-muted mb-0">@specialization.Summary</p>
-                    </div>
-                </div>
-            }
-        </div>
-    </div>
-</section>
-
-<section class="training-section py-5">
-    <div class="container-xl">
-        <div class="text-center mb-5">
-            <h2 class="section-heading mb-3">Aktuální školení a kurzy</h2>
-            <p class="section-subheading lead">Vyberte si z nejžádanějších kurzů, které vám pomohou splnit požadavky norem a posunout váš tým o krok dál.</p>
-        </div>
-
-        <div class="row row-cols-1 row-cols-lg-2 g-4">
-            <div class="col">
-                <div class="training-card h-100 p-4 d-flex flex-column gap-3">
-                    <div class="d-flex justify-content-between align-items-start">
-                        <span class="training-badge"><i class="bi bi-patch-check-fill" aria-hidden="true"></i> ISO 9001</span>
-                        <span class="training-mode online"><i class="bi bi-wifi" aria-hidden="true"></i> Online</span>
-                    </div>
-                    <h3 class="h4 fw-bold mb-0">Interní auditor systému managementu kvality</h3>
-                    <div class="d-flex flex-wrap gap-3 training-meta">
-                        <span class="d-inline-flex align-items-center gap-2"><i class="bi bi-clock-history" aria-hidden="true"></i>3 dny</span>
-                        <span class="d-inline-flex align-items-center gap-2"><i class="bi bi-calendar-event" aria-hidden="true"></i>12.–14. března 2024</span>
-                    </div>
-                    <div class="training-price">9 990 Kč</div>
-                    <div class="mt-auto">
-                        <a class="btn btn-primary w-100" href="/Courses/Details">Detail kurzu</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col">
-                <div class="training-card h-100 p-4 d-flex flex-column gap-3">
-                    <div class="d-flex justify-content-between align-items-start">
-                        <span class="training-badge"><i class="bi bi-patch-check-fill" aria-hidden="true"></i> ISO 14001</span>
-                        <span class="training-mode onsite"><i class="bi bi-geo-alt" aria-hidden="true"></i> Prezenčně</span>
-                    </div>
-                    <h3 class="h4 fw-bold mb-0">Environmentální legislativa v praxi</h3>
-                    <div class="d-flex flex-wrap gap-3 training-meta">
-                        <span class="d-inline-flex align-items-center gap-2"><i class="bi bi-clock-history" aria-hidden="true"></i>2 dny</span>
-                        <span class="d-inline-flex align-items-center gap-2"><i class="bi bi-calendar-event" aria-hidden="true"></i>21.–22. března 2024</span>
-                    </div>
-                    <div class="training-price">7 490 Kč</div>
-                    <div class="mt-auto">
-                        <a class="btn btn-primary w-100" href="/Courses/Details">Detail kurzu</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col">
-                <div class="training-card h-100 p-4 d-flex flex-column gap-3">
-                    <div class="d-flex justify-content-between align-items-start">
-                        <span class="training-badge"><i class="bi bi-patch-check-fill" aria-hidden="true"></i> ISO/IEC 27001</span>
-                        <span class="training-mode online"><i class="bi bi-wifi" aria-hidden="true"></i> Online</span>
-                    </div>
-                    <h3 class="h4 fw-bold mb-0">Bezpečnost informací pro manažery IT</h3>
-                    <div class="d-flex flex-wrap gap-3 training-meta">
-                        <span class="d-inline-flex align-items-center gap-2"><i class="bi bi-clock-history" aria-hidden="true"></i>4 dny</span>
-                        <span class="d-inline-flex align-items-center gap-2"><i class="bi bi-calendar-event" aria-hidden="true"></i>8.–11. dubna 2024</span>
-                    </div>
-                    <div class="training-price">12 490 Kč</div>
-                    <div class="mt-auto">
-                        <a class="btn btn-primary w-100" href="/Courses/Details">Detail kurzu</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col">
-                <div class="training-card h-100 p-4 d-flex flex-column gap-3">
-                    <div class="d-flex justify-content-between align-items-start">
-                        <span class="training-badge"><i class="bi bi-patch-check-fill" aria-hidden="true"></i> ISO 45001</span>
-                        <span class="training-mode onsite"><i class="bi bi-geo-alt" aria-hidden="true"></i> Prezenčně</span>
-                    </div>
-                    <h3 class="h4 fw-bold mb-0">Praktický workshop BOZP pro vedoucí pracovníky</h3>
-                    <div class="d-flex flex-wrap gap-3 training-meta">
-                        <span class="d-inline-flex align-items-center gap-2"><i class="bi bi-clock-history" aria-hidden="true"></i>2 dny</span>
-                        <span class="d-inline-flex align-items-center gap-2"><i class="bi bi-calendar-event" aria-hidden="true"></i>16.–17. dubna 2024</span>
-                    </div>
-                    <div class="training-price">8 290 Kč</div>
-                    <div class="mt-auto">
-                        <a class="btn btn-primary w-100" href="/Courses/Details">Detail kurzu</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<script>
-    (function () {
-        const locale = document.documentElement.lang || 'cs';
-
-        const animateStats = () => {
-            const stats = document.querySelectorAll('.stat-number');
-            if (!stats.length) return;
-
-            const duration = 2000;
-
-            const startAnimation = (el) => {
-                const target = Number(el.getAttribute('data-target')) || 0;
-                const decimals = Number(el.getAttribute('data-decimals')) || 0;
-                const prefix = el.getAttribute('data-prefix') || '';
-                const suffix = el.getAttribute('data-suffix') || '';
-
-                const startTimestamp = performance.now();
-
-                const renderValue = (value) => {
-                    const formatted = value.toLocaleString(locale, {
-                        minimumFractionDigits: decimals,
-                        maximumFractionDigits: decimals
-                    });
-                    el.textContent = `${prefix}${formatted}${suffix}`;
-                };
-
-                renderValue(0);
-
-                const tick = (now) => {
-                    const progress = Math.min((now - startTimestamp) / duration, 1);
-                    const current = target * progress;
-                    renderValue(current);
-                    if (progress < 1) {
-                        requestAnimationFrame(tick);
                     }
-                };
+                    @if (!Model.PicksForPersona.Any())
+                    {
+                        <div class="col-12 text-muted">@T["RecommendedEmpty"]</div>
+                    }
+                </div>
+            </div>
+            <aside class="home-courses__sidebar glass-panel">
+                <h3 class="h6 mb-3">@T["StartingSoon"]</h3>
+                <ul class="list-unstyled mb-4">
+                    @foreach (var c in Model.FastSoonest)
+                    {
+                        <li class="home-courses__list-item">
+                            <a asp-page="/Courses/Details" asp-route-id="@c.Id">@c.Title</a>
+                            <span class="text-muted">— @c.Date.ToString("d")</span>
+                        </li>
+                    }
+                </ul>
+                <a class="btn btn-outline-primary btn-sm" href="/Courses/Calendar"><i class="bi bi-calendar3"></i> @T["CalendarButton"]</a>
+            </aside>
+        </div>
+        <div class="home-courses__news glass-panel">
+            <h3 class="h6 mb-3">@T["NewsHeading"]</h3>
+            <div class="home-courses__news-pills">
+                @foreach (var a in Model.FreshNews)
+                {
+                    <a class="news-pill" asp-page="/Articles/Details" asp-route-id="@a.Id">@a.Title</a>
+                }
+            </div>
+        </div>
+    </div>
+</section>
 
-                requestAnimationFrame(tick);
-            };
+<section class="home-section home-journey">
+    <div class="container-xxl">
+        <div class="home-section__header">
+            <span class="section-eyebrow">@T["HowItWorksTitle"]</span>
+            <h2 class="home-section__title">@T["HowItWorksTitle"]</h2>
+            <p class="home-section__subtitle">@T["StepRegisterDescription"]</p>
+        </div>
+        <div class="home-journey__grid">
+            <article class="journey-card glass-card">
+                <div class="journey-card__icon" aria-hidden="true"><i class="bi bi-clipboard-data"></i></div>
+                <h3 class="journey-card__title">@T["StepSelectTitle"]</h3>
+                <p class="journey-card__text">@T["StepSelectDescription"]</p>
+            </article>
+            <article class="journey-card glass-card">
+                <div class="journey-card__icon" aria-hidden="true"><i class="bi bi-calendar-check"></i></div>
+                <h3 class="journey-card__title">@T["StepRegisterTitle"]</h3>
+                <p class="journey-card__text">@T["StepRegisterDescription"]</p>
+            </article>
+            <article class="journey-card glass-card">
+                <div class="journey-card__icon" aria-hidden="true"><i class="bi bi-patch-check"></i></div>
+                <h3 class="journey-card__title">@T["StepPayTitle"]</h3>
+                <p class="journey-card__text">@T["StepPayDescription"]</p>
+            </article>
+        </div>
+    </div>
+</section>
 
-            if (!('IntersectionObserver' in window)) {
-                stats.forEach(startAnimation);
-                return;
-            }
-
-            const observer = new IntersectionObserver((entries, obs) => {
-                entries.forEach((entry) => {
-                    if (!entry.isIntersecting) return;
-                    startAnimation(entry.target);
-                    obs.unobserve(entry.target);
-                });
-            }, {
-                threshold: 0.4
-            });
-
-            stats.forEach((el) => observer.observe(el));
-        };
-
-        const init = () => {
-            animateStats();
-        };
-
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', init);
-        } else {
-            init();
-        }
-    })();
-</script>
+<section class="home-section home-why">
+    <div class="container-xxl">
+        <div class="home-why__panel glass-panel">
+            <div class="home-why__content">
+                <h2 class="home-section__title mb-3">@T["WhyChooseHeading"]</h2>
+                <p class="home-section__subtitle">@T["WhyChooseDescription"]</p>
+            </div>
+            <div class="home-why__highlights">
+                <span class="chip chip--accent">@T["HeroUSP1"]</span>
+                <span class="chip chip--accent">@T["HeroUSP2"]</span>
+                <span class="chip chip--accent">@T["HeroUSP3"]</span>
+            </div>
+        </div>
+    </div>
+</section>
 
 @await Html.PartialAsync("/Pages/Shared/_CertificationTimeline.cshtml")
 
 @await Html.PartialAsync("/Pages/Shared/_TestimonialsCarousel.cshtml", Model.FeaturedTestimonials)
 
-<section class="container-xl">
-  <div class="row g-3 align-items-stretch">
-    <div class="col-lg-8">
-      <div class="feature-card h-100 p-3">
-        <div class="d-flex justify-content-between align-items-center mb-2">
-          <h2 class="h5 mb-0">@T["RecommendedForYou"]</h2>
-          <a class="btn btn-sm btn-outline-secondary" href="/Courses/Index">@T["RecommendedViewAll"]</a>
-        </div>
-        <div class="row g-3">
-          @foreach (var c in Model.PicksForPersona)
-          {
-            <div class="col-12 col-md-6">
-              @await Html.PartialAsync("/Pages/Shared/_CourseCard.cshtml", c)
+<section class="home-section home-contact">
+    <div class="container-xxl">
+        <div class="home-contact__panel glass-panel">
+            <div>
+                <h2 class="home-section__title">@T["ContactCtaHeading"]</h2>
+                <p class="home-section__subtitle">@T["HeroSubheading"]</p>
             </div>
-          }
-          @if (!Model.PicksForPersona.Any())
-          {
-            <div class="col-12 text-muted">@T["RecommendedEmpty"]</div>
-          }
-        </div>
-      </div>
-    </div>
-
-    <div class="col-lg-4">
-      <div class="feature-card h-100 p-3">
-        <h2 class="h6">@T["StartingSoon"]</h2>
-        <ul class="list-unstyled small mb-3">
-          @foreach (var c in Model.FastSoonest)
-          {
-            <li class="mb-2">
-              <a asp-page="/Courses/Details" asp-route-id="@c.Id">@c.Title</a>
-              <span class="text-muted">— @c.Date.ToString("d")</span>
-            </li>
-          }
-        </ul>
-        <a class="btn btn-outline-primary btn-sm" href="/Courses/Calendar"><i class="bi bi-calendar3"></i> @T["CalendarButton"]</a>
-      </div>
-    </div>
-  </div>
-
-  <div class="row g-3 mt-1">
-    <div class="col-12">
-      <div class="feature-card p-3">
-        <h2 class="h6 mb-2">@T["NewsHeading"]</h2>
-        <div class="d-flex flex-wrap gap-3">
-          @foreach (var a in Model.FreshNews)
-          {
-            <a class="news-pill" asp-page="/Articles/Details" asp-route-id="@a.Id">@a.Title</a>
-          }
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="stats-section py-5">
-    <div class="container-xl">
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-4 text-center">
-            <div class="col">
-                <div class="stats-card h-100 d-flex flex-column justify-content-center">
-                    <div class="stats-number">20+</div>
-                    <p class="stats-label mb-0">Let zkušeností</p>
-                </div>
-            </div>
-            <div class="col">
-                <div class="stats-card h-100 d-flex flex-column justify-content-center">
-                    <div class="stats-number">500+</div>
-                    <p class="stats-label mb-0">Spokojených klientů</p>
-                </div>
-            </div>
-            <div class="col">
-                <div class="stats-card h-100 d-flex flex-column justify-content-center">
-                    <div class="stats-number">2000+</div>
-                    <p class="stats-label mb-0">Realizovaných školení</p>
-                </div>
-            </div>
-            <div class="col">
-                <div class="stats-card h-100 d-flex flex-column justify-content-center">
-                    <div class="stats-number">15</div>
-                    <p class="stats-label mb-0">Certifikovaných lektorů</p>
-                </div>
+            <div class="home-contact__actions">
+                <a class="btn btn-primary btn-lg" href="/Contact">@T["HeroSecondaryCTA"]</a>
+                <a class="btn btn-outline-light btn-lg" href="/Services">@T["HeroPrimaryCTA"]</a>
             </div>
         </div>
     </div>
 </section>
-
-<section class="app-section">
-    <div class="container-xl">
-        <h2 class="section-title text-center">@T["HowItWorksTitle"]</h2>
-        <div class="row g-4 text-center">
-            <div class="col-md-4">
-                <div class="feature-card h-100 p-4">
-                    <div class="icon-circle mx-auto mb-3">
-                        <i class="bi bi-clipboard-data" aria-hidden="true"></i>
-                    </div>
-                    <h3 class="h5">@T["StepSelectTitle"]</h3>
-                    <p class="mb-0">@T["StepSelectDescription"]</p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="feature-card h-100 p-4">
-                    <div class="icon-circle mx-auto mb-3">
-                        <i class="bi bi-calendar-check" aria-hidden="true"></i>
-                    </div>
-                    <h3 class="h5">@T["StepRegisterTitle"]</h3>
-                    <p class="mb-0">@T["StepRegisterDescription"]</p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="feature-card h-100 p-4">
-                    <div class="icon-circle mx-auto mb-3">
-                        <i class="bi bi-patch-check" aria-hidden="true"></i>
-                    </div>
-                    <h3 class="h5">@T["StepPayTitle"]</h3>
-                    <p class="mb-0">@T["StepPayDescription"]</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section class="app-section app-section-alt">
-    <div class="container-xl text-center">
-        <h2 class="section-title mb-3">@T["WhyChooseHeading"]</h2>
-        <p class="mx-auto app-section-description">@T["WhyChooseDescription"]</p>
-    </div>
-</section>
-
 
 @section Scripts {
     <script src="~/js/testimonials.js" asp-append-version="true"></script>
+    <script>
+        (() => {
+            const locale = document.documentElement.lang || 'cs';
+
+            const animateStats = () => {
+                const stats = document.querySelectorAll('.stat-number');
+                if (!stats.length) return;
+
+                const duration = 2000;
+
+                const startAnimation = (el) => {
+                    const target = Number(el.getAttribute('data-target')) || 0;
+                    const decimals = Number(el.getAttribute('data-decimals')) || 0;
+                    const prefix = el.getAttribute('data-prefix') || '';
+                    const suffix = el.getAttribute('data-suffix') || '';
+
+                    const startTimestamp = performance.now();
+
+                    const renderValue = (value) => {
+                        const formatted = value.toLocaleString(locale, {
+                            minimumFractionDigits: decimals,
+                            maximumFractionDigits: decimals
+                        });
+                        el.textContent = `${prefix}${formatted}${suffix}`;
+                    };
+
+                    renderValue(0);
+
+                    const tick = (now) => {
+                        const progress = Math.min((now - startTimestamp) / duration, 1);
+                        const current = target * progress;
+                        renderValue(current);
+                        if (progress < 1) {
+                            requestAnimationFrame(tick);
+                        }
+                    };
+
+                    requestAnimationFrame(tick);
+                };
+
+                if (!('IntersectionObserver' in window)) {
+                    stats.forEach(startAnimation);
+                    return;
+                }
+
+                const observer = new IntersectionObserver((entries, obs) => {
+                    entries.forEach((entry) => {
+                        if (!entry.isIntersecting) return;
+                        startAnimation(entry.target);
+                        obs.unobserve(entry.target);
+                    });
+                }, {
+                    threshold: 0.4
+                });
+
+                stats.forEach((el) => observer.observe(el));
+            };
+
+            const init = () => {
+                animateStats();
+            };
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', init);
+            } else {
+                init();
+            }
+        })();
+    </script>
 }
