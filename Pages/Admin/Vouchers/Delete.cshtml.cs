@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using SysJaky_N.Data;
 using SysJaky_N.Models;
 
@@ -12,10 +13,12 @@ namespace SysJaky_N.Pages.Admin.Vouchers;
 public class DeleteModel : PageModel
 {
     private readonly ApplicationDbContext _context;
+    private readonly IStringLocalizer<DeleteModel> _localizer;
 
-    public DeleteModel(ApplicationDbContext context)
+    public DeleteModel(ApplicationDbContext context, IStringLocalizer<DeleteModel> localizer)
     {
         _context = context;
+        _localizer = localizer;
     }
 
     [BindProperty]
@@ -28,7 +31,7 @@ public class DeleteModel : PageModel
             .FirstOrDefaultAsync(v => v.Id == id);
         if (voucher == null)
         {
-            return NotFound();
+            return NotFound(_localizer["VoucherNotFound"]);
         }
         if (voucher.ExpiresUtc.HasValue)
         {

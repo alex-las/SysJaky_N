@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using SysJaky_N.Data;
 using SysJaky_N.Models;
 
@@ -14,10 +15,12 @@ namespace SysJaky_N.Pages.Admin.Vouchers;
 public class EditModel : PageModel
 {
     private readonly ApplicationDbContext _context;
+    private readonly IStringLocalizer<EditModel> _localizer;
 
-    public EditModel(ApplicationDbContext context)
+    public EditModel(ApplicationDbContext context, IStringLocalizer<EditModel> localizer)
     {
         _context = context;
+        _localizer = localizer;
     }
 
     [BindProperty]
@@ -33,7 +36,7 @@ public class EditModel : PageModel
 
         if (voucher == null)
         {
-            return NotFound();
+            return NotFound(_localizer["VoucherNotFound"]);
         }
 
         if (voucher.ExpiresUtc.HasValue)
@@ -55,14 +58,14 @@ public class EditModel : PageModel
 
         if (voucherToUpdate == null)
         {
-            return NotFound();
+            return NotFound(_localizer["VoucherNotFound"]);
         }
 
         Voucher.Code = Voucher.Code?.Trim() ?? string.Empty;
 
         if (string.IsNullOrWhiteSpace(Voucher.Code))
         {
-            ModelState.AddModelError("Voucher.Code", "Code is required.");
+            ModelState.AddModelError("Voucher.Code", _localizer["ErrorCodeRequired"]);
         }
         else
         {
@@ -71,7 +74,7 @@ public class EditModel : PageModel
                 .AnyAsync(v => v.Id != Voucher.Id && v.Code == Voucher.Code);
             if (exists)
             {
-                ModelState.AddModelError("Voucher.Code", "Voucher code must be unique.");
+                ModelState.AddModelError("Voucher.Code", _localizer["ErrorCodeUnique"]);
             }
         }
 
@@ -79,17 +82,17 @@ public class EditModel : PageModel
         {
             if (Voucher.Value <= 0 || Voucher.Value > 100)
             {
-                ModelState.AddModelError("Voucher.Value", "Percentage vouchers must be between 0 and 100.");
+                ModelState.AddModelError("Voucher.Value", _localizer["ErrorPercentageRange"]);
             }
         }
         else if (Voucher.Value <= 0)
         {
-            ModelState.AddModelError("Voucher.Value", "Amount must be greater than zero.");
+            ModelState.AddModelError("Voucher.Value", _localizer["ErrorAmountPositive"]);
         }
 
         if (Voucher.MaxRedemptions.HasValue && Voucher.MaxRedemptions.Value < voucherToUpdate.UsedCount)
         {
-            ModelState.AddModelError("Voucher.MaxRedemptions", "Max redemptions cannot be lower than the used count.");
+            ModelState.AddModelError("Voucher.MaxRedemptions", _localizer["ErrorMaxRedemptions"]);
         }
 
         DateTime? expiresUtc = null;
@@ -130,7 +133,7 @@ public class EditModel : PageModel
 
         Courses = new List<SelectListItem>
         {
-            new SelectListItem("All courses", string.Empty, Voucher.AppliesToCourseId == null)
+            new SelectListItem(_localizer["AllCourses"], string.Empty, Voucher.AppliesToCourseId == null)
         };
         Courses.AddRange(courseItems);
     }
