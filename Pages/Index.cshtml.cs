@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using SysJaky_N.Data;
 using SysJaky_N.Extensions;
 using SysJaky_N.Models;
@@ -12,11 +13,13 @@ namespace SysJaky_N.Pages
     {
         private readonly ILogger<IndexModel> _logger;
         private readonly ApplicationDbContext _context;
+        private readonly IStringLocalizer<IndexModel> _localizer;
 
-        public IndexModel(ILogger<IndexModel> logger, ApplicationDbContext context)
+        public IndexModel(ILogger<IndexModel> logger, ApplicationDbContext context, IStringLocalizer<IndexModel> localizer)
         {
             _logger = logger;
             _context = context;
+            _localizer = localizer;
         }
 
         public IList<CourseCardViewModel> PicksForPersona { get; set; } = new List<CourseCardViewModel>();
@@ -26,6 +29,7 @@ namespace SysJaky_N.Pages
 
         public async Task OnGetAsync(string? persona, string? goal)
         {
+            ViewData["Title"] = _localizer["Title"];
             _logger.LogInformation("CurrentCulture={culture}, CurrentUICulture={ui}",
                 CultureInfo.CurrentCulture.Name,
                 CultureInfo.CurrentUICulture.Name);
