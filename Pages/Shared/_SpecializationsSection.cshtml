@@ -1,0 +1,43 @@
+@using System.Collections.Generic
+@using System.Linq
+@using SysJaky_N.Services.IsoStandards
+@model IReadOnlyList<IsoSpecializationMetadata>
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+
+@{
+    var items = Model?.Where(item => item is not null).ToList() ?? new List<IsoSpecializationMetadata>();
+}
+
+@if (items.Count > 0)
+{
+    <section class="section specializations" id="specializations">
+        <header class="section__header" data-reveal>
+            <span class="section__eyebrow">@Localizer["Eyebrow"]</span>
+            <h2>@Localizer["Heading"]</h2>
+            <p>@Localizer["Description"]</p>
+        </header>
+        <div class="specializations__grid">
+            @for (var index = 0; index < items.Count; index++)
+            {
+                var specialization = items[index];
+                var revealDelay = index % 3 * 50;
+                var iconLabel = string.IsNullOrWhiteSpace(specialization.IconLabel)
+                    ? specialization.Name
+                    : specialization.IconLabel;
+
+                <article class="specialization-card" data-reveal data-reveal-delay="@revealDelay">
+                    <div class="specialization-card__icon @specialization.IconColorClass" title="@iconLabel" aria-hidden="true">
+                        <i class="@specialization.CardIconClass"></i>
+                    </div>
+                    <div class="specialization-card__body">
+                        <h3>@specialization.Name</h3>
+                        <p>@specialization.Summary</p>
+                    </div>
+                    <span class="specialization-card__cta" aria-hidden="true">
+                        <i class="bi bi-arrow-up-right"></i>
+                    </span>
+                </article>
+            }
+        </div>
+    </section>
+}
