@@ -126,6 +126,33 @@
   <data name="EmailAddressInvalid" xml:space="preserve">
     <value>Pole {0} musí obsahovat platnou e-mailovou adresu.</value>
   </data>
+  <data name="LanguageMenuLabel" xml:space="preserve">
+    <value>Výběr jazyka</value>
+  </data>
+  <data name="ChangeLanguageFormLabel" xml:space="preserve">
+    <value>Změna jazyka</value>
+  </data>
+  <data name="LanguageNameCs" xml:space="preserve">
+    <value>Čeština</value>
+  </data>
+  <data name="LanguageNameEn" xml:space="preserve">
+    <value>Angličtina</value>
+  </data>
+  <data name="NavHome" xml:space="preserve">
+    <value>Úvod – poradenství systémů jakosti</value>
+  </data>
+  <data name="NavAbout" xml:space="preserve">
+    <value>O společnosti Systémy jakosti</value>
+  </data>
+  <data name="NavServices" xml:space="preserve">
+    <value>Služby a poradenství</value>
+  </data>
+  <data name="NavCourses" xml:space="preserve">
+    <value>Kurzy a školení ISO</value>
+  </data>
+  <data name="NavArticles" xml:space="preserve">
+    <value>Články a případové studie</value>
+  </data>
   <data name="ContactNameLabel" xml:space="preserve">
     <value>Jméno</value>
   </data>

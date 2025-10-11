@@ -129,4 +129,37 @@
   <data name="Close" xml:space="preserve">
     <value>Zavřít</value>
   </data>
+  <data name="FooterCompanyName" xml:space="preserve">
+    <value>Systémy jakosti s.r.o.</value>
+  </data>
+  <data name="FooterCompanyRegistration" xml:space="preserve">
+    <value>IČO: 123 456 78</value>
+  </data>
+  <data name="FooterServicesHeading" xml:space="preserve">
+    <value>Služby</value>
+  </data>
+  <data name="FooterServiceQualityConsulting" xml:space="preserve">
+    <value>Poradenství pro systémy řízení kvality</value>
+  </data>
+  <data name="FooterServiceAudits" xml:space="preserve">
+    <value>Interní audity a příprava na certifikaci</value>
+  </data>
+  <data name="FooterServiceTraining" xml:space="preserve">
+    <value>Školení a kurzy ISO standardů</value>
+  </data>
+  <data name="FooterServiceDocumentation" xml:space="preserve">
+    <value>Tvorba a revize dokumentace</value>
+  </data>
+  <data name="FooterContactHeading" xml:space="preserve">
+    <value>Kontakt</value>
+  </data>
+  <data name="FooterContactEmail" xml:space="preserve">
+    <value>info@systemy-jakosti.cz</value>
+  </data>
+  <data name="FooterContactPhone" xml:space="preserve">
+    <value>+420 XXX XXX XXX</value>
+  </data>
+  <data name="FooterNotice" xml:space="preserve">
+    <value>© {0} Systémy jakosti s.r.o. Všechna práva vyhrazena.</value>
+  </data>
 </root>
