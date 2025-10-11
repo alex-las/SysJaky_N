@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using SysJaky_N.Data;
 using SysJaky_N.Models;
 
@@ -14,10 +15,12 @@ namespace SysJaky_N.Pages.Admin.Vouchers;
 public class CreateModel : PageModel
 {
     private readonly ApplicationDbContext _context;
+    private readonly IStringLocalizer<CreateModel> _localizer;
 
-    public CreateModel(ApplicationDbContext context)
+    public CreateModel(ApplicationDbContext context, IStringLocalizer<CreateModel> localizer)
     {
         _context = context;
+        _localizer = localizer;
     }
 
     [BindProperty]
@@ -38,7 +41,7 @@ public class CreateModel : PageModel
 
         if (string.IsNullOrWhiteSpace(Voucher.Code))
         {
-            ModelState.AddModelError("Voucher.Code", "Code is required.");
+            ModelState.AddModelError("Voucher.Code", _localizer["ErrorCodeRequired"]);
         }
         else
         {
@@ -48,7 +51,7 @@ public class CreateModel : PageModel
                 .AnyAsync(v => v.Code == Voucher.Code);
             if (codeExists)
             {
-                ModelState.AddModelError("Voucher.Code", "Voucher code must be unique.");
+                ModelState.AddModelError("Voucher.Code", _localizer["ErrorCodeUnique"]);
             }
         }
 
@@ -56,12 +59,12 @@ public class CreateModel : PageModel
         {
             if (Voucher.Value <= 0 || Voucher.Value > 100)
             {
-                ModelState.AddModelError("Voucher.Value", "Percentage vouchers must be between 0 and 100.");
+                ModelState.AddModelError("Voucher.Value", _localizer["ErrorPercentageRange"]);
             }
         }
         else if (Voucher.Value <= 0)
         {
-            ModelState.AddModelError("Voucher.Value", "Amount must be greater than zero.");
+            ModelState.AddModelError("Voucher.Value", _localizer["ErrorAmountPositive"]);
         }
 
         DateTime? expiresUtc = null;
@@ -97,7 +100,7 @@ public class CreateModel : PageModel
 
         Courses = new List<SelectListItem>
         {
-            new SelectListItem("All courses", string.Empty, Voucher.AppliesToCourseId == null)
+            new SelectListItem(_localizer["AllCourses"], string.Empty, Voucher.AppliesToCourseId == null)
         };
         Courses.AddRange(courseItems);
     }
