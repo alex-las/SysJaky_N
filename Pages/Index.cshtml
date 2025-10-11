@@ -6,6 +6,7 @@
 @inject SysJaky_N.Services.IsoStandards.IIsoSpecializationMetadataProvider IsoMetadataProvider
 @{ 
     ViewData["Title"] = T["Title"];
+    ViewData["AppContentClasses"] = "container-fluid px-0";
 
     var specializations = IsoMetadataProvider.GetAll();
 
