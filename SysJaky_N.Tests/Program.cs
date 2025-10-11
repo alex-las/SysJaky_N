@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
@@ -16,7 +17,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Routing;
-using Microsoft.Extensions.Localization;
 using SysJaky_N.Controllers;
 using SysJaky_N.Data;
 using SysJaky_N.Models;
@@ -39,6 +39,7 @@ internal sealed class CourseReminderServiceTester
         var tests = new List<(string Name, Func<Task> Execute)>
         {
             ("Page model localizers resolve resources", RunPageModelLocalizationTestAsync),
+            ("Payment service formats localized line items", RunPaymentServiceLocalizationTestAsync),
             ("Course reminders respect different time zones", RunCourseSelectionTestAsync),
             ("Course reminders avoid client-side evaluation warnings", RunClientEvaluationWarningTestAsync),
             ("Analytics dashboard aggregates sales using SQL grouping", RunAnalyticsAggregationTestAsync),
@@ -103,6 +104,49 @@ internal sealed class CourseReminderServiceTester
                     {
                         throw new InvalidOperationException($"Missing Title resource for {modelType.Name} in culture '{cultureName}'.");
                     }
+                }
+            }
+        }
+        finally
+        {
+            CultureInfo.CurrentCulture = originalCulture;
+            CultureInfo.CurrentUICulture = originalUiCulture;
+        }
+
+        return Task.CompletedTask;
+    }
+
+    private static Task RunPaymentServiceLocalizationTestAsync()
+    {
+        var services = new ServiceCollection();
+        services.AddLogging();
+        services.AddLocalization(options => options.ResourcesPath = "Resources");
+
+        using var provider = services.BuildServiceProvider();
+        var factory = provider.GetRequiredService<IStringLocalizerFactory>();
+        var localizer = factory.Create(typeof(PaymentService));
+
+        var cultures = new[] { "cs", "en" };
+        var originalCulture = CultureInfo.CurrentCulture;
+        var originalUiCulture = CultureInfo.CurrentUICulture;
+
+        try
+        {
+            foreach (var cultureName in cultures)
+            {
+                var culture = new CultureInfo(cultureName);
+                CultureInfo.CurrentCulture = culture;
+                CultureInfo.CurrentUICulture = culture;
+
+                var lineItem = localizer["LineItemName", 123];
+                if (lineItem.ResourceNotFound || string.IsNullOrWhiteSpace(lineItem.Value))
+                {
+                    throw new InvalidOperationException($"Missing LineItemName resource for culture '{cultureName}'.");
+                }
+
+                if (!lineItem.Value.Contains("123", StringComparison.Ordinal))
+                {
+                    throw new InvalidOperationException($"LineItemName resource for culture '{cultureName}' does not include the order identifier: '{lineItem.Value}'.");
                 }
             }
         }
