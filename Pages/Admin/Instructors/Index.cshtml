@@ -1,11 +1,11 @@
 @page
 @model SysJaky_N.Pages.Admin.Instructors.IndexModel
 @{
-    ViewData["Title"] = "Lektoři";
+    ViewData["Title"] ??= Model.PageTitle;
 }
 
 <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
-    <h1 class="mb-0">Lektoři</h1>
+    <h1 class="mb-0">@Model.PageTitle</h1>
     <a class="btn btn-primary" asp-page="Create">Přidat lektora</a>
 </div>
 

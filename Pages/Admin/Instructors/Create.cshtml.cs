@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using SysJaky_N.Data;
 using InstructorModel = SysJaky_N.Models.Instructor;
 
@@ -12,10 +13,12 @@ namespace SysJaky_N.Pages.Admin.Instructors;
 public class CreateModel : PageModel
 {
     private readonly ApplicationDbContext _context;
+    private readonly IStringLocalizer<CreateModel> _localizer;
 
-    public CreateModel(ApplicationDbContext context)
+    public CreateModel(ApplicationDbContext context, IStringLocalizer<CreateModel> localizer)
     {
         _context = context;
+        _localizer = localizer;
     }
 
     [BindProperty]
@@ -35,7 +38,7 @@ public class CreateModel : PageModel
                 .AnyAsync(i => i.FullName == Instructor.FullName);
             if (exists)
             {
-                ModelState.AddModelError("Instructor.FullName", "An instructor with this name already exists.");
+                ModelState.AddModelError("Instructor.FullName", _localizer["DuplicateFullNameError"]);
             }
         }
 

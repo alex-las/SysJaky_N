@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using SysJaky_N.Data;
 using InstructorModel = SysJaky_N.Models.Instructor;
 
@@ -14,10 +15,12 @@ namespace SysJaky_N.Pages.Admin.Instructors;
 public class IndexModel : PageModel
 {
     private readonly ApplicationDbContext _context;
+    private readonly IStringLocalizer<IndexModel> _localizer;
 
-    public IndexModel(ApplicationDbContext context)
+    public IndexModel(ApplicationDbContext context, IStringLocalizer<IndexModel> localizer)
     {
         _context = context;
+        _localizer = localizer;
     }
 
     public IList<InstructorModel> Instructors { get; set; } = new List<InstructorModel>();
@@ -25,8 +28,12 @@ public class IndexModel : PageModel
     [BindProperty(SupportsGet = true)]
     public string? Search { get; set; }
 
+    public string PageTitle => _localizer["Title"];
+
     public async Task OnGetAsync()
     {
+        ViewData["Title"] = PageTitle;
+
         var query = _context.Instructors
             .AsNoTracking()
             .Include(i => i.CourseTerms)

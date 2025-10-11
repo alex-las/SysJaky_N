@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using SysJaky_N.Data;
 using InstructorModel = SysJaky_N.Models.Instructor;
 
@@ -13,10 +14,12 @@ namespace SysJaky_N.Pages.Admin.Instructors;
 public class DeleteModel : PageModel
 {
     private readonly ApplicationDbContext _context;
+    private readonly IStringLocalizer<DeleteModel> _localizer;
 
-    public DeleteModel(ApplicationDbContext context)
+    public DeleteModel(ApplicationDbContext context, IStringLocalizer<DeleteModel> localizer)
     {
         _context = context;
+        _localizer = localizer;
     }
 
     [BindProperty]
@@ -49,7 +52,7 @@ public class DeleteModel : PageModel
 
         if (instructor.CourseTerms.Any())
         {
-            ErrorMessage = "The instructor cannot be deleted while assigned to course terms.";
+            ErrorMessage = _localizer["InstructorAssignedError"];
             Instructor = instructor;
             return Page();
         }
