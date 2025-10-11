@@ -1,0 +1,89 @@
+body.admin-shell {
+  background: var(--surface-page);
+  font-family: var(--font-sans);
+  color: var(--color-neutral-700);
+}
+
+.admin-shell .navbar,
+.admin-shell header {
+  background: var(--surface-card);
+  border-bottom: 1px solid var(--border-subtle);
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+}
+
+.admin-shell .nav-tabs .nav-link {
+  border-radius: var(--radius-pill) var(--radius-pill) 0 0;
+  padding: 0.65rem 1.15rem;
+  font-weight: 600;
+  color: var(--color-neutral-600);
+  transition: background var(--transition-snappy), color var(--transition-snappy);
+}
+
+.admin-shell .nav-tabs .nav-link.active,
+.admin-shell .nav-tabs .nav-link:hover,
+.admin-shell .nav-tabs .nav-link:focus-visible {
+  color: var(--color-primary-650);
+  background: rgba(79, 70, 229, 0.12);
+  border-color: transparent;
+}
+
+.admin-shell main {
+  background: var(--surface-card);
+  border-radius: var(--radius-xl);
+  padding: 2rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.admin-shell .card {
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-xs);
+}
+
+.admin-shell .table {
+  border-color: var(--border-subtle);
+}
+
+.admin-shell .table thead th {
+  background: var(--surface-muted);
+  font-weight: 600;
+}
+
+.admin-shell .btn-outline-primary {
+  border-color: var(--color-primary-600);
+  color: var(--color-primary-600);
+}
+
+.admin-shell .btn-outline-primary:hover,
+.admin-shell .btn-outline-primary:focus-visible {
+  background: rgba(79, 70, 229, 0.1);
+  color: var(--color-primary-650);
+}
+
+@media (max-width: 991.98px) {
+  .admin-shell main {
+    padding: 1.5rem 1.25rem;
+  }
+}
+
+[data-theme="dark"] body.admin-shell {
+  background: var(--surface-page);
+  color: rgba(226, 232, 240, 0.9);
+}
+
+[data-theme="dark"] .admin-shell main,
+[data-theme="dark"] .admin-shell header {
+  background: var(--surface-card);
+  border-color: var(--border-subtle);
+}
+
+[data-theme="dark"] .admin-shell .nav-tabs .nav-link {
+  color: rgba(148, 163, 184, 0.85);
+}
+
+[data-theme="dark"] .admin-shell .nav-tabs .nav-link.active,
+[data-theme="dark"] .admin-shell .nav-tabs .nav-link:hover,
+[data-theme="dark"] .admin-shell .nav-tabs .nav-link:focus-visible {
+  background: rgba(79, 70, 229, 0.28);
+  color: rgba(224, 231, 255, 0.95);
+}

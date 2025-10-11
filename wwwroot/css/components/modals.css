@@ -1,10 +1,11 @@
 .glass-offcanvas {
-  background: rgba(15, 23, 42, 0.9);
+  background: var(--surface-glass);
   color: #fff;
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-  border-left: 1px solid rgba(148, 163, 184, 0.2);
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+  border-left: 1px solid var(--border-soft);
   padding-bottom: 2rem;
+  box-shadow: -12px 0 32px rgba(15, 23, 42, 0.32);
 }
 
 .glass-offcanvas .offcanvas-header {
@@ -14,6 +15,12 @@
 .glass-offcanvas .btn-close {
   filter: invert(1);
   opacity: 0.85;
+  transition: opacity var(--transition-snappy);
+}
+
+.glass-offcanvas .btn-close:hover,
+.glass-offcanvas .btn-close:focus-visible {
+  opacity: 1;
 }
 
 .glass-offcanvas .offcanvas-body {
@@ -24,4 +31,28 @@
   .glass-offcanvas .offcanvas-body {
     padding-bottom: 2rem;
   }
+}
+
+.advisor-modal .modal-content {
+  border-radius: var(--radius-2xl);
+  border: 1px solid var(--border-soft);
+  box-shadow: var(--shadow-lg);
+}
+
+.advisor-modal .modal-header {
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.advisor-modal .modal-body {
+  padding: 2rem;
+}
+
+[data-theme="dark"] .glass-offcanvas {
+  border-color: var(--border-subtle);
+  box-shadow: -12px 0 36px rgba(15, 23, 42, 0.42);
+}
+
+[data-theme="dark"] .advisor-modal .modal-content {
+  background: var(--surface-card);
+  border-color: var(--border-subtle);
 }
