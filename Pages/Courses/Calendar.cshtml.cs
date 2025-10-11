@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using SysJaky_N.Data;
 using SysJaky_N.Models;
 
@@ -8,10 +9,14 @@ namespace SysJaky_N.Pages.Courses;
 public class CalendarModel : PageModel
 {
     private readonly ApplicationDbContext _context;
+    private readonly IStringLocalizer<CalendarModel> _localizer;
 
-    public CalendarModel(ApplicationDbContext context)
+    public IStringLocalizer<CalendarModel> Localizer => _localizer;
+
+    public CalendarModel(ApplicationDbContext context, IStringLocalizer<CalendarModel> localizer)
     {
         _context = context;
+        _localizer = localizer;
     }
 
     public DateTime CurrentMonth { get; set; }

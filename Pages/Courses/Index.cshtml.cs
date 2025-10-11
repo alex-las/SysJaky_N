@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using SysJaky_N.Data;
 using SysJaky_N.Services;
 using SysJaky_N.Models;
@@ -14,12 +15,20 @@ public class IndexModel : PageModel
     private readonly ApplicationDbContext _context;
     private readonly CartService _cartService;
     private readonly ICacheService _cacheService;
+    private readonly IStringLocalizer<IndexModel> _localizer;
 
-    public IndexModel(ApplicationDbContext context, CartService cartService, ICacheService cacheService)
+    public IStringLocalizer<IndexModel> Localizer => _localizer;
+
+    public IndexModel(
+        ApplicationDbContext context,
+        CartService cartService,
+        ICacheService cacheService,
+        IStringLocalizer<IndexModel> localizer)
     {
         _context = context;
         _cartService = cartService;
         _cacheService = cacheService;
+        _localizer = localizer;
     }
 
     public IList<CourseCardViewModel> Courses { get; set; } = new List<CourseCardViewModel>();
@@ -89,7 +98,7 @@ public class IndexModel : PageModel
 
     private static readonly CourseCategoryDefinition[] CourseCategories =
     {
-        new("quality-management", "Systémy managementu kvality (ISO 9001)", new[]
+        new("quality-management", "CategoryQualityManagement", new[]
         {
             "Úvod do systému managementu kvality",
             "Manažer kvality (ISO 9001) - certifikační kurz",
@@ -98,18 +107,18 @@ public class IndexModel : PageModel
             "Správce dokumentace",
             "Nápravná opatření a 8D reporty"
         }),
-        new("environmental-management", "Environmentální management (ISO 14001)", new[]
+        new("environmental-management", "CategoryEnvironmentalManagement", new[]
         {
             "Úvod do EMS",
             "Interní auditor EMS (ISO 14001)",
             "Environmentální aspekty a legislativa"
         }),
-        new("integrated-systems", "Integrované systémy", new[]
+        new("integrated-systems", "CategoryIntegratedSystems", new[]
         {
             "Manažer integrovaného systému (ISO 9001, 14001, 45001)",
             "Auditor integrovaného systému"
         }),
-        new("laboratory-accreditation", "Laboratoře - Akreditace (ISO/IEC 17025, ISO 15189)", new[]
+        new("laboratory-accreditation", "CategoryLaboratoryAccreditation", new[]
         {
             "Manažer kvality laboratoře - základní znalosti",
             "Interní auditor zkušební laboratoře",
@@ -117,24 +126,24 @@ public class IndexModel : PageModel
             "Manažer kvality zdravotnické laboratoře",
             "Validace a verifikace metod"
         }),
-        new("occupational-safety", "BOZP (ISO 45001)", new[]
+        new("occupational-safety", "CategoryOccupationalSafety", new[]
         {
             "Úvod do systému managementu BOZP",
             "Interní auditor BOZP (ISO 45001)",
             "Management rizik BOZP"
         }),
-        new("information-security", "Informační bezpečnost (ISO 27001)", new[]
+        new("information-security", "CategoryInformationSecurity", new[]
         {
             "Úvod do ISMS",
             "Interní auditor ISMS (ISO 27001)",
             "GDPR a ISO 27001"
         }),
-        new("automotive", "Automotive (IATF 16949)", new[]
+        new("automotive", "CategoryAutomotive", new[]
         {
             "Core Tools (APQP, PPAP, FMEA, MSA, SPC)",
             "Manažer kvality v automotive"
         }),
-        new("soft-skills", "Soft skills", new[]
+        new("soft-skills", "CategorySoftSkills", new[]
         {
             "Vedení lidí a leadership",
             "Time management",
@@ -203,11 +212,11 @@ public class IndexModel : PageModel
         CityOptions = cityOptions;
 
         LevelOptions = Enum.GetValues<CourseLevel>()
-            .Select(level => new EnumOption(level.ToString(), level.ToString()))
+            .Select(level => new EnumOption(level.ToString(), _localizer[$"CourseLevel_{level}"].Value))
             .ToList();
 
         TypeOptions = Enum.GetValues<CourseType>()
-            .Select(type => new EnumOption(type.ToString(), type.ToString()))
+            .Select(type => new EnumOption(type.ToString(), _localizer[$"CourseType_{type}"].Value))
             .ToList();
 
         SelectedTagIds = SelectedTagIds
@@ -244,7 +253,7 @@ public class IndexModel : PageModel
             .Select(category =>
             {
                 var count = category.TitleSet.Count(title => activeTitleSet.Contains(title));
-                return new CategoryOption(category.Id, category.Name, count);
+                return new CategoryOption(category.Id, _localizer[category.NameResourceKey].Value, count);
             })
             .ToList();
 
@@ -517,7 +526,7 @@ public class IndexModel : PageModel
 
     public record CategoryOption(string Id, string Name, int Count);
 
-    private sealed record CourseCategoryDefinition(string Id, string Name, IReadOnlyCollection<string> Titles)
+    private sealed record CourseCategoryDefinition(string Id, string NameResourceKey, IReadOnlyCollection<string> Titles)
     {
         public HashSet<string> TitleSet { get; } = Titles
             .Where(title => !string.IsNullOrWhiteSpace(title))

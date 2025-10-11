@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.IO;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using SysJaky_N.Data;
 using SysJaky_N.Models;
 using SysJaky_N.Services;
@@ -15,12 +16,20 @@ public class DeleteModel : PageModel
     private readonly ApplicationDbContext _context;
     private readonly ICourseMediaStorage _courseMediaStorage;
     private readonly ICacheService _cacheService;
+    private readonly IStringLocalizer<DeleteModel> _localizer;
 
-    public DeleteModel(ApplicationDbContext context, ICourseMediaStorage courseMediaStorage, ICacheService cacheService)
+    public IStringLocalizer<DeleteModel> Localizer => _localizer;
+
+    public DeleteModel(
+        ApplicationDbContext context,
+        ICourseMediaStorage courseMediaStorage,
+        ICacheService cacheService,
+        IStringLocalizer<DeleteModel> localizer)
     {
         _context = context;
         _courseMediaStorage = courseMediaStorage;
         _cacheService = cacheService;
+        _localizer = localizer;
     }
 
     [BindProperty]
