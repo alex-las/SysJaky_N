@@ -1,3 +1,7 @@
+:root {
+  --nav-offset: 4.25rem;
+}
+
 .app-body {
   min-height: 100vh;
   display: flex;
@@ -44,7 +48,10 @@
 #mainNav .nav-inner {
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
   gap: 1.5rem;
+  width: 100%;
 }
 
 #mainNav .nav-brand-group {
@@ -115,7 +122,10 @@
   margin-left: auto;
   display: flex;
   align-items: center;
+  justify-content: flex-end;
   gap: 0.75rem;
+  row-gap: 0.5rem;
+  flex-wrap: wrap;
 }
 
 #mainNav .nav-action-group > * {
@@ -173,7 +183,11 @@
 }
 
 .app-content {
-  padding-top: clamp(5.5rem, 12vw, 6.75rem);
+  padding-top: clamp(
+    var(--nav-offset, 4.25rem),
+    calc(var(--nav-offset, 4.25rem) + env(safe-area-inset-top, 0px)),
+    calc(var(--nav-offset, 4.25rem) + 1.5rem)
+  );
 }
 
 .site-footer {

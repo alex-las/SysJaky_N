@@ -3,7 +3,6 @@
 @using Microsoft.Extensions.Localization
 @using SysJaky_N.Extensions
 @using SysJaky_N.Resources
-@inject Microsoft.Extensions.Localization.IStringLocalizer<SysJaky_N.Resources.SharedResource> T
 @inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
 @{
     var requestCulture = Context.Features.Get<IRequestCultureFeature>();
@@ -34,7 +33,7 @@
     <a href="#main-content" class="visually-hidden-focusable">@Localizer["SkipToContent"]</a>
     <header role="banner" class="site-header">
         <nav id="mainNav" class="navbar navbar-expand-lg main-navigation fixed-top" role="navigation" aria-label='@Localizer["PrimaryNavigation"]'>
-            <div class="container-xxl nav-inner align-items-center">
+            <div class="container-fluid nav-inner align-items-center">
                 <div class="nav-brand-group d-flex align-items-center gap-3">
                     <a class="navbar-brand d-inline-flex align-items-center gap-2" asp-area="" asp-page="/Index">
                         <span class="brand-icon" aria-hidden="true"><i class="bi bi-award-fill"></i></span>
@@ -42,11 +41,11 @@
                     </a>
                 </div>
                 <div class="nav-pill-group d-none d-lg-flex align-items-center gap-2 ms-4" role="presentation">
-                    <a class="nav-link nav-link-pill @(currentPage == "/Index" ? "active" : string.Empty)" asp-area="" asp-page="/Index" aria-current="@(currentPage == "/Index" ? "page" : null)">@T["NavHome"]</a>
-                    <a class="nav-link nav-link-pill @(currentPage == "/About" ? "active" : string.Empty)" asp-area="" asp-page="/About" aria-current="@(currentPage == "/About" ? "page" : null)">@T["NavAbout"]</a>
-                    <a class="nav-link nav-link-pill @(currentPage == "/Services" ? "active" : string.Empty)" asp-area="" asp-page="/Services" aria-current="@(currentPage == "/Services" ? "page" : null)">@T["NavServices"]</a>
-                    <a class="nav-link nav-link-pill @(currentPage == "/Courses/Index" ? "active" : string.Empty)" asp-area="" asp-page="/Courses/Index" aria-current="@(currentPage == "/Courses/Index" ? "page" : null)">@T["NavCourses"]</a>
-                    <a class="nav-link nav-link-pill @(currentPage == "/Articles/Index" ? "active" : string.Empty)" asp-area="" asp-page="/Articles/Index" aria-current="@(currentPage == "/Articles/Index" ? "page" : null)">@T["NavArticles"]</a>
+                    <a class="nav-link nav-link-pill @(currentPage == "/Index" ? "active" : string.Empty)" asp-area="" asp-page="/Index" aria-current="@(currentPage == "/Index" ? "page" : null)">@Localizer["NavHome"]</a>
+                    <a class="nav-link nav-link-pill @(currentPage == "/About" ? "active" : string.Empty)" asp-area="" asp-page="/About" aria-current="@(currentPage == "/About" ? "page" : null)">@Localizer["NavAbout"]</a>
+                    <a class="nav-link nav-link-pill @(currentPage == "/Services" ? "active" : string.Empty)" asp-area="" asp-page="/Services" aria-current="@(currentPage == "/Services" ? "page" : null)">@Localizer["NavServices"]</a>
+                    <a class="nav-link nav-link-pill @(currentPage == "/Courses/Index" ? "active" : string.Empty)" asp-area="" asp-page="/Courses/Index" aria-current="@(currentPage == "/Courses/Index" ? "page" : null)">@Localizer["NavCourses"]</a>
+                    <a class="nav-link nav-link-pill @(currentPage == "/Articles/Index" ? "active" : string.Empty)" asp-area="" asp-page="/Articles/Index" aria-current="@(currentPage == "/Articles/Index" ? "page" : null)">@Localizer["NavArticles"]</a>
                 </div>
                 <div class="nav-action-group d-none d-lg-flex align-items-center gap-2 ms-auto">
                     @if (canAccessAdmin)
@@ -90,19 +89,19 @@
             <nav class="mobile-nav" aria-label='@Localizer["PrimaryNavigation"]'>
                 <ul class="navbar-nav flex-column gap-2">
                     <li class="nav-item">
-                        <a class="nav-link nav-link-pill @(currentPage == "/Index" ? "active" : string.Empty)" asp-area="" asp-page="/Index" aria-current="@(currentPage == "/Index" ? "page" : null)">@T["NavHome"]</a>
+                        <a class="nav-link nav-link-pill @(currentPage == "/Index" ? "active" : string.Empty)" asp-area="" asp-page="/Index" aria-current="@(currentPage == "/Index" ? "page" : null)">@Localizer["NavHome"]</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link nav-link-pill @(currentPage == "/About" ? "active" : string.Empty)" asp-area="" asp-page="/About" aria-current="@(currentPage == "/About" ? "page" : null)">@T["NavAbout"]</a>
+                        <a class="nav-link nav-link-pill @(currentPage == "/About" ? "active" : string.Empty)" asp-area="" asp-page="/About" aria-current="@(currentPage == "/About" ? "page" : null)">@Localizer["NavAbout"]</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link nav-link-pill @(currentPage == "/Services" ? "active" : string.Empty)" asp-area="" asp-page="/Services" aria-current="@(currentPage == "/Services" ? "page" : null)">@T["NavServices"]</a>
+                        <a class="nav-link nav-link-pill @(currentPage == "/Services" ? "active" : string.Empty)" asp-area="" asp-page="/Services" aria-current="@(currentPage == "/Services" ? "page" : null)">@Localizer["NavServices"]</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link nav-link-pill @(currentPage == "/Courses/Index" ? "active" : string.Empty)" asp-area="" asp-page="/Courses/Index" aria-current="@(currentPage == "/Courses/Index" ? "page" : null)">@T["NavCourses"]</a>
+                        <a class="nav-link nav-link-pill @(currentPage == "/Courses/Index" ? "active" : string.Empty)" asp-area="" asp-page="/Courses/Index" aria-current="@(currentPage == "/Courses/Index" ? "page" : null)">@Localizer["NavCourses"]</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link nav-link-pill @(currentPage == "/Articles/Index" ? "active" : string.Empty)" asp-area="" asp-page="/Articles/Index" aria-current="@(currentPage == "/Articles/Index" ? "page" : null)">@T["NavArticles"]</a>
+                        <a class="nav-link nav-link-pill @(currentPage == "/Articles/Index" ? "active" : string.Empty)" asp-area="" asp-page="/Articles/Index" aria-current="@(currentPage == "/Articles/Index" ? "page" : null)">@Localizer["NavArticles"]</a>
                     </li>
                 </ul>
             </nav>

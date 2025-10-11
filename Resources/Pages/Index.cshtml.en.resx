@@ -127,13 +127,13 @@
     <value>Certificates included with selected courses. Graduates receive official confirmation as auditors / internal auditors.</value>
   </data>
   <data name="TrustGraduates" xml:space="preserve">
-    <value>{0} certified experts</value>
+    <value>Trusted by {0} graduates</value>
   </data>
   <data name="TrustGuarantee" xml:space="preserve">
     <value>We guarantee successful certification or refund your tuition</value>
   </data>
   <data name="TrustRating" xml:space="preserve">
-    <value>Rating {0} certified experts</value>
+    <value>Rated {0} by course participants</value>
   </data>
   <data name="CourseDetailsCTA" xml:space="preserve">
     <value>Course details</value>
@@ -150,11 +150,29 @@
   <data name="TestimonialsHeading" xml:space="preserve">
     <value>What participants say</value>
   </data>
+  <data name="AboutEyebrow" xml:space="preserve">
+    <value>About us</value>
+  </data>
   <data name="AboutHeading" xml:space="preserve">
-    <value>About Systémy jakosti s.r.o.</value>
+    <value>Your trusted partner for ISO and HACCP management systems</value>
+  </data>
+  <data name="AboutDescription" xml:space="preserve">
+    <value>For more than 20 years we have helped manufacturers, laboratories, and healthcare providers design, implement, and maintain certified management systems. Our consultants combine lead auditor know-how with hands-on practice from dozens of industries.</value>
+  </data>
+  <data name="AboutBulletConsulting" xml:space="preserve">
+    <value>End-to-end support from the first gap analysis to a successful certification audit.</value>
+  </data>
+  <data name="AboutBulletTraining" xml:space="preserve">
+    <value>Accredited training for quality managers, auditors, and technical teams.</value>
+  </data>
+  <data name="AboutBulletCare" xml:space="preserve">
+    <value>Long-term care, internal audits, and updates whenever the standards change.</value>
+  </data>
+  <data name="AboutDescription" xml:space="preserve">
+    <value>We guide organizations through the entire ISO 9001, ISO 14001, ISO/IEC 17025, ISO 15189, HACCP, ISO 45001, ISO 27001, IATF 16949, and ISO 13485 lifecycle — from analysis to certification.</value>
   </data>
   <data name="AboutCtaLabel" xml:space="preserve">
-    <value>Learn more about us</value>
+    <value>Discover our story</value>
   </data>
   <data name="ContactCtaHeading" xml:space="preserve">
     <value>Book a free consultation</value>

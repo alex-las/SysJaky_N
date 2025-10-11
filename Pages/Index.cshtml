@@ -172,30 +172,7 @@
         </div>
     </section>
 
-    <section class="section specializations" id="specializations">
-        <header class="section__header" data-reveal>
-            <span class="section__eyebrow">@T["HeroTitle"]</span>
-            <h2>@T["SpecializationsHeading"]</h2>
-            <p>@T["SpecializationsDescription"]</p>
-        </header>
-        <div class="specializations__grid">
-            @foreach (var specialization in specializations)
-            {
-                <article class="specialization-card" data-reveal>
-                    <div class="specialization-card__icon @specialization.IconColorClass" aria-hidden="true">
-                        <i class="@specialization.CardIconClass"></i>
-                    </div>
-                    <div class="specialization-card__body">
-                        <h3>@specialization.Name</h3>
-                        <p>@specialization.Summary</p>
-                    </div>
-                    <span class="specialization-card__cta">
-                        <i class="bi bi-arrow-up-right"></i>
-                    </span>
-                </article>
-            }
-        </div>
-    </section>
+    @await Html.PartialAsync("/Pages/Shared/_SpecializationsSection.cshtml", specializations)
 
     <section class="section courses" id="courses">
         <header class="section__header" data-reveal>
@@ -336,8 +313,23 @@
 
     <section class="section about" id="about">
         <div class="about__card" data-reveal>
+            <span class="about__eyebrow">@T["AboutEyebrow"]</span>
             <h2>@T["AboutHeading"]</h2>
-            <p>@T["HeroSubheading"]</p>
+            <p>@T["AboutDescription"]</p>
+            <ul class="about__list" role="list">
+                <li>
+                    <span class="about__list-icon"><i class="bi bi-check2-circle" aria-hidden="true"></i></span>
+                    <span>@T["AboutBulletConsulting"]</span>
+                </li>
+                <li>
+                    <span class="about__list-icon"><i class="bi bi-mortarboard" aria-hidden="true"></i></span>
+                    <span>@T["AboutBulletTraining"]</span>
+                </li>
+                <li>
+                    <span class="about__list-icon"><i class="bi bi-arrow-repeat" aria-hidden="true"></i></span>
+                    <span>@T["AboutBulletCare"]</span>
+                </li>
+            </ul>
             <a class="btn btn-light hero__cta" href="/About">@T["AboutCtaLabel"]</a>
         </div>
     </section>

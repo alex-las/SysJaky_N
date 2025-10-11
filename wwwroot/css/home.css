@@ -898,6 +898,22 @@
   gap: 1.5rem;
 }
 
+.about__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.9rem;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.15);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.85);
+  margin-inline: auto;
+}
+
 .about__card h2 {
   font-size: clamp(2.4rem, 5vw, 3.2rem);
   font-weight: 700;
@@ -907,6 +923,40 @@
   font-size: 1.15rem;
   line-height: 1.75;
   color: rgba(255, 255, 255, 0.9);
+}
+
+.about__list {
+  display: grid;
+  gap: 0.75rem;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  text-align: left;
+}
+
+.about__list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.about__list-icon {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: rgba(15, 23, 42, 0.18);
+  color: #bbf7d0;
+  flex-shrink: 0;
+  margin-top: 0.15rem;
+}
+
+.about__list-icon i {
+  font-size: 1.1rem;
 }
 
 .contact__grid {
