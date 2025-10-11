@@ -31,11 +31,16 @@
   --color-accent-600: #d89400;
   --color-accent-700: #b87800;
 
+  /* Highlight palette */
+  --color-highlight-300: #fde047;
+  --color-highlight-400: #facc15;
+  --color-highlight-500: #eab308;
+
   /* Semantic palette */
   --color-success-500: #22c55e;
   --color-success-600: #16a34a;
-  --color-warning-500: #f59e0b;
-  --color-warning-600: #d97706;
+  --color-warning-500: var(--color-highlight-500);
+  --color-warning-600: #ca8a04;
   --color-danger-500: #ef4444;
   --color-danger-600: #dc2626;
 
@@ -133,9 +138,15 @@
   --transition-scale: 0.25s cubic-bezier(0.2, 0.6, 0.2, 1);
 
   /* Gradients */
-  --gradient-primary: linear-gradient(135deg, #0b4ae6 0%, #2a74ff 45%, #f7b500 110%);
-  --gradient-hero: radial-gradient(1200px 400px at 50% -120px, rgba(255, 255, 255, 0.12), transparent),
-    linear-gradient(135deg, #0035a8 0%, #2a74ff 45%, #f7b500 110%);
+  --gradient-brand: linear-gradient(
+    135deg,
+    var(--color-primary-600) 0%,
+    color-mix(in oklab, var(--color-primary-600) 60%, var(--color-highlight-400)) 55%,
+    var(--color-highlight-400) 115%
+  );
+  --gradient-brand-horizontal: linear-gradient(90deg, var(--color-primary-600) 0%, var(--color-highlight-400) 100%);
+  --gradient-primary: var(--gradient-brand);
+  --gradient-hero: radial-gradient(1200px 400px at 50% -120px, rgba(255, 255, 255, 0.12), transparent), var(--gradient-brand);
   --gradient-overlay: radial-gradient(circle at top, rgba(255, 255, 255, 0.22), transparent 55%);
 
   /* Navigation glass values */
