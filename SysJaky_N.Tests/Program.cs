@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Hosting;
 using ClosedXML.Excel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -16,6 +17,7 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Routing;
@@ -46,8 +48,8 @@ internal sealed class CourseReminderServiceTester
             ("Course reminders respect different time zones", RunCourseSelectionTestAsync),
             ("Course reminders avoid client-side evaluation warnings", RunClientEvaluationWarningTestAsync),
             ("Analytics dashboard aggregates sales using SQL grouping", RunAnalyticsAggregationTestAsync),
-            ("Analytics export uses localized workbook text", RunAnalyticsExportLocalizationTestAsync),
-            ("Account pages use localized validation and notifications", RunAccountLocalizationTestAsync)
+            ("Account pages use localized validation and notifications", RunAccountLocalizationTestAsync),
+            ("Local course media storage reports localized errors", RunLocalCourseMediaStorageLocalizationTestAsync)
         };
 
         tests.AddRange(AdminLocalizationTester.GetTests());
@@ -684,21 +686,82 @@ internal sealed class CourseReminderServiceTester
         }
     }
 
-    private sealed class FakePushSubscriptionStore : IPushSubscriptionStore
+    private static async Task RunLocalCourseMediaStorageLocalizationTestAsync()
     {
-        public IReadOnlyCollection<PushSubscriptionRecord> Subscriptions { get; set; } = Array.Empty<PushSubscriptionRecord>();
+        var tempRoot = Path.Combine(Path.GetTempPath(), $"local-course-media-{Guid.NewGuid():N}");
+        Directory.CreateDirectory(tempRoot);
 
-        public Task SaveAsync(PushSubscriptionRecord subscription, CancellationToken cancellationToken = default)
-            => Task.CompletedTask;
+        var cultures = new Dictionary<string, (string WebRootMissing, string InvalidFormat)>
+        {
+            ["cs"] = (
+                WebRootMissing: "Kořenový adresář webu není nakonfigurován.",
+                InvalidFormat: "Pro místní úložiště jsou podporovány pouze obálky ve formátu JPEG."),
+            ["en"] = (
+                WebRootMissing: "Web root path is not configured.",
+                InvalidFormat: "Only JPEG cover images are supported for local storage.")
+        };
 
-        public Task<IReadOnlyCollection<PushSubscriptionRecord>> GetAllAsync(CancellationToken cancellationToken = default)
-            => Task.FromResult(Subscriptions);
+        var services = new ServiceCollection();
+        services.AddLogging();
+        services.AddLocalization(options => options.ResourcesPath = "Resources");
 
-        public Task<IReadOnlyCollection<PushSubscriptionRecord>> GetByTopicAsync(string topic, CancellationToken cancellationToken = default)
-            => Task.FromResult(Subscriptions);
+        using var provider = services.BuildServiceProvider();
+        var localizer = provider.GetRequiredService<IStringLocalizer<LocalCourseMediaStorage>>();
 
-        public Task RemoveAsync(string endpoint, CancellationToken cancellationToken = default)
-            => Task.CompletedTask;
+        var originalCulture = CultureInfo.CurrentCulture;
+        var originalUiCulture = CultureInfo.CurrentUICulture;
+
+        try
+        {
+            foreach (var (cultureName, messages) in cultures)
+            {
+                var culture = CultureInfo.GetCultureInfo(cultureName);
+                CultureInfo.CurrentCulture = culture;
+                CultureInfo.CurrentUICulture = culture;
+
+                try
+                {
+                    _ = new LocalCourseMediaStorage(new StubWebHostEnvironment { WebRootPath = null! }, localizer);
+                    throw new InvalidOperationException($"Constructor should throw for missing web root in culture '{cultureName}'.");
+                }
+                catch (InvalidOperationException ex)
+                {
+                    if (!string.Equals(messages.WebRootMissing, ex.Message, StringComparison.Ordinal))
+                    {
+                        throw new InvalidOperationException(
+                            $"Expected '{messages.WebRootMissing}' for culture '{cultureName}' and key 'Error.WebRootMissing', but was '{ex.Message}'.");
+                    }
+                }
+
+                var environment = new StubWebHostEnvironment { WebRootPath = tempRoot };
+                var storage = new LocalCourseMediaStorage(environment, localizer);
+
+                await using var stream = new MemoryStream(new byte[] { 1, 2, 3, 4 });
+                try
+                {
+                    await storage.SaveCoverImageAsync(1, stream, "image/png");
+                    throw new InvalidOperationException($"SaveCoverImageAsync should throw for unsupported format in culture '{cultureName}'.");
+                }
+                catch (InvalidOperationException ex)
+                {
+                    if (!string.Equals(messages.InvalidFormat, ex.Message, StringComparison.Ordinal))
+                    {
+                        throw new InvalidOperationException(
+                            $"Expected '{messages.InvalidFormat}' for culture '{cultureName}' and key 'Error.InvalidFormat', but was '{ex.Message}'.");
+                    }
+                }
+            }
+        }
+        finally
+        {
+            CultureInfo.CurrentCulture = originalCulture;
+            CultureInfo.CurrentUICulture = originalUiCulture;
+
+            if (Directory.Exists(tempRoot))
+            {
+                Directory.Delete(tempRoot, recursive: true);
+            }
+        }
     }
 
     private static async Task SeedCoursesForSelectionTestAsync(IServiceProvider provider)
@@ -1043,6 +1106,22 @@ internal sealed class CourseReminderServiceTester
         }
 
         public override DateTimeOffset GetUtcNow() => _utcNow;
+    }
+
+    private sealed class StubWebHostEnvironment : IWebHostEnvironment
+    {
+        public string ApplicationName { get; set; } = "TestHost";
+
+        public IFileProvider WebRootFileProvider { get; set; } = new NullFileProvider();
+
+        public string WebRootPath { get; set; }
+            = Path.Combine(Path.GetTempPath(), "stub-web-root");
+
+        public string EnvironmentName { get; set; } = "Development";
+
+        public string ContentRootPath { get; set; } = Path.GetTempPath();
+
+        public IFileProvider ContentRootFileProvider { get; set; } = new NullFileProvider();
     }
 
     private sealed class TestableCourseReminderService : CourseReminderService
