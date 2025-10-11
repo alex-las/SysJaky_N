@@ -177,30 +177,7 @@
         </div>
     </section>
 
-    <section class="section specializations" id="specializations">
-        <header class="section__header" data-reveal>
-            <span class="section__eyebrow">@T["HeroTitle"]</span>
-            <h2>@T["SpecializationsHeading"]</h2>
-            <p>@T["SpecializationsDescription"]</p>
-        </header>
-        <div class="specializations__grid">
-            @foreach (var specialization in specializations)
-            {
-                <article class="specialization-card" data-reveal>
-                    <div class="specialization-card__icon @specialization.IconColorClass" aria-hidden="true">
-                        <i class="@specialization.CardIconClass"></i>
-                    </div>
-                    <div class="specialization-card__body">
-                        <h3>@specialization.Name</h3>
-                        <p>@specialization.Summary</p>
-                    </div>
-                    <span class="specialization-card__cta">
-                        <i class="bi bi-arrow-up-right"></i>
-                    </span>
-                </article>
-            }
-        </div>
-    </section>
+    @await Html.PartialAsync("/Pages/Shared/_SpecializationsSection.cshtml", specializations)
 
     <section class="section courses" id="courses">
         <header class="section__header" data-reveal>
