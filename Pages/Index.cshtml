@@ -1,11 +1,37 @@
 @page
+@using System.Linq
 @model IndexModel
 @inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer T
 @inject SysJaky_N.Services.IsoStandards.IIsoSpecializationMetadataProvider IsoMetadataProvider
-@{
+@{ 
     ViewData["Title"] = T["Title"];
 
     var specializations = IsoMetadataProvider.GetAll();
+
+    var heroMediaSources = new Dictionary<string, string>
+    {
+        ["ISO9001"] = Url.Content("~/img/articles/iso9001-preparation.svg"),
+        ["ISO14001"] = Url.Content("~/img/articles/process-management.svg"),
+        ["ISOIEC17025"] = Url.Content("~/img/articles/internal-audit.svg"),
+        ["ISO27001"] = Url.Content("~/img/articles/cert-vs-accred.svg"),
+        ["ISO45001"] = Url.Content("~/img/articles/automotive-iso.svg")
+    };
+
+    var heroMedia = specializations
+        .Where(item => heroMediaSources.ContainsKey(item.Key))
+        .Take(3)
+        .Select((item, index) => new
+        {
+            item.Name,
+            Image = heroMediaSources[item.Key],
+            Accent = index switch
+            {
+                0 => "primary",
+                1 => "secondary",
+                _ => "tertiary"
+            }
+        })
+        .ToList();
 }
 
 @section Head {
@@ -54,6 +80,18 @@
             </div>
 
             <aside class="landing-hero__panel" aria-label="@T["HeroSearchLabel"]">
+                @if (heroMedia.Any())
+                {
+                    <div class="landing-hero__media" aria-hidden="true">
+                        @foreach (var media in heroMedia)
+                        {
+                            <figure class="media-tile media-tile--@media.Accent">
+                                <img src="@media.Image" alt="" loading="lazy" decoding="async" />
+                                <figcaption>@media.Name</figcaption>
+                            </figure>
+                        }
+                    </div>
+                }
                 <div class="certificate-card">
                     <div class="certificate-card__header">
                         <div class="certificate-card__badge">
