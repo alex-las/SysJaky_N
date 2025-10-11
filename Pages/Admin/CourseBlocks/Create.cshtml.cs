@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using SysJaky_N.Data;
 using SysJaky_N.Models;
 
@@ -12,6 +13,8 @@ public class CreateModel : PageModel
 {
     private readonly ApplicationDbContext _context;
 
+    protected IStringLocalizer<CreateModel> Localizer { get; }
+
     [BindProperty]
     public CourseBlock CourseBlock { get; set; } = new();
 
@@ -20,9 +23,10 @@ public class CreateModel : PageModel
 
     public IList<Course> AvailableCourses { get; set; } = new List<Course>();
 
-    public CreateModel(ApplicationDbContext context)
+    public CreateModel(ApplicationDbContext context, IStringLocalizer<CreateModel> localizer)
     {
         _context = context;
+        Localizer = localizer;
     }
 
     public async Task<IActionResult> OnGetAsync()
@@ -46,6 +50,6 @@ public class CreateModel : PageModel
             course.CourseBlockId = CourseBlock.Id;
         }
         await _context.SaveChangesAsync();
-        return RedirectToPage("Index");
+        return RedirectToPage(Localizer["IndexPageName"]);
     }
 }

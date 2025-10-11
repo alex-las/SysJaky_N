@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using SysJaky_N.Data;
 using SysJaky_N.Models;
 
@@ -12,6 +13,8 @@ public class EditModel : PageModel
 {
     private readonly ApplicationDbContext _context;
 
+    private readonly IStringLocalizer<EditModel> _localizer;
+
     [BindProperty]
     public CourseBlock CourseBlock { get; set; } = default!;
 
@@ -20,9 +23,10 @@ public class EditModel : PageModel
 
     public IList<Course> AvailableCourses { get; set; } = new List<Course>();
 
-    public EditModel(ApplicationDbContext context)
+    public EditModel(ApplicationDbContext context, IStringLocalizer<EditModel> localizer)
     {
         _context = context;
+        _localizer = localizer;
     }
 
     public async Task<IActionResult> OnGetAsync(int id)
@@ -30,7 +34,7 @@ public class EditModel : PageModel
         var block = await _context.CourseBlocks
             .Include(b => b.Modules)
             .FirstOrDefaultAsync(m => m.Id == id);
-        if (block == null) return NotFound();
+        if (block == null) return NotFound(_localizer["CourseBlockNotFound"]);
         CourseBlock = block;
         SelectedCourseIds = block.Modules.Select(m => m.Id).ToList();
         AvailableCourses = await _context.Courses.ToListAsync();
@@ -42,7 +46,7 @@ public class EditModel : PageModel
         var block = await _context.CourseBlocks
             .Include(b => b.Modules)
             .FirstOrDefaultAsync(m => m.Id == id);
-        if (block == null) return NotFound();
+        if (block == null) return NotFound(_localizer["CourseBlockNotFound"]);
         AvailableCourses = await _context.Courses.ToListAsync();
         if (!ModelState.IsValid)
         {
@@ -62,6 +66,6 @@ public class EditModel : PageModel
             course.CourseBlockId = block.Id;
         }
         await _context.SaveChangesAsync();
-        return RedirectToPage("Index");
+        return RedirectToPage(_localizer["IndexPageName"]);
     }
 }

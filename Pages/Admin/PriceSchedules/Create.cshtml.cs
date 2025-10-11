@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using SysJaky_N.Data;
 using SysJaky_N.Models;
 
@@ -15,9 +16,12 @@ public class CreateModel : PageModel
 {
     private readonly ApplicationDbContext _context;
 
-    public CreateModel(ApplicationDbContext context)
+    private readonly IStringLocalizer<CreateModel> _localizer;
+
+    public CreateModel(ApplicationDbContext context, IStringLocalizer<CreateModel> localizer)
     {
         _context = context;
+        _localizer = localizer;
     }
 
     [BindProperty]
@@ -41,7 +45,7 @@ public class CreateModel : PageModel
 
         if (toUtc <= fromUtc)
         {
-            ModelState.AddModelError("PriceSchedule.ToUtc", "Koncový čas musí následovat po začátku.");
+            ModelState.AddModelError("PriceSchedule.ToUtc", _localizer["EndTimeMustFollowStart"]);
         }
 
         if (!ModelState.IsValid)
@@ -54,7 +58,7 @@ public class CreateModel : PageModel
 
         _context.PriceSchedules.Add(PriceSchedule);
         await _context.SaveChangesAsync();
-        return RedirectToPage("Index");
+        return RedirectToPage(_localizer["IndexPageName"]);
     }
 
     private async Task LoadCoursesAsync()

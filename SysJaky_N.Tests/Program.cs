@@ -1,6 +1,5 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
@@ -37,7 +36,7 @@ internal sealed class CourseReminderServiceTester
 {
     public async Task<int> RunAsync()
     {
-        var tests = new (string Name, Func<Task> Execute)[]
+        var tests = new List<(string Name, Func<Task> Execute)>
         {
             ("Page model localizers resolve resources", RunPageModelLocalizationTestAsync),
             ("Course reminders respect different time zones", RunCourseSelectionTestAsync),
@@ -45,6 +44,8 @@ internal sealed class CourseReminderServiceTester
             ("Analytics dashboard aggregates sales using SQL grouping", RunAnalyticsAggregationTestAsync),
             ("Account pages use localized validation and notifications", RunAccountLocalizationTestAsync)
         };
+
+        tests.AddRange(AdminLocalizationTester.GetTests());
 
         var success = true;
         foreach (var (name, execute) in tests)
