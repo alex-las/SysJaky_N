@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using SysJaky_N.Data;
 using SysJaky_N.EmailTemplates.Models;
@@ -21,18 +22,21 @@ public class CreateModel : PageModel
     private readonly ApplicationDbContext _context;
     private readonly IEmailSender _emailSender;
     private readonly ILogger<CreateModel> _logger;
+    private readonly IStringLocalizer<CreateModel> _localizer;
     private readonly ICacheService _cacheService;
 
     public CreateModel(
         ApplicationDbContext context,
         IEmailSender emailSender,
         ILogger<CreateModel> logger,
-        ICacheService cacheService)
+        ICacheService cacheService,
+        IStringLocalizer<CreateModel> localizer)
     {
         _context = context;
         _emailSender = emailSender;
         _logger = logger;
         _cacheService = cacheService;
+        _localizer = localizer;
         Input.StartUtc = DateTime.UtcNow.ToLocalTime();
         Input.EndUtc = Input.StartUtc.AddHours(1);
     }
@@ -46,12 +50,14 @@ public class CreateModel : PageModel
 
     public async Task<IActionResult> OnGetAsync()
     {
+        ViewData["Title"] = _localizer["Title"];
         await LoadSelectListsAsync();
         return Page();
     }
 
     public async Task<IActionResult> OnPostAsync()
     {
+        ViewData["Title"] = _localizer["Title"];
         await LoadSelectListsAsync();
 
         var startUtc = DateTime.SpecifyKind(Input.StartUtc, DateTimeKind.Local).ToUniversalTime();
@@ -59,7 +65,7 @@ public class CreateModel : PageModel
 
         if (endUtc <= startUtc)
         {
-            ModelState.AddModelError("Input.EndUtc", "Koncový čas musí následovat po začátku.");
+            ModelState.AddModelError("Input.EndUtc", _localizer["ErrorEndUtcBeforeStart"].Value);
         }
 
         if (!ModelState.IsValid)
@@ -73,7 +79,7 @@ public class CreateModel : PageModel
 
         if (course == null)
         {
-            ModelState.AddModelError("Input.CourseId", "Zvolený kurz nebyl nalezen.");
+            ModelState.AddModelError("Input.CourseId", _localizer["ErrorCourseNotFound"].Value);
             return Page();
         }
 
@@ -112,7 +118,7 @@ public class CreateModel : PageModel
         if (wishlistedUsers.Count == 0)
         {
             _logger.LogInformation(
-                "Žádní uživatelé ve wishlistu pro kurz {CourseId}, oznámení nebudou odeslána.",
+                _localizer["LogNoWishlistUsers"],
                 course.Id);
             return;
         }
@@ -129,15 +135,17 @@ public class CreateModel : PageModel
         {
             detailUrl = $"/CourseTerms/Details/{term.Id}";
             _logger.LogWarning(
-                "Nepodařilo se vygenerovat absolutní odkaz na termín {TermId}. Používám relativní cestu {Url}.",
+                _localizer["LogRelativeDetailUrl"],
                 term.Id,
                 detailUrl);
         }
 
-        var courseTitle = string.IsNullOrWhiteSpace(course.Title) ? $"Kurz {course.Id}" : course.Title;
+        var courseTitle = string.IsNullOrWhiteSpace(course.Title)
+            ? _localizer["CourseFallback", course.Id].Value
+            : course.Title;
 
         _logger.LogInformation(
-            "Odesílám oznámení o novém termínu {TermId} ({CourseTitle}) {RecipientCount} uživatelům.",
+            _localizer["LogSendingNotification"],
             term.Id,
             courseTitle,
             wishlistedUsers.Count);
@@ -164,7 +172,7 @@ public class CreateModel : PageModel
             {
                 _logger.LogError(
                     ex,
-                    "Odeslání oznámení o termínu {TermId} uživateli {Email} selhalo.",
+                    _localizer["LogSendEmailFailed"],
                     term.Id,
                     email);
             }
@@ -187,7 +195,7 @@ public class CreateModel : PageModel
 
         InstructorOptions = new List<SelectListItem>
         {
-            new("Nepřiřazeno", string.Empty, Input.InstructorId == null)
+            new(_localizer["SelectOptionUnassigned"].Value, string.Empty, Input.InstructorId == null)
         };
         InstructorOptions.AddRange(instructorItems);
     }

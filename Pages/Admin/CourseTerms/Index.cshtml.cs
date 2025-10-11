@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using ClosedXML.Excel;
 using SysJaky_N.Data;
 using SysJaky_N.Models;
@@ -23,11 +24,13 @@ public class IndexModel : PageModel
 {
     private readonly ApplicationDbContext _context;
     private readonly ICacheService _cacheService;
+    private readonly IStringLocalizer<IndexModel> _localizer;
 
-    public IndexModel(ApplicationDbContext context, ICacheService cacheService)
+    public IndexModel(ApplicationDbContext context, ICacheService cacheService, IStringLocalizer<IndexModel> localizer)
     {
         _context = context;
         _cacheService = cacheService;
+        _localizer = localizer;
     }
 
     public IList<CourseTerm> Terms { get; private set; } = new List<CourseTerm>();
@@ -51,11 +54,13 @@ public class IndexModel : PageModel
 
     public async Task OnGetAsync()
     {
+        ViewData["Title"] = _localizer["Title"];
         await LoadPageDataAsync();
     }
 
     public async Task<IActionResult> OnPostExportEnrollmentsAsync(int id)
     {
+        ViewData["Title"] = _localizer["Title"];
         var term = await _context.CourseTerms
             .AsNoTracking()
             .Include(t => t.Course)
@@ -69,20 +74,20 @@ public class IndexModel : PageModel
         }
 
         using var workbook = new XLWorkbook();
-        var worksheet = workbook.Worksheets.Add("Enrollments");
+        var worksheet = workbook.Worksheets.Add(_localizer["WorksheetEnrollments"].Value);
 
         var headers = new[]
         {
-            "EnrollmentId",
-            "Status",
-            "UserId",
-            "UserEmail",
-            "UserName",
-            "UserPhoneNumber",
-            "CourseTermId",
-            "CourseTitle",
-            "Start (UTC)",
-            "End (UTC)"
+            _localizer["HeaderEnrollmentId"].Value,
+            _localizer["HeaderStatus"].Value,
+            _localizer["HeaderUserId"].Value,
+            _localizer["HeaderUserEmail"].Value,
+            _localizer["HeaderUserName"].Value,
+            _localizer["HeaderUserPhoneNumber"].Value,
+            _localizer["HeaderCourseTermId"].Value,
+            _localizer["HeaderCourseTitle"].Value,
+            _localizer["HeaderStartUtc"].Value,
+            _localizer["HeaderEndUtc"].Value
         };
 
         for (var column = 0; column < headers.Length; column++)
@@ -108,7 +113,7 @@ public class IndexModel : PageModel
             worksheet.Cell(row, 5).Value = enrollment.User?.UserName;
             worksheet.Cell(row, 6).Value = enrollment.User?.PhoneNumber;
             worksheet.Cell(row, 7).Value = term.Id;
-            worksheet.Cell(row, 8).Value = term.Course?.Title ?? $"Course {term.CourseId}";
+            worksheet.Cell(row, 8).Value = term.Course?.Title ?? _localizer["CourseTitleFallback", term.CourseId].Value;
 
             var startUtc = EnsureUtc(term.StartUtc);
             var endUtc = EnsureUtc(term.EndUtc);
@@ -122,9 +127,9 @@ public class IndexModel : PageModel
 
         worksheet.Columns().AdjustToContents();
 
-        var courseTitle = term.Course?.Title ?? $"Kurz_{term.CourseId}";
+        var courseTitle = term.Course?.Title ?? _localizer["CourseFileNameFallback", term.CourseId].Value;
         var safeCourseTitle = SanitizeForFileName(courseTitle);
-        var fileName = $"{safeCourseTitle}_term_{term.Id}_enrollments.xlsx";
+        var fileName = _localizer["FileNameExportPattern", safeCourseTitle, term.Id].Value;
         using var exportStream = new MemoryStream();
         workbook.SaveAs(exportStream);
 
@@ -133,18 +138,19 @@ public class IndexModel : PageModel
 
     public async Task<IActionResult> OnPostImportAsync()
     {
+        ViewData["Title"] = _localizer["Title"];
         if (ImportFile == null || ImportFile.Length == 0)
         {
-            ModelState.AddModelError(nameof(ImportFile), "Vyberte XLSX soubor pro import.");
-            ErrorMessage = "Import se nezdařil. Zkontrolujte zvýrazněné problémy.";
+            ModelState.AddModelError(nameof(ImportFile), _localizer["ErrorImportFileRequired"].Value);
+            ErrorMessage = _localizer["ErrorImportGeneral"].Value;
             await LoadPageDataAsync();
             return Page();
         }
 
         if (!string.Equals(Path.GetExtension(ImportFile.FileName), ".xlsx", StringComparison.OrdinalIgnoreCase))
         {
-            ModelState.AddModelError(nameof(ImportFile), "Podporovány jsou pouze soubory XLSX.");
-            ErrorMessage = "Import se nezdařil. Zkontrolujte zvýrazněné problémy.";
+            ModelState.AddModelError(nameof(ImportFile), _localizer["ErrorImportInvalidExtension"].Value);
+            ErrorMessage = _localizer["ErrorImportGeneral"].Value;
             await LoadPageDataAsync();
             return Page();
         }
@@ -163,8 +169,8 @@ public class IndexModel : PageModel
             var usedRange = worksheet?.RangeUsed();
             if (worksheet == null || usedRange == null)
             {
-                ModelState.AddModelError(nameof(ImportFile), "Nahraný soubor neobsahuje žádná data.");
-                ErrorMessage = "Import se nezdařil. Zkontrolujte zvýrazněné problémy.";
+                ModelState.AddModelError(nameof(ImportFile), _localizer["ErrorImportEmpty"].Value);
+                ErrorMessage = _localizer["ErrorImportGeneral"].Value;
                 await LoadPageDataAsync();
                 return Page();
             }
@@ -175,13 +181,13 @@ public class IndexModel : PageModel
             {
                 if (!headerMap.ContainsKey(header))
                 {
-                    ModelState.AddModelError(nameof(ImportFile), $"Chybí povinný sloupec '{header}'.");
+                    ModelState.AddModelError(nameof(ImportFile), _localizer["ErrorMissingRequiredColumn", header].Value);
                 }
             }
 
             if (!ModelState.IsValid)
             {
-                ErrorMessage = "Import se nezdařil. Zkontrolujte zvýrazněné problémy.";
+                ErrorMessage = _localizer["ErrorImportGeneral"].Value;
                 await LoadPageDataAsync();
                 return Page();
             }
@@ -201,13 +207,13 @@ public class IndexModel : PageModel
                 {
                     if (!TryGetNullableInt(worksheet.Cell(row, idColumn), out id))
                     {
-                        rowErrors.Add("Neplatná hodnota ve sloupci Id.");
+                        rowErrors.Add(_localizer["ErrorIdInvalid"].Value);
                     }
                 }
 
                 if (!TryGetInt(worksheet.Cell(row, headerMap["CourseId"]), out var courseId))
                 {
-                    rowErrors.Add("CourseId je povinný a musí být číslo.");
+                    rowErrors.Add(_localizer["ErrorCourseIdRequired"].Value);
                 }
                 else
                 {
@@ -216,21 +222,21 @@ public class IndexModel : PageModel
 
                 if (!TryGetDateTime(worksheet.Cell(row, headerMap["StartUtc"]), out var startUtc))
                 {
-                    rowErrors.Add("StartUtc je povinný a musí být platné datum a čas.");
+                    rowErrors.Add(_localizer["ErrorStartUtcRequired"].Value);
                 }
 
                 if (!TryGetDateTime(worksheet.Cell(row, headerMap["EndUtc"]), out var endUtc))
                 {
-                    rowErrors.Add("EndUtc je povinný a musí být platné datum a čas.");
+                    rowErrors.Add(_localizer["ErrorEndUtcRequired"].Value);
                 }
 
                 if (!TryGetInt(worksheet.Cell(row, headerMap["Capacity"]), out var capacity))
                 {
-                    rowErrors.Add("Capacity je povinná a musí být číslo.");
+                    rowErrors.Add(_localizer["ErrorCapacityRequired"].Value);
                 }
                 else if (capacity < 1)
                 {
-                    rowErrors.Add("Kapacita musí být alespoň 1.");
+                    rowErrors.Add(_localizer["ErrorCapacityMinimum"].Value);
                 }
 
                 bool? isActive = null;
@@ -238,7 +244,7 @@ public class IndexModel : PageModel
                 {
                     if (!TryGetNullableBool(worksheet.Cell(row, isActiveColumn), out isActive))
                     {
-                        rowErrors.Add("IsActive musí být logická hodnota.");
+                        rowErrors.Add(_localizer["ErrorIsActiveBoolean"].Value);
                     }
                 }
 
@@ -247,7 +253,7 @@ public class IndexModel : PageModel
                 {
                     if (!TryGetNullableInt(worksheet.Cell(row, instructorColumn), out instructorId))
                     {
-                        rowErrors.Add("InstructorId musí být číslo.");
+                        rowErrors.Add(_localizer["ErrorInstructorIdNumber"].Value);
                     }
                     else if (instructorId.HasValue)
                     {
@@ -257,12 +263,14 @@ public class IndexModel : PageModel
 
                 if (!rowErrors.Any() && EnsureUtc(startUtc) >= EnsureUtc(endUtc))
                 {
-                    rowErrors.Add("StartUtc musí být dříve než EndUtc.");
+                    rowErrors.Add(_localizer["ErrorStartBeforeEnd"].Value);
                 }
 
                 if (rowErrors.Count > 0)
                 {
-                    ModelState.AddModelError(nameof(ImportFile), $"Row {row}: {string.Join(" ", rowErrors)}");
+                    ModelState.AddModelError(
+                        nameof(ImportFile),
+                        _localizer["ErrorRowSummary", row, string.Join(" ", rowErrors)].Value);
                     continue;
                 }
 
@@ -282,14 +290,14 @@ public class IndexModel : PageModel
 
         if (!ModelState.IsValid)
         {
-            ErrorMessage = "Import se nezdařil. Zkontrolujte zvýrazněné problémy.";
+            ErrorMessage = _localizer["ErrorImportGeneral"].Value;
             await LoadPageDataAsync();
             return Page();
         }
 
         if (parsedRows.Count == 0)
         {
-            StatusMessage = "V nahraném souboru nebyly nalezeny žádné termíny.";
+            StatusMessage = _localizer["StatusNoTermsFound"].Value;
             return RedirectToPage(new { CourseId, OnlyActive });
         }
 
@@ -300,7 +308,7 @@ public class IndexModel : PageModel
 
         foreach (var missingCourseId in courseIds.Except(existingCourseIds))
         {
-            ModelState.AddModelError(nameof(ImportFile), $"Kurz s ID {missingCourseId} neexistuje.");
+            ModelState.AddModelError(nameof(ImportFile), _localizer["ErrorCourseNotFound", missingCourseId].Value);
         }
 
         if (instructorIds.Count > 0)
@@ -312,13 +320,13 @@ public class IndexModel : PageModel
 
             foreach (var missingInstructorId in instructorIds.Except(existingInstructorIds))
             {
-                ModelState.AddModelError(nameof(ImportFile), $"Lektor s ID {missingInstructorId} neexistuje.");
+                ModelState.AddModelError(nameof(ImportFile), _localizer["ErrorInstructorNotFound", missingInstructorId].Value);
             }
         }
 
         if (!ModelState.IsValid)
         {
-            ErrorMessage = "Import se nezdařil. Zkontrolujte zvýrazněné problémy.";
+            ErrorMessage = _localizer["ErrorImportGeneral"].Value;
             await LoadPageDataAsync();
             return Page();
         }
@@ -335,12 +343,12 @@ public class IndexModel : PageModel
 
             foreach (var missingTermId in termIds.Except(termsToUpdate.Keys))
             {
-                ModelState.AddModelError(nameof(ImportFile), $"Termín s ID {missingTermId} neexistuje.");
+                ModelState.AddModelError(nameof(ImportFile), _localizer["ErrorTermNotFound", missingTermId].Value);
             }
 
             if (!ModelState.IsValid)
             {
-                ErrorMessage = "Import se nezdařil. Zkontrolujte zvýrazněné problémy.";
+                ErrorMessage = _localizer["ErrorImportGeneral"].Value;
                 await LoadPageDataAsync();
                 return Page();
             }
@@ -359,7 +367,9 @@ public class IndexModel : PageModel
                 term = termsToUpdate[row.Id.Value];
                 if (term.SeatsTaken > row.Capacity)
                 {
-                    ModelState.AddModelError(nameof(ImportFile), $"Řádek {row.RowNumber}: Kapacita {row.Capacity} je menší než aktuálně obsazená místa ({term.SeatsTaken}).");
+                    ModelState.AddModelError(
+                        nameof(ImportFile),
+                        _localizer["ErrorRowCapacityLessThanSeats", row.RowNumber, row.Capacity, term.SeatsTaken].Value);
                     continue;
                 }
 
@@ -397,7 +407,7 @@ public class IndexModel : PageModel
 
         if (!ModelState.IsValid)
         {
-            ErrorMessage = "Import se nezdařil. Zkontrolujte zvýrazněné problémy.";
+            ErrorMessage = _localizer["ErrorImportGeneral"].Value;
             await LoadPageDataAsync();
             return Page();
         }
@@ -410,7 +420,7 @@ public class IndexModel : PageModel
             _cacheService.InvalidateCourseDetail(courseId);
         }
 
-        StatusMessage = $"Importováno {created} nových termínů a aktualizováno {updated} stávajících termínů.";
+        StatusMessage = _localizer["StatusImportSummary", created, updated].Value;
         return RedirectToPage(new { CourseId, OnlyActive });
     }
 
@@ -673,7 +683,7 @@ public class IndexModel : PageModel
         };
     }
 
-    private static string SanitizeForFileName(string input)
+    private string SanitizeForFileName(string input)
     {
         var invalidChars = Path.GetInvalidFileNameChars();
         var builder = new StringBuilder(input.Length);
@@ -684,7 +694,7 @@ public class IndexModel : PageModel
         }
 
         var sanitized = builder.ToString();
-        return string.IsNullOrWhiteSpace(sanitized) ? "course" : sanitized;
+        return string.IsNullOrWhiteSpace(sanitized) ? _localizer["FileNameCourseFallback"].Value : sanitized;
     }
 
     private sealed class CourseTermImportRow

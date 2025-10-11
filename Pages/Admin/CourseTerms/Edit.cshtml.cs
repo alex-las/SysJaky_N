@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using SysJaky_N.Data;
 using SysJaky_N.Models;
 using SysJaky_N.Services;
@@ -18,11 +19,13 @@ public class EditModel : PageModel
 {
     private readonly ApplicationDbContext _context;
     private readonly ICacheService _cacheService;
+    private readonly IStringLocalizer<EditModel> _localizer;
 
-    public EditModel(ApplicationDbContext context, ICacheService cacheService)
+    public EditModel(ApplicationDbContext context, ICacheService cacheService, IStringLocalizer<EditModel> localizer)
     {
         _context = context;
         _cacheService = cacheService;
+        _localizer = localizer;
     }
 
     [BindProperty]
@@ -36,6 +39,7 @@ public class EditModel : PageModel
 
     public async Task<IActionResult> OnGetAsync(int id)
     {
+        ViewData["Title"] = _localizer["Title"];
         var term = await _context.CourseTerms
             .AsNoTracking()
             .Include(t => t.Course)
@@ -63,6 +67,7 @@ public class EditModel : PageModel
 
     public async Task<IActionResult> OnPostAsync(int id)
     {
+        ViewData["Title"] = _localizer["Title"];
         await LoadSelectListsAsync();
 
         var term = await _context.CourseTerms
@@ -80,12 +85,14 @@ public class EditModel : PageModel
 
         if (endUtc <= startUtc)
         {
-            ModelState.AddModelError("Input.EndUtc", "Koncový čas musí následovat po začátku.");
+            ModelState.AddModelError("Input.EndUtc", _localizer["ErrorEndUtcBeforeStart"].Value);
         }
 
         if (Input.Capacity < term.SeatsTaken)
         {
-            ModelState.AddModelError("Input.Capacity", $"Kapacita nesmí být menší než aktuálně obsazená místa ({term.SeatsTaken}).");
+            ModelState.AddModelError(
+                "Input.Capacity",
+                _localizer["ErrorCapacityLessThanSeats", term.SeatsTaken].Value);
         }
 
         if (!ModelState.IsValid)
@@ -128,7 +135,7 @@ public class EditModel : PageModel
 
         InstructorOptions = new List<SelectListItem>
         {
-            new("Nepřiřazeno", string.Empty, Input.InstructorId == null)
+            new(_localizer["SelectOptionUnassigned"].Value, string.Empty, Input.InstructorId == null)
         };
         InstructorOptions.AddRange(instructorItems);
     }
