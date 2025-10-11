@@ -8,6 +8,7 @@ using SysJaky_N.Services;
 using SysJaky_N.Data;
 using System.ComponentModel.DataAnnotations;
 using SysJaky_N.EmailTemplates.Models;
+using Microsoft.Extensions.Localization;
 
 namespace SysJaky_N.Pages.Account;
 
@@ -17,13 +18,20 @@ public class RegisterModel : PageModel
     private readonly SignInManager<ApplicationUser> _signInManager;
     private readonly IEmailSender _emailSender;
     private readonly ApplicationDbContext _context;
+    private readonly IStringLocalizer<RegisterModel> _localizer;
 
-    public RegisterModel(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IEmailSender emailSender, ApplicationDbContext context)
+    public RegisterModel(
+        UserManager<ApplicationUser> userManager,
+        SignInManager<ApplicationUser> signInManager,
+        IEmailSender emailSender,
+        ApplicationDbContext context,
+        IStringLocalizer<RegisterModel> localizer)
     {
         _userManager = userManager;
         _signInManager = signInManager;
         _emailSender = emailSender;
         _context = context;
+        _localizer = localizer;
     }
 
     [BindProperty]
@@ -71,7 +79,7 @@ public class RegisterModel : PageModel
 
             if (company == null)
             {
-                ModelState.AddModelError(nameof(Input.ReferralCode), "Referral code was not found.");
+                ModelState.AddModelError(nameof(Input.ReferralCode), _localizer["ReferralCodeNotFound"]);
                 return Page();
             }
 
