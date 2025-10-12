@@ -107,7 +107,7 @@ else
                         <div class="d-flex flex-wrap justify-content-end gap-2">
                             <div class="btn-group btn-group-sm" role="group" aria-label="Akce pro termín kurzu @term.Course?.Title">
                                 <a class="btn btn-outline-secondary" asp-page="Edit" asp-route-id="@term.Id">Upravit</a>
-                                <a class="btn btn-outline-danger" asp-page="Delete" asp-route-id="@term.Id">Smazat</a>
+                                <a class="btn btn-admin-warning" asp-page="Delete" asp-route-id="@term.Id">Smazat</a>
                             </div>
                             <form method="post" asp-page-handler="ExportEnrollments" asp-route-id="@term.Id" class="d-inline">
                                 <button type="submit" class="btn btn-sm btn-outline-primary">Exportovat XLSX</button>

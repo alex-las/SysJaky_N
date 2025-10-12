@@ -4,29 +4,36 @@
     ViewData["Title"] = "Course Groups";
 }
 
-<h1>Course Groups</h1>
+<section class="admin-page-header">
+    <div class="admin-page-header__title">
+        <h1>Course Groups</h1>
+    </div>
+    <div class="admin-page-header__actions">
+        <a asp-page="Create" class="btn btn-admin-primary">Create New</a>
+    </div>
+</section>
 
-<p>
-    <a asp-page="Create">Create New</a>
-</p>
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-    @foreach (var item in Model.Groups)
-    {
-        <tr>
-            <td>@item.Name</td>
-            <td>
-                <a asp-page="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-page="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-    }
-    </tbody>
-</table>
+<div class="admin-table-wrapper table-responsive">
+    <table class="table admin-table align-middle mb-0">
+        <thead>
+            <tr>
+                <th scope="col">Name</th>
+                <th scope="col" class="text-end">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model.Groups)
+        {
+            <tr>
+                <td>@item.Name</td>
+                <td class="text-end">
+                    <div class="admin-table-actions justify-content-end">
+                        <a asp-page="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-admin-ghost">Edit</a>
+                        <a asp-page="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-admin-warning">Delete</a>
+                    </div>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>

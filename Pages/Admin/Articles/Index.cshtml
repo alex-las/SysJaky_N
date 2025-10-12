@@ -4,32 +4,39 @@
     ViewData["Title"] = "Správa článků";
 }
 
-<h1>Správa článků</h1>
+<section class="admin-page-header">
+    <div class="admin-page-header__title">
+        <h1>Správa článků</h1>
+    </div>
+    <div class="admin-page-header__actions">
+        <a asp-page="Create" class="btn btn-admin-primary">Vytvořit nový</a>
+    </div>
+</section>
 
-<p>
-    <a asp-page="Create">Vytvořit nový</a>
-</p>
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>Název</th>
-            <th>Vytvořeno</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-    @foreach (var item in Model.Articles)
-    {
-        <tr>
-            <td>@item.Title</td>
-            <td>@item.CreatedAt.ToString("g")</td>
-            <td>
-                <a asp-page="Edit" asp-route-id="@item.Id">Upravit</a> |
-                <a asp-page="Details" asp-route-id="@item.Id">Detail</a> |
-                <a asp-page="Delete" asp-route-id="@item.Id">Smazat</a>
-            </td>
-        </tr>
-    }
-    </tbody>
-</table>
+<div class="admin-table-wrapper table-responsive">
+    <table class="table admin-table align-middle mb-0">
+        <thead>
+            <tr>
+                <th scope="col">Název</th>
+                <th scope="col">Vytvořeno</th>
+                <th scope="col" class="text-end">Akce</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model.Articles)
+        {
+            <tr>
+                <td>@item.Title</td>
+                <td>@item.CreatedAt.ToString("g")</td>
+                <td class="text-end">
+                    <div class="admin-table-actions justify-content-end">
+                        <a asp-page="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-admin-ghost">Upravit</a>
+                        <a asp-page="Details" asp-route-id="@item.Id" class="btn btn-sm btn-admin-ghost">Detail</a>
+                        <a asp-page="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-admin-warning">Smazat</a>
+                    </div>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>

@@ -59,6 +59,10 @@
   --color-neutral-100: #f4f6fb;
   --color-neutral-50: #ffffff;
 
+  /* Alias tokens */
+  --ink: var(--color-ink);
+  --ink-soft: var(--color-ink-soft);
+
   /* Surfaces */
   --surface-page: #f4f6fb;
   --surface-page-gradient: linear-gradient(180deg, #f4f6fb 0%, #eef3ff 100%);
@@ -118,6 +122,7 @@
   --gradient-brand: linear-gradient(135deg, var(--color-brand-500) 0%, var(--color-brand-700) 100%);
   --gradient-brand-horizontal: linear-gradient(90deg, var(--color-brand-500) 0%, var(--color-brand-700) 100%);
   --gradient-primary: var(--gradient-brand);
+  --gradient-blue: linear-gradient(135deg, var(--color-brand-500) 0%, var(--color-brand-700) 100%);
   --gradient-hero: radial-gradient(120% 120% at 20% 20%, rgba(72, 123, 255, 0.35) 0%, rgba(21, 93, 230, 0.92) 55%, rgba(12, 63, 174, 1) 100%);
   --gradient-overlay: linear-gradient(180deg, rgba(7, 31, 90, 0.12) 0%, rgba(7, 31, 90, 0.45) 100%);
 
@@ -239,6 +244,8 @@ button:focus-visible,
   color-scheme: dark;
   --color-ink: #e2e8f0;
   --color-ink-soft: rgba(226, 232, 240, 0.8);
+  --ink: var(--color-ink);
+  --ink-soft: var(--color-ink-soft);
   --color-neutral-900: #0f172a;
   --color-neutral-800: #1e293b;
   --color-neutral-700: #cbd5e1;
