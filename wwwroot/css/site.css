@@ -2,6 +2,12 @@
   --nav-offset: 4.25rem;
 }
 
+body {
+  background: linear-gradient(180deg, #030712 0%, #0f172a 42%, #111827 100%);
+  color: #e2e8f0;
+  min-height: 100vh;
+}
+
 .app-body {
   min-height: 100vh;
   display: flex;
@@ -36,86 +42,74 @@
 }
 
 #mainNav {
-  background: var(--nav-glass-bg);
-  border-bottom: 1px solid var(--nav-glass-border);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-  box-shadow: var(--nav-glass-shadow);
-  padding-block: 0.85rem;
-  transition: background 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease, padding 0.3s ease;
+  background: linear-gradient(135deg, #1b3dd6 0%, #7c3aed 100%);
+  border: none;
+  box-shadow: 0 20px 45px rgba(15, 23, 42, 0.35);
+  padding-block: 1rem;
+  transition: background 0.3s ease, box-shadow 0.3s ease, padding 0.3s ease, transform 0.3s ease;
 }
 
 #mainNav .nav-inner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 1.5rem;
   width: 100%;
-}
-
-#mainNav .nav-brand-group {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  justify-content: flex-start;
+  gap: clamp(1rem, 2vw, 1.5rem);
+  flex-wrap: nowrap;
 }
 
 #mainNav .navbar-brand,
 #mainNav .navbar-brand:visited {
-  color: rgba(255, 255, 255, 0.92);
+  color: #f8fafc;
   font-size: 1.05rem;
   letter-spacing: -0.01em;
 }
 
 #mainNav .navbar-brand:hover,
 #mainNav .navbar-brand:focus-visible {
-  color: #fff;
+  color: #ffffff;
   text-decoration: none;
 }
 
+.icon-box,
 .brand-icon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2.25rem;
-  height: 2.25rem;
-  border-radius: 0.95rem;
-  background-color: var(--color-brand-600);
-  color: #fff;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 1rem;
+  background: linear-gradient(135deg, rgba(94, 234, 212, 0.9) 0%, rgba(99, 102, 241, 0.95) 100%);
+  color: #ffffff;
   font-size: 1.1rem;
-  box-shadow: 0 10px 25px rgba(42, 116, 255, 0.35);
+  box-shadow: 0 12px 30px rgba(79, 70, 229, 0.35);
 }
 
-#mainNav .nav-pill-group {
-  background: rgba(255, 255, 255, 0.08);
-  border-radius: 999px;
-  padding: 0.35rem;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+#mainNav .primary-nav .navbar-nav {
+  gap: 0.5rem;
 }
 
-#mainNav .nav-link-pill {
-  color: rgba(255, 255, 255, 0.78);
-  padding: 0.55rem 1.05rem;
-  border-radius: 999px;
+#mainNav .nav-link {
+  color: rgba(248, 250, 252, 0.78);
+  padding: 0.65rem 0.95rem;
+  border-radius: 0.85rem;
   font-weight: 500;
-  position: relative;
-  transition: color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+  transition: color 0.2s ease, background-color 0.2s ease, transform 0.2s ease;
 }
 
-#mainNav .nav-link-pill:hover,
-#mainNav .nav-link-pill:focus-visible {
-  color: #fff;
-  background: rgba(255, 255, 255, 0.14);
+#mainNav .nav-link:hover,
+#mainNav .nav-link:focus-visible {
+  color: #ffffff;
+  background-color: rgba(15, 23, 42, 0.18);
   transform: translateY(-1px);
+  text-decoration: none;
 }
 
-#mainNav .nav-link-pill.active,
-#mainNav .nav-link-pill[aria-current="page"] {
+#mainNav .nav-link.active,
+#mainNav .nav-link[aria-current="page"] {
   color: #0f172a;
-  background: #fff;
-  box-shadow: 0 10px 18px rgba(15, 23, 42, 0.18);
+  background-color: #f8fafc;
+  box-shadow: 0 12px 22px rgba(15, 23, 42, 0.2);
 }
 
 #mainNav .nav-action-group {
@@ -133,14 +127,14 @@
 }
 
 #mainNav .navbar-toggler {
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  border-radius: 0.75rem;
-  padding: 0.4rem 0.6rem;
+  border: 1px solid rgba(248, 250, 252, 0.45);
+  border-radius: 0.85rem;
+  padding: 0.4rem 0.65rem;
   background: rgba(15, 23, 42, 0.35);
 }
 
 #mainNav .navbar-toggler:focus {
-  box-shadow: 0 0 0 0.2rem rgba(21, 93, 230, 0.3);
+  box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.35);
 }
 
 #mainNav .navbar-toggler-icon {
@@ -148,15 +142,13 @@
 }
 
 #mainNav.scrolled {
-  background: var(--nav-glass-scrolled-bg);
-  border-color: var(--nav-glass-scrolled-border);
-  box-shadow: var(--nav-glass-scrolled-shadow);
-  padding-block: 0.65rem;
+  background: rgba(15, 23, 42, 0.92);
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.4);
+  padding-block: 0.75rem;
 }
 
-#mainNav.scrolled .nav-pill-group {
-  background: rgba(255, 255, 255, 0.12);
-  border-color: rgba(255, 255, 255, 0.18);
+#mainNav.scrolled .icon-box {
+  box-shadow: 0 8px 20px rgba(79, 70, 229, 0.3);
 }
 
 .language-switcher-mobile > * {
