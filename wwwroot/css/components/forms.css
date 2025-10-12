@@ -86,7 +86,7 @@ textarea.form-control {
 .chip:focus-visible,
 .dropdown-item:focus-visible,
 .navbar-toggler:focus-visible {
-  outline: 3px solid rgba(40, 179, 159, 0.55);
+  outline: 3px solid rgba(var(--color-secondary-rgb), 0.55);
   outline-offset: 2px;
   background-color: rgba(15, 23, 42, 0.85);
   color: var(--surface-card);
@@ -174,8 +174,8 @@ textarea.form-control {
 
 .login-dropdown-card .form-control:focus {
   background-color: rgba(15, 23, 42, 0.65);
-  border-color: rgba(21, 93, 230, 0.75);
-  box-shadow: 0 0 0 4px rgba(21, 93, 230, 0.24);
+  border-color: rgba(var(--color-brand-rgb), 0.75);
+  box-shadow: 0 0 0 4px rgba(var(--color-brand-rgb), 0.24);
 }
 
 .login-dropdown-footer {
@@ -191,7 +191,7 @@ textarea.form-control {
 
 .login-dropdown-footer-link:hover,
 .login-dropdown-footer-link:focus-visible {
-  color: rgba(21, 93, 230, 0.95);
+  color: rgba(var(--color-brand-rgb), 0.95);
 }
 
 [data-theme="dark"] .form-control,
@@ -210,7 +210,7 @@ textarea.form-control {
 [data-theme="dark"] .form-control:focus,
 [data-theme="dark"] .form-select:focus {
   background-color: rgba(30, 41, 59, 0.75);
-  border-color: rgba(21, 93, 230, 0.75);
+  border-color: rgba(var(--color-brand-rgb), 0.75);
   box-shadow: var(--focus-ring);
 }
 

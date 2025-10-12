@@ -97,7 +97,7 @@ main.admin-main {
 .admin-nav__tabs .nav-link.active {
   background: var(--gradient-blue);
   color: #fff;
-  box-shadow: 0 18px 38px rgba(21, 93, 230, 0.35);
+  box-shadow: 0 18px 38px rgba(var(--color-brand-rgb), 0.35);
 }
 
 /* Buttons */
@@ -110,7 +110,7 @@ main.admin-main {
   font-weight: 600;
   padding: 0.65rem 1.5rem;
   transition: transform var(--transition-snappy), box-shadow var(--transition-snappy), filter var(--transition-snappy);
-  box-shadow: 0 18px 40px rgba(21, 93, 230, 0.35);
+  box-shadow: 0 18px 40px rgba(var(--color-brand-rgb), 0.35);
 }
 
 .btn-admin-primary:hover,
@@ -120,7 +120,7 @@ main.admin-main {
   transform: translateY(-1px);
   filter: brightness(1.05);
   color: #fff;
-  box-shadow: 0 22px 46px rgba(21, 93, 230, 0.4);
+  box-shadow: 0 22px 46px rgba(var(--color-brand-rgb), 0.4);
 }
 
 .btn-admin-warning {
@@ -319,7 +319,7 @@ main.admin-main {
   background: rgba(72, 123, 255, 0.15);
   border-color: rgba(72, 123, 255, 0.4);
   color: var(--color-brand-700);
-  box-shadow: 0 12px 24px rgba(21, 93, 230, 0.18);
+  box-shadow: 0 12px 24px rgba(var(--color-brand-rgb), 0.18);
 }
 
 /* Badges */
@@ -418,8 +418,8 @@ main.admin-main {
 
 [data-theme="dark"] .btn-admin-ghost:hover,
 [data-theme="dark"] .btn-admin-ghost:focus-visible {
-  background: rgba(129, 140, 248, 0.28);
-  border-color: rgba(129, 140, 248, 0.45);
+  background: rgba(var(--color-brand-rgb), 0.28);
+  border-color: rgba(var(--color-brand-rgb), 0.45);
   color: #fff;
 }
 
@@ -450,7 +450,7 @@ main.admin-main {
 }
 
 [data-theme="dark"] .admin-table tbody tr:hover {
-  background: rgba(59, 130, 246, 0.24);
+  background: rgba(var(--color-brand-rgb), 0.24);
 }
 
 [data-theme="dark"] .admin-pagination .page-item .page-link,
@@ -463,8 +463,8 @@ main.admin-main {
 [data-theme="dark"] .admin-pagination .page-item.active .page-link,
 [data-theme="dark"] .admin-pagination a:hover,
 [data-theme="dark"] .admin-pagination a:focus-visible {
-  background: rgba(129, 140, 248, 0.22);
-  border-color: rgba(129, 140, 248, 0.45);
+  background: rgba(var(--color-brand-rgb), 0.22);
+  border-color: rgba(var(--color-brand-rgb), 0.45);
   color: #fff;
 }
 
