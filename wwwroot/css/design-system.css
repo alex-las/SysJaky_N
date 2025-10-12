@@ -1,6 +1,6 @@
 :root {
   color-scheme: light;
-  accent-color: #155de6;
+  accent-color: var(--color-brand-600);
 
   /* Typography */
   --font-sans: 'Inter', 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
@@ -42,40 +42,48 @@
   /* Semantic palette */
   --color-success-500: #22c55e;
   --color-success-600: #16a34a;
-  --color-warning-500: var(--color-highlight-500);
-  --color-warning-600: #d97706;
+  --color-warning-500: var(--color-secondary-500);
+  --color-warning-600: var(--color-secondary-600);
   --color-danger-500: #ef4444;
   --color-danger-600: #dc2626;
 
   /* Neutral palette */
-  --color-ink: #1f242c;
-  --color-ink-soft: rgba(31, 36, 44, 0.74);
-  --color-neutral-900: #1f242c;
-  --color-neutral-800: #2e353f;
-  --color-neutral-700: #404955;
-  --color-neutral-600: #56606f;
-  --color-neutral-500: #6f7c8d;
-  --color-neutral-400: #919fb2;
-  --color-neutral-300: #bac3cf;
-  --color-neutral-200: #dbe1ea;
-  --color-neutral-150: #e8edf4;
-  --color-neutral-100: #f4f6fb;
-  --color-neutral-50: #ffffff;
+  --color-ink: #0f172a;
+  --color-ink-soft: rgba(15, 23, 42, 0.78);
+  --color-neutral-900: #0f172a;
+  --color-neutral-800: #1e293b;
+  --color-neutral-700: #334155;
+  --color-neutral-600: #475569;
+  --color-neutral-500: #64748b;
+  --color-neutral-400: #94a3b8;
+  --color-neutral-300: #cbd5f5;
+  --color-neutral-200: #e2e8f0;
+  --color-neutral-150: #e8edf7;
+  --color-neutral-100: #f1f5f9;
+  --color-neutral-50: #f8fafc;
 
   /* Alias tokens */
   --ink: var(--color-ink);
   --ink-soft: var(--color-ink-soft);
+  --color-primary: var(--color-brand-600);
+  --color-primary-strong: var(--color-brand-700);
+  --color-primary-soft: var(--color-brand-200);
+  --color-secondary-base: var(--color-secondary-500);
+  --color-secondary: var(--color-secondary-base);
+  --color-accent-base: var(--color-accent-500);
+  --color-accent: var(--color-accent-base);
+  /* Primary elements ~45%, secondary ~35%, accent ~10% coverage ensures balanced application. */
 
   /* Surfaces */
-  --surface-page: #f4f6fb;
-  --surface-page-gradient: linear-gradient(180deg, #f4f6fb 0%, #eef3ff 100%);
+  --surface-page: #f8fafc;
+  --surface-page-gradient: linear-gradient(180deg, #f8fafc 0%, #eff6ff 100%);
   --surface-card: #ffffff;
-  --surface-elevated: #fbfdff;
-  --surface-muted: #e9efff;
-  --surface-contrast: #101828;
-  --surface-glass: rgba(255, 255, 255, 0.8);
-  --surface-glass-strong: rgba(255, 255, 255, 0.88);
-  --surface-glass-dark: rgba(15, 23, 42, 0.5);
+  --surface-elevated: #f1f5f9;
+  --surface-muted: #e2e8f0;
+  --surface-contrast: #0f172a;
+  --surface-glass: rgba(255, 255, 255, 0.82);
+  --surface-glass-strong: rgba(255, 255, 255, 0.9);
+  --surface-glass-dark: rgba(15, 23, 42, 0.52);
 
   /* Borders */
   --border-soft: rgba(145, 159, 178, 0.22);
