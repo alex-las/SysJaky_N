@@ -440,8 +440,10 @@ if (!dataElement) {
         const title = escapeHtml(course.title ?? '');
         const titleAttr = escapeAttribute(course.title ?? '');
         const description = escapeHtml(course.description ?? '');
-        const level = escapeHtml(course.level ?? '');
-        const mode = escapeHtml(course.mode ?? '');
+        const rawLevel = typeof course.level === 'string' ? course.level : '';
+        const rawMode = typeof course.mode === 'string' ? course.mode : '';
+        const level = escapeHtml(rawLevel);
+        const mode = escapeHtml(rawMode);
         const type = escapeHtml(course.type ?? '');
         const durationDisplay = escapeHtml(course.durationDisplay ?? '');
         const dateDisplay = escapeHtml(course.dateDisplay ?? '');
@@ -490,6 +492,23 @@ if (!dataElement) {
             : resources.certificateUnavailable ?? 'Bez certifikátu';
         const modeAria = (resources.modeAria ?? 'Režim: {0}').replace('{0}', mode);
         const levelAria = (resources.levelAria ?? 'Úroveň: {0}').replace('{0}', level);
+        const levelNormalized = rawLevel.toLowerCase();
+        const levelClassList = ['course-level'];
+        if (levelNormalized.includes('advanced') || levelNormalized.includes('expert') || levelNormalized.includes('pokroč')) {
+            levelClassList.push('course-level-featured');
+        }
+        const modeNormalized = rawMode.toLowerCase();
+        const formatModifier = modeNormalized.includes('hybrid')
+            ? 'course-format--hybrid'
+            : modeNormalized.includes('online')
+                ? 'course-format--online'
+                : 'course-format--onsite';
+        const formatClasses = `course-format ${formatModifier}`;
+        const formatIcon = modeNormalized.includes('online')
+            ? 'bi-wifi'
+            : modeNormalized.includes('hybrid')
+                ? 'bi-arrows-move'
+                : 'bi-geo';
 
         wrapper.innerHTML = `
         <article class="course-card card-hover feature-card h-100 d-flex flex-column" role="article" aria-labelledby="course-card-title-${id}">
@@ -509,17 +528,17 @@ if (!dataElement) {
                 </button>
             </div>
             <div class="course-card__body d-flex flex-column flex-grow-1 gap-3 p-3">
-                <header>
-                    <h3 id="course-card-title-${id}" class="h5 mb-1 course-card__title">${title}</h3>
+                <header class="d-flex flex-column gap-2">
+                    <div class="d-flex flex-wrap align-items-start justify-content-between gap-2">
+                        <h3 id="course-card-title-${id}" class="h5 mb-0 course-card__title">${title}</h3>
+                        <span class="${formatClasses}" aria-label="${escapeAttribute(modeAria)}">
+                            <i class="bi ${formatIcon}" aria-hidden="true"></i><span>${mode}</span>
+                        </span>
+                    </div>
+                    <span class="${levelClassList.join(' ')}" aria-label="${escapeAttribute(levelAria)}">${level}</span>
                     ${description ? `<p class="course-card__excerpt text-muted mb-0">${description}</p>` : ''}
                 </header>
                 <div class="course-card__meta d-flex flex-wrap gap-2" aria-label="${escapeAttribute(resources.metaInformation ?? '')}">
-                    <span class="course-card__meta-item" aria-label="${escapeAttribute(modeAria)}">
-                        <i class="bi bi-broadcast" aria-hidden="true"></i><span>${mode}</span>
-                    </span>
-                    <span class="course-card__meta-item" aria-label="${escapeAttribute(levelAria)}">
-                        <i class="bi bi-bar-chart" aria-hidden="true"></i><span>${level}</span>
-                    </span>
                     <span class="course-card__meta-item" aria-label="${escapeAttribute(typeAria)}">
                         <i class="bi bi-geo-alt" aria-hidden="true"></i><span>${type}</span>
                     </span>
@@ -550,10 +569,10 @@ if (!dataElement) {
                         <label class="form-check-label small" for="${checkboxId}">${resources.compareLabel ?? 'Porovnat'}</label>
                     </div>
                     <div class="course-card__actions d-flex flex-wrap gap-2">
-                        <a class="btn btn-outline-secondary btn-sm" href="${detailsUrl}">${resources.detailsLabel ?? 'Detail'}</a>
+                        <a class="btn btn-course-detail" href="${detailsUrl}">${resources.detailsLabel ?? 'Detail'}</a>
                         <form method="post" action="${addToCartUrl}" class="d-inline">
                             <input type="hidden" name="courseId" value="${id}">
-                            <button type="submit" class="btn btn-primary btn-sm">${resources.enrollLabel ?? 'Přihlásit'}</button>
+                            <button type="submit" class="btn btn-course-detail btn-course-detail--secondary">${resources.enrollLabel ?? 'Přihlásit'}</button>
                         </form>
                     </div>
                 </div>
