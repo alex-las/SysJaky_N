@@ -160,7 +160,7 @@
                         <div class="article-card__meta">
                             @if (showCategoryFilters)
                             {
-                                <span class="badge bg-light text-primary border border-primary-subtle">@article.CategoryLabel</span>
+                                <span class="badge badge-soft-primary badge-pill">@article.CategoryLabel</span>
                             }
                             <div class="d-flex align-items-center gap-2 text-muted">
                                 <i class="bi bi-calendar-event" aria-hidden="true"></i>
@@ -176,7 +176,7 @@
                         }
                     </div>
                     <footer class="article-card__footer">
-                        <a class="btn btn-primary" asp-page="./Details" asp-route-id="@article.Id" aria-label="@Localizer["PreviewAriaLabel", article.Title]">
+                        <a class="btn btn-gradient" asp-page="./Details" asp-route-id="@article.Id" aria-label="@Localizer["PreviewAriaLabel", article.Title]">
                             @Localizer["PreviewLink"]
                         </a>
                     </footer>
