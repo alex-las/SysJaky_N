@@ -257,12 +257,12 @@
   width: 2.5rem;
   height: 2.5rem;
   border-radius: var(--radius-pill);
-  background: rgba(21, 93, 230, 0.1);
+  background: rgba(var(--color-brand-rgb), 0.1);
   color: var(--color-brand-600);
 }
 
 [data-theme="dark"] .icon-circle {
-  background: rgba(21, 93, 230, 0.25);
+  background: rgba(var(--color-brand-rgb), 0.25);
   color: rgba(226, 232, 240, 0.92);
 }
 
@@ -287,7 +287,7 @@
 .chip:hover,
 .chip:focus-visible {
   transform: translateY(-1px);
-  background: rgba(12, 63, 174, 0.22);
+  background: rgba(var(--color-brand-rgb), 0.22);
 }
 
 [data-theme="dark"] .chip {
@@ -295,7 +295,7 @@
 }
 
 .badge-soft {
-  background: rgba(21, 93, 230, 0.16);
+  background: rgba(var(--color-brand-rgb), 0.16);
   color: var(--color-brand-700);
   border-radius: var(--radius-pill);
   padding: 0.35rem 0.85rem;
@@ -303,7 +303,7 @@
 }
 
 [data-theme="dark"] .badge-soft {
-  background: rgba(21, 93, 230, 0.28);
+  background: rgba(var(--color-brand-rgb), 0.28);
   color: rgba(226, 232, 240, 0.85);
 }
 
@@ -347,7 +347,7 @@
 }
 
 [data-theme="dark"] .outline-glow {
-  box-shadow: 0 0 0 6px rgba(21, 93, 230, 0.3);
+  box-shadow: 0 0 0 6px rgba(var(--color-brand-rgb), 0.3);
 }
 
 /* Responsive helpers */

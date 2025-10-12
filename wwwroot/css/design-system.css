@@ -20,6 +20,7 @@
   --color-brand-700: #0c3fae;
   --color-brand-800: #0a3185;
   --color-brand-900: #071f5a;
+  --color-brand-rgb: 21, 93, 230;
 
   /* Secondary palette */
   --color-secondary-50: #f1fbf9;
@@ -30,11 +31,13 @@
   --color-secondary-500: #28b39f;
   --color-secondary-600: #1d8f81;
   --color-secondary-700: #166f64;
+  --color-secondary-rgb: 40, 179, 159;
 
   /* Highlight palette */
   --color-highlight-300: #fde68a;
   --color-highlight-400: #fbbf24;
   --color-highlight-500: #f59e0b;
+  --color-highlight-rgb: 245, 158, 11;
 
   /* Semantic palette */
   --color-success-500: #22c55e;
@@ -77,9 +80,9 @@
   /* Borders */
   --border-soft: rgba(145, 159, 178, 0.22);
   --border-subtle: rgba(145, 159, 178, 0.18);
-  --border-strong: rgba(21, 93, 230, 0.3);
+  --border-strong: rgba(var(--color-brand-rgb), 0.3);
   --border-contrast: rgba(31, 36, 44, 0.28);
-  --border-focus: rgba(21, 93, 230, 0.42);
+  --border-focus: rgba(var(--color-brand-rgb), 0.42);
 
   /* Radius tokens */
   --radius-xs: 0.4rem;
@@ -97,8 +100,8 @@
   --shadow-md: 0 12px 32px rgba(15, 23, 42, 0.16);
   --shadow-lg: 0 24px 48px rgba(15, 23, 42, 0.2);
   --shadow-xl: 0 36px 72px rgba(15, 23, 42, 0.24);
-  --shadow-soft: 0 18px 50px rgba(21, 93, 230, 0.18);
-  --shadow-glow: 0 0 0 6px rgba(21, 93, 230, 0.22);
+  --shadow-soft: 0 18px 50px rgba(var(--color-brand-rgb), 0.18);
+  --shadow-glow: 0 0 0 6px rgba(var(--color-brand-rgb), 0.22);
 
   /* Spacing tokens */
   --space-1: 0.25rem;
@@ -119,11 +122,25 @@
   --transition-fade: 0.28s cubic-bezier(0.33, 1, 0.68, 1);
 
   /* Gradients */
-  --gradient-brand: linear-gradient(135deg, var(--color-brand-500) 0%, var(--color-brand-700) 100%);
-  --gradient-brand-horizontal: linear-gradient(90deg, var(--color-brand-500) 0%, var(--color-brand-700) 100%);
+  --gradient-brand: linear-gradient(
+    135deg,
+    var(--color-brand-600) 0%,
+    var(--color-brand-600) 45%,
+    var(--color-secondary-500) 45%,
+    var(--color-secondary-500) 80%,
+    var(--color-highlight-400) 100%
+  );
+  --gradient-brand-horizontal: linear-gradient(
+    90deg,
+    var(--color-brand-600) 0%,
+    var(--color-brand-600) 45%,
+    var(--color-secondary-500) 45%,
+    var(--color-secondary-500) 80%,
+    var(--color-highlight-400) 100%
+  );
   --gradient-primary: var(--gradient-brand);
-  --gradient-blue: linear-gradient(135deg, var(--color-brand-500) 0%, var(--color-brand-700) 100%);
-  --gradient-hero: radial-gradient(120% 120% at 20% 20%, rgba(72, 123, 255, 0.35) 0%, rgba(21, 93, 230, 0.92) 55%, rgba(12, 63, 174, 1) 100%);
+  --gradient-blue: var(--gradient-brand);
+  --gradient-hero: radial-gradient(120% 120% at 20% 20%, rgba(var(--color-brand-rgb), 0.35) 0%, rgba(var(--color-brand-rgb), 0.92) 55%, rgba(12, 63, 174, 1) 100%);
   --gradient-overlay: linear-gradient(180deg, rgba(7, 31, 90, 0.12) 0%, rgba(7, 31, 90, 0.45) 100%);
 
   /* Navigation glass values */
@@ -141,14 +158,14 @@
   --surface-elevated-dark: rgba(15, 23, 42, 0.85);
   --progress-track: rgba(145, 159, 178, 0.22);
   --progress-fill: var(--color-secondary-500);
-  --chip-bg: rgba(21, 93, 230, 0.12);
-  --chip-border: rgba(21, 93, 230, 0.25);
+  --chip-bg: rgba(var(--color-brand-rgb), 0.12);
+  --chip-border: rgba(var(--color-brand-rgb), 0.25);
 
   /* Layout */
   --container-max: min(1220px, 100% - 2rem);
   --max-readable: 68ch;
 
-  --focus-ring: 0 0 0 3px rgba(244, 246, 251, 0.9), 0 0 0 6px rgba(21, 93, 230, 0.45);
+  --focus-ring: 0 0 0 3px rgba(244, 246, 251, 0.9), 0 0 0 6px rgba(var(--color-brand-rgb), 0.45);
 
   /* Bootstrap overrides */
   --bs-body-font-family: var(--font-sans);
@@ -205,7 +222,7 @@ small {
 
 a {
   color: var(--color-brand-600);
-  text-decoration-color: rgba(21, 93, 230, 0.3);
+  text-decoration-color: rgba(var(--color-brand-rgb), 0.3);
   transition: color var(--transition-snappy), text-decoration-color var(--transition-snappy);
 }
 
@@ -268,9 +285,9 @@ button:focus-visible,
   --surface-glass-dark: rgba(10, 17, 28, 0.85);
   --border-soft: rgba(148, 163, 184, 0.35);
   --border-subtle: rgba(148, 163, 184, 0.25);
-  --border-strong: rgba(14, 165, 233, 0.35);
+  --border-strong: rgba(var(--color-secondary-rgb), 0.35);
   --border-contrast: rgba(226, 232, 240, 0.25);
-  --focus-ring: 0 0 0 3px rgba(15, 23, 42, 0.8), 0 0 0 6px rgba(21, 93, 230, 0.45);
+  --focus-ring: 0 0 0 3px rgba(15, 23, 42, 0.8), 0 0 0 6px rgba(var(--color-brand-rgb), 0.45);
   --nav-glass-bg: rgba(15, 23, 42, 0.88);
   --nav-glass-border: rgba(148, 163, 184, 0.32);
   --nav-glass-shadow: 0 20px 64px rgba(15, 23, 42, 0.32);
