@@ -1,6 +1,6 @@
 :root {
   color-scheme: light;
-  accent-color: #155de6;
+  accent-color: var(--color-brand-600);
 
   /* Typography */
   --font-sans: 'Inter', 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
@@ -9,77 +9,94 @@
   --font-mono: 'JetBrains Mono', 'SFMono-Regular', Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
 
   /* Brand palette */
-  --color-brand-50: #eef3ff;
-  --color-brand-100: #dbe5ff;
-  --color-brand-200: #bbceff;
-  --color-brand-300: #94b2ff;
-  --color-brand-400: #6e96ff;
-  --color-brand-500: #487bff;
-  --color-brand-600: #155de6;
-  --color-brand-650: #0f4ed0;
-  --color-brand-700: #0c3fae;
-  --color-brand-800: #0a3185;
-  --color-brand-900: #071f5a;
+  --color-brand-50: #eff6ff;
+  --color-brand-100: #dbeafe;
+  --color-brand-200: #bfdbfe;
+  --color-brand-300: #93c5fd;
+  --color-brand-400: #60a5fa;
+  --color-brand-500: #3b82f6;
+  --color-brand-600: #2563eb;
+  --color-brand-650: #1e55da;
+  --color-brand-700: #1d4ed8;
+  --color-brand-800: #1e40af;
+  --color-brand-900: #1e3a8a;
 
   /* Secondary palette */
-  --color-secondary-50: #f1fbf9;
-  --color-secondary-100: #d3f4ed;
-  --color-secondary-200: #a7e9dd;
-  --color-secondary-300: #79dccb;
-  --color-secondary-400: #4cc7b5;
-  --color-secondary-500: #28b39f;
-  --color-secondary-600: #1d8f81;
-  --color-secondary-700: #166f64;
+  --color-secondary-50: #fffbeb;
+  --color-secondary-100: #fef3c7;
+  --color-secondary-200: #fde68a;
+  --color-secondary-300: #fcd34d;
+  --color-secondary-400: #fbbf24;
+  --color-secondary-500: #f59e0b;
+  --color-secondary-600: #d97706;
+  --color-secondary-700: #b45309;
+  --color-secondary-800: #92400e;
+  --color-secondary-900: #78350f;
 
-  /* Highlight palette */
-  --color-highlight-300: #fde68a;
-  --color-highlight-400: #fbbf24;
-  --color-highlight-500: #f59e0b;
+  /* Accent palette */
+  --color-accent-50: #ecfeff;
+  --color-accent-100: #cffafe;
+  --color-accent-200: #a5f3fc;
+  --color-accent-300: #67e8f9;
+  --color-accent-400: #22d3ee;
+  --color-accent-500: #06b6d4;
+  --color-accent-600: #0891b2;
+  --color-accent-700: #0e7490;
+  --color-accent-800: #155e75;
+  --color-accent-900: #164e63;
 
   /* Semantic palette */
   --color-success-500: #22c55e;
   --color-success-600: #16a34a;
-  --color-warning-500: var(--color-highlight-500);
-  --color-warning-600: #d97706;
+  --color-warning-500: var(--color-secondary-500);
+  --color-warning-600: var(--color-secondary-600);
   --color-danger-500: #ef4444;
   --color-danger-600: #dc2626;
 
   /* Neutral palette */
-  --color-ink: #1f242c;
-  --color-ink-soft: rgba(31, 36, 44, 0.74);
-  --color-neutral-900: #1f242c;
-  --color-neutral-800: #2e353f;
-  --color-neutral-700: #404955;
-  --color-neutral-600: #56606f;
-  --color-neutral-500: #6f7c8d;
-  --color-neutral-400: #919fb2;
-  --color-neutral-300: #bac3cf;
-  --color-neutral-200: #dbe1ea;
-  --color-neutral-150: #e8edf4;
-  --color-neutral-100: #f4f6fb;
-  --color-neutral-50: #ffffff;
+  --color-ink: #0f172a;
+  --color-ink-soft: rgba(15, 23, 42, 0.78);
+  --color-neutral-900: #0f172a;
+  --color-neutral-800: #1e293b;
+  --color-neutral-700: #334155;
+  --color-neutral-600: #475569;
+  --color-neutral-500: #64748b;
+  --color-neutral-400: #94a3b8;
+  --color-neutral-300: #cbd5f5;
+  --color-neutral-200: #e2e8f0;
+  --color-neutral-150: #e8edf7;
+  --color-neutral-100: #f1f5f9;
+  --color-neutral-50: #f8fafc;
 
   /* Alias tokens */
   --ink: var(--color-ink);
   --ink-soft: var(--color-ink-soft);
+  --color-primary: var(--color-brand-600);
+  --color-primary-strong: var(--color-brand-700);
+  --color-primary-soft: var(--color-brand-200);
+  --color-secondary-base: var(--color-secondary-500);
+  --color-secondary: var(--color-secondary-base);
+  --color-accent-base: var(--color-accent-500);
+  --color-accent: var(--color-accent-base);
+  /* Primary elements ~45%, secondary ~35%, accent ~10% coverage ensures balanced application. */
 
   /* Surfaces */
-  --surface-page: #f4f6fb;
-  --surface-page-gradient: linear-gradient(180deg, #f4f6fb 0%, #eef3ff 100%);
+  --surface-page: #f8fafc;
+  --surface-page-gradient: linear-gradient(180deg, #f8fafc 0%, #eff6ff 100%);
   --surface-card: #ffffff;
-  --surface-elevated: #fbfdff;
-  --surface-muted: #e9efff;
-  --surface-contrast: #101828;
-  --surface-glass: rgba(255, 255, 255, 0.8);
-  --surface-glass-strong: rgba(255, 255, 255, 0.88);
-  --surface-glass-dark: rgba(15, 23, 42, 0.5);
+  --surface-elevated: #f1f5f9;
+  --surface-muted: #e2e8f0;
+  --surface-contrast: #0f172a;
+  --surface-glass: rgba(255, 255, 255, 0.82);
+  --surface-glass-strong: rgba(255, 255, 255, 0.9);
+  --surface-glass-dark: rgba(15, 23, 42, 0.52);
 
   /* Borders */
-  --border-soft: rgba(145, 159, 178, 0.22);
-  --border-subtle: rgba(145, 159, 178, 0.18);
-  --border-strong: rgba(21, 93, 230, 0.3);
-  --border-contrast: rgba(31, 36, 44, 0.28);
-  --border-focus: rgba(21, 93, 230, 0.42);
+  --border-soft: rgba(148, 163, 184, 0.22);
+  --border-subtle: rgba(148, 163, 184, 0.16);
+  --border-strong: rgba(37, 99, 235, 0.3);
+  --border-contrast: rgba(15, 23, 42, 0.28);
+  --border-focus: rgba(37, 99, 235, 0.42);
 
   /* Radius tokens */
   --radius-xs: 0.4rem;
@@ -119,10 +136,12 @@
   --transition-fade: 0.28s cubic-bezier(0.33, 1, 0.68, 1);
 
   /* Gradients */
-  --gradient-brand: linear-gradient(135deg, var(--color-brand-500) 0%, var(--color-brand-700) 100%);
-  --gradient-brand-horizontal: linear-gradient(90deg, var(--color-brand-500) 0%, var(--color-brand-700) 100%);
+  --gradient-brand: linear-gradient(135deg, #2563eb 0%, #06b6d4 55%, #f59e0b 130%);
+  --gradient-brand-horizontal: linear-gradient(135deg, #2563eb 0%, #06b6d4 55%, #f59e0b 130%);
   --gradient-primary: var(--gradient-brand);
-  --gradient-blue: linear-gradient(135deg, var(--color-brand-500) 0%, var(--color-brand-700) 100%);
+  --gradient-secondary: var(--gradient-brand);
+  --gradient-accent: var(--gradient-brand);
+  --gradient-blue: var(--gradient-brand);
   --gradient-hero: radial-gradient(120% 120% at 20% 20%, rgba(72, 123, 255, 0.35) 0%, rgba(21, 93, 230, 0.92) 55%, rgba(12, 63, 174, 1) 100%);
   --gradient-overlay: linear-gradient(180deg, rgba(7, 31, 90, 0.12) 0%, rgba(7, 31, 90, 0.45) 100%);
 
@@ -141,14 +160,14 @@
   --surface-elevated-dark: rgba(15, 23, 42, 0.85);
   --progress-track: rgba(145, 159, 178, 0.22);
   --progress-fill: var(--color-secondary-500);
-  --chip-bg: rgba(21, 93, 230, 0.12);
-  --chip-border: rgba(21, 93, 230, 0.25);
+  --chip-bg: rgba(37, 99, 235, 0.12);
+  --chip-border: rgba(37, 99, 235, 0.25);
 
   /* Layout */
   --container-max: min(1220px, 100% - 2rem);
   --max-readable: 68ch;
 
-  --focus-ring: 0 0 0 3px rgba(244, 246, 251, 0.9), 0 0 0 6px rgba(21, 93, 230, 0.45);
+  --focus-ring: 0 0 0 3px rgba(248, 250, 252, 0.9), 0 0 0 6px rgba(37, 99, 235, 0.45);
 
   /* Bootstrap overrides */
   --bs-body-font-family: var(--font-sans);
