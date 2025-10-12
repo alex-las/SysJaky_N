@@ -40,6 +40,6 @@
 </dl>
 
 <form method="post" class="d-flex gap-2">
-    <button type="submit" class="btn btn-danger" @(Model.Term.SeatsTaken > 0 ? "disabled" : null)>Smazat</button>
+    <button type="submit" class="btn btn-admin-warning" @(Model.Term.SeatsTaken > 0 ? "disabled" : null)>Smazat</button>
     <a asp-page="Index" class="btn btn-secondary">Zrušit</a>
 </form>

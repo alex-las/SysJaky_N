@@ -3,30 +3,41 @@
 @{
     ViewData["Title"] = "Bloky kurzů";
 }
-<h1>Bloky kurzů</h1>
-<p><a asp-page="Create">Vytvořit nový</a></p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>Název</th>
-            <th>Cena</th>
-            <th>Moduly</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-    @foreach (var block in Model.CourseBlocks)
-    {
-        <tr>
-            <td>@block.Title</td>
-            <td>@block.Price</td>
-            <td>@block.Modules.Count</td>
-            <td>
-                <a asp-page="Edit" asp-route-id="@block.Id">Upravit</a> |
-                <a asp-page="Details" asp-route-id="@block.Id">Detail</a> |
-                <a asp-page="Delete" asp-route-id="@block.Id">Smazat</a>
-            </td>
-        </tr>
-    }
-    </tbody>
-</table>
+<section class="admin-page-header">
+    <div class="admin-page-header__title">
+        <h1>Bloky kurzů</h1>
+    </div>
+    <div class="admin-page-header__actions">
+        <a asp-page="Create" class="btn btn-admin-primary">Vytvořit nový</a>
+    </div>
+</section>
+
+<div class="admin-table-wrapper table-responsive">
+    <table class="table admin-table align-middle mb-0">
+        <thead>
+            <tr>
+                <th scope="col">Název</th>
+                <th scope="col">Cena</th>
+                <th scope="col">Moduly</th>
+                <th scope="col" class="text-end">Akce</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var block in Model.CourseBlocks)
+        {
+            <tr>
+                <td>@block.Title</td>
+                <td>@block.Price</td>
+                <td>@block.Modules.Count</td>
+                <td class="text-end">
+                    <div class="admin-table-actions justify-content-end">
+                        <a asp-page="Edit" asp-route-id="@block.Id" class="btn btn-sm btn-admin-ghost">Upravit</a>
+                        <a asp-page="Details" asp-route-id="@block.Id" class="btn btn-sm btn-admin-ghost">Detail</a>
+                        <a asp-page="Delete" asp-route-id="@block.Id" class="btn btn-sm btn-admin-warning">Smazat</a>
+                    </div>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>

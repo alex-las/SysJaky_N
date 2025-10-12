@@ -68,7 +68,7 @@ else
             <td>@item.AppliesToCourse?.Title ?? "Všechny kurzy"</td>
             <td>
                 <a class="btn btn-sm btn-outline-secondary" asp-page="Edit" asp-route-id="@item.Id">Upravit</a>
-                <a class="btn btn-sm btn-outline-danger" asp-page="Delete" asp-route-id="@item.Id">Smazat</a>
+                <a class="btn btn-sm btn-admin-warning" asp-page="Delete" asp-route-id="@item.Id">Smazat</a>
             </td>
         </tr>
     }
