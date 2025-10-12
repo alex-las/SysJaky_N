@@ -71,18 +71,17 @@ body {
   text-decoration: none;
 }
 
-.icon-box,
-.brand-icon {
+.icon-box {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 2.5rem;
   height: 2.5rem;
   border-radius: 1rem;
-  background: linear-gradient(135deg, rgba(94, 234, 212, 0.9) 0%, rgba(99, 102, 241, 0.95) 100%);
-  color: #ffffff;
+  background: linear-gradient(135deg, #fde047 0%, #f59e0b 100%);
+  color: #1f2937;
   font-size: 1.1rem;
-  box-shadow: 0 12px 30px rgba(79, 70, 229, 0.35);
+  box-shadow: 0 12px 30px rgba(234, 179, 8, 0.35);
 }
 
 #mainNav .primary-nav .navbar-nav {
@@ -182,11 +181,12 @@ body {
   );
 }
 
+
 .site-footer {
   position: relative;
   margin-top: clamp(4rem, 12vw, 6rem);
-  background-color: var(--color-neutral-900);
-  color: #fff;
+  background-color: #1b1f27;
+  color: #cbd5f5;
   overflow: hidden;
 }
 
@@ -195,18 +195,8 @@ body {
   z-index: 2;
 }
 
-.footer-gradient {
-  position: absolute;
-  inset: -20% -30% auto -30%;
-  height: 400px;
-  background: rgba(42, 116, 255, 0.22);
-  filter: blur(120px);
-  opacity: 0.6;
-  z-index: 1;
-}
-
 .footer-heading {
-  color: rgba(255, 255, 255, 0.92);
+  color: #e2e8f0;
   font-weight: 600;
   margin-bottom: 1rem;
   letter-spacing: 0.02em;
@@ -214,8 +204,20 @@ body {
 }
 
 .footer-list li {
-  color: rgba(255, 255, 255, 0.7);
+  color: #94a3b8;
   margin-bottom: 0.65rem;
+}
+
+.site-footer a {
+  color: #e2e8f0;
+  text-decoration: none;
+  transition: color 0.2s ease, opacity 0.2s ease;
+}
+
+.site-footer a:hover,
+.site-footer a:focus-visible {
+  color: #facc15;
+  opacity: 1;
 }
 
 .footer-list li:last-child {
@@ -223,11 +225,15 @@ body {
 }
 
 .footer-bottom {
-  border-top: 1px solid rgba(148, 163, 184, 0.2);
+  border-top: 1px solid rgba(148, 163, 184, 0.25);
 }
 
 .text-white-75 {
-  color: rgba(255, 255, 255, 0.75) !important;
+  color: #cbd5f5 !important;
+}
+
+.text-white-50 {
+  color: #94a3b8 !important;
 }
 
 @media (max-width: 991.98px) {
@@ -235,7 +241,7 @@ body {
     text-align: center;
   }
 
-  .site-footer .brand-icon {
+  .site-footer .icon-box {
     margin-inline: auto;
   }
 }
