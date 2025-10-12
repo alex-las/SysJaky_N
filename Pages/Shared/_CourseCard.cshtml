@@ -12,6 +12,29 @@
     var previewText = string.IsNullOrWhiteSpace(Model.PreviewContent)
         ? Localizer["PreviewFallback"].Value ?? Localizer["PreviewLabel"].Value ?? "Rychlý náhled"
         : Model.PreviewContent;
+    var levelValue = Model.Level ?? string.Empty;
+    var levelClasses = "course-level";
+    var levelNormalized = levelValue.ToLowerInvariant();
+    if (levelNormalized.Contains("advanced") || levelNormalized.Contains("expert") || levelNormalized.Contains("pokroč"))
+    {
+        levelClasses += " course-level-featured";
+    }
+
+    var modeValue = Model.Mode ?? string.Empty;
+    var modeNormalized = modeValue.ToLowerInvariant();
+    var formatModifier = modeNormalized.Contains("hybrid")
+        ? "course-format--hybrid"
+        : modeNormalized.Contains("online")
+            ? "course-format--online"
+            : "course-format--onsite";
+    var formatClasses = $"course-format {formatModifier}";
+    var formatIcon = modeNormalized.Contains("online")
+        ? "bi-wifi"
+        : modeNormalized.Contains("hybrid")
+            ? "bi-arrows-move"
+            : "bi-geo";
+    var formatAria = string.Format(Localizer["ModeAria", modeValue].Value ?? "Režim: {0}", modeValue);
+    var levelAria = string.Format(Localizer["LevelAria", levelValue].Value ?? "Úroveň: {0}", levelValue);
     string GetIsoColor(string code) => code switch
     {
         "9001" => "#0d6efd",
@@ -83,17 +106,26 @@
   </div>
 
   <div class="course-card__body d-flex flex-column flex-grow-1 gap-3 p-3">
-    <header>
-      <h3 id="@headingId" class="h5 mb-1 course-card__title">@Model.Title</h3>
-      <span class="course-card__countdown-badge badge rounded-pill bg-primary-subtle text-primary-emphasis small fw-semibold d-inline-flex align-items-center gap-1 mt-1 d-none"
-            data-course-countdown
-            data-threshold-days="14"
-            data-start-date="@Model.Date.ToString("o")"
-            data-label-template="@countdownTemplate"
-            data-label-today="@countdownTodayLabel">
-        <i class="bi bi-hourglass-split" aria-hidden="true"></i>
-        <span data-countdown-text></span>
-      </span>
+    <header class="d-flex flex-column gap-2">
+      <div class="d-flex flex-wrap align-items-start justify-content-between gap-2">
+        <h3 id="@headingId" class="h5 mb-0 course-card__title">@Model.Title</h3>
+        <span class="@formatClasses" aria-label="@formatAria">
+          <i class="bi @formatIcon" aria-hidden="true"></i>
+          <span>@modeValue</span>
+        </span>
+      </div>
+      <div class="d-flex flex-wrap align-items-center gap-2">
+        <span class="@levelClasses" aria-label="@levelAria">@levelValue</span>
+        <span class="course-card__countdown-badge badge rounded-pill bg-primary-subtle text-primary-emphasis small fw-semibold d-inline-flex align-items-center gap-1 d-none"
+              data-course-countdown
+              data-threshold-days="14"
+              data-start-date="@Model.Date.ToString("o")"
+              data-label-template="@countdownTemplate"
+              data-label-today="@countdownTodayLabel">
+          <i class="bi bi-hourglass-split" aria-hidden="true"></i>
+          <span data-countdown-text></span>
+        </span>
+      </div>
       @if (!string.IsNullOrWhiteSpace(Model.Description))
       {
         <p class="course-card__excerpt text-muted mb-0">@Model.Description</p>
@@ -101,14 +133,6 @@
     </header>
 
     <div class="course-card__meta d-flex flex-wrap gap-2" aria-label="@Localizer["MetaInformation"].Value">
-      <span class="course-card__meta-item" aria-label="@string.Format(Localizer["ModeAria", Model.Mode].Value ?? "Režim: {0}", Model.Mode)">
-        <i class="bi bi-broadcast" aria-hidden="true"></i>
-        <span>@Model.Mode</span>
-      </span>
-      <span class="course-card__meta-item" aria-label="@string.Format(Localizer["LevelAria", Model.Level].Value ?? "Úroveň: {0}", Model.Level)">
-        <i class="bi bi-bar-chart" aria-hidden="true"></i>
-        <span>@Model.Level</span>
-      </span>
       <span class="course-card__meta-item" aria-label="@string.Format(Localizer["TypeAria", Model.Type].Value ?? "Typ: {0}", Model.Type)">
         <i class="bi bi-geo-alt" aria-hidden="true"></i>
         <span>@Model.Type</span>
@@ -152,10 +176,10 @@
         <label class="form-check-label small" for="cmp_@Model.Id">@Localizer["Compare"]</label>
       </div>
       <div class="course-card__actions d-flex flex-wrap gap-2">
-        <a class="btn btn-outline-secondary btn-sm" href="@Model.DetailsUrl">@Localizer["Details"]</a>
+        <a class="btn btn-course-detail" href="@Model.DetailsUrl">@Localizer["Details"]</a>
         <form method="post" action="@Model.AddToCartUrl" class="d-inline">
           <input type="hidden" name="courseId" value="@Model.Id" />
-          <button type="submit" class="btn btn-primary btn-sm" aria-label="@Localizer["EnrollAriaLabel", Model.Title]">@Localizer["Enroll"]</button>
+          <button type="submit" class="btn btn-course-detail btn-course-detail--secondary" aria-label="@Localizer["EnrollAriaLabel", Model.Title]">@Localizer["Enroll"]</button>
         </form>
       </div>
     </div>

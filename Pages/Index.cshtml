@@ -184,31 +184,48 @@
                 {
                     foreach (var course in Model.PicksForPersona)
                     {
+                        var levelClasses = "course-level";
+                        var levelNormalized = (course.Level ?? string.Empty).ToLowerInvariant();
+                        if (levelNormalized.Contains("advanced") ||
+                            levelNormalized.Contains("expert") ||
+                            levelNormalized.Contains("pokroč"))
+                        {
+                            levelClasses += " course-level-featured";
+                        }
+
+                        var modeNormalized = (course.Mode ?? string.Empty).ToLowerInvariant();
+                        var formatModifier = modeNormalized.Contains("hybrid")
+                            ? "course-format--hybrid"
+                            : modeNormalized.Contains("online")
+                                ? "course-format--online"
+                                : "course-format--onsite";
+                        var formatClasses = $"course-format {formatModifier}";
+
                         <article class="course-card" data-reveal>
                             <div class="course-card__top">
                                 <div>
                                     <h3>@course.Title</h3>
-                                    <span class="badge">@course.Level</span>
+                                    <span class="@levelClasses">@course.Level</span>
                                 </div>
-                                <span class="course-card__mode">
-                                    <i class="bi @(course.Mode.Contains("online", StringComparison.OrdinalIgnoreCase) ? "bi-wifi" : "bi-geo")" aria-hidden="true"></i>
-                                    @course.Mode
+                                <span class="@formatClasses">
+                                    <i class="bi @(modeNormalized.Contains("online") ? "bi-wifi" : modeNormalized.Contains("hybrid") ? "bi-arrows-move" : "bi-geo")" aria-hidden="true"></i>
+                                    <span>@course.Mode</span>
                                 </span>
                             </div>
                             <ul class="course-card__meta">
-                                <li><i class="bi bi-geo-alt" aria-hidden="true"></i>@course.Type</li>
-                                <li><i class="bi bi-calendar-event" aria-hidden="true"></i>@course.DateDisplay</li>
+                                <li class="course-card__meta-item"><i class="bi bi-geo-alt" aria-hidden="true"></i><span>@course.Type</span></li>
+                                <li class="course-card__meta-item"><i class="bi bi-calendar-event" aria-hidden="true"></i><span>@course.DateDisplay</span></li>
                             </ul>
                             <div class="course-card__footer">
-                                <div>
+                                <div class="course-card__details">
                                     <span class="course-card__duration">@course.DurationDisplay</span>
                                     <span class="course-card__price">@course.PriceDisplay</span>
                                 </div>
                                 <div class="course-card__actions">
-                                    <a class="btn btn-outline-primary" href="@course.DetailsUrl">@T["CourseDetailsCTA"]</a>
+                                    <a class="btn btn-course-detail" href="@course.DetailsUrl">@T["CourseDetailsCTA"]</a>
                                     <form method="post" action="@course.AddToCartUrl" class="d-inline">
                                         <input type="hidden" name="courseId" value="@course.Id" />
-                                        <button type="submit" class="btn btn-primary hero__cta">@T["CourseEnrollCTA"]</button>
+                                        <button type="submit" class="btn btn-course-detail btn-course-detail--secondary">@T["CourseEnrollCTA"]</button>
                                     </form>
                                 </div>
                             </div>
