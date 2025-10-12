@@ -41,41 +41,38 @@
 }
 
 <div class="home-experience" data-page="landing">
-    <section class="hero" id="hero">
-        <div class="hero__backdrop" aria-hidden="true"></div>
-        <div class="hero__light hero__light--left" aria-hidden="true"></div>
-        <div class="hero__light hero__light--right" aria-hidden="true"></div>
-        <div class="hero__inner">
-            <div class="hero__content" data-reveal>
-                <span class="hero__badge">
+    <section class="hero-section" id="hero">
+        <div class="hero-grid">
+            <div class="hero-content" data-reveal>
+                <span class="hero-badge badge badge-pill gradient-blue-cyan text-white">
                     <i class="bi bi-stars" aria-hidden="true"></i>
                     @T["HeroUSP2"]
                 </span>
-                <h1>@T["HeroMainHeading"]</h1>
-                <p class="hero__lead">@T["HeroSubheading"]</p>
+                <h1 class="hero-title">@T["HeroMainHeading"]</h1>
+                <p class="hero-lead">@T["HeroSubheading"]</p>
 
-                <div class="hero__usp">
-                    <span>
+                <div class="hero-highlights">
+                    <span class="hero-highlight">
                         <i class="bi bi-patch-check" aria-hidden="true"></i>
                         @T["HeroUSP1"]
                     </span>
-                    <span>
+                    <span class="hero-highlight">
                         <i class="bi bi-people" aria-hidden="true"></i>
                         @T["HeroUSP3"]
                     </span>
                 </div>
 
-                <div class="hero__actions">
-                    <a class="btn btn-primary hero__cta" href="/Courses/Index">
+                <div class="hero-actions">
+                    <a class="btn btn-gradient-cta hero-cta" href="/Courses/Index">
                         <span>@T["HeroPrimaryCTA"]</span>
                         <i class="bi bi-arrow-right" aria-hidden="true"></i>
                     </a>
-                    <a class="btn btn-outline-light hero__secondary" href="/Corporate">
+                    <a class="btn btn-ghost hero-secondary" href="/Corporate">
                         @T["HeroSecondaryCTA"]
                     </a>
                 </div>
 
-                <div class="hero__chips" aria-label="@T["HeroTitle"]">
+                <div class="hero-chips chips" aria-label="@T["HeroTitle"]">
                     <span class="chip">@T["ChipOnline"]</span>
                     <span class="chip">@T["ChipRetraining"]</span>
                     <span class="chip">@T["ChipCertificate"]</span>
@@ -84,18 +81,18 @@
                 </div>
             </div>
 
-            <aside class="hero__visual" aria-label="@T["HeroSearchLabel"]" data-float>
-                <div class="hero__card" data-reveal data-reveal-delay="150">
-                    <div class="hero__card-header">
-                        <div class="hero__card-badge">
+            <aside class="hero-visual" aria-label="@T["HeroSearchLabel"]" data-float>
+                <div class="hero-card" data-reveal data-reveal-delay="150">
+                    <div class="hero-card-header">
+                        <div class="hero-card-badge">
                             <i class="bi bi-shield-check" aria-hidden="true"></i>
                         </div>
                         <div>
-                            <div class="hero__card-eyebrow">@T["TrustGuarantee"]</div>
-                            <div class="hero__card-title">ISO 9001</div>
+                            <div class="hero-card-eyebrow">@T["TrustGuarantee"]</div>
+                            <div class="hero-card-title">ISO 9001</div>
                         </div>
                     </div>
-                    <div class="hero__card-progress">
+                    <div class="hero-card-progress">
                         <div class="progress-group">
                             <div class="progress-label">@T["HeroUSP1"]</div>
                             <div class="progress-bar"><span style="--progress: 90%"></span></div>
@@ -109,7 +106,7 @@
                             <div class="progress-bar"><span style="--progress: 88%"></span></div>
                         </div>
                     </div>
-                    <dl class="hero__card-insights">
+                    <dl class="hero-card-insights">
                         <div>
                             <dt><i class="bi bi-award" aria-hidden="true"></i></dt>
                             <dd>@Html.Raw(T["TrustRating", "<strong>4.8/5</strong>"])</dd>
@@ -127,10 +124,10 @@
 
                 @if (heroMedia.Any())
                 {
-                    <div class="hero__gallery" aria-hidden="true">
+                    <div class="hero-gallery" aria-hidden="true">
                         @foreach (var media in heroMedia)
                         {
-                            <figure class="hero__gallery-item hero__gallery-item--@media.Accent" data-parallax-layer>
+                            <figure class="hero-gallery-item hero-gallery-item--@media.Accent" data-parallax-layer>
                                 <img src="@media.Image" alt="" loading="lazy" decoding="async" />
                                 <figcaption>@media.Name</figcaption>
                             </figure>
@@ -140,10 +137,10 @@
             </aside>
         </div>
 
-        <div class="hero__search" data-reveal data-reveal-delay="200">
+        <div class="hero-search" data-reveal data-reveal-delay="200">
             <form method="get" action="/Courses/Search" role="search">
                 <label class="visually-hidden" for="hero-search-input">@T["HeroSearchLabel"]</label>
-                <div class="hero__search-field">
+                <div class="hero-search-field">
                     <i class="bi bi-search" aria-hidden="true"></i>
                     <input type="search"
                            id="hero-search-input"
@@ -151,13 +148,13 @@
                            placeholder="@T["HeroSearchPlaceholder"]"
                            aria-label="@T["HeroSearchAriaLabel"]" />
                 </div>
-                <button type="submit" class="btn btn-primary hero__search-button">
+                <button type="submit" class="btn btn-gradient-cta hero-search-button">
                     @T["HeroSubmit"]
                 </button>
             </form>
         </div>
 
-        <div class="hero__metrics" aria-label="@T["WhyChooseHeading"]">
+        <div class="hero-metrics" aria-label="@T["WhyChooseHeading"]">
             @foreach (var metric in Model.HeroMetrics)
             {
                 var revealDelayAttribute = metric.RevealDelay > 0
