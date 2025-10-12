@@ -226,6 +226,14 @@ document.addEventListener('DOMContentLoaded', () => {
             navCollapse.addEventListener('shown.bs.collapse', updateNavOffset);
             navCollapse.addEventListener('hidden.bs.collapse', updateNavOffset);
         }
+
+        const updateNavScrolledState = () => {
+            mainNav.classList.toggle('scrolled', window.scrollY > 50);
+        };
+
+        updateNavScrolledState();
+        window.addEventListener('scroll', updateNavScrolledState, { passive: true });
+        window.addEventListener('load', updateNavScrolledState);
     }
 
     const wishlistStorageKey = 'courseWishlist';
