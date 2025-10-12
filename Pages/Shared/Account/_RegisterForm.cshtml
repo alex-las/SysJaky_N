@@ -70,7 +70,7 @@
     {
         <div class="mb-3">
             <label class="form-label" for="@referralId">@Localizer[Model.ReferralCodeLabelKey]</label>
-            <input class="form-control" asp-for="Input.ReferralCode" id="@referralId" />
+            <input class="form-control form-control-warning" asp-for="Input.ReferralCode" id="@referralId" />
             <span class="text-danger" asp-validation-for="Input.ReferralCode"></span>
         </div>
     }
