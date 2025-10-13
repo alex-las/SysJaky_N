@@ -227,13 +227,6 @@ document.addEventListener('DOMContentLoaded', () => {
             navCollapse.addEventListener('hidden.bs.collapse', updateNavOffset);
         }
 
-        const updateNavScrolledState = () => {
-            mainNav.classList.toggle('scrolled', window.scrollY > 50);
-        };
-
-        updateNavScrolledState();
-        window.addEventListener('scroll', updateNavScrolledState, { passive: true });
-        window.addEventListener('load', updateNavScrolledState);
     }
 
     const wishlistStorageKey = 'courseWishlist';
@@ -552,16 +545,28 @@ document.addEventListener('DOMContentLoaded', () => {
         activateStep(activeIndex);
     };
 
-    const mainNav = document.getElementById('mainNav');
-    if (mainNav) {
-        const toggleNavScrolled = () => {
-            const shouldBeScrolled = window.scrollY > 24;
-            mainNav.classList.toggle('scrolled', shouldBeScrolled);
-        };
-
-        toggleNavScrolled();
-        window.addEventListener('scroll', toggleNavScrolled, { passive: true });
-    }
-
     initCertificationTimeline();
 });
+// Scroll efekt na navbar
+(() => {
+    const initializeNavScrollEffect = () => {
+        const mainNav = document.getElementById('mainNav');
+        if (!mainNav) {
+            return;
+        }
+
+        const toggleScrolledClass = () => {
+            mainNav.classList.toggle('scrolled', window.scrollY > 50);
+        };
+
+        toggleScrolledClass();
+        window.addEventListener('scroll', toggleScrolledClass, { passive: true });
+        window.addEventListener('load', toggleScrolledClass);
+    };
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initializeNavScrollEffect, { once: true });
+    } else {
+        initializeNavScrollEffect();
+    }
+})();
