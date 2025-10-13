@@ -6,36 +6,11 @@
 @inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer T
 @inject IStringLocalizer<CompanyContactResources> ContactResources
 @inject SysJaky_N.Services.IsoStandards.IIsoSpecializationMetadataProvider IsoMetadataProvider
-@{ 
+@{
     ViewData["Title"] = T["Title"];
     ViewData["AppContentClasses"] = "container-fluid px-0";
 
     var specializations = IsoMetadataProvider.GetAll();
-
-    var heroMediaSources = new Dictionary<string, string>
-    {
-        ["ISO9001"] = Url.Content("~/img/articles/iso9001-preparation.svg"),
-        ["ISO14001"] = Url.Content("~/img/articles/process-management.svg"),
-        ["ISOIEC17025"] = Url.Content("~/img/articles/internal-audit.svg"),
-        ["ISO27001"] = Url.Content("~/img/articles/cert-vs-accred.svg"),
-        ["ISO45001"] = Url.Content("~/img/articles/automotive-iso.svg")
-    };
-
-    var heroMedia = specializations
-        .Where(item => heroMediaSources.ContainsKey(item.Key))
-        .Take(3)
-        .Select((item, index) => new
-        {
-            item.Name,
-            Image = heroMediaSources[item.Key],
-            Accent = index switch
-            {
-                0 => "primary",
-                1 => "secondary",
-                _ => "tertiary"
-            }
-        })
-        .ToList();
 }
 
 @section Head {
@@ -44,19 +19,61 @@
 
 <div class="home-experience" data-page="landing">
     <section class="hero-section" id="hero">
+        <div class="hero-bubble hero-bubble--primary" aria-hidden="true"></div>
+        <div class="hero-bubble hero-bubble--secondary" aria-hidden="true"></div>
+        <div class="hero-bubble hero-bubble--tertiary" aria-hidden="true"></div>
+
         <div class="hero-grid">
             <div class="hero-content" data-reveal>
-                <span class="hero-badge badge badge-pill gradient-blue-cyan text-white">
+                <span class="hero-badge">
                     <i class="bi bi-stars" aria-hidden="true"></i>
                     @T["HeroUSP2"]
                 </span>
-                <h1 class="hero-title">@T["HeroMainHeading"]</h1>
+                <h1 class="hero-title"
+                    x-data="{
+                        phrases: ['@T["HeroMainHeading"]'],
+                        displayText: '',
+                        phraseIndex: 0,
+                        charIndex: 0,
+                        typing: true,
+                        type() {
+                            const current = this.phrases[this.phraseIndex];
+                            if (this.typing) {
+                                if (this.charIndex <= current.length) {
+                                    this.displayText = current.substring(0, this.charIndex++);
+                                    setTimeout(() => this.type(), 55);
+                                    return;
+                                }
+                                this.typing = false;
+                                setTimeout(() => this.type(), 2200);
+                                return;
+                            }
+
+                            if (this.charIndex >= 0) {
+                                this.displayText = current.substring(0, this.charIndex--);
+                                setTimeout(() => this.type(), 45);
+                                return;
+                            }
+
+                            this.typing = true;
+                            this.phraseIndex = (this.phraseIndex + 1) % this.phrases.length;
+                            setTimeout(() => this.type(), 300);
+                        }
+                    }"
+                    x-init="type()"
+                    x-text="displayText">
+                    @T["HeroMainHeading"]
+                </h1>
                 <p class="hero-lead">@T["HeroSubheading"]</p>
 
                 <div class="hero-highlights">
                     <span class="hero-highlight">
                         <i class="bi bi-patch-check" aria-hidden="true"></i>
                         @T["HeroUSP1"]
+                    </span>
+                    <span class="hero-highlight">
+                        <i class="bi bi-award" aria-hidden="true"></i>
+                        @T["HeroUSP2"]
                     </span>
                     <span class="hero-highlight">
                         <i class="bi bi-people" aria-hidden="true"></i>
@@ -70,104 +87,34 @@
                         <i class="bi bi-arrow-right" aria-hidden="true"></i>
                     </a>
                     <a class="btn btn-ghost hero-secondary" asp-page="/CorporateInquiry">
-                        @T["HeroSecondaryCTA"]
+                        <i class="bi bi-chat-dots" aria-hidden="true"></i>
+                        <span>@T["HeroSecondaryCTA"]</span>
                     </a>
                 </div>
 
-                <div class="hero-chips chips" aria-label="@T["HeroTitle"]">
-                    <span class="chip">@T["ChipOnline"]</span>
-                    <span class="chip">@T["ChipRetraining"]</span>
-                    <span class="chip">@T["ChipCertificate"]</span>
-                    <span class="chip">@T["ChipAccreditation"]</span>
-                    <span class="chip">@T["ChipInternalAudits"]</span>
+                <div class="hero-chips" aria-label="@T["HeroTitle"]">
+                    <a class="chip" href="/Courses/Index?Mode=Online">
+                        <i class="bi bi-wifi" aria-hidden="true"></i>
+                        @T["ChipOnline"]
+                    </a>
+                    <a class="chip" href="/Courses/Index?CourseGroupId=REKVAL">
+                        <i class="bi bi-mortarboard" aria-hidden="true"></i>
+                        @T["ChipRetraining"]
+                    </a>
+                    <a class="chip" href="/Courses/Index?HasCertificate=true">
+                        <i class="bi bi-patch-check" aria-hidden="true"></i>
+                        @T["ChipCertificate"]
+                    </a>
+                    <a class="chip" href="/Courses/Index?q=akreditace">
+                        <i class="bi bi-diagram-3" aria-hidden="true"></i>
+                        @T["ChipAccreditation"]
+                    </a>
+                    <a class="chip" href="/Courses/Index?q=intern%C3%AD%20audit">
+                        <i class="bi bi-search" aria-hidden="true"></i>
+                        @T["ChipInternalAudits"]
+                    </a>
                 </div>
             </div>
-
-            <aside class="hero-visual" aria-label="@T["HeroSearchLabel"]" data-float>
-                <div class="hero-card" data-reveal data-reveal-delay="150">
-                    <div class="hero-card-header">
-                        <div class="hero-card-badge">
-                            <i class="bi bi-shield-check" aria-hidden="true"></i>
-                        </div>
-                        <div>
-                            <div class="hero-card-eyebrow">@T["TrustGuarantee"]</div>
-                            <div class="hero-card-title">ISO 9001</div>
-                        </div>
-                    </div>
-                    <div class="hero-card-progress">
-                        <div class="progress-group">
-                            <div class="progress-label">@T["HeroUSP1"]</div>
-                            <div class="progress-bar"><span style="--progress: 90%"></span></div>
-                        </div>
-                        <div class="progress-group">
-                            <div class="progress-label">@T["HeroUSP2"]</div>
-                            <div class="progress-bar"><span style="--progress: 80%"></span></div>
-                        </div>
-                        <div class="progress-group">
-                            <div class="progress-label">@T["HeroUSP3"]</div>
-                            <div class="progress-bar"><span style="--progress: 88%"></span></div>
-                        </div>
-                    </div>
-                    <dl class="hero-card-insights">
-                        <div>
-                            <dt><i class="bi bi-award" aria-hidden="true"></i></dt>
-                            <dd>@Html.Raw(T["TrustRating", "<strong>4.8/5</strong>"])</dd>
-                        </div>
-                        <div>
-                            <dt><i class="bi bi-people" aria-hidden="true"></i></dt>
-                            <dd>@Html.Raw(T["TrustGraduates", "<strong>10 000+</strong>"])</dd>
-                        </div>
-                        <div>
-                            <dt><i class="bi bi-patch-check" aria-hidden="true"></i></dt>
-                            <dd>@T["TrustCertificate"]</dd>
-                        </div>
-                    </dl>
-                </div>
-
-                @if (heroMedia.Any())
-                {
-                    <div class="hero-gallery" aria-hidden="true">
-                        @foreach (var media in heroMedia)
-                        {
-                            <figure class="hero-gallery-item hero-gallery-item--@media.Accent" data-parallax-layer>
-                                <img src="@media.Image" alt="" loading="lazy" decoding="async" />
-                                <figcaption>@media.Name</figcaption>
-                            </figure>
-                        }
-                    </div>
-                }
-            </aside>
-        </div>
-
-        <div class="hero-search" data-reveal data-reveal-delay="200">
-            <form method="get" action="/Courses/Search" role="search">
-                <label class="visually-hidden" for="hero-search-input">@T["HeroSearchLabel"]</label>
-                <div class="hero-search-field">
-                    <i class="bi bi-search" aria-hidden="true"></i>
-                    <input type="search"
-                           id="hero-search-input"
-                           name="query"
-                           placeholder="@T["HeroSearchPlaceholder"]"
-                           aria-label="@T["HeroSearchAriaLabel"]" />
-                </div>
-                <button type="submit" class="btn btn-gradient-cta hero-search-button">
-                    @T["HeroSubmit"]
-                </button>
-            </form>
-        </div>
-
-        <div class="hero-metrics" aria-label="@T["WhyChooseHeading"]">
-            @foreach (var metric in Model.HeroMetrics)
-            {
-                var revealDelayAttribute = metric.RevealDelay > 0
-                    ? $" data-reveal-delay=\"{metric.RevealDelay}\""
-                    : string.Empty;
-
-                <article data-reveal@revealDelayAttribute aria-label="@metric.AriaLabel">
-                    <span class="metric-value">@metric.Value</span>
-                    <span class="metric-label">@metric.Label</span>
-                </article>
-            }
         </div>
     </section>
 
