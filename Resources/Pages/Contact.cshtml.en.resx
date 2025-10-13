@@ -24,6 +24,9 @@
   <data name="MapTitle" xml:space="preserve">
     <value>Map of our office location</value>
   </data>
+  <data name="OfficeAddressLabel" xml:space="preserve">
+    <value>Office address</value>
+  </data>
   <data name="Submit" xml:space="preserve">
     <value>Send</value>
   </data>
