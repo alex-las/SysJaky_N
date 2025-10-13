@@ -15,4 +15,28 @@
   <data name="Title" xml:space="preserve">
     <value>Home</value>
   </data>
+  <data name="MetricExperienceLabel" xml:space="preserve">
+    <value>Years of experience</value>
+  </data>
+  <data name="MetricExperienceAriaLabel" xml:space="preserve">
+    <value>More than {0} years of experience in quality systems</value>
+  </data>
+  <data name="MetricClientsLabel" xml:space="preserve">
+    <value>Satisfied clients</value>
+  </data>
+  <data name="MetricClientsAriaLabel" xml:space="preserve">
+    <value>More than {0} satisfied clients</value>
+  </data>
+  <data name="MetricCoursesLabel" xml:space="preserve">
+    <value>Completed trainings</value>
+  </data>
+  <data name="MetricCoursesAriaLabel" xml:space="preserve">
+    <value>More than {0} completed trainings</value>
+  </data>
+  <data name="MetricInstructorsLabel" xml:space="preserve">
+    <value>Certified instructors</value>
+  </data>
+  <data name="MetricInstructorsAriaLabel" xml:space="preserve">
+    <value>More than {0} certified instructors</value>
+  </data>
 </root>
