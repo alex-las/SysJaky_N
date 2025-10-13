@@ -1,28 +1,29 @@
 @page "/StyleGuide"
 @using Microsoft.AspNetCore.Authorization
 @using SysJaky_N.Authorization
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
 @attribute [Authorize(Policy = AuthorizationPolicies.AdminOnly)]
 @{
-    ViewData["Title"] = "Design systém";
+    ViewData["Title"] = Localizer["Title"];
 }
 
 <div class="container-xxl py-5">
     <header class="mb-5 pb-4 border-bottom">
-        <p class="text-uppercase text-muted small fw-semibold mb-2">Pouze pro interní použití</p>
-        <h1 class="display-5 fw-semibold mb-3">Style Guide &amp; design systém</h1>
-        <p class="lead mb-0">Aktuální živá dokumentace základních prvků front-end knihovny SysJaky. Stránka je dostupná pouze správcům a používá reálné komponenty z produkčního projektu.</p>
+        <p class="text-uppercase text-muted small fw-semibold mb-2">@Localizer["HeaderTagline"]</p>
+        <h1 class="display-5 fw-semibold mb-3">@Localizer["HeaderHeading"]</h1>
+        <p class="lead mb-0">@Localizer["HeaderDescription"]</p>
     </header>
 
     <section id="colors" class="mb-5">
-        <h2 class="h3 mb-4">1. Barevná paleta</h2>
+        <h2 class="h3 mb-4">@Localizer["ColorsHeading"]</h2>
         <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-5 g-4">
             <div class="col">
                 <div class="border rounded-3 h-100">
                     <div class="ratio ratio-16x9 rounded-top" style="background-color: var(--color-primary-600);"></div>
                     <div class="p-3">
-                        <h3 class="h5 mb-1">Core Blue</h3>
-                        <p class="text-muted small mb-2">#0B4AE6</p>
-                        <p class="mb-0">Primární brandová modrá pro CTA prvky, hlavní navigaci a hero gradienty.</p>
+                        <h3 class="h5 mb-1">@Localizer["ColorCoreBlueTitle"]</h3>
+                        <p class="text-muted small mb-2">@Localizer["ColorCoreBlueHex"]</p>
+                        <p class="mb-0">@Localizer["ColorCoreBlueDescription"]</p>
                     </div>
                 </div>
             </div>
@@ -30,9 +31,9 @@
                 <div class="border rounded-3 h-100">
                     <div class="ratio ratio-16x9 rounded-top" style="background-color: var(--color-accent-500);"></div>
                     <div class="p-3">
-                        <h3 class="h5 mb-1">Signal Yellow</h3>
-                        <p class="text-muted small mb-2">#F7B500</p>
-                        <p class="mb-0">Podpůrná barva pro zvýraznění kroků, badge a akcentované ikony.</p>
+                        <h3 class="h5 mb-1">@Localizer["ColorSignalYellowTitle"]</h3>
+                        <p class="text-muted small mb-2">@Localizer["ColorSignalYellowHex"]</p>
+                        <p class="mb-0">@Localizer["ColorSignalYellowDescription"]</p>
                     </div>
                 </div>
             </div>
@@ -40,9 +41,9 @@
                 <div class="border rounded-3 h-100">
                     <div class="ratio ratio-16x9 rounded-top" style="background-color: var(--color-neutral-200);"></div>
                     <div class="p-3">
-                        <h3 class="h5 mb-1">Light Grey</h3>
-                        <p class="text-muted small mb-2">#D9DDE2</p>
-                        <p class="mb-0">Sekundární pozadí pro tabulky, oddělovací bloky a jemné rámečky.</p>
+                        <h3 class="h5 mb-1">@Localizer["ColorLightGreyTitle"]</h3>
+                        <p class="text-muted small mb-2">@Localizer["ColorLightGreyHex"]</p>
+                        <p class="mb-0">@Localizer["ColorLightGreyDescription"]</p>
                     </div>
                 </div>
             </div>
@@ -50,9 +51,9 @@
                 <div class="border rounded-3 h-100">
                     <div class="ratio ratio-16x9 rounded-top" style="background-color: var(--surface-page);"></div>
                     <div class="p-3">
-                        <h3 class="h5 mb-1">Ivory Base</h3>
-                        <p class="text-muted small mb-2">#F4F2E7</p>
-                        <p class="mb-0">Výchozí stránkové pozadí a jemné zvýraznění sekcí s větší plochou.</p>
+                        <h3 class="h5 mb-1">@Localizer["ColorIvoryBaseTitle"]</h3>
+                        <p class="text-muted small mb-2">@Localizer["ColorIvoryBaseHex"]</p>
+                        <p class="mb-0">@Localizer["ColorIvoryBaseDescription"]</p>
                     </div>
                 </div>
             </div>
@@ -60,9 +61,9 @@
                 <div class="border rounded-3 h-100">
                     <div class="ratio ratio-16x9 rounded-top" style="background-color: var(--color-neutral-900);"></div>
                     <div class="p-3">
-                        <h3 class="h5 mb-1">Anthracite</h3>
-                        <p class="text-muted small mb-2">#1C1F26</p>
-                        <p class="mb-0">Hlavní textová barva na světlých pozadích a kontrastní akcenty.</p>
+                        <h3 class="h5 mb-1">@Localizer["ColorAnthraciteTitle"]</h3>
+                        <p class="text-muted small mb-2">@Localizer["ColorAnthraciteHex"]</p>
+                        <p class="mb-0">@Localizer["ColorAnthraciteDescription"]</p>
                     </div>
                 </div>
             </div>
@@ -70,30 +71,30 @@
     </section>
 
     <section id="typography" class="mb-5">
-        <h2 class="h3 mb-4">2. Typografie (Fraunces · Merriweather · Inter)</h2>
+        <h2 class="h3 mb-4">@Localizer["TypographyHeading"]</h2>
         <div class="row g-4">
             <div class="col-lg-6">
                 <div class="p-4 bg-white border rounded-3 h-100">
-                    <h3 class="h5">Ukázka hierarchie</h3>
-                    <p class="text-muted small">Nadpisy: Fraunces / Merriweather · Text: Inter</p>
-                    <h1 class="display-5 mb-2">Display – 48px / 1.2 / Fraunces 600</h1>
-                    <h2 class="h1 mb-2">H1 – 40px / 1.25 / Merriweather 600</h2>
-                    <h3 class="h2 mb-2">H2 – 32px / 1.3 / Merriweather 600</h3>
-                    <h4 class="h3 mb-2">H3 – 28px / 1.3 / Merriweather 500</h4>
-                    <p class="fs-5 mb-2">Lead – 20px / 1.6 / Inter 500</p>
-                    <p class="mb-2">Body – 16px / 1.6 / Inter 400</p>
-                    <p class="text-muted mb-0"><small>Caption – 14px / 1.4 / Inter 500</small></p>
+                    <h3 class="h5">@Localizer["TypographyHierarchyTitle"]</h3>
+                    <p class="text-muted small">@Localizer["TypographyHierarchyDescription"]</p>
+                    <h1 class="display-5 mb-2">@Localizer["TypographyDisplay"]</h1>
+                    <h2 class="h1 mb-2">@Localizer["TypographyH1"]</h2>
+                    <h3 class="h2 mb-2">@Localizer["TypographyH2"]</h3>
+                    <h4 class="h3 mb-2">@Localizer["TypographyH3"]</h4>
+                    <p class="fs-5 mb-2">@Localizer["TypographyLead"]</p>
+                    <p class="mb-2">@Localizer["TypographyBody"]</p>
+                    <p class="text-muted mb-0"><small>@Localizer["TypographyCaption"]</small></p>
                 </div>
             </div>
             <div class="col-lg-6">
                 <div class="p-4 bg-white border rounded-3 h-100">
-                    <h3 class="h5">Pravidla použití</h3>
+                    <h3 class="h5">@Localizer["TypographyRulesTitle"]</h3>
                     <ul class="mb-0">
-                        <li><strong>Velké nadpisy</strong> (display/h1) využívají Fraunces pro emotivní „akademický“ charakter.</li>
-                        <li><strong>H2–H4</strong> stavíme na Merriweather kvůli čitelnosti delších textových bloků.</li>
-                        <li><strong>Lead text</strong> a doprovodné perexy používají Inter 500 pro lepší rytmus.</li>
-                        <li><strong>Body text</strong> drží Inter 16px se line-height 1.6 pro komfortní čtení.</li>
-                        <li><strong>Váhy</strong>: 400 (regular), 500 (medium), 600 (semibold) – více kontrastu pouze pro CTA.</li>
+                        <li>@Html.Raw(Localizer["TypographyRule1"])</li>
+                        <li>@Html.Raw(Localizer["TypographyRule2"])</li>
+                        <li>@Html.Raw(Localizer["TypographyRule3"])</li>
+                        <li>@Html.Raw(Localizer["TypographyRule4"])</li>
+                        <li>@Html.Raw(Localizer["TypographyRule5"])</li>
                     </ul>
                 </div>
             </div>
@@ -101,18 +102,18 @@
     </section>
 
     <section id="components" class="mb-5">
-        <h2 class="h3 mb-4">3. Komponenty</h2>
+        <h2 class="h3 mb-4">@Localizer["ComponentsHeading"]</h2>
 
         <article class="mb-5">
             <header class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-3">
                 <div>
-                    <h3 class="h4 mb-1">Buttons</h3>
-                    <p class="text-muted mb-0">Používejte <code>.btn</code> se stavovými variantami pro konzistentní CTA.</p>
+                    <h3 class="h4 mb-1">@Localizer["ButtonsTitle"]</h3>
+                    <p class="text-muted mb-0">@Html.Raw(Localizer["ButtonsDescription"])</p>
                 </div>
                 <div class="d-flex flex-wrap gap-2">
-                    <button type="button" class="btn btn-primary">Primary button</button>
-                    <button type="button" class="btn btn-outline-primary">Secondary button</button>
-                    <button type="button" class="btn btn-link text-decoration-none">Ghost button</button>
+                    <button type="button" class="btn btn-primary">@Localizer["ButtonsPrimary"]</button>
+                    <button type="button" class="btn btn-outline-primary">@Localizer["ButtonsSecondary"]</button>
+                    <button type="button" class="btn btn-link text-decoration-none">@Localizer["ButtonsGhost"]</button>
                 </div>
             </header>
             <pre class="bg-dark text-white p-3 rounded-3 overflow-auto"><code>&lt;button type=&quot;button&quot; class=&quot;btn btn-primary&quot;&gt;Primary button&lt;/button&gt;
@@ -123,26 +124,26 @@
         <article class="mb-5">
             <header class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-3">
                 <div>
-                    <h3 class="h4 mb-1">Cards</h3>
-                    <p class="text-muted mb-0">Karty používají <code>.card</code> pro základ a <code>.card-hover</code> pro jemnou animaci.</p>
+                    <h3 class="h4 mb-1">@Localizer["CardsTitle"]</h3>
+                    <p class="text-muted mb-0">@Html.Raw(Localizer["CardsDescription"])</p>
                 </div>
             </header>
             <div class="row g-4 mb-3">
                 <div class="col-md-6">
                     <div class="card shadow-sm h-100">
                         <div class="card-body">
-                            <h4 class="card-title">Základní karta</h4>
-                            <p class="card-text">Text těla karty používá výchozí typografii a odstup tříd <code>.card</code>.</p>
-                            <a href="#" class="btn btn-primary btn-sm">Akce</a>
+                            <h4 class="card-title">@Localizer["CardDefaultTitle"]</h4>
+                            <p class="card-text">@Html.Raw(Localizer["CardDefaultBody"])</p>
+                            <a href="#" class="btn btn-primary btn-sm">@Localizer["CardDefaultAction"]</a>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="card card-hover h-100">
                         <div class="card-body">
-                            <h4 class="card-title">Hover varianta</h4>
-                            <p class="card-text">Třída <code>.card-hover</code> přidává zvýšení stínu a posun při hover/focus.</p>
-                            <a href="#" class="btn btn-outline-primary btn-sm">Více</a>
+                            <h4 class="card-title">@Localizer["CardHoverTitle"]</h4>
+                            <p class="card-text">@Html.Raw(Localizer["CardHoverBody"])</p>
+                            <a href="#" class="btn btn-outline-primary btn-sm">@Localizer["CardHoverAction"]</a>
                         </div>
                     </div>
                 </div>
@@ -167,21 +168,21 @@
         <article class="mb-5">
             <header class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-3">
                 <div>
-                    <h3 class="h4 mb-1">Forms</h3>
-                    <p class="text-muted mb-0">Výchozí vstupy používají <code>.form-control</code> a selekty <code>.form-select</code>.</p>
+                    <h3 class="h4 mb-1">@Localizer["FormsTitle"]</h3>
+                    <p class="text-muted mb-0">@Html.Raw(Localizer["FormsDescription"])</p>
                 </div>
             </header>
             <form class="row g-3 mb-3" novalidate>
                 <div class="col-md-6">
-                    <label for="styleGuideInput" class="form-label">Text input</label>
-                    <input type="text" class="form-control" id="styleGuideInput" placeholder="Sem napište text" />
+                    <label for="styleGuideInput" class="form-label">@Localizer["FormTextInputLabel"]</label>
+                    <input type="text" class="form-control" id="styleGuideInput" placeholder='@Localizer["FormTextInputPlaceholder"]' />
                 </div>
                 <div class="col-md-6">
-                    <label for="styleGuideSelect" class="form-label">Select input</label>
+                    <label for="styleGuideSelect" class="form-label">@Localizer["FormSelectLabel"]</label>
                     <select class="form-select" id="styleGuideSelect">
-                        <option>Možnost 1</option>
-                        <option>Možnost 2</option>
-                        <option>Možnost 3</option>
+                        <option>@Localizer["FormSelectOption1"]</option>
+                        <option>@Localizer["FormSelectOption2"]</option>
+                        <option>@Localizer["FormSelectOption3"]</option>
                     </select>
                 </div>
             </form>
@@ -197,12 +198,12 @@
         <article class="mb-5">
             <header class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-3">
                 <div>
-                    <h3 class="h4 mb-1">Chips</h3>
-                    <p class="text-muted mb-0">Mini CTA používají <code>.chip</code>; světlá varianta <code>.chip-light</code> na tmavém pozadí.</p>
+                    <h3 class="h4 mb-1">@Localizer["ChipsTitle"]</h3>
+                    <p class="text-muted mb-0">@Html.Raw(Localizer["ChipsDescription"])</p>
                 </div>
                 <div class="d-flex flex-wrap gap-2">
-                    <a class="chip" href="#">Chip</a>
-                    <a class="chip chip-light" href="#">Chip light</a>
+                    <a class="chip" href="#">@Localizer["ChipDefault"]</a>
+                    <a class="chip chip-light" href="#">@Localizer["ChipLight"]</a>
                 </div>
             </header>
             <pre class="bg-dark text-white p-3 rounded-3 overflow-auto"><code>&lt;a class=&quot;chip&quot; href=&quot;#&quot;&gt;Chip&lt;/a&gt;
@@ -212,8 +213,8 @@
         <article class="mb-5">
             <header class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-3">
                 <div>
-                    <h3 class="h4 mb-1">Icons</h3>
-                    <p class="text-muted mb-0">Bootstrap Icons z CDN – používejte <code>&lt;i class=&quot;bi bi-*&quot;&gt;</code>.</p>
+                    <h3 class="h4 mb-1">@Localizer["IconsTitle"]</h3>
+                    <p class="text-muted mb-0">@Html.Raw(Localizer["IconsDescription"])</p>
                 </div>
                 <div class="d-flex flex-wrap align-items-center gap-3 fs-3 text-primary">
                     <i class="bi bi-lightning-charge-fill" aria-hidden="true"></i>
@@ -226,16 +227,16 @@
     </section>
 
     <section id="spacing" class="mb-5">
-        <h2 class="h3 mb-4">4. Spacing scale</h2>
-        <p class="text-muted">Vychází z Bootstrap spacing utilit <code>.m|p-{breakpoint}-{0-5}</code>.</p>
+        <h2 class="h3 mb-4">@Localizer["SpacingHeading"]</h2>
+        <p class="text-muted">@Html.Raw(Localizer["SpacingDescription"])</p>
         <div class="table-responsive">
             <table class="table table-sm align-middle">
                 <thead>
                     <tr>
-                        <th>Token</th>
-                        <th>Rem</th>
-                        <th>Příklad</th>
-                        <th>Popis</th>
+                        <th>@Localizer["SpacingTableToken"]</th>
+                        <th>@Localizer["SpacingTableRem"]</th>
+                        <th>@Localizer["SpacingTableExample"]</th>
+                        <th>@Localizer["SpacingTableDescription"]</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -243,37 +244,37 @@
                         <td><code>0</code></td>
                         <td>0</td>
                         <td><code>.p-0</code></td>
-                        <td>Bez vnitřního/venkovního odsazení.</td>
+                        <td>@Localizer["SpacingRow0"]</td>
                     </tr>
                     <tr>
                         <td><code>1</code></td>
                         <td>0.25rem</td>
                         <td><code>.px-1</code></td>
-                        <td>Mikro odsazení pro skupiny prvků.</td>
+                        <td>@Localizer["SpacingRow1"]</td>
                     </tr>
                     <tr>
                         <td><code>2</code></td>
                         <td>0.5rem</td>
                         <td><code>.my-2</code></td>
-                        <td>Výchozí mezerování mezi komponentami.</td>
+                        <td>@Localizer["SpacingRow2"]</td>
                     </tr>
                     <tr>
                         <td><code>3</code></td>
                         <td>1rem</td>
                         <td><code>.p-3</code></td>
-                        <td>Standardní padding karet a sekcí.</td>
+                        <td>@Localizer["SpacingRow3"]</td>
                     </tr>
                     <tr>
                         <td><code>4</code></td>
                         <td>1.5rem</td>
                         <td><code>.pt-4</code></td>
-                        <td>Větší oddělení bloků/sekcí.</td>
+                        <td>@Localizer["SpacingRow4"]</td>
                     </tr>
                     <tr>
                         <td><code>5</code></td>
                         <td>3rem</td>
                         <td><code>.py-5</code></td>
-                        <td>Hero sekce, vertikální rytmus stránky.</td>
+                        <td>@Localizer["SpacingRow5"]</td>
                     </tr>
                 </tbody>
             </table>
@@ -281,69 +282,69 @@
     </section>
 
     <section id="breakpoints" class="mb-5">
-        <h2 class="h3 mb-4">5. Breakpoints &amp; responsive behavior</h2>
+        <h2 class="h3 mb-4">@Localizer["BreakpointsHeading"]</h2>
         <div class="table-responsive mb-3">
             <table class="table table-sm align-middle">
                 <thead>
                     <tr>
-                        <th>Breakpoint</th>
-                        <th>Šířka</th>
-                        <th>Příklad použití</th>
+                        <th>@Localizer["BreakpointsTableBreakpoint"]</th>
+                        <th>@Localizer["BreakpointsTableWidth"]</th>
+                        <th>@Localizer["BreakpointsTableUsage"]</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <td><code>xs</code></td>
                         <td>&lt;576px</td>
-                        <td>Stackované sloupce, full-width CTA.</td>
+                        <td>@Localizer["BreakpointsRowXs"]</td>
                     </tr>
                     <tr>
                         <td><code>sm</code></td>
                         <td>≥576px</td>
-                        <td><code>.row-cols-sm-2</code> pro dvousloupcové layouty.</td>
+                        <td>@Html.Raw(Localizer["BreakpointsRowSm"])</td>
                     </tr>
                     <tr>
                         <td><code>md</code></td>
                         <td>≥768px</td>
-                        <td>Navigace v řádku, formuláře ve dvou sloupcích.</td>
+                        <td>@Localizer["BreakpointsRowMd"]</td>
                     </tr>
                     <tr>
                         <td><code>lg</code></td>
                         <td>≥992px</td>
-                        <td>Vícesloupcové karty, layout <code>.container-lg</code>.</td>
+                        <td>@Html.Raw(Localizer["BreakpointsRowLg"])</td>
                     </tr>
                     <tr>
                         <td><code>xl</code></td>
                         <td>≥1200px</td>
-                        <td>Rozšířená mřížka, maximální šířka marketingových sekcí.</td>
+                        <td>@Localizer["BreakpointsRowXl"]</td>
                     </tr>
                     <tr>
                         <td><code>xxl</code></td>
                         <td>≥1400px</td>
-                        <td>Hero bloky s margin auto, jemné prázdné okraje.</td>
+                        <td>@Localizer["BreakpointsRowXxl"]</td>
                     </tr>
                 </tbody>
             </table>
         </div>
-        <p class="mb-0">Mřížka Bootstrapu umožňuje přidávat breakpointový suffix (např. <code>.col-md-6</code>). U komponent jako karty a formuláře kombinujte <code>.row</code>, <code>.col</code> a spacing utility.</p>
+        <p class="mb-0">@Html.Raw(Localizer["BreakpointsDescription"])</p>
     </section>
 
     <section id="accessibility" class="mb-5">
-        <h2 class="h3 mb-4">6. Accessibility guidelines</h2>
+        <h2 class="h3 mb-4">@Localizer["AccessibilityHeading"]</h2>
         <ul class="list-group list-group-flush">
-            <li class="list-group-item">Dodržujte kontrastní poměry: hlavní text vs. pozadí minimálně 4.5:1 (paleta výše).</li>
-            <li class="list-group-item">Vždy nastavujte <code>aria-label</code>/<code>aria-describedby</code> pro ikonická tlačítka a formuláře.</li>
-            <li class="list-group-item">Používejte <code>:focus-visible</code> styly ze <code>site.css</code> – neodstraňovat outline.</li>
-            <li class="list-group-item">Skupiny ovládacích prvků popisujte nadpisy (např. <code>&lt;legend&gt;</code>, <code>&lt;h2&gt;</code>).</li>
-            <li class="list-group-item">Interaktivní prvky (chip, card-hover) musí mít <code>role</code> a <code>tabindex</code>, pokud nejsou odkazem/tlačítkem.</li>
+            <li class="list-group-item">@Localizer["AccessibilityRule1"]</li>
+            <li class="list-group-item">@Html.Raw(Localizer["AccessibilityRule2"])</li>
+            <li class="list-group-item">@Html.Raw(Localizer["AccessibilityRule3"])</li>
+            <li class="list-group-item">@Html.Raw(Localizer["AccessibilityRule4"])</li>
+            <li class="list-group-item">@Html.Raw(Localizer["AccessibilityRule5"])</li>
         </ul>
     </section>
 
     <section id="code" class="mb-4">
-        <h2 class="h3 mb-3">7. Code snippets</h2>
-        <p class="mb-3">Pro rychlé znovupoužití můžete kopírovat kód výše uvedený v blocích. Doporučujeme udržovat komponenty v partial view (<code>Pages/Shared</code>) pro znovupoužitelnost.</p>
+        <h2 class="h3 mb-3">@Localizer["CodeHeading"]</h2>
+        <p class="mb-3">@Html.Raw(Localizer["CodeDescription"])</p>
         <div class="alert alert-info mb-0" role="note">
-            <strong>Tip:</strong> Při úpravách komponent vždy kontrolujte dostupnost v tmavém i světlém kontextu a testujte focus states.
+            <strong>@Localizer["CodeTipLabel"]</strong> @Localizer["CodeTipText"]
         </div>
     </section>
 </div>

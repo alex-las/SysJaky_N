@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Title" xml:space="preserve">
+    <value>Design System</value>
+  </data>
+  <data name="HeaderTagline" xml:space="preserve">
+    <value>Internal use only</value>
+  </data>
+  <data name="HeaderHeading" xml:space="preserve">
+    <value>Style Guide &amp; Design System</value>
+  </data>
+  <data name="HeaderDescription" xml:space="preserve">
+    <value>Live documentation of the core elements of the SysJaky front-end library. The page is available to administrators only and uses real components from the production project.</value>
+  </data>
+  <data name="ColorsHeading" xml:space="preserve">
+    <value>1. Color palette</value>
+  </data>
+  <data name="ColorCoreBlueTitle" xml:space="preserve">
+    <value>Core Blue</value>
+  </data>
+  <data name="ColorCoreBlueHex" xml:space="preserve">
+    <value>#0B4AE6</value>
+  </data>
+  <data name="ColorCoreBlueDescription" xml:space="preserve">
+    <value>Primary brand blue for CTAs, main navigation, and hero gradients.</value>
+  </data>
+  <data name="ColorSignalYellowTitle" xml:space="preserve">
+    <value>Signal Yellow</value>
+  </data>
+  <data name="ColorSignalYellowHex" xml:space="preserve">
+    <value>#F7B500</value>
+  </data>
+  <data name="ColorSignalYellowDescription" xml:space="preserve">
+    <value>Supporting color for highlighting steps, badges, and accented icons.</value>
+  </data>
+  <data name="ColorLightGreyTitle" xml:space="preserve">
+    <value>Light Grey</value>
+  </data>
+  <data name="ColorLightGreyHex" xml:space="preserve">
+    <value>#D9DDE2</value>
+  </data>
+  <data name="ColorLightGreyDescription" xml:space="preserve">
+    <value>Secondary background for tables, divider blocks, and subtle borders.</value>
+  </data>
+  <data name="ColorIvoryBaseTitle" xml:space="preserve">
+    <value>Ivory Base</value>
+  </data>
+  <data name="ColorIvoryBaseHex" xml:space="preserve">
+    <value>#F4F2E7</value>
+  </data>
+  <data name="ColorIvoryBaseDescription" xml:space="preserve">
+    <value>Default page background and gentle highlighting of larger surface sections.</value>
+  </data>
+  <data name="ColorAnthraciteTitle" xml:space="preserve">
+    <value>Anthracite</value>
+  </data>
+  <data name="ColorAnthraciteHex" xml:space="preserve">
+    <value>#1C1F26</value>
+  </data>
+  <data name="ColorAnthraciteDescription" xml:space="preserve">
+    <value>Main text color on light backgrounds and contrasting accents.</value>
+  </data>
+  <data name="TypographyHeading" xml:space="preserve">
+    <value>2. Typography (Fraunces · Merriweather · Inter)</value>
+  </data>
+  <data name="TypographyHierarchyTitle" xml:space="preserve">
+    <value>Hierarchy example</value>
+  </data>
+  <data name="TypographyHierarchyDescription" xml:space="preserve">
+    <value>Headings: Fraunces / Merriweather · Body: Inter</value>
+  </data>
+  <data name="TypographyDisplay" xml:space="preserve">
+    <value>Display – 48px / 1.2 / Fraunces 600</value>
+  </data>
+  <data name="TypographyH1" xml:space="preserve">
+    <value>H1 – 40px / 1.25 / Merriweather 600</value>
+  </data>
+  <data name="TypographyH2" xml:space="preserve">
+    <value>H2 – 32px / 1.3 / Merriweather 600</value>
+  </data>
+  <data name="TypographyH3" xml:space="preserve">
+    <value>H3 – 28px / 1.3 / Merriweather 500</value>
+  </data>
+  <data name="TypographyLead" xml:space="preserve">
+    <value>Lead – 20px / 1.6 / Inter 500</value>
+  </data>
+  <data name="TypographyBody" xml:space="preserve">
+    <value>Body – 16px / 1.6 / Inter 400</value>
+  </data>
+  <data name="TypographyCaption" xml:space="preserve">
+    <value>Caption – 14px / 1.4 / Inter 500</value>
+  </data>
+  <data name="TypographyRulesTitle" xml:space="preserve">
+    <value>Usage guidelines</value>
+  </data>
+  <data name="TypographyRule1" xml:space="preserve">
+    <value>&lt;strong&gt;Large headings&lt;/strong&gt; (display/H1) use Fraunces for an expressive “academic” character.</value>
+  </data>
+  <data name="TypographyRule2" xml:space="preserve">
+    <value>&lt;strong&gt;H2–H4&lt;/strong&gt; rely on Merriweather for readable longer text blocks.</value>
+  </data>
+  <data name="TypographyRule3" xml:space="preserve">
+    <value>&lt;strong&gt;Lead text&lt;/strong&gt; and supporting intros use Inter 500 for better rhythm.</value>
+  </data>
+  <data name="TypographyRule4" xml:space="preserve">
+    <value>&lt;strong&gt;Body text&lt;/strong&gt; stays at Inter 16px with 1.6 line-height for comfortable reading.</value>
+  </data>
+  <data name="TypographyRule5" xml:space="preserve">
+    <value>&lt;strong&gt;Weights&lt;/strong&gt;: 400 (regular), 500 (medium), 600 (semibold) – reserve higher contrast for CTAs.</value>
+  </data>
+  <data name="ComponentsHeading" xml:space="preserve">
+    <value>3. Components</value>
+  </data>
+  <data name="ButtonsTitle" xml:space="preserve">
+    <value>Buttons</value>
+  </data>
+  <data name="ButtonsDescription" xml:space="preserve">
+    <value>Use &lt;code&gt;.btn&lt;/code&gt; with state variants for consistent CTAs.</value>
+  </data>
+  <data name="ButtonsPrimary" xml:space="preserve">
+    <value>Primary button</value>
+  </data>
+  <data name="ButtonsSecondary" xml:space="preserve">
+    <value>Secondary button</value>
+  </data>
+  <data name="ButtonsGhost" xml:space="preserve">
+    <value>Ghost button</value>
+  </data>
+  <data name="CardsTitle" xml:space="preserve">
+    <value>Cards</value>
+  </data>
+  <data name="CardsDescription" xml:space="preserve">
+    <value>Cards build on &lt;code&gt;.card&lt;/code&gt; and the &lt;code&gt;.card-hover&lt;/code&gt; class for subtle animation.</value>
+  </data>
+  <data name="CardDefaultTitle" xml:space="preserve">
+    <value>Base card</value>
+  </data>
+  <data name="CardDefaultBody" xml:space="preserve">
+    <value>The card body uses default typography and spacing provided by the &lt;code&gt;.card&lt;/code&gt; class.</value>
+  </data>
+  <data name="CardDefaultAction" xml:space="preserve">
+    <value>Action</value>
+  </data>
+  <data name="CardHoverTitle" xml:space="preserve">
+    <value>Hover variant</value>
+  </data>
+  <data name="CardHoverBody" xml:space="preserve">
+    <value>The &lt;code&gt;.card-hover&lt;/code&gt; class increases shadow and offset on hover/focus.</value>
+  </data>
+  <data name="CardHoverAction" xml:space="preserve">
+    <value>More</value>
+  </data>
+  <data name="FormsTitle" xml:space="preserve">
+    <value>Forms</value>
+  </data>
+  <data name="FormsDescription" xml:space="preserve">
+    <value>Default inputs use &lt;code&gt;.form-control&lt;/code&gt; and selects use &lt;code&gt;.form-select&lt;/code&gt;.</value>
+  </data>
+  <data name="FormTextInputLabel" xml:space="preserve">
+    <value>Text input</value>
+  </data>
+  <data name="FormTextInputPlaceholder" xml:space="preserve">
+    <value>Type text here</value>
+  </data>
+  <data name="FormSelectLabel" xml:space="preserve">
+    <value>Select input</value>
+  </data>
+  <data name="FormSelectOption1" xml:space="preserve">
+    <value>Option 1</value>
+  </data>
+  <data name="FormSelectOption2" xml:space="preserve">
+    <value>Option 2</value>
+  </data>
+  <data name="FormSelectOption3" xml:space="preserve">
+    <value>Option 3</value>
+  </data>
+  <data name="ChipsTitle" xml:space="preserve">
+    <value>Chips</value>
+  </data>
+  <data name="ChipsDescription" xml:space="preserve">
+    <value>Mini CTAs use &lt;code&gt;.chip&lt;/code&gt;; the light variant &lt;code&gt;.chip-light&lt;/code&gt; works on dark backgrounds.</value>
+  </data>
+  <data name="ChipDefault" xml:space="preserve">
+    <value>Chip</value>
+  </data>
+  <data name="ChipLight" xml:space="preserve">
+    <value>Chip light</value>
+  </data>
+  <data name="IconsTitle" xml:space="preserve">
+    <value>Icons</value>
+  </data>
+  <data name="IconsDescription" xml:space="preserve">
+    <value>Bootstrap Icons from CDN – use &lt;code&gt;&amp;lt;i class=&quot;bi bi-*&quot;&amp;gt;&lt;/code&gt;.</value>
+  </data>
+  <data name="SpacingHeading" xml:space="preserve">
+    <value>4. Spacing scale</value>
+  </data>
+  <data name="SpacingDescription" xml:space="preserve">
+    <value>Based on Bootstrap spacing utilities &lt;code&gt;.m|p-{breakpoint}-{0-5}&lt;/code&gt;.</value>
+  </data>
+  <data name="SpacingTableToken" xml:space="preserve">
+    <value>Token</value>
+  </data>
+  <data name="SpacingTableRem" xml:space="preserve">
+    <value>Rem</value>
+  </data>
+  <data name="SpacingTableExample" xml:space="preserve">
+    <value>Example</value>
+  </data>
+  <data name="SpacingTableDescription" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="SpacingRow0" xml:space="preserve">
+    <value>No inner/outer spacing.</value>
+  </data>
+  <data name="SpacingRow1" xml:space="preserve">
+    <value>Micro spacing for tight element groups.</value>
+  </data>
+  <data name="SpacingRow2" xml:space="preserve">
+    <value>Default spacing between components.</value>
+  </data>
+  <data name="SpacingRow3" xml:space="preserve">
+    <value>Standard padding for cards and sections.</value>
+  </data>
+  <data name="SpacingRow4" xml:space="preserve">
+    <value>Larger separation between blocks/sections.</value>
+  </data>
+  <data name="SpacingRow5" xml:space="preserve">
+    <value>Hero sections and vertical page rhythm.</value>
+  </data>
+  <data name="BreakpointsHeading" xml:space="preserve">
+    <value>5. Breakpoints &amp; responsive behavior</value>
+  </data>
+  <data name="BreakpointsTableBreakpoint" xml:space="preserve">
+    <value>Breakpoint</value>
+  </data>
+  <data name="BreakpointsTableWidth" xml:space="preserve">
+    <value>Width</value>
+  </data>
+  <data name="BreakpointsTableUsage" xml:space="preserve">
+    <value>Example usage</value>
+  </data>
+  <data name="BreakpointsRowXs" xml:space="preserve">
+    <value>Stacked columns, full-width CTAs.</value>
+  </data>
+  <data name="BreakpointsRowSm" xml:space="preserve">
+    <value>&lt;code&gt;.row-cols-sm-2&lt;/code&gt; for two-column layouts.</value>
+  </data>
+  <data name="BreakpointsRowMd" xml:space="preserve">
+    <value>Navigation in a row, forms in two columns.</value>
+  </data>
+  <data name="BreakpointsRowLg" xml:space="preserve">
+    <value>Multi-column cards, &lt;code&gt;.container-lg&lt;/code&gt; layout.</value>
+  </data>
+  <data name="BreakpointsRowXl" xml:space="preserve">
+    <value>Expanded grid, maximum width for marketing sections.</value>
+  </data>
+  <data name="BreakpointsRowXxl" xml:space="preserve">
+    <value>Hero blocks with auto margins and generous gutters.</value>
+  </data>
+  <data name="BreakpointsDescription" xml:space="preserve">
+    <value>The Bootstrap grid lets you add breakpoint suffixes (e.g. &lt;code&gt;.col-md-6&lt;/code&gt;). For components like cards and forms combine &lt;code&gt;.row&lt;/code&gt;, &lt;code&gt;.col&lt;/code&gt;, and spacing utilities.</value>
+  </data>
+  <data name="AccessibilityHeading" xml:space="preserve">
+    <value>6. Accessibility guidelines</value>
+  </data>
+  <data name="AccessibilityRule1" xml:space="preserve">
+    <value>Meet contrast ratios: body text vs. background at least 4.5:1 (palette above).</value>
+  </data>
+  <data name="AccessibilityRule2" xml:space="preserve">
+    <value>Always set &lt;code&gt;aria-label&lt;/code&gt;/&lt;code&gt;aria-describedby&lt;/code&gt; for icon buttons and forms.</value>
+  </data>
+  <data name="AccessibilityRule3" xml:space="preserve">
+    <value>Use &lt;code&gt;:focus-visible&lt;/code&gt; styles from &lt;code&gt;site.css&lt;/code&gt; — never remove the outline.</value>
+  </data>
+  <data name="AccessibilityRule4" xml:space="preserve">
+    <value>Label control groups with headings (e.g. &lt;code&gt;&amp;lt;legend&amp;gt;&lt;/code&gt;, &lt;code&gt;&amp;lt;h2&amp;gt;&lt;/code&gt;).</value>
+  </data>
+  <data name="AccessibilityRule5" xml:space="preserve">
+    <value>Interactive elements (chip, card-hover) need a &lt;code&gt;role&lt;/code&gt; and &lt;code&gt;tabindex&lt;/code&gt; if not links/buttons.</value>
+  </data>
+  <data name="CodeHeading" xml:space="preserve">
+    <value>7. Code snippets</value>
+  </data>
+  <data name="CodeDescription" xml:space="preserve">
+    <value>Copy the code blocks above for quick reuse. We recommend keeping components in partial views (&lt;code&gt;Pages/Shared&lt;/code&gt;) for reusability.</value>
+  </data>
+  <data name="CodeTipLabel" xml:space="preserve">
+    <value>Tip:</value>
+  </data>
+  <data name="CodeTipText" xml:space="preserve">
+    <value>When updating components always verify contrast in both dark and light contexts and test focus states.</value>
+  </data>
+</root>
