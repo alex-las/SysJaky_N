@@ -1,15 +1,18 @@
 @using Microsoft.AspNetCore.Localization
 @using Microsoft.AspNetCore.Mvc.ViewFeatures
 @using Microsoft.Extensions.Localization
+@using SysJaky_N.Authorization
 @using SysJaky_N.Extensions
 @using SysJaky_N.Resources
+@using System.Linq
 @inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
 @inject IStringLocalizer<CompanyContactResources> CompanyContact
 @{
     var requestCulture = Context.Features.Get<IRequestCultureFeature>();
     var currentCulture = requestCulture?.RequestCulture.Culture.TwoLetterISOLanguageName ?? "cs";
     var currentPage = ViewContext.RouteData.Values["page"]?.ToString() ?? string.Empty;
-    var canAccessAdmin = User.IsInRole("Admin");
+    var canAccessAdmin = ApplicationRoles.AdminDashboardRoles.Any(User.IsInRole);
+    var returnUrl = string.Concat(Context.Request.Path, Context.Request.QueryString);
     var navigationItems = new (string Page, string ResourceKey)[]
     {
         ("/Index", "NavHome"),
@@ -34,13 +37,13 @@
 </head>
 <body>
     <!-- Hlavní navigace -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
+    <nav class="navbar navbar-expand-lg navbar-dark brand-navbar shadow-sm sticky-top py-2">
         <div class="container">
-            <a class="navbar-brand fw-bold text-primary" asp-page="/Index">
+            <a class="navbar-brand fw-bold" asp-page="/Index">
                 <i class="bi bi-award-fill me-2"></i>
                 @Localizer["BrandName"]
             </a>
-            
+
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -59,38 +62,56 @@
                     
                     <!-- Přepínač jazyků (pouze CZ/EN, ne v Admin sekci) -->
                     <li class="nav-item dropdown ms-lg-3">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" 
-                           data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-globe2 me-1"></i>
+                        <button class="nav-link dropdown-toggle btn btn-link text-decoration-none text-white-50" type="button" role="button"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-globe2 me-1" aria-hidden="true"></i>
                             @(currentCulture.ToUpper())
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end">
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end" role="menu" aria-label='@Localizer["LanguageMenuLabel"]'>
                             <li>
-                                <a class="dropdown-item @(currentCulture == "cs" ? "active" : "")" 
-                                   asp-route-culture="cs" asp-route-ui-culture="cs">
-                                    <i class="bi bi-check-circle-fill me-2 @(currentCulture == "cs" ? "" : "invisible")"></i>
-                                    Čeština
-                                </a>
+                                <form method="post" asp-controller="Localization" asp-action="SetLanguage" class="px-3 py-1"
+                                      aria-label='@Localizer["ChangeLanguageFormLabel"]'>
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="returnUrl" value="@returnUrl" />
+                                    <button type="submit" name="culture" value="cs"
+                                            class="dropdown-item w-100 text-start @(string.Equals(currentCulture, "cs", System.StringComparison.OrdinalIgnoreCase) ? "active" : string.Empty)"
+                                            role="menuitem">
+                                        @Localizer["LanguageNameCs"]
+                                    </button>
+                                </form>
                             </li>
                             <li>
-                                <a class="dropdown-item @(currentCulture == "en" ? "active" : "")" 
-                                   asp-route-culture="en" asp-route-ui-culture="en">
-                                    <i class="bi bi-check-circle-fill me-2 @(currentCulture == "en" ? "" : "invisible")"></i>
-                                    English
-                                </a>
+                                <form method="post" asp-controller="Localization" asp-action="SetLanguage" class="px-3 py-1"
+                                      aria-label='@Localizer["ChangeLanguageFormLabel"]'>
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="returnUrl" value="@returnUrl" />
+                                    <button type="submit" name="culture" value="en"
+                                            class="dropdown-item w-100 text-start @(string.Equals(currentCulture, "en", System.StringComparison.OrdinalIgnoreCase) ? "active" : string.Empty)"
+                                            role="menuitem">
+                                        @Localizer["LanguageNameEn"]
+                                    </button>
+                                </form>
                             </li>
                         </ul>
                     </li>
                     
                     @if (canAccessAdmin)
                     {
-                        <li class="nav-item ms-lg-2">
-                            <a class="btn btn-sm btn-outline-primary" asp-page="/Admin/Dashboard/Index">
+                        <li class="nav-item ms-lg-3">
+                            <a class="btn btn-sm btn-outline-light btn-admin-switch" asp-page="/Admin/Dashboard/Index">
                                 <i class="bi bi-speedometer2 me-1"></i>
-                                Administrace
+                                @Localizer["AdminDashboard"]
                             </a>
                         </li>
                     }
+
+                    <li class="nav-item ms-lg-4 d-flex align-items-center">
+                        @await Component.InvokeAsync("CartIndicator")
+                    </li>
+
+                    <li class="nav-item ms-lg-4 d-flex align-items-center">
+                        <partial name="~/Pages/Shared/_LoginPartial.cshtml" />
+                    </li>
                 </ul>
             </div>
         </div>
@@ -189,6 +210,8 @@
     <script defer src="~/lib/alpine/alpine-csp.js" asp-append-version="true"></script>
     <script src="~/js/alpine-components.js" asp-append-version="true"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/chatbot.js" asp-append-version="true"></script>
+    @await Component.InvokeAsync("ChatbotWidget")
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
