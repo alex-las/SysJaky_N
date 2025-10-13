@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="InvoiceTitle" xml:space="preserve">
+    <value>Invoice</value>
+  </data>
+  <data name="InvoiceHeading" xml:space="preserve">
+    <value>Invoice #{0}</value>
+  </data>
+  <data name="DateLabel" xml:space="preserve">
+    <value>Date</value>
+  </data>
+  <data name="CompanyHeading" xml:space="preserve">
+    <value>Company</value>
+  </data>
+  <data name="ItemsHeading" xml:space="preserve">
+    <value>Items</value>
+  </data>
+  <data name="CourseHeader" xml:space="preserve">
+    <value>Course</value>
+  </data>
+  <data name="QuantityHeader" xml:space="preserve">
+    <value>Quantity</value>
+  </data>
+  <data name="UnitPriceHeader" xml:space="preserve">
+    <value>Unit price (excl. VAT)</value>
+  </data>
+  <data name="VatHeader" xml:space="preserve">
+    <value>VAT</value>
+  </data>
+  <data name="TotalHeader" xml:space="preserve">
+    <value>Total</value>
+  </data>
+  <data name="SubtotalLabel" xml:space="preserve">
+    <value>Subtotal (excl. VAT)</value>
+  </data>
+  <data name="VatLabel" xml:space="preserve">
+    <value>VAT</value>
+  </data>
+  <data name="TotalLabel" xml:space="preserve">
+    <value>Grand total</value>
+  </data>
+</root>

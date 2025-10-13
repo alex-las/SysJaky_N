@@ -1,9 +1,14 @@
 @model SysJaky_N.Models.Order
+@using Microsoft.AspNetCore.Mvc.Localization
+@using Microsoft.Extensions.Localization
+@using SysJaky_N.Resources
+@inject IViewLocalizer Localizer
+@inject IStringLocalizer<CompanyContactResources> CompanyContactLocalizer
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
-    <title>Faktura</title>
+    <title>@Localizer["InvoiceTitle"]</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 20px; }
         table { width: 100%; border-collapse: collapse; margin-top: 20px; }
@@ -12,26 +17,25 @@
     </style>
 </head>
 <body>
-    <h1>Faktura #@Model.Id</h1>
-    <p>Datum: @Model.CreatedAt.ToString("d")</p>
+    <h1>@Localizer["InvoiceHeading", Model.Id]</h1>
+    <p>@Localizer["DateLabel"]: @Model.CreatedAt.ToString("d")</p>
 
-    <h2>Společnost</h2>
+    <h2>@Localizer["CompanyHeading"]</h2>
     <p>
-        SysJaky_N s.r.o.<br />
-        Example Street 1<br />
-        City<br />
-        VAT: CZ12345678
+        @CompanyContactLocalizer["CompanyName"]<br />
+        @CompanyContactLocalizer["Address"]<br />
+        @CompanyContactLocalizer["Registration"]
     </p>
 
-    <h2>Položky</h2>
+    <h2>@Localizer["ItemsHeading"]</h2>
     <table>
         <thead>
             <tr>
-                <th>Kurz</th>
-                <th>Množství</th>
-                <th>Jednotková cena (bez DPH)</th>
-                <th>DPH</th>
-                <th>Celkem</th>
+                <th>@Localizer["CourseHeader"]</th>
+                <th>@Localizer["QuantityHeader"]</th>
+                <th>@Localizer["UnitPriceHeader"]</th>
+                <th>@Localizer["VatHeader"]</th>
+                <th>@Localizer["TotalHeader"]</th>
             </tr>
         </thead>
         <tbody>
@@ -47,9 +51,9 @@
         }
         </tbody>
     </table>
-    <h3>Mezisoučet (bez DPH): @Model.PriceExclVat</h3>
-    <h3>DPH: @Model.Vat</h3>
-    <h3>Celkem: @Model.Total</h3>
+    <h3>@Localizer["SubtotalLabel"]: @Model.PriceExclVat</h3>
+    <h3>@Localizer["VatLabel"]: @Model.Vat</h3>
+    <h3>@Localizer["TotalLabel"]: @Model.Total</h3>
 </body>
 </html>
 

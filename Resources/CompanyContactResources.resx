@@ -18,6 +18,9 @@
   <data name="Email" xml:space="preserve">
     <value>info@systemy-jakosti.cz</value>
   </data>
+  <data name="CompanyName" xml:space="preserve">
+    <value>Systémy jakosti s.r.o.</value>
+  </data>
   <data name="Registration" xml:space="preserve">
     <value>IČO: 036 867 33</value>
   </data>

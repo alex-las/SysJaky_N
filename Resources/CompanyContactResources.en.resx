@@ -18,6 +18,9 @@
   <data name="Email" xml:space="preserve">
     <value>info@systemy-jakosti.cz</value>
   </data>
+  <data name="CompanyName" xml:space="preserve">
+    <value>Systems of Quality Ltd.</value>
+  </data>
   <data name="Registration" xml:space="preserve">
     <value>Business ID: 036 867 33</value>
   </data>
