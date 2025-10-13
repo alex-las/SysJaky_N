@@ -20,197 +20,136 @@
     <li class="nav-item"><a class="nav-link" asp-page="/Courses/Calendar">@Localizer["TabCalendar"]</a></li>
 </ul>
 
-<div class="result-header sticky-top z-2 d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3 py-2 bg-body border-bottom">
-    <div class="small text-muted" id="resultCount" data-count-template="@Localizer["ResultCount", "{0}"].Value">@Localizer["ResultCount", Model.TotalCount]</div>
-    <div class="d-flex gap-2">
-        <a class="btn btn-sm btn-outline-secondary" data-action="reset-all" href="@Url.Page("/Courses/Index")">@Localizer["ResetFilters"]</a>
-        <a class="btn btn-sm btn-outline-primary d-lg-none" data-bs-toggle="offcanvas" href="#filters"><i class="bi bi-sliders"></i> @Localizer["FiltersButton"]</a>
-    </div>
-</div>
-
-<div id="activeFilters" class="d-flex flex-wrap gap-2 mb-3"></div>
-
-<div id="cmpBar" class="compare-bar d-none" data-count-format="@Localizer["CompareBarCountFormat"].Value" data-cta-text="@Localizer["CompareBarCta"].Value">
-    <div class="container-xl d-flex justify-content-between align-items-center">
-        <div class="small" id="cmpCount">@Localizer["CompareBarCountFormat", 0]</div>
-        <a id="cmpGo" class="btn btn-primary btn-sm disabled" aria-disabled="true">@Localizer["CompareBarCta"]</a>
-    </div>
-</div>
-
-<div id="courseError" class="alert alert-danger d-none" role="alert"></div>
-
 @if (TempData["CartError"] is string cartError && !string.IsNullOrWhiteSpace(cartError))
 {
     <div class="alert alert-danger" role="alert">@cartError</div>
 }
 
-@await Html.PartialAsync("/Pages/Courses/_Filters.cshtml", Model)
-
-<div class="row g-3">
-    <aside class="col-lg-3 d-none d-lg-block">
-        <div class="feature-card p-3">
-            @await Html.PartialAsync("/Pages/Courses/_FiltersForm.cshtml", Model)
-        </div>
-    </aside>
-    <main class="col-lg-9">
-        <div id="coursesGrid" class="courses-grid">
-            @foreach (var c in Model.Courses)
-            {
-                @await Html.PartialAsync("/Pages/Shared/_CourseCard.cshtml", c)
-            }
-        </div>
-
-        <div id="noCourses" class="alert alert-info @(Model.Courses.Count == 0 ? string.Empty : "d-none")" role="status">@Localizer["NoCoursesFound"]</div>
-
-        <nav class="mt-3 @(Model.TotalPages > 1 ? string.Empty : "d-none")" aria-label='@Localizer["PaginationLabel"]' id="coursePagination">
-            <ul class="pagination mb-0">
-                <li class="page-item @(Model.PageNumber <= 1 ? "disabled" : string.Empty)">
-                    <button class="page-link" type="button" data-action="prev-page">@Localizer["Previous"]</button>
-                </li>
-                <li class="page-item disabled">
-                    <span class="page-link" id="paginationStatus">@Model.PageNumber / @Model.TotalPages</span>
-                </li>
-                <li class="page-item @(Model.PageNumber >= Model.TotalPages ? "disabled" : string.Empty)">
-                    <button class="page-link" type="button" data-action="next-page">@Localizer["Next"]</button>
-                </li>
-            </ul>
-        </nav>
-    </main>
-</div>
-
-@{
-    var culture = System.Globalization.CultureInfo.CurrentCulture;
-    var decimalSeparator = culture.NumberFormat.NumberDecimalSeparator;
-    string cultureName = culture.Name;
-    string currencyCode;
-    try
-    {
-        var region = new System.Globalization.RegionInfo(culture.LCID);
-        currencyCode = region.ISOCurrencySymbol;
-    }
-    catch
-    {
-        currencyCode = "CZK";
-    }
-
-    var config = new
-    {
-        price = new { min = Model.PriceMinimum, max = Model.PriceMaximum },
-        initial = new
-        {
-            pageNumber = Model.PageNumber,
-            totalPages = Model.TotalPages,
-            totalCount = Model.TotalCount,
-            search = Model.SearchString ?? string.Empty,
-            norms = Model.SelectedTagIds,
-            cities = Model.SelectedCityTagIds,
-            levels = Model.SelectedLevels.Select(l => l.ToString()),
-            types = Model.SelectedTypes.Select(t => t.ToString()),
-            categories = Model.SelectedCategoryIds,
-            minPrice = Model.MinPrice ?? Model.PriceMinimum,
-            maxPrice = Model.MaxPrice ?? Model.PriceMaximum,
-            hasFilters = Model.HasActiveFilters,
-            courses = Model.Courses.Select(c => new
-            {
-                id = c.Id,
-                title = c.Title,
-                description = c.Description,
-                level = c.Level,
-                mode = c.Mode,
-                type = c.Type,
-                duration = c.Duration,
-                durationDisplay = c.DurationDisplay,
-                date = c.Date,
-                dateDisplay = c.DateDisplay,
-                price = c.Price,
-                priceDisplay = c.PriceDisplay,
-                coverImageUrl = c.CoverImageUrl,
-                popoverHtml = c.PopoverHtml,
-                detailsUrl = c.DetailsUrl,
-                addToCartUrl = c.AddToCartUrl,
-                wishlistUrl = c.WishlistUrl,
-                isoBadges = c.IsoBadges.Select(b => new { label = b.Label, code = b.Code }),
-                daysUntilStart = c.DaysUntilStart,
-                capacity = c.Capacity,
-                seatsTaken = c.SeatsTaken,
-                occupancyPercent = c.OccupancyPercent,
-                hasCertificate = c.HasCertificate,
-                previewContent = c.PreviewContent
-            })
+<div class="space-y-6" x-data="{
+        format: 'all',
+        level: 'all',
+        search: '',
+        courses: @Html.Raw(Json.Serialize(Model.Courses)),
+        formatAllLabel: @Html.Raw(Json.Serialize(Localizer["FiltersFormatAll"].Value ?? Localizer["FiltersButton"].Value ?? "Všechny formáty")),
+        levelAllLabel: @Html.Raw(Json.Serialize(Localizer["FiltersLevelAll"].Value ?? Localizer["LevelsLabel"].Value ?? "Všechny úrovně")),
+        resultCountTemplate: @Html.Raw(Json.Serialize(Localizer["ResultCount", "{0}"].Value ?? "{0}")),
+        detailsLabel: @Html.Raw(Json.Serialize(Localizer["Details"].Value ?? "Detail")),
+        noResultsLabel: @Html.Raw(Json.Serialize(Localizer["NoCoursesFound"].Value ?? "Žádné kurzy neodpovídají výběru.")),
+        get formats() {
+            const values = new Set(this.courses.map(course => course.mode ?? course.Mode).filter(value => value));
+            return ['all', ...Array.from(values)];
         },
-        filters = new
-        {
-            norms = Model.NormOptions.Select(o => new { id = o.Id, name = o.Name }),
-            cities = Model.CityOptions.Select(o => new { id = o.Id, name = o.Name }),
-            categories = Model.CategoryOptions.Select(o => new { id = o.Id, name = o.Name, count = o.Count }),
-            levels = Model.LevelOptions.Select(o => new { value = o.Value, label = o.Label }),
-            types = Model.TypeOptions.Select(o => new { value = o.Value, label = o.Label })
+        get levels() {
+            const values = new Set(this.courses.map(course => course.level ?? course.Level).filter(value => value));
+            return ['all', ...Array.from(values)];
         },
-        resources = new
-        {
-            searchPlaceholder = Localizer["SearchPlaceholder"].Value ?? string.Empty,
-            searchLabel = Localizer["SearchLabel"].Value ?? "Hledat",
-            categoriesLabel = Localizer["CategoriesLabel"].Value ?? "Kategorie kurzů",
-            categoryCountTemplate = Localizer["CategoryCountFormat", "{0}", "{1}"].Value ?? "{0} ({1})",
-            normsLabel = Localizer["NormsLabel"].Value ?? "Normy",
-            citiesLabel = Localizer["CitiesLabel"].Value ?? "Města",
-            levelsLabel = Localizer["LevelsLabel"].Value ?? "Úrovně",
-            typesLabel = Localizer["TypesLabel"].Value ?? "Forma",
-            priceRangeLabel = Localizer["PriceRangeLabel"].Value ?? "Rozsah ceny",
-            priceLabel = Localizer["PriceLabel"].Value ?? "Cena",
-            saveFilters = Localizer["SaveFilters"].Value ?? "Uložit filtry",
-            savedMessage = Localizer["FiltersSaved"].Value ?? "Filtry byly uloženy.",
-            clearFilters = Localizer["ResetFilters"].Value ?? "Resetovat",
-            compareLabel = Localizer["Compare"].Value ?? "Porovnat",
-            compareLimit = Localizer["CompareLimit"].Value ?? "Můžete porovnat maximálně 3 kurzy.",
-            detailsLabel = Localizer["Details"].Value ?? "Detail",
-            enrollLabel = Localizer["Enroll"].Value ?? "Přihlásit",
-            resultCountTemplate = Localizer["ResultCount", "{0}"].Value ?? "{0}",
-            noResults = Localizer["NoCoursesFound"].Value ?? "Žádné kurzy neodpovídají výběru.",
-            fetchError = Localizer["FetchError"].Value ?? "Nepodařilo se načíst kurzy.",
-            pageStatusTemplate = Localizer["PageStatus", "{0}", "{1}"].Value ?? "{0}/{1}",
-            removeLabel = Localizer["RemoveFilter"].Value ?? "Odebrat filtr",
-            currencySymbol = culture.NumberFormat.CurrencySymbol,
-            countdownTemplate = Localizer["StartsInDays", "{0}"].Value ?? "Začíná za {0} dní",
-            countdownToday = Localizer["StartsToday"].Value ?? "Začíná dnes",
-            countdownPast = Localizer["AlreadyStarted"].Value ?? "Kurz probíhá",
-            occupancyLabel = Localizer["OccupancyLabel"].Value ?? "Obsazenost",
-            occupancyAria = Localizer["OccupancyAria", "{0}"].Value ?? "Obsazenost {0}%",
-            wishlistAdd = Localizer["WishlistAdd"].Value ?? "Přidat do seznamu přání",
-            wishlistRemove = Localizer["WishlistRemove"].Value ?? "Odebrat ze seznamu přání",
-            previewLabel = Localizer["PreviewLabel"].Value ?? "Rychlý náhled",
-            isoBadgeAria = Localizer["IsoBadgeAria", "{0}"].Value ?? "Certifikace {0}",
-            isoBadgeListAria = Localizer["IsoBadgeListAria"].Value ?? "Certifikace ISO",
-            modeAria = Localizer["ModeAria", "{0}"].Value ?? "Režim: {0}",
-            levelAria = Localizer["LevelAria", "{0}"].Value ?? "Úroveň: {0}",
-            certificateAria = Localizer["CertificateAria"].Value ?? "Certifikát",
-            certificateAvailable = Localizer["CertificateAvailable"].Value ?? "Certifikát",
-            certificateUnavailable = Localizer["CertificateUnavailable"].Value ?? "Bez certifikátu",
-            additionalInfo = Localizer["AdditionalInfo"].Value ?? "Více informací",
-            metaInformation = Localizer["MetaInformation"].Value ?? "Parametry kurzu",
-            courseDateAria = Localizer["CourseDateAria", "{0}"].Value ?? "Datum konání {0}",
-            courseDateLabel = Localizer["CourseDateLabel"].Value ?? "Datum",
-            typeAria = Localizer["TypeAria", "{0}"].Value ?? "Typ: {0}"
+        get filteredCourses() {
+            const term = this.search.trim().toLowerCase();
+            return this.courses.filter(course => {
+                const mode = course.mode ?? course.Mode ?? '';
+                const level = course.level ?? course.Level ?? '';
+                const title = course.title ?? course.Title ?? '';
+                const description = course.description ?? course.Description ?? '';
+                const matchesFormat = this.format === 'all' || mode === this.format;
+                const matchesLevel = this.level === 'all' || level === this.level;
+                const matchesTerm = term === '' || title.toLowerCase().includes(term) || description.toLowerCase().includes(term);
+                return matchesFormat && matchesLevel && matchesTerm;
+            });
         },
-        culture = new
-        {
-            name = cultureName,
-            decimalSeparator,
-            currencySymbol = culture.NumberFormat.CurrencySymbol,
-            currencyCode
+        formatLabel(option) {
+            return option === 'all' ? this.formatAllLabel : option;
+        },
+        levelLabel(option) {
+            return option === 'all' ? this.levelAllLabel : option;
+        },
+        formatResultCount(count) {
+            return this.resultCountTemplate.replace('{0}', count);
+        },
+        resetFilters() {
+            this.format = 'all';
+            this.level = 'all';
+            this.search = '';
         }
-    };
+    }">
+    <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+            <label class="flex w-full flex-col gap-2 lg:max-w-md">
+                <span class="text-sm font-medium text-slate-700">@Localizer["SearchLabel"]</span>
+                <div class="relative">
+                    <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+                        <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                            <path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11ZM2 9a7 7 0 1 1 12.452 4.391l3.328 3.329a.75.75 0 0 1-1.06 1.06l-3.329-3.328A7 7 0 0 1 2 9Z" clip-rule="evenodd" />
+                        </svg>
+                    </span>
+                    <input type="search"
+                           x-model="search"
+                           placeholder="@Localizer["SearchPlaceholder"]"
+                           class="block w-full rounded-xl border border-slate-300 bg-white py-2 pl-10 pr-4 text-sm text-slate-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                           aria-label="@Localizer["SearchLabel"]" />
+                </div>
+            </label>
+            <div class="flex flex-wrap gap-2">
+                <template x-for="option in formats" :key="option">
+                    <button type="button"
+                            class="inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition"
+                            @@click="format = option"
+                            :class="format === option ? 'border-transparent bg-blue-600 text-white shadow-sm' : 'border-slate-300 bg-white text-slate-600 hover:border-blue-400 hover:text-blue-600'">
+                        <span x-text="formatLabel(option)"></span>
+                    </button>
+                </template>
+            </div>
+        </div>
+        <div class="mt-6 flex flex-col gap-3">
+            <span class="text-sm font-medium text-slate-700">@Localizer["LevelsLabel"]</span>
+            <div class="flex flex-wrap gap-2">
+                <template x-for="option in levels" :key="option">
+                    <button type="button"
+                            class="inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition"
+                            @@click="level = option"
+                            :class="level === option ? 'border-transparent bg-slate-900 text-white shadow-sm' : 'border-slate-300 bg-white text-slate-600 hover:border-slate-400 hover:text-slate-900'">
+                        <span x-text="levelLabel(option)"></span>
+                    </button>
+                </template>
+            </div>
+        </div>
+        <div class="mt-6 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+            <p class="text-sm text-slate-600">
+                <span x-text="formatResultCount(filteredCourses.length)"></span>
+            </p>
+            <div class="flex gap-2">
+                <button type="button"
+                        class="inline-flex items-center rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-600 transition hover:border-slate-400 hover:text-slate-900"
+                        @@click="resetFilters()">
+                    @Localizer["ResetFilters"]
+                </button>
+            </div>
+        </div>
+    </div>
 
-    var jsonOptions = new System.Text.Json.JsonSerializerOptions
-    {
-        PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase,
-        DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
-    };
+    <div class="grid gap-6 lg:grid-cols-2 xl:grid-cols-3" role="list">
+        <template x-for="course in filteredCourses" :key="course.id ?? course.Id">
+            <article class="flex h-full flex-col justify-between rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md" role="listitem">
+                <div class="flex flex-col gap-4">
+                    <div class="flex items-start justify-between gap-3">
+                        <h2 class="text-lg font-semibold text-slate-900" x-text="course.title ?? course.Title"></h2>
+                        <span class="inline-flex items-center rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-700" x-text="course.mode ?? course.Mode"></span>
+                    </div>
+                    <p class="text-sm text-slate-600" x-show="course.description ?? course.Description" x-text="course.description ?? course.Description"></p>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <span class="inline-flex items-center rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700" x-text="course.level ?? course.Level"></span>
+                        <span class="text-sm font-medium text-slate-700" x-text="course.dateDisplay ?? course.DateDisplay"></span>
+                        <span class="text-sm font-semibold text-blue-600" x-text="course.priceDisplay ?? course.PriceDisplay"></span>
+                    </div>
+                </div>
+                <div class="mt-6 flex items-center justify-between">
+                    <span class="text-sm text-slate-500" x-text="course.durationDisplay ?? course.DurationDisplay"></span>
+                    <a class="inline-flex items-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-500"
+                       :href="course.detailsUrl ?? course.DetailsUrl"
+                       x-text="detailsLabel"></a>
+                </div>
+            </article>
+        </template>
+    </div>
 
-    var configJson = System.Text.Json.JsonSerializer.Serialize(config, jsonOptions);
-}
-<script type="application/json" id="courseFiltersData">@Html.Raw(configJson)</script>
-
-@section Scripts {
-    <script type="module" src="~/js/courseFilters.js"></script>
-}
+    <div class="rounded-2xl border border-dashed border-slate-300 p-8 text-center text-sm text-slate-500" x-show="filteredCourses.length === 0" x-text="noResultsLabel"></div>
+</div>
