@@ -174,7 +174,7 @@ public class CorporateInquiryModel : PageModel
             return Page();
         }
 
-        TempData["Success"] = _localizer["SuccessMessage"];
+        TempData["Success"] = _localizer["SuccessMessage"].Value;
         InitialStep = 1;
         return RedirectToPage();
     }
