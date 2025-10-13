@@ -275,32 +275,7 @@
 
     @if (Model.FeaturedTestimonials.Any())
     {
-        <section class="section testimonials">
-            <header class="section__header" data-reveal>
-                <span class="section__eyebrow">@T["WhyChooseHeading"]</span>
-                <h2>@T["TestimonialsHeading"]</h2>
-                <p>@T["WhyChooseDescription"]</p>
-            </header>
-            <div class="testimonial-carousel" data-reveal>
-                @foreach (var testimonial in Model.FeaturedTestimonials)
-                {
-                    <blockquote class="testimonial-card">
-                        <p>“@testimonial.Quote”</p>
-                        <footer>
-                            <strong>@testimonial.FullName</strong>
-                            @if (!string.IsNullOrWhiteSpace(testimonial.Position))
-                            {
-                                <span>@testimonial.Position</span>
-                            }
-                            @if (!string.IsNullOrWhiteSpace(testimonial.Company))
-                            {
-                                <span>@testimonial.Company</span>
-                            }
-                        </footer>
-                    </blockquote>
-                }
-            </div>
-        </section>
+        @await Html.PartialAsync("~/Pages/Shared/_Testimonials.cshtml", Model.FeaturedTestimonials)
     }
 
     <section class="section why-us" id="why-us">

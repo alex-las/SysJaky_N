@@ -1,0 +1,129 @@
+@model IEnumerable<SysJaky_N.Models.Testimonial>
+@using System.Linq
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+@{
+    var testimonials = Model?.Where(t => t is not null).ToList() ?? new List<SysJaky_N.Models.Testimonial>();
+    if (!testimonials.Any())
+    {
+        return;
+    }
+
+    var total = testimonials.Count;
+}
+
+<section class="container-xl my-5" aria-label="@Localizer["CarouselAriaLabel"]">
+    <div class="feature-card p-4 p-lg-5 shadow-sm position-relative">
+        <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-4">
+            <div>
+                <h2 class="h3 mb-1">@Localizer["Heading"]</h2>
+                <p class="text-muted mb-0">@Localizer["Subheading"]</p>
+            </div>
+            <a class="btn btn-outline-primary" asp-page="/Testimonials/Index">@Localizer["ViewAll"]</a>
+        </div>
+
+        <div class="testimonials-carousel js-testimonials-carousel" data-module="testimonials-carousel" data-autoplay-interval="7000" data-slide-count="@total" tabindex="0" aria-live="polite">
+            <div class="testimonials-viewport overflow-hidden rounded-4" data-viewport>
+                <div class="testimonials-track d-flex" data-track style="transition: transform 0.6s ease; will-change: transform;">
+                    @for (var index = 0; index < testimonials.Count; index++)
+                    {
+                        var testimonial = testimonials[index];
+                        var displayInitial = string.IsNullOrWhiteSpace(testimonial.FullName)
+                            ? "?"
+                            : testimonial.FullName.Trim()[0].ToString().ToUpperInvariant();
+                        <article class="testimonial-slide flex-shrink-0 w-100" data-item data-index="@index" role="group" aria-roledescription="slide" aria-label="@Localizer["SlideLabel", index + 1, total]" aria-hidden="@(index == 0 ? "false" : "true")">
+                            <div class="row g-4 align-items-center">
+                                <div class="col-md-4 text-center text-md-start">
+                                    @if (!string.IsNullOrWhiteSpace(testimonial.PhotoUrl))
+                                    {
+                                        var avatarAlt = !string.IsNullOrWhiteSpace(testimonial.PhotoAltText)
+                                            ? testimonial.PhotoAltText
+                                            : testimonial.FullName;
+                                        var avatarWebp1x = testimonial.PhotoUrl.WithImageParameters(120, "webp");
+                                        var avatarWebp2x = testimonial.PhotoUrl.WithImageParameters(240, "webp");
+                                        var avatarJpeg1x = testimonial.PhotoUrl.WithImageParameters(120, "jpg");
+                                        var avatarJpeg2x = testimonial.PhotoUrl.WithImageParameters(240, "jpg");
+                                        var jpegSources = new List<string>();
+                                        if (!string.IsNullOrWhiteSpace(avatarJpeg1x))
+                                        {
+                                            jpegSources.Add($"{avatarJpeg1x} 120w");
+                                        }
+                                        if (!string.IsNullOrWhiteSpace(avatarJpeg2x))
+                                        {
+                                            jpegSources.Add($"{avatarJpeg2x} 240w");
+                                        }
+                                        var jpegSrcSet = string.Join(", ", jpegSources);
+                                        <picture>
+                                            @if (!string.IsNullOrWhiteSpace(avatarWebp1x))
+                                            {
+                                                <source type="image/webp" srcset="@avatarWebp1x 120w@(string.IsNullOrWhiteSpace(avatarWebp2x) ? string.Empty : ", " + avatarWebp2x + " 240w")" sizes="120px" />
+                                            }
+                                            @if (!string.IsNullOrWhiteSpace(jpegSrcSet))
+                                            {
+                                                <source type="image/jpeg" srcset="@jpegSrcSet" sizes="120px" />
+                                            }
+                                            <img src="@(!string.IsNullOrWhiteSpace(avatarJpeg1x) ? avatarJpeg1x : testimonial.PhotoUrl)" alt="@avatarAlt" class="rounded-circle shadow-sm" width="120" height="120" loading="lazy" decoding="async" style="width: 120px; height: 120px; object-fit: cover;" />
+                                        </picture>
+                                    }
+                                    else
+                                    {
+                                        <div class="rounded-circle bg-light border d-inline-flex align-items-center justify-content-center" style="width: 120px; height: 120px;">
+                                            <span class="fw-semibold text-primary fs-2">@displayInitial</span>
+                                        </div>
+                                    }
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="d-flex align-items-center gap-1 mb-2 text-warning">
+                                        @for (var star = 0; star < 5; star++)
+                                        {
+                                            if (star < testimonial.Rating)
+                                            {
+                                                <i class="bi bi-star-fill" aria-hidden="true"></i>
+                                            }
+                                            else
+                                            {
+                                                <i class="bi bi-star" aria-hidden="true"></i>
+                                            }
+                                        }
+                                        <span class="visually-hidden">@Localizer["RatingLabel", testimonial.Rating]</span>
+                                    </div>
+                                    <blockquote class="blockquote fs-5 mb-3">
+                                        <span class="d-block">“@testimonial.Quote”</span>
+                                    </blockquote>
+                                    <div>
+                                        <div class="fw-semibold">@testimonial.FullName</div>
+                                        <div class="text-muted small">
+                                            @if (!string.IsNullOrWhiteSpace(testimonial.Position) && !string.IsNullOrWhiteSpace(testimonial.Company))
+                                            {
+                                                @($"{testimonial.Position}, {testimonial.Company}")
+                                            }
+                                            else if (!string.IsNullOrWhiteSpace(testimonial.Position))
+                                            {
+                                                @testimonial.Position
+                                            }
+                                            else
+                                            {
+                                                @testimonial.Company
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </article>
+                    }
+                </div>
+            </div>
+
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mt-4">
+                <div class="d-flex gap-2" role="group" aria-label="@Localizer["ControlsLabel"]">
+                    <button type="button" class="btn btn-outline-secondary btn-sm" data-prev aria-label="@Localizer["Prev"]">
+                        <i class="bi bi-arrow-left" aria-hidden="true"></i>
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary btn-sm" data-next aria-label="@Localizer["Next"]">
+                        <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                    </button>
+                </div>
+                <div class="d-flex align-items-center gap-2 small text-muted" data-pagination></div>
+            </div>
+        </div>
+    </div>
+</section>
