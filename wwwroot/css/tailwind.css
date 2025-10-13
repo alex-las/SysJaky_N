@@ -1,0 +1,60 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  body {
+    @apply bg-neutral-50 text-neutral-800 font-sans antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-display text-neutral-900 tracking-tight;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-pill bg-brand-600 px-5 py-2 text-sm font-semibold text-white shadow-soft transition hover:bg-brand-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-300 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:bg-brand-300;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 rounded-pill border border-brand-200 bg-white px-5 py-2 text-sm font-semibold text-brand-600 shadow-soft transition hover:bg-brand-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-300 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:border-neutral-200 disabled:text-neutral-400;
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-pill px-4 py-2 text-sm font-semibold text-neutral-700 transition hover:bg-neutral-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-200 focus-visible:ring-offset-2;
+  }
+
+  .card-modern {
+    @apply rounded-xl border border-neutral-100 bg-white p-6 shadow-elevated sm:p-8;
+  }
+
+  .card-modern--muted {
+    @apply rounded-xl border border-neutral-100 bg-neutral-50/90 p-6 shadow-soft sm:p-8;
+  }
+
+  .badge-accent {
+    @apply inline-flex items-center rounded-pill bg-accent-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-accent-600;
+  }
+
+  .input-modern {
+    @apply w-full rounded-lg border border-neutral-200 bg-white px-4 py-2 text-sm text-neutral-800 shadow-sm transition placeholder:text-neutral-400 focus:border-brand-400 focus:outline-none focus:ring-2 focus:ring-brand-200 disabled:cursor-not-allowed disabled:bg-neutral-100;
+  }
+
+  .section-heading {
+    @apply mb-3 text-3xl font-semibold text-neutral-900 sm:text-4xl;
+  }
+
+  .section-subtitle {
+    @apply text-base text-neutral-500 sm:text-lg;
+  }
+}
