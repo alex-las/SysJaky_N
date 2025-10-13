@@ -1,12 +1,13 @@
 @page "{id:int}"
 @model SysJaky_N.Pages.Courses.DeleteModel
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
 @{
-    ViewData["Title"] = "Smazat kurz";
+    ViewData["Title"] = Localizer["Title"].Value;
 }
 
-<h1>Smazat kurz</h1>
+<h1>@Localizer["Heading"]</h1>
 
-<h3>Opravdu chcete tento kurz odstranit?</h3>
+<h3>@Localizer["Confirmation"]</h3>
 <div>
     <h4>@Model.Course.Title</h4>
     <p>@Model.Course.Description</p>
@@ -14,6 +15,6 @@
 
 <form method="post">
     <input type="hidden" asp-for="Course.Id" />
-    <button type="submit" class="btn btn-danger">Smazat</button>
-    <a asp-page="Index" class="btn btn-secondary">Zrušit</a>
+    <button type="submit" class="btn btn-danger">@Localizer["DeleteButton"]</button>
+    <a asp-page="Index" class="btn btn-secondary">@Localizer["CancelLink"]</a>
 </form>
