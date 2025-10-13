@@ -6,6 +6,7 @@ export default {
     "./Areas/**/*.{cshtml,js}",
     "./Components/**/*.{cshtml,js}",
     "./ViewComponents/**/*.{cshtml,js}",
+    "./EmailTemplates/**/*.cshtml",
     "./wwwroot/js/**/*.js"
   ],
   theme: {
