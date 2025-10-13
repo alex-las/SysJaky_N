@@ -1,19 +1,29 @@
+@using System.Linq
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
 @{
-    var faqItems = new[]
-    {
-        new { Id = 1, Question = "Jak rychle mohu spustit první interní audit?", Answer = "Nejčastěji doporučujeme pilotní audit do 30 dnů od zahájení spolupráce. Rádi vám poskytneme připravené checklisty i mentoring pro auditorský tým." },
-        new { Id = 2, Question = "Musím mít speciální software?", Answer = "Ne. Většina klientů začíná s jednoduchým sdíleným úložištěm a tabulkami. Pokud budete potřebovat komplexnější řešení, pomůžeme s výběrem i implementací." },
-        new { Id = 3, Question = "Co když nemáme interní kapacity?", Answer = "Na začátku umíme procesy nastavit s vámi a postupně je předat interním pracovníkům. Nabízíme také dlouhodobý dohled a mentoring, dokud si nebudete jistí samostatným provozem." }
-    };
+    var faqItems = Enumerable.Range(1, 5)
+        .Select(id => new
+        {
+            Id = id,
+            Question = Localizer[$"FaqQuestion{id}"].Value,
+            Answer = Localizer[$"FaqAnswer{id}"].Value
+        })
+        .Where(item => !string.IsNullOrWhiteSpace(item.Question) && !string.IsNullOrWhiteSpace(item.Answer))
+        .ToList();
+
+    var sectionEyebrow = Localizer["SectionEyebrow"].Value ?? string.Empty;
+    var sectionHeading = Localizer["SectionHeading"].Value ?? string.Empty;
+    var sectionDescription = Localizer["SectionDescription"].Value ?? string.Empty;
+    var toggleLabelTemplate = Localizer["ToggleLabel"].Value ?? "Toggle item {0}";
 }
 
 <section class="py-5 bg-light">
     <div class="container">
         <div class="mx-auto max-w-3xl" x-data="{ activeItem: null }">
             <div class="text-center mb-4">
-                <span class="text-primary text-uppercase fw-semibold">Nejčastější dotazy</span>
-                <h2 class="h3 mt-2">Co klienty zajímá nejvíce?</h2>
-                <p class="text-muted mb-0">Krátké odpovědi pro rychlou orientaci. Kliknutím zobrazíte další detaily.</p>
+                <span class="text-primary text-uppercase fw-semibold">@sectionEyebrow</span>
+                <h2 class="h3 mt-2">@sectionHeading</h2>
+                <p class="text-muted mb-0">@sectionDescription</p>
             </div>
 
             <div class="d-grid gap-3">
@@ -28,7 +38,7 @@
                             <span class="badge rounded-pill"
                                   :class="activeItem === id ? 'bg-primary text-white' : 'bg-secondary-subtle text-secondary'">
                                 <i class="bi" :class="activeItem === id ? 'bi-dash-lg' : 'bi-plus-lg'" aria-hidden="true"></i>
-                                <span class="visually-hidden">@("Toggle" + item.Id)</span>
+                                <span class="visually-hidden">@string.Format(toggleLabelTemplate, item.Id)</span>
                             </span>
                         </button>
                         <div class="px-4 pb-4" x-cloak x-show="activeItem === id" x-transition.opacity x-transition.duration.300ms>

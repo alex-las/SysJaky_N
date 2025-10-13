@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="SectionEyebrow" xml:space="preserve">
+    <value>Nejčastější dotazy</value>
+  </data>
+  <data name="SectionHeading" xml:space="preserve">
+    <value>Co klienty zajímá nejvíce?</value>
+  </data>
+  <data name="SectionDescription" xml:space="preserve">
+    <value>Krátké odpovědi pro rychlou orientaci. Kliknutím zobrazíte další detaily.</value>
+  </data>
+  <data name="ToggleLabel" xml:space="preserve">
+    <value>Přepnout položku {0}</value>
+  </data>
+  <data name="FaqQuestion1" xml:space="preserve">
+    <value>Jak rychle mohu spustit první interní audit?</value>
+  </data>
+  <data name="FaqAnswer1" xml:space="preserve">
+    <value>Nejčastěji doporučujeme pilotní audit do 30 dnů od zahájení spolupráce. Rádi vám poskytneme připravené checklisty i mentoring pro auditorský tým.</value>
+  </data>
+  <data name="FaqQuestion2" xml:space="preserve">
+    <value>Musím mít speciální software?</value>
+  </data>
+  <data name="FaqAnswer2" xml:space="preserve">
+    <value>Ne. Většina klientů začíná s jednoduchým sdíleným úložištěm a tabulkami. Pokud budete potřebovat komplexnější řešení, pomůžeme s výběrem i implementací.</value>
+  </data>
+  <data name="FaqQuestion3" xml:space="preserve">
+    <value>Co když nemáme interní kapacity?</value>
+  </data>
+  <data name="FaqAnswer3" xml:space="preserve">
+    <value>Na začátku umíme procesy nastavit s vámi a postupně je předat interním pracovníkům. Nabízíme také dlouhodobý dohled a mentoring, dokud si nebudete jistí samostatným provozem.</value>
+  </data>
+</root>

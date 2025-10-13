@@ -4,6 +4,18 @@
 @{
     ViewData["Title"] = Localizer["Title"];
     var isoSpecializations = IsoMetadataProvider.GetAll();
+    var documentationPreviewHeading = Localizer["DocumentationPreviewHeading"].Value;
+    var documentationPreviewDescription = Localizer["DocumentationPreviewDescription"].Value;
+    var documentationPreviewButton = Localizer["DocumentationPreviewButton"].Value;
+    var documentationPreviewImageAlt = Localizer["DocumentationPreviewImageAlt"].Value;
+    var documentationPreviewLightboxTitle = Localizer["DocumentationPreviewLightboxTitle"].Value;
+    var documentationPreviewLightboxDescription = Localizer["DocumentationPreviewLightboxDescription"].Value;
+    var documentationPreviewPayload = System.Text.Json.JsonSerializer.Serialize(new
+    {
+        title = documentationPreviewLightboxTitle,
+        description = documentationPreviewLightboxDescription,
+        imageUrl = Url.Content("~/img/articles/iso9001-preparation.svg")
+    });
 }
 
 <section class="py-5">
@@ -71,17 +83,17 @@
         <div class="row g-4 align-items-center">
             <div class="col-12 col-lg-6">
                 <img src="~/img/articles/iso9001-preparation.svg"
-                     alt="Ilustrační grafika přípravy na ISO 9001"
+                     alt="@documentationPreviewImageAlt"
                      class="img-fluid rounded-4 shadow-sm" />
             </div>
             <div class="col-12 col-lg-6" x-data>
-                <h2 class="h3 mb-3">Podívejte se na ukázku dokumentace</h2>
-                <p class="text-muted">Náhled šablony vám ukáže, jak přehledně dokážeme strukturovat procesy a záznamy před certifikací.</p>
+                <h2 class="h3 mb-3">@documentationPreviewHeading</h2>
+                <p class="text-muted">@documentationPreviewDescription</p>
                 <button type="button"
                         class="btn btn-outline-primary d-inline-flex align-items-center gap-2"
-                        x-on:click="$dispatch('open-lightbox', { title: 'Ukázka šablony ISO 9001', description: 'Detailní pohled na doporučenou strukturu dokumentace před certifikací.', imageUrl: '@Url.Content("~/img/articles/iso9001-preparation.svg")' })">
+                        x-on:click="$dispatch('open-lightbox', @Html.Raw(documentationPreviewPayload))">
                     <i class="bi bi-arrows-fullscreen" aria-hidden="true"></i>
-                    Otevřít náhled
+                    @documentationPreviewButton
                 </button>
             </div>
         </div>
