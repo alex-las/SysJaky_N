@@ -77,7 +77,7 @@ public class ContactModel : PageModel
                 new ContactMessageEmailModel(Input.Name, Input.Email, Input.Message));
         }
 
-        TempData["Success"] = _localizer["MessageSent"];
+        TempData["Success"] = _localizer["MessageSent"].Value;
         return RedirectToPage();
     }
 }
