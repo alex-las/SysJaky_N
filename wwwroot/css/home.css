@@ -30,39 +30,51 @@
   isolation: isolate;
 }
 
-.hero-section::before,
-.hero-section::after {
-  content: "";
+.hero-bubble {
   position: absolute;
   border-radius: 999px;
   opacity: 0.75;
   pointer-events: none;
-  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.25), rgba(13, 101, 215, 0.15) 55%, rgba(4, 17, 46, 0.05) 100%);
+  background: radial-gradient(
+    circle at 30% 30%,
+    rgba(255, 255, 255, 0.28),
+    rgba(13, 101, 215, 0.18) 55%,
+    rgba(4, 17, 46, 0.08) 100%
+  );
   box-shadow: 0 35px 85px rgba(11, 58, 150, 0.35);
   animation: heroBubbleDrift 18s ease-in-out infinite;
   z-index: 0;
 }
 
-.hero-section::before {
+.hero-bubble--primary {
   width: clamp(16rem, 28vw, 24rem);
   height: clamp(16rem, 28vw, 24rem);
-  top: -12%;
-  left: -8%;
+  top: -14%;
+  left: -10%;
   animation-delay: -4s;
 }
 
-.hero-section::after {
-  width: clamp(18rem, 34vw, 28rem);
-  height: clamp(18rem, 34vw, 28rem);
-  bottom: -18%;
-  right: -10%;
-  animation-delay: -11s;
+.hero-bubble--secondary {
+  width: clamp(12rem, 22vw, 18rem);
+  height: clamp(12rem, 22vw, 18rem);
+  bottom: 16%;
+  right: 12%;
+  animation-delay: -9s;
+}
+
+.hero-bubble--tertiary {
+  width: clamp(18rem, 32vw, 26rem);
+  height: clamp(18rem, 32vw, 26rem);
+  bottom: -20%;
+  right: -12%;
+  animation-delay: -13s;
 }
 
 .hero-section > * {
   position: relative;
   z-index: 1;
 }
+
 
 @keyframes heroBubbleDrift {
   0% {
