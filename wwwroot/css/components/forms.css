@@ -65,16 +65,16 @@ textarea.form-control {
 }
 
 .form-control-warning {
-  border-color: rgba(217, 119, 6, 0.45);
-  background-color: rgba(253, 230, 138, 0.25);
+  border-color: rgba(var(--color-secondary-rgb), 0.45);
+  background-color: color-mix(in oklab, var(--color-secondary-200) 45%, transparent);
   color: var(--color-neutral-700);
 }
 
 .form-control-warning:focus,
 .form-control-warning:focus-visible {
   border-color: var(--color-warning-600);
-  box-shadow: 0 0 0 3px rgba(254, 249, 195, 0.9), 0 0 0 6px rgba(217, 119, 6, 0.45);
-  background-color: rgba(253, 230, 138, 0.35);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--color-secondary-200) 75%, transparent), 0 0 0 6px rgba(var(--color-secondary-rgb), 0.45);
+  background-color: color-mix(in oklab, var(--color-secondary-200) 65%, transparent);
 }
 
 .input-group-text {
@@ -220,17 +220,17 @@ textarea.form-control {
 
 [data-theme="dark"] .login-dropdown-footer-link:hover,
 [data-theme="dark"] .login-dropdown-footer-link:focus-visible {
-  color: rgba(56, 189, 248, 0.95);
+  color: color-mix(in oklab, var(--color-primary-300) 85%, var(--color-neutral-50));
 }
 [data-theme="dark"] .form-control-warning {
-  border-color: rgba(252, 211, 77, 0.55);
-  background-color: rgba(120, 53, 15, 0.32);
+  border-color: color-mix(in oklab, var(--color-secondary-300) 65%, transparent);
+  background-color: color-mix(in oklab, var(--color-secondary-600) 28%, transparent);
   color: rgba(250, 250, 249, 0.92);
 }
 
 [data-theme="dark"] .form-control-warning:focus,
 [data-theme="dark"] .form-control-warning:focus-visible {
-  border-color: rgba(252, 211, 77, 0.75);
-  box-shadow: 0 0 0 3px rgba(120, 53, 15, 0.35), 0 0 0 6px rgba(217, 119, 6, 0.5);
-  background-color: rgba(120, 53, 15, 0.38);
+  border-color: color-mix(in oklab, var(--color-secondary-300) 85%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--color-secondary-600) 35%, transparent), 0 0 0 6px rgba(var(--color-secondary-rgb), 0.5);
+  background-color: color-mix(in oklab, var(--color-secondary-600) 35%, transparent);
 }
