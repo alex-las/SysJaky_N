@@ -8,7 +8,10 @@
     ViewData["Title"] = Localizer["Title"];
 
     var serializerOptions = new JsonSerializerOptions(JsonSerializerDefaults.Web);
-    var courseItems = Model.Courses.Select(course => new
+    var courseSource = Model.Courses ?? Enumerable.Empty<SysJaky_N.Models.CourseCardViewModel>();
+    var courseItems = courseSource
+        .Where(course => course is not null)
+        .Select(course => new
     {
         id = course.Id,
         title = course.Title,
