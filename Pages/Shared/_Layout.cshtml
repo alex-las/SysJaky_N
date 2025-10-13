@@ -37,13 +37,13 @@
 </head>
 <body>
     <!-- Hlavní navigace -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
+    <nav class="navbar navbar-expand-lg navbar-dark brand-navbar shadow-sm sticky-top py-2">
         <div class="container">
-            <a class="navbar-brand fw-bold text-primary" asp-page="/Index">
+            <a class="navbar-brand fw-bold" asp-page="/Index">
                 <i class="bi bi-award-fill me-2"></i>
                 @Localizer["BrandName"]
             </a>
-            
+
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -62,7 +62,7 @@
                     
                     <!-- Přepínač jazyků (pouze CZ/EN, ne v Admin sekci) -->
                     <li class="nav-item dropdown ms-lg-3">
-                        <button class="nav-link dropdown-toggle btn btn-link text-decoration-none" type="button" role="button"
+                        <button class="nav-link dropdown-toggle btn btn-link text-decoration-none text-white-50" type="button" role="button"
                                 data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="bi bi-globe2 me-1" aria-hidden="true"></i>
                             @(currentCulture.ToUpper())
@@ -97,19 +97,19 @@
                     
                     @if (canAccessAdmin)
                     {
-                        <li class="nav-item ms-lg-2">
-                            <a class="btn btn-sm btn-outline-primary" asp-page="/Admin/Dashboard/Index">
+                        <li class="nav-item ms-lg-3">
+                            <a class="btn btn-sm btn-outline-light btn-admin-switch" asp-page="/Admin/Dashboard/Index">
                                 <i class="bi bi-speedometer2 me-1"></i>
                                 @Localizer["AdminDashboard"]
                             </a>
                         </li>
                     }
 
-                    <li class="nav-item ms-lg-3 d-flex align-items-center">
+                    <li class="nav-item ms-lg-4 d-flex align-items-center">
                         @await Component.InvokeAsync("CartIndicator")
                     </li>
 
-                    <li class="nav-item ms-lg-3 d-flex align-items-center">
+                    <li class="nav-item ms-lg-4 d-flex align-items-center">
                         <partial name="~/Pages/Shared/_LoginPartial.cshtml" />
                     </li>
                 </ul>
@@ -210,6 +210,7 @@
     <script defer src="~/lib/alpine/alpine-csp.js" asp-append-version="true"></script>
     <script src="~/js/alpine-components.js" asp-append-version="true"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/chatbot.js" asp-append-version="true"></script>
     @await Component.InvokeAsync("ChatbotWidget")
     @await RenderSectionAsync("Scripts", required: false)
 </body>
