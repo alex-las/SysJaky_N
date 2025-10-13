@@ -376,6 +376,132 @@ document.addEventListener('DOMContentLoaded', () => {
     window.courseCardPreview = previewApi;
     previewApi.register();
 
+    const newsletterForm = document.querySelector('[data-newsletter-form]');
+    if (newsletterForm) {
+        const statusEl = newsletterForm.querySelector('[data-newsletter-status]');
+        const submitButton = newsletterForm.querySelector('[data-newsletter-submit]');
+        const successMessage = newsletterForm.dataset.successMessage ?? '';
+        const errorMessage = newsletterForm.dataset.errorMessage ?? '';
+        const loadingText = newsletterForm.dataset.loadingText ?? '';
+        const defaultButtonText = submitButton ? submitButton.textContent : '';
+
+        const resetStatus = () => {
+            if (!statusEl) {
+                return;
+            }
+
+            statusEl.textContent = '';
+            statusEl.classList.remove('text-success', 'text-danger');
+            statusEl.classList.add('text-muted');
+        };
+
+        const applyStatus = (message, type) => {
+            if (!statusEl) {
+                return;
+            }
+
+            statusEl.textContent = message;
+            statusEl.classList.remove('text-muted', 'text-success', 'text-danger');
+
+            if (type === 'success') {
+                statusEl.classList.add('text-success');
+            } else if (type === 'error') {
+                statusEl.classList.add('text-danger');
+            }
+        };
+
+        const extractFirstError = (errors) => {
+            if (!errors || typeof errors !== 'object') {
+                return '';
+            }
+
+            const values = Object.values(errors);
+            for (const value of values) {
+                if (!value) {
+                    continue;
+                }
+
+                if (Array.isArray(value) && value.length) {
+                    return value[0];
+                }
+
+                if (typeof value === 'string' && value) {
+                    return value;
+                }
+            }
+
+            return '';
+        };
+
+        newsletterForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            if (!newsletterForm.checkValidity()) {
+                newsletterForm.reportValidity?.();
+                return;
+            }
+
+            resetStatus();
+
+            newsletterForm.setAttribute('aria-busy', 'true');
+
+            if (submitButton) {
+                submitButton.disabled = true;
+                if (loadingText) {
+                    submitButton.dataset.originalText = defaultButtonText ?? '';
+                    submitButton.textContent = loadingText;
+                }
+            }
+
+            try {
+                const formData = new FormData(newsletterForm);
+                formData.set('Input.Consent', formData.has('Input.Consent') ? 'true' : 'false');
+
+                const payload = new URLSearchParams();
+                formData.forEach((value, key) => {
+                    if (value instanceof File) {
+                        return;
+                    }
+                    payload.append(key, value == null ? '' : value.toString());
+                });
+
+                const response = await fetch(newsletterForm.action || '/Api/Newsletter', {
+                    method: 'POST',
+                    headers: { Accept: 'application/json' },
+                    body: payload
+                });
+
+                let data = null;
+                const contentType = response.headers.get('content-type') ?? '';
+                if (contentType.includes('application/json')) {
+                    data = await response.json();
+                }
+
+                if (response.ok && data && data.success) {
+                    applyStatus(data.message || successMessage, 'success');
+                    newsletterForm.reset();
+                } else {
+                    const message = (data && (data.message || extractFirstError(data.errors))) || errorMessage;
+                    applyStatus(message, 'error');
+                }
+            } catch (error) {
+                console.warn('Unable to submit newsletter form', error);
+                applyStatus(errorMessage, 'error');
+            } finally {
+                newsletterForm.setAttribute('aria-busy', 'false');
+
+                if (submitButton) {
+                    submitButton.disabled = false;
+                    const original = submitButton.dataset.originalText ?? defaultButtonText;
+                    if (original) {
+                        submitButton.textContent = original;
+                    }
+                    delete submitButton.dataset.originalText;
+                }
+            }
+        });
+    }
+
     const initCertificationTimeline = () => {
         const section = document.querySelector('.certification-timeline-section');
         if (!section) {
