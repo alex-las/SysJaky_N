@@ -327,4 +327,43 @@
   <data name="RemoveFilter" xml:space="preserve">
     <value>Remove filter</value>
   </data>
+  <data name="UpcomingTrainingsHeading" xml:space="preserve">
+    <value>Upcoming training dates</value>
+  </data>
+  <data name="UpcomingTrainingsDescription" xml:space="preserve">
+    <value>Discover the next six open courses ready for registration.</value>
+  </data>
+  <data name="UpcomingTrainingsViewAll" xml:space="preserve">
+    <value>View calendar</value>
+  </data>
+  <data name="UpcomingTrainingsEmpty" xml:space="preserve">
+    <value>We currently have no public training dates scheduled. Please check back soon or contact us for a tailored session.</value>
+  </data>
+  <data name="UpcomingTrainingsDateLabel" xml:space="preserve">
+    <value>Date</value>
+  </data>
+  <data name="UpcomingTrainingsModeLabel" xml:space="preserve">
+    <value>Format</value>
+  </data>
+  <data name="UpcomingTrainingsIsoLabel" xml:space="preserve">
+    <value>Standard</value>
+  </data>
+  <data name="UpcomingTrainingsPriceLabel" xml:space="preserve">
+    <value>Price</value>
+  </data>
+  <data name="UpcomingTrainingsPriceFree" xml:space="preserve">
+    <value>Free</value>
+  </data>
+  <data name="UpcomingTrainingsCta" xml:space="preserve">
+    <value>View course</value>
+  </data>
+  <data name="UpcomingTrainingsMode_SelfPaced" xml:space="preserve">
+    <value>Self-paced online</value>
+  </data>
+  <data name="UpcomingTrainingsMode_InstructorLed" xml:space="preserve">
+    <value>Instructor-led</value>
+  </data>
+  <data name="UpcomingTrainingsMode_Blended" xml:space="preserve">
+    <value>Blended</value>
+  </data>
 </root>

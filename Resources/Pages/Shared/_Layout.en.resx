@@ -106,6 +106,21 @@
   <data name="NewsletterConsentText" xml:space="preserve">
     <value>I agree with data processing</value>
   </data>
+  <data name="NewsletterHeading" xml:space="preserve">
+    <value>Stay in the loop</value>
+  </data>
+  <data name="NewsletterDescription" xml:space="preserve">
+    <value>Receive updates about new trainings, special dates and practical ISO compliance tips.</value>
+  </data>
+  <data name="NewsletterSuccessMessage" xml:space="preserve">
+    <value>Thank you! We've sent you a confirmation email.</value>
+  </data>
+  <data name="NewsletterErrorMessage" xml:space="preserve">
+    <value>Sorry, we couldn't complete the subscription. Please try again.</value>
+  </data>
+  <data name="NewsletterButtonLoadingText" xml:space="preserve">
+    <value>Submitting…</value>
+  </data>
   <data name="LoginTitle" xml:space="preserve">
     <value>Login</value>
   </data>

@@ -230,3 +230,124 @@
 
     <div class="rounded-2xl border border-dashed border-slate-300 p-8 text-center text-sm text-slate-500" x-show="filterCourses().length === 0" x-text="noResultsLabel"></div>
 </div>
+
+@section Scripts {
+    <script>
+        function courseFilters(coursesData, labelsData) {
+            var rawCourses = Array.isArray(coursesData) ? coursesData : [];
+            var normalizedCourses = [];
+            var labels = typeof labelsData === 'object' && labelsData !== null ? labelsData : {};
+
+            for (var i = 0; i < rawCourses.length; i++) {
+                var course = rawCourses[i];
+
+                if (!course || typeof course !== 'object') {
+                    continue;
+                }
+
+                var courseId = course.id;
+
+                if (courseId === undefined || courseId === null) {
+                    if (course.Id !== undefined && course.Id !== null) {
+                        courseId = course.Id;
+                    } else if (course.detailsUrl || course.DetailsUrl) {
+                        courseId = course.detailsUrl || course.DetailsUrl;
+                    } else {
+                        courseId = 'course-' + normalizedCourses.length;
+                    }
+                }
+
+                normalizedCourses.push({
+                    id: courseId,
+                    title: course.title || course.Title || '',
+                    description: course.description || course.Description || '',
+                    level: course.level || course.Level || '',
+                    mode: course.mode || course.Mode || '',
+                    dateDisplay: course.dateDisplay || course.DateDisplay || '',
+                    priceDisplay: course.priceDisplay || course.PriceDisplay || '',
+                    durationDisplay: course.durationDisplay || course.DurationDisplay || '',
+                    detailsUrl: course.detailsUrl || course.DetailsUrl || ''
+                });
+            }
+
+            return {
+                format: 'all',
+                level: 'all',
+                search: '',
+                courses: normalizedCourses,
+                formatAllLabel: labels.formatAllLabel || 'Všechny formáty',
+                levelAllLabel: labels.levelAllLabel || 'Všechny úrovně',
+                resultCountTemplate: labels.resultCountTemplate || '{0}',
+                detailsLabel: labels.detailsLabel || 'Detail',
+                noResultsLabel: labels.noResultsLabel || 'Žádné kurzy neodpovídají výběru.',
+                getFormats: function () {
+                    var values = {};
+                    var list = ['all'];
+
+                    for (var i = 0; i < this.courses.length; i++) {
+                        var course = this.courses[i];
+                        var mode = course.mode || '';
+
+                        if (mode && !values[mode]) {
+                            values[mode] = true;
+                            list.push(mode);
+                        }
+                    }
+
+                    return list;
+                },
+                getLevels: function () {
+                    var values = {};
+                    var list = ['all'];
+
+                    for (var i = 0; i < this.courses.length; i++) {
+                        var course = this.courses[i];
+                        var level = course.level || '';
+
+                        if (level && !values[level]) {
+                            values[level] = true;
+                            list.push(level);
+                        }
+                    }
+
+                    return list;
+                },
+                filterCourses: function () {
+                    var term = this.search.replace(/^\s+|\s+$/g, '').toLowerCase();
+                    var results = [];
+
+                    for (var i = 0; i < this.courses.length; i++) {
+                        var course = this.courses[i];
+                        var mode = course.mode || '';
+                        var level = course.level || '';
+                        var title = course.title || '';
+                        var description = course.description || '';
+                        var matchesFormat = this.format === 'all' || mode === this.format;
+                        var matchesLevel = this.level === 'all' || level === this.level;
+                        var matchesTerm = term === '' || title.toLowerCase().indexOf(term) !== -1 || description.toLowerCase().indexOf(term) !== -1;
+
+                        if (matchesFormat && matchesLevel && matchesTerm) {
+                            results.push(course);
+                        }
+                    }
+
+                    return results;
+                },
+                formatLabel: function (option) {
+                    return option === 'all' ? this.formatAllLabel : option;
+                },
+                levelLabel: function (option) {
+                    return option === 'all' ? this.levelAllLabel : option;
+                },
+                formatResultCount: function (count) {
+                    return this.resultCountTemplate.replace('{0}', String(count));
+                },
+                resetFilters: function () {
+                    this.format = 'all';
+                    this.level = 'all';
+                    this.search = '';
+                }
+            };
+        }
+    </script>
+}

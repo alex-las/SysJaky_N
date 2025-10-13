@@ -1,4 +1,5 @@
 @page
+@using System.Globalization
 @model IndexModel
 @inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer T
 @{
@@ -63,6 +64,111 @@
                          class="img-fluid rounded-4 shadow-lg" />
                 </div>
             </div>
+        </div>
+    </div>
+</section>
+
+<!-- Nejbližší školení -->
+<section class="py-5 bg-white border-bottom">
+    <div class="container">
+        <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-end gap-4 mb-4">
+            <div class="flex-grow-1">
+                <h2 class="h3 fw-bold mb-2">@T["UpcomingTrainingsHeading"]</h2>
+                <p class="text-muted mb-0">@T["UpcomingTrainingsDescription"]</p>
+            </div>
+            <div class="flex-shrink-0">
+                <a asp-page="/Calendar/Index" class="btn btn-outline-primary">
+                    <i class="bi bi-calendar-week me-2"></i>
+                    @T["UpcomingTrainingsViewAll"]
+                </a>
+            </div>
+        </div>
+
+        <div class="row row-cols-1 row-cols-md-2 g-4">
+            @{
+                var culture = CultureInfo.CurrentCulture;
+            }
+
+            @if (Model.FastSoonest?.Any() == true)
+            {
+                foreach (var course in Model.FastSoonest)
+                {
+                    var detailsUrl = Url.Page("/Courses/Details", new { id = course.Id }) ?? $"/Courses/Details/{course.Id}";
+                    var dateDisplay = course.Date.ToString("d", culture);
+                    var isoStandard = string.IsNullOrWhiteSpace(course.IsoStandard) ? null : course.IsoStandard;
+                    var modeLabel = string.IsNullOrWhiteSpace(course.DeliveryForm)
+                        ? T[$"UpcomingTrainingsMode_{course.Mode}"]?.Value ?? course.Mode.ToString()
+                        : course.DeliveryForm;
+                    var priceDisplay = course.Price > 0
+                        ? course.Price.ToString("C", culture)
+                        : T["UpcomingTrainingsPriceFree"].Value;
+                    var description = string.IsNullOrWhiteSpace(course.Description)
+                        ? null
+                        : (course.Description!.Length > 160
+                            ? course.Description.Substring(0, 160).TrimEnd() + "…"
+                            : course.Description);
+                <div class="col">
+                    <article class="card h-100 shadow-sm border-0">
+                        <div class="card-body d-flex flex-column gap-3 p-4">
+                            <header class="d-flex flex-column gap-2">
+                                <h3 class="h5 mb-0">@course.Title</h3>
+                                @if (!string.IsNullOrWhiteSpace(description))
+                                {
+                                    <p class="text-muted small mb-0">@description</p>
+                                }
+                            </header>
+
+                            <ul class="list-unstyled d-flex flex-column gap-2 small mb-0">
+                                <li class="d-flex align-items-center gap-2">
+                                    <i class="bi bi-calendar-event text-primary" aria-hidden="true"></i>
+                                    <span class="fw-semibold text-dark">@T["UpcomingTrainingsDateLabel"]:</span>
+                                    <span>@dateDisplay</span>
+                                </li>
+                                <li class="d-flex align-items-center gap-2">
+                                    <i class="bi bi-geo text-primary" aria-hidden="true"></i>
+                                    <span class="fw-semibold text-dark">@T["UpcomingTrainingsModeLabel"]:</span>
+                                    <span>@modeLabel</span>
+                                </li>
+                                @if (!string.IsNullOrWhiteSpace(isoStandard))
+                                {
+                                    <li class="d-flex align-items-center gap-2">
+                                        <i class="bi bi-diagram-3 text-primary" aria-hidden="true"></i>
+                                        <span class="fw-semibold text-dark">@T["UpcomingTrainingsIsoLabel"]:</span>
+                                        <span>@isoStandard</span>
+                                    </li>
+                                }
+                                <li class="d-flex align-items-center gap-2">
+                                    <i class="bi bi-currency-exchange text-primary" aria-hidden="true"></i>
+                                    <span class="fw-semibold text-dark">@T["UpcomingTrainingsPriceLabel"]:</span>
+                                    <span>@priceDisplay</span>
+                                </li>
+                            </ul>
+
+                            <div class="mt-auto pt-2">
+                                <a class="btn btn-sm btn-outline-primary" href="@detailsUrl">
+                                    @T["UpcomingTrainingsCta"]
+                                    <span class="visually-hidden">@course.Title</span>
+                                </a>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+                }
+            }
+            else
+            {
+                <div class="col">
+                    <div class="alert alert-light border-0 shadow-sm mb-0">
+                        <div class="d-flex align-items-start gap-3">
+                            <i class="bi bi-info-circle text-primary fs-4" aria-hidden="true"></i>
+                            <div>
+                                <h3 class="h6 fw-semibold mb-1">@T["UpcomingTrainingsHeading"]</h3>
+                                <p class="mb-0">@T["UpcomingTrainingsEmpty"]</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
         </div>
     </div>
 </section>
