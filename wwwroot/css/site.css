@@ -1,5 +1,114 @@
 :root {
   --nav-offset: 4.25rem;
+
+  /* Premium primary palette */
+  --color-primary-50: #eef3ff;
+  --color-primary-100: #dce6ff;
+  --color-primary-200: #c0d1ff;
+  --color-primary-300: #9bb6ff;
+  --color-primary-400: #7396ff;
+  --color-primary-500: #4b78ff;
+  --color-primary-600: #255bf4;
+  --color-primary-650: #1f4fe0;
+  --color-primary-700: #1b42c4;
+  --color-primary-800: #16349d;
+  --color-primary-900: #0f246d;
+  --color-primary-rgb: 37, 91, 244;
+
+  /* Accent gold palette */
+  --color-accent-50: #fff9e6;
+  --color-accent-100: #fef2c7;
+  --color-accent-200: #fde59a;
+  --color-accent-300: #fbd667;
+  --color-accent-400: #f9c43c;
+  --color-accent-500: #f0ad1b;
+  --color-accent-600: #c98a0f;
+  --color-accent-rgb: 240, 173, 27;
+
+  /* Ink and neutral palette */
+  --color-ink: #0f172a;
+  --color-ink-soft: rgba(15, 23, 42, 0.78);
+  --color-neutral-900: #0f172a;
+  --color-neutral-800: #1e293b;
+  --color-neutral-700: #334155;
+  --color-neutral-600: #475569;
+  --color-neutral-500: #64748b;
+  --color-neutral-400: #94a3b8;
+  --color-neutral-300: #cbd5e1;
+  --color-neutral-200: #e2e8f0;
+  --color-neutral-150: #e8edf7;
+  --color-neutral-100: #f1f5f9;
+  --color-neutral-50: #f8fafc;
+
+  /* Legacy aliases */
+  --color-brand-50: var(--color-primary-50);
+  --color-brand-100: var(--color-primary-100);
+  --color-brand-200: var(--color-primary-200);
+  --color-brand-300: var(--color-primary-300);
+  --color-brand-400: var(--color-primary-400);
+  --color-brand-500: var(--color-primary-500);
+  --color-brand-600: var(--color-primary-600);
+  --color-brand-650: var(--color-primary-650);
+  --color-brand-700: var(--color-primary-700);
+  --color-brand-800: var(--color-primary-800);
+  --color-brand-900: var(--color-primary-900);
+  --color-brand-rgb: var(--color-primary-rgb);
+  --color-secondary-50: var(--color-accent-50);
+  --color-secondary-100: var(--color-accent-100);
+  --color-secondary-200: var(--color-accent-200);
+  --color-secondary-300: var(--color-accent-300);
+  --color-secondary-400: var(--color-accent-400);
+  --color-secondary-500: var(--color-accent-500);
+  --color-secondary-600: var(--color-accent-600);
+  --color-secondary-700: color-mix(in oklab, var(--color-accent-600) 80%, var(--color-neutral-900));
+  --color-secondary-rgb: var(--color-accent-rgb);
+  --color-highlight-300: var(--color-accent-300);
+  --color-highlight-400: var(--color-accent-400);
+  --color-highlight-500: var(--color-accent-500);
+  --color-highlight-rgb: var(--color-accent-rgb);
+
+  /* Gradients */
+  --gradient-primary: linear-gradient(135deg, var(--color-primary-600), var(--color-primary-700));
+  --gradient-primary-soft: linear-gradient(
+    135deg,
+    rgba(var(--color-primary-rgb), 0.16),
+    rgba(var(--color-primary-rgb), 0.04)
+  );
+  --gradient-accent: linear-gradient(135deg, var(--color-primary-600), var(--color-accent-500));
+  --gradient-sunrise: linear-gradient(135deg, var(--color-accent-400), var(--color-accent-500));
+  --gradient-ink: linear-gradient(
+    135deg,
+    color-mix(in oklab, var(--color-neutral-900) 92%, transparent),
+    color-mix(in oklab, var(--color-neutral-800) 85%, transparent)
+  );
+  --gradient-brand: var(--gradient-primary);
+  --gradient-brand-horizontal: linear-gradient(90deg, var(--color-primary-600), var(--color-primary-700));
+  --gradient-hero: radial-gradient(
+    120% 120% at 18% 18%,
+    rgba(var(--color-primary-rgb), 0.35) 0%,
+    rgba(var(--color-primary-rgb), 0.92) 55%,
+    color-mix(in oklab, var(--color-primary-800) 85%, var(--color-neutral-900) 15%) 100%
+  );
+  --gradient-overlay: linear-gradient(180deg, rgba(15, 36, 109, 0.12) 0%, rgba(15, 36, 109, 0.45) 100%);
+
+  /* Radius tokens */
+  --radius-xs: 0.4rem;
+  --radius-sm: 0.65rem;
+  --radius-md: 0.9rem;
+  --radius-lg: 1.25rem;
+  --radius-xl: 1.65rem;
+  --radius-2xl: 2.1rem;
+  --radius-3xl: 2.75rem;
+  --radius-pill: 999px;
+
+  /* Shadow tokens */
+  --shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.1);
+  --shadow-sm: 0 4px 12px rgba(15, 23, 42, 0.12);
+  --shadow-md: 0 12px 32px rgba(15, 23, 42, 0.16);
+  --shadow-lg: 0 24px 48px rgba(15, 23, 42, 0.2);
+  --shadow-xl: 0 36px 72px rgba(15, 23, 42, 0.24);
+  --shadow-soft: 0 18px 50px rgba(var(--color-primary-rgb), 0.18);
+  --shadow-glow: 0 0 0 6px rgba(var(--color-primary-rgb), 0.22);
 }
 
 body {
@@ -494,7 +603,7 @@ body {
 
 [data-theme="dark"] .login-dropdown-footer-link:hover,
 [data-theme="dark"] .login-dropdown-footer-link:focus-visible {
-  color: rgba(56, 189, 248, 0.95);
+  color: color-mix(in oklab, var(--color-primary-300) 85%, var(--color-neutral-50));
 }
 
 .login-register-button {
@@ -2083,7 +2192,7 @@ footer.app-footer a:focus {
 .hero-edu .chip{ background:rgba(255,255,255,.2); color:#fff; border-color:rgba(255,255,255,.4); }
 .hero-edu .chip:hover,
 .hero-edu .chip:focus-visible{ background:rgba(255,255,255,.3); }
-.hero-consult .chip{ background:rgba(15,23,42,.08); color:#111; border-color:rgba(15,23,42,.12); }
+.hero-consult .chip{ background:rgba(15,23,42,.08); color:var(--color-neutral-900); border-color:rgba(15,23,42,.12); }
 .hero-consult .chip:hover,
 .hero-consult .chip:focus-visible{ background:rgba(15,23,42,.16); }
 
@@ -2112,7 +2221,7 @@ footer.app-footer a:focus {
   filter:blur(18px);
   transform:scale(1.04);
   transition:filter .6s ease, transform .6s ease;
-  background:linear-gradient(135deg, rgba(15,23,42,.08), rgba(40,179,159,.12));
+  background:linear-gradient(135deg, rgba(15, 23, 42, 0.08), rgba(var(--color-accent-rgb), 0.18));
 }
 
 .course-card__image[data-loaded='true']{
@@ -2122,7 +2231,7 @@ footer.app-footer a:focus {
 
 .course-card__image--placeholder{
   height:100%;
-  background:linear-gradient(135deg, rgba(15,23,42,.06), rgba(40,179,159,.18));
+  background:linear-gradient(135deg, rgba(15, 23, 42, 0.06), rgba(var(--color-accent-rgb), 0.22));
 }
 
 .course-card__iso-list{
@@ -2155,7 +2264,7 @@ footer.app-footer a:focus {
   display:grid;
   place-items:center;
   border-radius:999px;
-  background:var(--iso-color, #0aa2c0);
+  background:var(--iso-color, var(--color-primary-600));
   color:#fff;
 }
 
@@ -2177,14 +2286,14 @@ footer.app-footer a:focus {
   place-items:center;
   background:rgba(255,255,255,.92);
   box-shadow:0 12px 24px rgba(15,23,42,.18);
-  color:#d6336c;
+  color:var(--color-primary-600);
   transition:transform .2s ease, box-shadow .2s ease;
 }
 
 .course-card__wishlist:hover,
 .course-card__wishlist:focus-visible{
   transform:scale(1.05);
-  box-shadow:0 18px 32px rgba(214,51,108,.28);
+  box-shadow:0 18px 32px rgba(var(--color-primary-rgb), .28);
 }
 
 .course-card__wishlist svg{
@@ -2194,8 +2303,8 @@ footer.app-footer a:focus {
 }
 
 .course-card__wishlist.is-active{
-  background:#d6336c;
-  color:#fff;
+  background:var(--color-primary-600);
+  color:var(--color-neutral-50);
 }
 
 @keyframes wishlist-pop{
@@ -2264,9 +2373,9 @@ footer.app-footer a:focus {
 }
 
 .course-level-featured{
-  background:linear-gradient(135deg,#fde047,#f97316);
+  background:linear-gradient(135deg, var(--color-accent-400), var(--color-accent-500));
   color:#0f172a;
-  box-shadow:0 12px 20px -15px rgba(249,115,22,.6);
+  box-shadow:0 12px 20px -15px color-mix(in oklab, var(--color-accent-500) 45%, transparent);
 }
 
 .course-card__meta-item{
@@ -2282,8 +2391,8 @@ footer.app-footer a:focus {
 
 .course-card__preview{
   border:none;
-  background:rgba(21,93,230,.12);
-  color:var(--color-brand-600);
+  background:rgba(var(--color-primary-rgb), .12);
+  color:var(--color-primary-600);
   border-radius:999px;
   width:2rem;
   height:2rem;
@@ -2371,7 +2480,7 @@ footer.app-footer a:focus {
 
 /* Chip-badges na kartách */
 .badge-soft-primary{ background:rgba(21,93,230,.12); color:var(--color-brand-700); }
-.badge-soft-accent{ background:rgba(40,179,159,.18); color:var(--color-ink); }
+.badge-soft-accent{ background:rgba(var(--color-accent-rgb),.18); color:var(--color-ink); }
 
 /* Preferuje-li uživatel méně animací */
 @media (prefers-reduced-motion: reduce){
@@ -2626,31 +2735,59 @@ footer.app-footer a:focus {
 }
 
 .standard-card.iso-14001 {
-  --standard-card-gradient: linear-gradient(135deg, #10b981 0%, #34d399 100%);
-  --standard-icon-bg: linear-gradient(135deg, rgba(16, 185, 129, 0.18) 0%, rgba(52, 211, 153, 0.32) 100%);
-  --standard-icon-shadow: rgba(16, 185, 129, 0.25);
-  --standard-link-color: #047857;
+  --standard-card-gradient: linear-gradient(
+    135deg,
+    var(--color-primary-500) 0%,
+    var(--color-primary-700) 100%
+  );
+  --standard-icon-bg: linear-gradient(
+    135deg,
+    rgba(var(--color-primary-rgb), 0.18) 0%,
+    rgba(var(--color-primary-rgb), 0.32) 100%
+  );
+  --standard-icon-shadow: rgba(var(--color-primary-rgb), 0.25);
+  --standard-link-color: var(--color-primary-600);
 }
 
 .standard-card.iso-17025 {
-  --standard-card-gradient: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%);
-  --standard-icon-bg: linear-gradient(135deg, rgba(139, 92, 246, 0.18) 0%, rgba(167, 139, 250, 0.32) 100%);
-  --standard-icon-shadow: rgba(139, 92, 246, 0.25);
-  --standard-link-color: #6d28d9;
+  --standard-card-gradient: linear-gradient(
+    135deg,
+    var(--color-primary-600) 0%,
+    var(--color-accent-500) 100%
+  );
+  --standard-icon-bg: linear-gradient(
+    135deg,
+    rgba(var(--color-primary-rgb), 0.18) 0%,
+    rgba(var(--color-accent-rgb), 0.3) 100%
+  );
+  --standard-icon-shadow: rgba(var(--color-primary-rgb), 0.25);
+  --standard-link-color: var(--color-primary-650);
 }
 
 .standard-card.iso-15189 {
-  --standard-card-gradient: linear-gradient(135deg, #ef4444 0%, #f87171 100%);
-  --standard-icon-bg: linear-gradient(135deg, rgba(239, 68, 68, 0.18) 0%, rgba(248, 113, 113, 0.3) 100%);
-  --standard-icon-shadow: rgba(239, 68, 68, 0.25);
-  --standard-link-color: #b91c1c;
+  --standard-card-gradient: linear-gradient(
+    135deg,
+    var(--color-accent-400) 0%,
+    color-mix(in oklab, var(--color-primary-600) 55%, var(--color-accent-500)) 100%
+  );
+  --standard-icon-bg: linear-gradient(
+    135deg,
+    rgba(var(--color-accent-rgb), 0.22) 0%,
+    rgba(var(--color-primary-rgb), 0.2) 100%
+  );
+  --standard-icon-shadow: rgba(var(--color-primary-rgb), 0.25);
+  --standard-link-color: var(--color-primary-700);
 }
 
 .standard-card.iso-45001 {
-  --standard-card-gradient: linear-gradient(135deg, #eab308 0%, #facc15 100%);
-  --standard-icon-bg: linear-gradient(135deg, rgba(234, 179, 8, 0.2) 0%, rgba(250, 204, 21, 0.32) 100%);
-  --standard-icon-shadow: rgba(234, 179, 8, 0.25);
-  --standard-link-color: #b45309;
+  --standard-card-gradient: var(--gradient-sunrise);
+  --standard-icon-bg: linear-gradient(
+    135deg,
+    rgba(var(--color-accent-rgb), 0.24) 0%,
+    rgba(var(--color-accent-rgb), 0.36) 100%
+  );
+  --standard-icon-shadow: rgba(var(--color-accent-rgb), 0.28);
+  --standard-link-color: color-mix(in oklab, var(--color-accent-600) 80%, var(--color-neutral-900));
 }
 
 .standard-card.iso-27001 {
@@ -2665,23 +2802,47 @@ footer.app-footer a:focus {
 }
 
 .standard-card.iatf-16949 {
-  --standard-card-gradient: linear-gradient(135deg, #475569 0%, #64748b 100%);
-  --standard-icon-bg: linear-gradient(135deg, rgba(71, 85, 105, 0.2) 0%, rgba(100, 116, 139, 0.32) 100%);
-  --standard-icon-shadow: rgba(71, 85, 105, 0.25);
-  --standard-link-color: #334155;
+  --standard-card-gradient: linear-gradient(
+    135deg,
+    var(--color-neutral-600) 0%,
+    var(--color-neutral-500) 100%
+  );
+  --standard-icon-bg: linear-gradient(
+    135deg,
+    color-mix(in oklab, var(--color-neutral-700) 18%, transparent) 0%,
+    color-mix(in oklab, var(--color-neutral-600) 32%, transparent) 100%
+  );
+  --standard-icon-shadow: color-mix(in oklab, var(--color-neutral-700) 28%, transparent);
+  --standard-link-color: var(--color-neutral-700);
 }
 
 .standard-card.iso-13485 {
-  --standard-card-gradient: linear-gradient(135deg, #ec4899 0%, #f472b6 100%);
-  --standard-icon-bg: linear-gradient(135deg, rgba(236, 72, 153, 0.18) 0%, rgba(244, 114, 182, 0.32) 100%);
-  --standard-icon-shadow: rgba(236, 72, 153, 0.25);
-  --standard-link-color: #be185d;
+  --standard-card-gradient: linear-gradient(
+    135deg,
+    var(--color-primary-400) 0%,
+    var(--color-primary-650) 100%
+  );
+  --standard-icon-bg: linear-gradient(
+    135deg,
+    rgba(var(--color-primary-rgb), 0.18) 0%,
+    rgba(var(--color-primary-rgb), 0.3) 100%
+  );
+  --standard-icon-shadow: rgba(var(--color-primary-rgb), 0.24);
+  --standard-link-color: var(--color-primary-600);
 }
 
 .standard-card.haccp {
-  --standard-card-gradient: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
-  --standard-icon-bg: linear-gradient(135deg, rgba(245, 158, 11, 0.2) 0%, rgba(251, 191, 36, 0.32) 100%);
-  --standard-icon-shadow: rgba(245, 158, 11, 0.25);
-  --standard-link-color: #b45309;
+  --standard-card-gradient: linear-gradient(
+    135deg,
+    var(--color-accent-400) 0%,
+    var(--color-accent-500) 100%
+  );
+  --standard-icon-bg: linear-gradient(
+    135deg,
+    rgba(var(--color-accent-rgb), 0.24) 0%,
+    rgba(var(--color-accent-rgb), 0.36) 100%
+  );
+  --standard-icon-shadow: rgba(var(--color-accent-rgb), 0.3);
+  --standard-link-color: color-mix(in oklab, var(--color-accent-600) 75%, var(--color-neutral-900));
 }
 
