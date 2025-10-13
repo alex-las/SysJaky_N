@@ -4,6 +4,7 @@
 @using SysJaky_N.Extensions
 @using SysJaky_N.Resources
 @inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+@inject IStringLocalizer<CompanyContactResources> CompanyContact
 @{
     var requestCulture = Context.Features.Get<IRequestCultureFeature>();
     var currentCulture = requestCulture?.RequestCulture.Culture.TwoLetterISOLanguageName ?? "cs";
@@ -188,8 +189,8 @@
                 <div class="col-12 col-md-6 col-lg-4">
                     <h5 class="footer-heading">@Localizer["FooterContactHeading"]</h5>
                     <ul class="list-unstyled footer-list mb-0">
-                        <li><i class="bi bi-envelope me-2"></i>@Localizer["FooterContactEmail"]</li>
-                        <li><i class="bi bi-telephone me-2"></i>@Localizer["FooterContactPhone"]</li>
+                        <li><i class="bi bi-envelope me-2"></i>@CompanyContact["Email"]</li>
+                        <li><i class="bi bi-telephone me-2"></i>@CompanyContact["Phone"]</li>
                     </ul>
                 </div>
             </div>
