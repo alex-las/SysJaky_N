@@ -10,199 +10,147 @@
     var currentCulture = requestCulture?.RequestCulture.Culture.TwoLetterISOLanguageName ?? "cs";
     var currentPage = ViewContext.RouteData.Values["page"]?.ToString() ?? string.Empty;
     var canAccessAdmin = User.IsInRole("Admin");
+    var navigationItems = new (string Page, string ResourceKey)[]
+    {
+        ("/Index", "NavHome"),
+        ("/About", "NavAbout"),
+        ("/Services", "NavServices"),
+        ("/Courses/Index", "NavCourses"),
+        ("/CorporateInquiry", "NavCorporateInquiry")
+    };
+    bool IsCurrentPage(string page) => string.Equals(currentPage, page, System.StringComparison.OrdinalIgnoreCase);
 }
 <!DOCTYPE html>
 <html lang="@currentCulture">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - SysJaky_N</title>
+    <title>@ViewData["Title"] - @Localizer["BrandName"]</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
-    <link rel="stylesheet" href="~/css/design-system.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/utilities.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/components.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/components/buttons.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/components/forms.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/components/modals.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/responsive.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/output.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/dist/styles.min.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/lib/altcha/altcha.min.css" asp-append-version="true" />
-    @await RenderSectionAsync("Head", required: false)
+    <link rel="manifest" href="~/manifest.json" />
+    <meta name="theme-color" content="#0B4AE6" />
 </head>
 <body>
-    <a href="#main-content" class="visually-hidden-focusable">@Localizer["SkipToContent"]</a>
-    <header role="banner" class="site-header">
-        <nav id="mainNav" role="navigation" aria-label='@Localizer["PrimaryNavigation"]' x-data="{ mobileMenuOpen: false }" @@keydown.escape.window="mobileMenuOpen = false" class="fixed inset-x-0 top-0 z-50 border-b border-slate-200 bg-white/90 backdrop-blur supports-[backdrop-filter]:bg-white/75">
-            <div class="mx-auto flex w-full max-w-7xl items-center gap-4 px-4 py-3 lg:px-6">
-                <a class="flex items-center gap-3 text-slate-900 transition hover:text-primary-700" asp-area="" asp-page="/Index">
-                    <span class="icon-box" aria-hidden="true"><i class="bi bi-award-fill"></i></span>
-                    <span class="text-base font-semibold">@Localizer["BrandName"]</span>
-                </a>
-                <div class="hidden flex-1 items-center lg:flex lg:gap-1">
-                    <ul class="flex items-center gap-1 text-sm font-medium">
-                        <li>
-                            <a class="inline-flex items-center rounded-lg px-3 py-2 transition duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500@(currentPage == "/Index" ? " bg-primary-100 text-primary-700" : " text-slate-600 hover:bg-primary-50 hover:text-primary-700")" asp-area="" asp-page="/Index" aria-current="@(currentPage == "/Index" ? "page" : null)">@Localizer["NavHome"]</a>
-                        </li>
-                        <li>
-                            <a class="inline-flex items-center rounded-lg px-3 py-2 transition duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500@(currentPage == "/About" ? " bg-primary-100 text-primary-700" : " text-slate-600 hover:bg-primary-50 hover:text-primary-700")" asp-area="" asp-page="/About" aria-current="@(currentPage == "/About" ? "page" : null)">@Localizer["NavAbout"]</a>
-                        </li>
-                        <li>
-                            <a class="inline-flex items-center rounded-lg px-3 py-2 transition duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500@(currentPage == "/Services" ? " bg-primary-100 text-primary-700" : " text-slate-600 hover:bg-primary-50 hover:text-primary-700")" asp-area="" asp-page="/Services" aria-current="@(currentPage == "/Services" ? "page" : null)">@Localizer["NavServices"]</a>
-                        </li>
-                        <li>
-                            <a class="inline-flex items-center rounded-lg px-3 py-2 transition duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500@(currentPage == "/Courses/Index" ? " bg-primary-100 text-primary-700" : " text-slate-600 hover:bg-primary-50 hover:text-primary-700")" asp-area="" asp-page="/Courses/Index" aria-current="@(currentPage == "/Courses/Index" ? "page" : null)">@Localizer["NavCourses"]</a>
-                        </li>
-                        <li>
-                            <a class="inline-flex items-center rounded-lg px-3 py-2 transition duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500@(currentPage == "/Articles/Index" ? " bg-primary-100 text-primary-700" : " text-slate-600 hover:bg-primary-50 hover:text-primary-700")" asp-area="" asp-page="/Articles/Index" aria-current="@(currentPage == "/Articles/Index" ? "page" : null)">@Localizer["NavArticles"]</a>
-                        </li>
-                    </ul>
-                </div>
-                <div class="ml-auto hidden items-center gap-2 lg:flex">
-                    @if (canAccessAdmin)
+    <!-- Hlavní navigace -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold text-primary" asp-page="/Index">
+                <i class="bi bi-award-fill me-2"></i>
+                @Localizer["BrandName"]
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarMain">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center">
+                    @foreach (var item in navigationItems)
                     {
-                        <a class="btn btn-admin-highlight inline-flex items-center gap-2" asp-page="/Admin/Dashboard/Index" aria-label='@Localizer["AdminDashboard"]'>
-                            <i class="bi bi-speedometer2" aria-hidden="true"></i>
-                            <span>@Localizer["AdminDashboard"]</span>
-                        </a>
+                        <li class="nav-item">
+                            <a class="nav-link @(IsCurrentPage(item.Page) ? "active fw-semibold" : "")" 
+                               asp-page="@item.Page">
+                                @Localizer[item.ResourceKey]
+                            </a>
+                        </li>
                     }
-                    <a class="btn btn-gradient-cta inline-flex items-center gap-2" data-bs-toggle="offcanvas" href="#advisor" role="button" aria-controls="advisor" aria-haspopup="dialog">
-                        <i class="bi bi-magic"></i>
-                        @Localizer["AdvisorButton"]
-                    </a>
-                    <partial name="_LanguageSwitcher" />
-                    <a class="btn btn-icon" asp-area="" asp-page="/Cart" aria-label='@Localizer["CartAriaLabel"]'>
-                        <i class="bi bi-cart"></i>
-                        <span class="sr-only">@Localizer["Cart"]</span>
-                    </a>
-                    <button type="button" class="btn btn-outline-light theme-toggle inline-flex items-center justify-center gap-2" title='@Localizer["ToggleTheme"]'>
-                        <i class="bi bi-sun-fill theme-icon-light"></i>
-                        <i class="bi bi-moon-fill theme-icon-dark"></i>
-                    </button>
-                    <partial name="_LoginPartial" view-data='new ViewDataDictionary(ViewData) { ["LoginInstance"] = "desktop" }' />
-                </div>
-                <div class="ml-auto flex items-center lg:hidden">
-                    <button type="button" class="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 text-slate-600 transition hover:bg-slate-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500" @@click="mobileMenuOpen = !mobileMenuOpen" :aria-expanded="mobileMenuOpen.toString()" aria-controls="mobileNav" aria-label='@Localizer["ToggleNavigation"]'>
-                        <i class="bi bi-list text-xl" x-show="!mobileMenuOpen"></i>
-                        <i class="bi bi-x-lg text-lg" x-show="mobileMenuOpen" x-cloak></i>
-                    </button>
-                </div>
-            </div>
-            <div id="mobileNav" class="lg:hidden" x-cloak x-show="mobileMenuOpen" x-transition.origin.top @@click.outside="mobileMenuOpen = false">
-                <div class="mx-auto flex w-full max-w-7xl flex-col gap-4 px-4 pb-6 pt-4">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center gap-2 text-slate-900">
-                            <span class="icon-box" aria-hidden="true"><i class="bi bi-award-fill"></i></span>
-                            <span class="text-base font-semibold">@Localizer["BrandName"]</span>
-                        </div>
-                        <button type="button" class="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 text-slate-600 transition hover:bg-slate-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500" aria-label='@Localizer["ToggleNavigation"]' @@click="mobileMenuOpen = false">
-                            <i class="bi bi-x-lg"></i>
-                        </button>
-                    </div>
-                    <nav aria-label='@Localizer["PrimaryNavigation"]'>
-                        <ul class="flex flex-col gap-1">
+                    
+                    <!-- Přepínač jazyků (pouze CZ/EN, ne v Admin sekci) -->
+                    <li class="nav-item dropdown ms-lg-3">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" 
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-globe2 me-1"></i>
+                            @(currentCulture.ToUpper())
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
                             <li>
-                                <a class="inline-flex w-full items-center rounded-lg px-3 py-2 text-base transition duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500@(currentPage == "/Index" ? " bg-primary-100 text-primary-700" : " text-slate-700 hover:bg-primary-50 hover:text-primary-700")" asp-area="" asp-page="/Index" aria-current="@(currentPage == "/Index" ? "page" : null)" @@click="mobileMenuOpen = false">@Localizer["NavHome"]</a>
+                                <a class="dropdown-item @(currentCulture == "cs" ? "active" : "")" 
+                                   asp-route-culture="cs" asp-route-ui-culture="cs">
+                                    <i class="bi bi-check-circle-fill me-2 @(currentCulture == "cs" ? "" : "invisible")"></i>
+                                    Čeština
+                                </a>
                             </li>
                             <li>
-                                <a class="inline-flex w-full items-center rounded-lg px-3 py-2 text-base transition duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500@(currentPage == "/About" ? " bg-primary-100 text-primary-700" : " text-slate-700 hover:bg-primary-50 hover:text-primary-700")" asp-area="" asp-page="/About" aria-current="@(currentPage == "/About" ? "page" : null)" @@click="mobileMenuOpen = false">@Localizer["NavAbout"]</a>
-                            </li>
-                            <li>
-                                <a class="inline-flex w-full items-center rounded-lg px-3 py-2 text-base transition duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500@(currentPage == "/Services" ? " bg-primary-100 text-primary-700" : " text-slate-700 hover:bg-primary-50 hover:text-primary-700")" asp-area="" asp-page="/Services" aria-current="@(currentPage == "/Services" ? "page" : null)" @@click="mobileMenuOpen = false">@Localizer["NavServices"]</a>
-                            </li>
-                            <li>
-                                <a class="inline-flex w-full items-center rounded-lg px-3 py-2 text-base transition duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500@(currentPage == "/Courses/Index" ? " bg-primary-100 text-primary-700" : " text-slate-700 hover:bg-primary-50 hover:text-primary-700")" asp-area="" asp-page="/Courses/Index" aria-current="@(currentPage == "/Courses/Index" ? "page" : null)" @@click="mobileMenuOpen = false">@Localizer["NavCourses"]</a>
-                            </li>
-                            <li>
-                                <a class="inline-flex w-full items-center rounded-lg px-3 py-2 text-base transition duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500@(currentPage == "/Articles/Index" ? " bg-primary-100 text-primary-700" : " text-slate-700 hover:bg-primary-50 hover:text-primary-700")" asp-area="" asp-page="/Articles/Index" aria-current="@(currentPage == "/Articles/Index" ? "page" : null)" @@click="mobileMenuOpen = false">@Localizer["NavArticles"]</a>
+                                <a class="dropdown-item @(currentCulture == "en" ? "active" : "")" 
+                                   asp-route-culture="en" asp-route-ui-culture="en">
+                                    <i class="bi bi-check-circle-fill me-2 @(currentCulture == "en" ? "" : "invisible")"></i>
+                                    English
+                                </a>
                             </li>
                         </ul>
-                    </nav>
-                    <div class="flex flex-col gap-3">
-                        @if (canAccessAdmin)
-                        {
-                            <a class="btn btn-admin-highlight inline-flex w-full items-center justify-center gap-2" asp-page="/Admin/Dashboard/Index" aria-label='@Localizer["AdminDashboard"]' @@click="mobileMenuOpen = false">
-                                <i class="bi bi-speedometer2" aria-hidden="true"></i>
-                                <span>@Localizer["AdminDashboard"]</span>
+                    </li>
+                    
+                    @if (canAccessAdmin)
+                    {
+                        <li class="nav-item ms-lg-2">
+                            <a class="btn btn-sm btn-outline-primary" asp-page="/Admin/Dashboard/Index">
+                                <i class="bi bi-speedometer2 me-1"></i>
+                                Administrace
                             </a>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hlavní obsah -->
+    <main role="main">
+        @RenderBody()
+    </main>
+
+    <!-- Patička -->
+    <footer class="bg-dark text-white py-5 mt-5">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-4">
+                    <h5 class="fw-bold mb-3">@Localizer["BrandName"]</h5>
+                    <p class="text-white-50">
+                        @Localizer["FooterDescription"]
+                    </p>
+                </div>
+                <div class="col-lg-4">
+                    <h5 class="fw-bold mb-3">@Localizer["FooterContactHeading"]</h5>
+                    <ul class="list-unstyled text-white-50">
+                        <li class="mb-2">
+                            <i class="bi bi-envelope me-2"></i>
+                            <a href="mailto:@CompanyContact["Email"]" class="text-white-50 text-decoration-none">
+                                @CompanyContact["Email"]
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <i class="bi bi-telephone me-2"></i>
+                            <a href="tel:@CompanyContact["Phone"]" class="text-white-50 text-decoration-none">
+                                @CompanyContact["Phone"]
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <i class="bi bi-geo-alt me-2"></i>
+                            @CompanyContact["Address"]
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-lg-4">
+                    <h5 class="fw-bold mb-3">@Localizer["FooterLinksHeading"]</h5>
+                    <ul class="list-unstyled">
+                        @foreach (var item in navigationItems)
+                        {
+                            <li class="mb-2">
+                                <a asp-page="@item.Page" class="text-white-50 text-decoration-none">
+                                    @Localizer[item.ResourceKey]
+                                </a>
+                            </li>
                         }
-                        <a class="btn btn-gradient-cta inline-flex w-full items-center justify-center gap-2" data-bs-toggle="offcanvas" href="#advisor" role="button" aria-controls="advisor" aria-haspopup="dialog" @@click="mobileMenuOpen = false">
-                            <i class="bi bi-magic"></i>
-                            @Localizer["AdvisorButton"]
-                        </a>
-                        <a class="btn btn-icon w-full justify-center" asp-area="" asp-page="/Cart" aria-label='@Localizer["CartAriaLabel"]' @@click="mobileMenuOpen = false">
-                            <i class="bi bi-cart"></i>
-                            <span class="ml-2">@Localizer["Cart"]</span>
-                        </a>
-                        <div class="language-switcher-mobile">
-                            <partial name="_LanguageSwitcher" />
-                        </div>
-                        <button type="button" class="btn btn-outline-light theme-toggle inline-flex items-center justify-center gap-2" title='@Localizer["ToggleTheme"]' @@click="mobileMenuOpen = false">
-                            <i class="bi bi-sun-fill theme-icon-light"></i>
-                            <i class="bi bi-moon-fill theme-icon-dark"></i>
-                            <span class="ml-1">@Localizer["ToggleTheme"]</span>
-                        </button>
-                        <div class="login-mobile">
-                            <partial name="_LoginPartial" view-data='new ViewDataDictionary(ViewData) { ["LoginInstance"] = "mobile" }' />
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </nav>
-    </header>
-
-    @{
-        var appContentClasses = ViewData["AppContentClasses"] as string;
-        var appContentClassList = string.IsNullOrWhiteSpace(appContentClasses)
-            ? "container-xxl px-3 px-md-4"
-            : appContentClasses;
-    }
-    <div class="app-content @appContentClassList">
-        <main id="main-content" role="main" class="app-main" tabindex="-1">
-            @RenderBody()
-        </main>
-    </div>
-
-    <partial name="_AdvisorOffcanvas" />
-
-    <vc:chatbot-widget />
-
-    <partial name="_Lightbox" />
-
-    <footer class="site-footer" role="contentinfo">
-        <div class="container-xxl py-5 position-relative">
-            <div class="row gy-4 align-items-start footer-sections">
-                <div class="col-12 col-lg-4">
-                    <div class="d-flex flex-column gap-2">
-                        <div class="d-flex align-items-center gap-2">
-                            <span class="icon-box" aria-hidden="true"><i class="bi bi-award-fill"></i></span>
-                            <span class="fw-semibold">@Localizer["BrandName"]</span>
-                        </div>
-                        <p class="text-white-75 mb-0">@Localizer["FooterCompanyName"]</p>
-                        <p class="text-white-50 mb-0">@CompanyContact["Registration"]</p>
-                    </div>
-                </div>
-                <div class="col-12 col-md-6 col-lg-4">
-                    <h5 class="footer-heading">@Localizer["FooterServicesHeading"]</h5>
-                    <ul class="list-unstyled footer-list mb-0">
-                        <li>@Localizer["FooterServiceQualityConsulting"]</li>
-                        <li>@Localizer["FooterServiceAudits"]</li>
-                        <li>@Localizer["FooterServiceTraining"]</li>
-                        <li>@Localizer["FooterServiceDocumentation"]</li>
-                    </ul>
-                </div>
-                <div class="col-12 col-md-6 col-lg-4">
-                    <h5 class="footer-heading">@Localizer["FooterContactHeading"]</h5>
-                    <ul class="list-unstyled footer-list mb-0">
-                        <li><i class="bi bi-envelope me-2"></i>@CompanyContact["Email"]</li>
-                        <li><i class="bi bi-telephone me-2"></i>@CompanyContact["Phone"]</li>
                     </ul>
                 </div>
             </div>
-            <div class="footer-bottom mt-5 pt-4">
-                <p class="mb-0 text-white-50 text-center">@Localizer["FooterNotice", DateTime.Now.Year]</p>
+            <hr class="my-4 bg-white-50" />
+            <div class="text-center text-white-50">
+                <p class="mb-0">
+                    &copy; @DateTime.Now.Year @Localizer["BrandName"]. @Localizer["FooterRights"]
+                </p>
             </div>
         </div>
     </footer>
@@ -241,10 +189,6 @@
     <script defer src="~/lib/alpine/alpine-csp.js" asp-append-version="true"></script>
     <script src="~/js/alpine-components.js" asp-append-version="true"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-    <script src="~/js/chatbot.js" asp-append-version="true"></script>
-
     @await RenderSectionAsync("Scripts", required: false)
-
-    <style>body { padding-top: 5.5rem; }</style>
 </body>
 </html>

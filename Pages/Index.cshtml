@@ -1,443 +1,292 @@
 @page
-@using System
-@using System.Linq
-@using SysJaky_N.Resources
 @model IndexModel
 @inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer T
-@inject IStringLocalizer<CompanyContactResources> ContactResources
-@{ 
+@{
     ViewData["Title"] = T["Title"];
-    ViewData["AppContentClasses"] = "container-fluid px-0";
-
-    var heroMetrics = Model.HeroMetrics?.ToArray() ?? Array.Empty<IndexModel.HeroMetric>();
-    var heroMetricConfigs = new (IndexModel.HeroMetric? Metric, int Target, int Step, int Interval, string Icon, string AccentClass)[]
-    {
-        (heroMetrics.Length > 0 ? heroMetrics[0] : null, 20, 1, 50, "bi bi-award", "bg-amber-50 text-amber-600"),
-        (heroMetrics.Length > 1 ? heroMetrics[1] : null, 500, 10, 20, "bi bi-people", "bg-blue-50 text-blue-600"),
-        (heroMetrics.Length > 2 ? heroMetrics[2] : null, 2000, 50, 15, "bi bi-journal-check", "bg-emerald-50 text-emerald-600"),
-        (heroMetrics.Length > 3 ? heroMetrics[3] : null, 15, 1, 60, "bi bi-person-badge", "bg-purple-50 text-purple-600")
-    };
-    var heroMetricCards = heroMetricConfigs
-        .Where(config => config.Metric is not null)
-        .Select(config => (Metric: config.Metric!, config.Target, config.Step, config.Interval, config.Icon, config.AccentClass))
-        .ToArray();
-
-    var standards = new (string Code, string ResourceKey, string IconClass, string Color)[]
-    {
-        ("ISO9001", "ISO9001", "bi bi-award-fill", "sky"),
-        ("ISO14001", "ISO14001", "bi bi-tree-fill", "emerald"),
-        ("ISOIEC17025", "ISO17025", "bi bi-clipboard-data-fill", "violet"),
-        ("ISO15189", "ISO15189", "bi bi-hospital-fill", "rose"),
-        ("ISO45001", "ISO45001", "bi bi-shield-fill-check", "amber"),
-        ("ISO27001", "ISO27001", "bi bi-shield-lock-fill", "indigo"),
-        ("IATF16949", "IATF16949", "bi bi-car-front-fill", "slate"),
-        ("ISO13485", "ISO13485", "bi bi-heart-pulse-fill", "pink")
-    };
 }
 
-@section Head {
-    <link rel="stylesheet" href="~/css/home.css" asp-append-version="true" />
-}
-
-<div class="home-experience" data-page="landing">
-    <section class="hero-section" id="hero">
-        <div class="hero-bubble hero-bubble--primary" aria-hidden="true"></div>
-        <div class="hero-bubble hero-bubble--secondary" aria-hidden="true"></div>
-        <div class="hero-bubble hero-bubble--tertiary" aria-hidden="true"></div>
-
-        <div class="hero-grid">
-            <div class="hero-content" data-reveal>
-                <span class="hero-badge">
-                    <i class="bi bi-stars" aria-hidden="true"></i>
-                    @T["HeroUSP2"]
-                </span>
-                <h1 class="hero-title"
-                    x-data="{
-                        phrases: ['@T["HeroMainHeading"]'],
-                        displayText: '',
-                        phraseIndex: 0,
-                        charIndex: 0,
-                        typing: true,
-                        type() {
-                            const current = this.phrases[this.phraseIndex];
-                            if (this.typing) {
-                                if (this.charIndex <= current.length) {
-                                    this.displayText = current.substring(0, this.charIndex++);
-                                    setTimeout(() => this.type(), 55);
-                                    return;
-                                }
-                                this.typing = false;
-                                setTimeout(() => this.type(), 2200);
-                                return;
-                            }
-
-                            if (this.charIndex >= 0) {
-                                this.displayText = current.substring(0, this.charIndex--);
-                                setTimeout(() => this.type(), 45);
-                                return;
-                            }
-
-                            this.typing = true;
-                            this.phraseIndex = (this.phraseIndex + 1) % this.phrases.length;
-                            setTimeout(() => this.type(), 300);
-                        }
-                    }"
-                    x-init="type()"
-                    x-text="displayText">
+<!-- Hero sekce -->
+<section class="hero-gradient py-5">
+    <div class="container py-5">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-7">
+                <div class="badge bg-primary-subtle text-primary px-3 py-2 mb-3">
+                    @T["HeroBadge"]
+                </div>
+                <h1 class="display-4 fw-bold mb-4">
                     @T["HeroMainHeading"]
                 </h1>
-                <p class="hero-lead">@T["HeroSubheading"]</p>
-
-                <div class="hero-highlights">
-                    <span class="hero-highlight">
-                        <i class="bi bi-patch-check" aria-hidden="true"></i>
-                        @T["HeroUSP1"]
-                    </span>
-                    <span class="hero-highlight">
-                        <i class="bi bi-award" aria-hidden="true"></i>
-                        @T["HeroUSP2"]
-                    </span>
-                    <span class="hero-highlight">
-                        <i class="bi bi-people" aria-hidden="true"></i>
-                        @T["HeroUSP3"]
-                    </span>
-                </div>
-
-                <div class="hero-actions">
-                    <a class="btn btn-gradient-cta hero-cta" href="/Courses/Index">
-                        <span>@T["HeroPrimaryCTA"]</span>
-                        <i class="bi bi-arrow-right" aria-hidden="true"></i>
-                    </a>
-                    <a class="btn btn-ghost hero-secondary" asp-page="/CorporateInquiry">
-                        <i class="bi bi-chat-dots" aria-hidden="true"></i>
-                        <span>@T["HeroSecondaryCTA"]</span>
-                    </a>
-                </div>
-
-                <div class="hero-chips" aria-label="@T["HeroTitle"]">
-                    <a class="chip" href="/Courses/Index?Mode=Online">
-                        <i class="bi bi-wifi" aria-hidden="true"></i>
-                        @T["ChipOnline"]
-                    </a>
-                    <a class="chip" href="/Courses/Index?CourseGroupId=REKVAL">
-                        <i class="bi bi-mortarboard" aria-hidden="true"></i>
-                        @T["ChipRetraining"]
-                    </a>
-                    <a class="chip" href="/Courses/Index?HasCertificate=true">
-                        <i class="bi bi-patch-check" aria-hidden="true"></i>
-                        @T["ChipCertificate"]
-                    </a>
-                    <a class="chip" href="/Courses/Index?q=akreditace">
-                        <i class="bi bi-diagram-3" aria-hidden="true"></i>
-                        @T["ChipAccreditation"]
-                    </a>
-                    <a class="chip" href="/Courses/Index?q=intern%C3%AD%20audit">
-                        <i class="bi bi-search" aria-hidden="true"></i>
-                        @T["ChipInternalAudits"]
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    @if (heroMetricCards.Length > 0)
-    {
-        <section class="py-16 bg-gray-50">
-            <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-                <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-                    @foreach (var card in heroMetricCards)
-                    {
-                        var metricSuffix = card.Metric.Value.EndsWith("+", StringComparison.Ordinal) ? "+" : string.Empty;
-                        var ariaLabel = string.IsNullOrWhiteSpace(card.Metric.AriaLabel)
-                            ? card.Metric.Label
-                            : card.Metric.AriaLabel;
-
-                        <article class="flex items-center gap-4 rounded-3xl bg-white/85 p-6 shadow-sm ring-1 ring-black/5 backdrop-blur"
-                                 data-reveal
-                                 aria-label="@ariaLabel"
-                                 x-data="{
-                                     value: 0,
-                                     target: @card.Target,
-                                     step: @card.Step,
-                                     interval: @card.Interval,
-                                     suffix: '@metricSuffix',
-                                     start() {
-                                         const tick = () => {
-                                             if (this.value < this.target) {
-                                                 this.value = Math.min(this.value + this.step, this.target);
-                                                 setTimeout(tick, this.interval);
-                                             }
-                                         };
-                                         tick();
-                                     }
-                                 }"
-                                 x-init="start()">
-                            <div class="flex h-14 w-14 items-center justify-center rounded-2xl @card.AccentClass">
-                                <i class="@card.Icon text-2xl" aria-hidden="true"></i>
-                            </div>
-                            <dl class="space-y-1">
-                                <dt class="text-sm font-medium text-neutral-500">@card.Metric.Label</dt>
-                                <dd class="text-3xl font-semibold text-neutral-900" x-text="value.toLocaleString('cs-CZ') + suffix">
-                                    @card.Metric.Value
-                                </dd>
-                            </dl>
-                        </article>
-                    }
-                </div>
-            </div>
-        </section>
-    }
-
-    <section class="py-20" id="specializations">
-        <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-            <div class="mx-auto max-w-3xl text-center" data-reveal>
-                <h2 class="section-heading">@T["SpecializationsHeading"]</h2>
-                <p class="section-subtitle">@T["SpecializationsDescription"]</p>
-            </div>
-
-            <div class="mt-12 grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
-                @for (var index = 0; index < standards.Length; index++)
-                {
-                    var standard = standards[index];
-                    var localizedText = T[standard.ResourceKey];
-                    var localizedValue = localizedText.Value;
-                    if (string.IsNullOrWhiteSpace(localizedValue))
-                    {
-                        localizedValue = standard.ResourceKey;
-                    }
-
-                    localizedValue = localizedValue.Trim();
-
-                    var separatorIndex = localizedValue.IndexOf('—');
-                    if (separatorIndex < 0)
-                    {
-                        separatorIndex = localizedValue.IndexOf('–');
-                    }
-
-                    var title = separatorIndex >= 0
-                        ? localizedValue.Substring(0, separatorIndex).Trim()
-                        : localizedValue;
-                    var description = separatorIndex >= 0 && separatorIndex + 1 < localizedValue.Length
-                        ? localizedValue.Substring(separatorIndex + 1).Trim()
-                        : string.Empty;
-                    var revealDelay = (index % 4) * 50;
-                    var detailUrl = Url.Page("/Standards/Detail", new { code = standard.Code }) ?? $"/Standards/Detail/{standard.Code}";
-
-                    <a class="group flex h-full flex-col gap-6 rounded-3xl border border-neutral-200/70 bg-white/90 p-8 text-left shadow-md transition-transform duration-200 ease-out hover:-translate-y-1 hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2"
-                       href="@detailUrl"
-                       data-reveal
-                       data-reveal-delay="@revealDelay"
-                       aria-label="@localizedValue">
-                        <span class="icon-box icon-box-@standard.Color shadow-lg transition-transform duration-200 ease-out group-hover:scale-105" aria-hidden="true">
-                            <i class="@standard.IconClass" aria-hidden="true"></i>
-                        </span>
-                        <div class="space-y-2">
-                            <h3 class="text-xl font-semibold text-neutral-900">@title</h3>
-                            @if (!string.IsNullOrEmpty(description))
-                            {
-                                <p class="text-sm text-neutral-600">@description</p>
-                            }
+                <p class="lead text-muted mb-4">
+                    @T["HeroSubheading"]
+                </p>
+                
+                <!-- USP body -->
+                <div class="d-flex flex-column gap-3 mb-4">
+                    <div class="d-flex align-items-start gap-3">
+                        <i class="bi bi-check-circle-fill text-success fs-4"></i>
+                        <div>
+                            <strong>@T["HeroUSP1Title"]</strong>
+                            <p class="mb-0 text-muted">@T["HeroUSP1Description"]</p>
                         </div>
-                        <span class="mt-auto inline-flex h-10 w-10 items-center justify-center rounded-full bg-primary-50 text-primary-600 transition-transform duration-200 ease-out group-hover:translate-x-1" aria-hidden="true">
-                            <i class="bi bi-arrow-up-right"></i>
-                        </span>
-                    </a>
-                }
-            </div>
-        </div>
-    </section>
-
-    <section class="section courses" id="courses">
-        <header class="section__header" data-reveal>
-            <span class="section__eyebrow">@T["RecommendedForYou"]</span>
-            <h2>@T["CoursesHeading"]</h2>
-            <p>@T["CoursesDescription"]</p>
-        </header>
-
-        <div class="courses__layout">
-            <div class="courses__grid">
-                @if (Model.PicksForPersona.Any())
-                {
-                    foreach (var course in Model.PicksForPersona)
-                    {
-                        var levelClasses = "course-level";
-                        var levelNormalized = (course.Level ?? string.Empty).ToLowerInvariant();
-                        if (levelNormalized.Contains("advanced") ||
-                            levelNormalized.Contains("expert") ||
-                            levelNormalized.Contains("pokroč"))
-                        {
-                            levelClasses += " course-level-featured";
-                        }
-
-                        var modeNormalized = (course.Mode ?? string.Empty).ToLowerInvariant();
-                        var formatModifier = modeNormalized.Contains("hybrid")
-                            ? "course-format--hybrid"
-                            : modeNormalized.Contains("online")
-                                ? "course-format--online"
-                                : "course-format--onsite";
-                        var formatClasses = $"course-format {formatModifier}";
-
-                        <article class="course-card" data-reveal>
-                            <div class="course-card__top">
-                                <div>
-                                    <h3>@course.Title</h3>
-                                    <span class="@levelClasses">@course.Level</span>
-                                </div>
-                                <span class="@formatClasses">
-                                    <i class="bi @(modeNormalized.Contains("online") ? "bi-wifi" : modeNormalized.Contains("hybrid") ? "bi-arrows-move" : "bi-geo")" aria-hidden="true"></i>
-                                    <span>@course.Mode</span>
-                                </span>
-                            </div>
-                            <ul class="course-card__meta">
-                                <li class="course-card__meta-item"><i class="bi bi-geo-alt" aria-hidden="true"></i><span>@course.Type</span></li>
-                                <li class="course-card__meta-item"><i class="bi bi-calendar-event" aria-hidden="true"></i><span>@course.DateDisplay</span></li>
-                            </ul>
-                            <div class="course-card__footer">
-                                <div class="course-card__details">
-                                    <span class="course-card__duration">@course.DurationDisplay</span>
-                                    <span class="course-card__price">@course.PriceDisplay</span>
-                                </div>
-                                <div class="course-card__actions">
-                                    <a class="btn btn-course-detail" href="@course.DetailsUrl">@T["CourseDetailsCTA"]</a>
-                                    <form method="post" action="@course.AddToCartUrl" class="d-inline">
-                                        <input type="hidden" name="courseId" value="@course.Id" />
-                                        <button type="submit" class="btn btn-course-detail btn-course-detail--secondary">@T["CourseEnrollCTA"]</button>
-                                    </form>
-                                </div>
-                            </div>
-                        </article>
-                    }
-                }
-                else
-                {
-                    <div class="course-card course-card--empty" data-reveal>
-                        <p>@T["RecommendedEmpty"]</p>
                     </div>
-                }
-            </div>
-
-            <aside class="courses__aside">
-                <div class="insight-card" data-reveal data-reveal-delay="50">
-                    <h3>@T["StartingSoon"]</h3>
-                    <ul>
-                        @foreach (var c in Model.FastSoonest)
-                        {
-                            <li>
-                                <a asp-page="/Courses/Details" asp-route-id="@c.Id">@c.Title</a>
-                                <span>@c.Date.ToString("d")</span>
-                            </li>
-                        }
-                    </ul>
-                    <a class="btn btn-outline-light hero__secondary" href="/Courses/Calendar">
-                        <i class="bi bi-calendar3" aria-hidden="true"></i>
-                        @T["CalendarButton"]
-                    </a>
-                </div>
-
-                <div class="insight-card" data-reveal data-reveal-delay="100">
-                    <h3>@T["NewsHeading"]</h3>
-                    <div class="news-chips">
-                        @foreach (var article in Model.FreshNews)
-                        {
-                            <a class="news-chip" asp-page="/Articles/Details" asp-route-id="@article.Id">@article.Title</a>
-                        }
+                    <div class="d-flex align-items-start gap-3">
+                        <i class="bi bi-check-circle-fill text-success fs-4"></i>
+                        <div>
+                            <strong>@T["HeroUSP2Title"]</strong>
+                            <p class="mb-0 text-muted">@T["HeroUSP2Description"]</p>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-start gap-3">
+                        <i class="bi bi-check-circle-fill text-success fs-4"></i>
+                        <div>
+                            <strong>@T["HeroUSP3Title"]</strong>
+                            <p class="mb-0 text-muted">@T["HeroUSP3Description"]</p>
+                        </div>
                     </div>
                 </div>
-            </aside>
+                
+                <div class="d-flex flex-column flex-sm-row gap-3">
+                    <a asp-page="/Courses/Index" class="btn btn-primary btn-lg">
+                        <i class="bi bi-mortarboard me-2"></i>
+                        @T["HeroPrimaryCTA"]
+                    </a>
+                    <a asp-page="/CorporateInquiry" class="btn btn-outline-primary btn-lg">
+                        <i class="bi bi-briefcase me-2"></i>
+                        @T["HeroSecondaryCTA"]
+                    </a>
+                </div>
+            </div>
+            
+            <div class="col-lg-5">
+                <div class="position-relative">
+                    <img src="~/img/hero-training.svg" alt="@T["HeroImageAlt"]" 
+                         class="img-fluid rounded-4 shadow-lg" />
+                </div>
+            </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    @if (Model.FeaturedTestimonials.Any())
-    {
-        @await Html.PartialAsync("~/Pages/Shared/_Testimonials.cshtml", Model.FeaturedTestimonials)
-    }
-
-    <section class="section why-us" id="why-us">
-        <header class="section__header" data-reveal>
-            <h2>@T["WhyChooseHeading"]</h2>
-            <p>@T["WhyChooseDescription"]</p>
-        </header>
-        <div class="why-us__grid">
-            <article class="why-us__card" data-reveal>
-                <div class="why-us__icon"><i class="bi bi-briefcase" aria-hidden="true"></i></div>
-                <h3>@T["HeroUSP1"]</h3>
-                <p>@T["StepSelectDescription"]</p>
-            </article>
-            <article class="why-us__card" data-reveal data-reveal-delay="50">
-                <div class="why-us__icon"><i class="bi bi-bullseye" aria-hidden="true"></i></div>
-                <h3>@T["HeroUSP2"]</h3>
-                <p>@T["StepRegisterDescription"]</p>
-            </article>
-            <article class="why-us__card" data-reveal data-reveal-delay="100">
-                <div class="why-us__icon"><i class="bi bi-people" aria-hidden="true"></i></div>
-                <h3>@T["HeroUSP3"]</h3>
-                <p>@T["StepPayDescription"]</p>
-            </article>
+<!-- Podporované normy ISO -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="h3 fw-bold">@T["IsoStandardsHeading"]</h2>
+            <p class="text-muted">@T["IsoStandardsDescription"]</p>
         </div>
-    </section>
-
-    <section class="section about" id="about">
-        <div class="about__card" data-reveal>
-            <span class="about__eyebrow">@T["AboutEyebrow"]</span>
-            <h2>@T["AboutHeading"]</h2>
-            <p>@T["AboutDescription"]</p>
-            <ul class="about__list" role="list">
-                <li>
-                    <span class="about__list-icon"><i class="bi bi-check2-circle" aria-hidden="true"></i></span>
-                    <span>@T["AboutBulletConsulting"]</span>
-                </li>
-                <li>
-                    <span class="about__list-icon"><i class="bi bi-mortarboard" aria-hidden="true"></i></span>
-                    <span>@T["AboutBulletTraining"]</span>
-                </li>
-                <li>
-                    <span class="about__list-icon"><i class="bi bi-arrow-repeat" aria-hidden="true"></i></span>
-                    <span>@T["AboutBulletCare"]</span>
-                </li>
-            </ul>
-            <a class="btn btn-light hero__cta" href="/About">@T["AboutCtaLabel"]</a>
+        
+        <div class="row g-4">
+            <!-- ISO 9001 -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="icon-box bg-primary text-white me-3">
+                                <i class="bi bi-award"></i>
+                            </div>
+                            <h3 class="h5 mb-0">ISO 9001</h3>
+                        </div>
+                        <p class="text-muted mb-3">@T["Iso9001Description"]</p>
+                        <a asp-page="/Courses/Index" asp-route-standard="ISO9001" 
+                           class="btn btn-sm btn-outline-primary">
+                            @T["ViewCoursesLink"]
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- ISO 14001 -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="icon-box bg-success text-white me-3">
+                                <i class="bi bi-globe"></i>
+                            </div>
+                            <h3 class="h5 mb-0">ISO 14001</h3>
+                        </div>
+                        <p class="text-muted mb-3">@T["Iso14001Description"]</p>
+                        <a asp-page="/Courses/Index" asp-route-standard="ISO14001" 
+                           class="btn btn-sm btn-outline-success">
+                            @T["ViewCoursesLink"]
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- ISO/IEC 17025 -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="icon-box bg-info text-white me-3">
+                                <i class="bi bi-flask"></i>
+                            </div>
+                            <h3 class="h5 mb-0">ISO/IEC 17025</h3>
+                        </div>
+                        <p class="text-muted mb-3">@T["Iso17025Description"]</p>
+                        <a asp-page="/Courses/Index" asp-route-standard="ISO17025" 
+                           class="btn btn-sm btn-outline-info">
+                            @T["ViewCoursesLink"]
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- HACCP -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="icon-box bg-warning text-dark me-3">
+                                <i class="bi bi-shield-check"></i>
+                            </div>
+                            <h3 class="h5 mb-0">HACCP</h3>
+                        </div>
+                        <p class="text-muted mb-3">@T["HaccpDescription"]</p>
+                        <a asp-page="/Courses/Index" asp-route-standard="HACCP" 
+                           class="btn btn-sm btn-outline-warning">
+                            @T["ViewCoursesLink"]
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- ISO 45001 -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="icon-box bg-danger text-white me-3">
+                                <i class="bi bi-heart-pulse"></i>
+                            </div>
+                            <h3 class="h5 mb-0">ISO 45001</h3>
+                        </div>
+                        <p class="text-muted mb-3">@T["Iso45001Description"]</p>
+                        <a asp-page="/Courses/Index" asp-route-standard="ISO45001" 
+                           class="btn btn-sm btn-outline-danger">
+                            @T["ViewCoursesLink"]
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- ISO 27001 -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="icon-box bg-dark text-white me-3">
+                                <i class="bi bi-lock"></i>
+                            </div>
+                            <h3 class="h5 mb-0">ISO 27001</h3>
+                        </div>
+                        <p class="text-muted mb-3">@T["Iso27001Description"]</p>
+                        <a asp-page="/Courses/Index" asp-route-standard="ISO27001" 
+                           class="btn btn-sm btn-outline-dark">
+                            @T["ViewCoursesLink"]
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
-    </section>
-
-    <section class="section contact" id="contact">
-        <header class="section__header" data-reveal>
-            <span class="section__eyebrow">@T["ContactCtaHeading"]</span>
-            <h2>@T["ContactHeading"]</h2>
-            <p>@T["ContactDescription"]</p>
-        </header>
-        <div class="contact__grid">
-            <article class="contact-card" data-reveal>
-                <div class="contact-card__icon">
-                    <i class="bi bi-telephone" aria-hidden="true"></i>
-                </div>
-                <div>
-                    <h3>@T["ContactPhoneLabel"]</h3>
-                    <p>@ContactResources["Phone"]</p>
-                </div>
-            </article>
-            <article class="contact-card" data-reveal data-reveal-delay="50">
-                <div class="contact-card__icon">
-                    <i class="bi bi-envelope" aria-hidden="true"></i>
-                </div>
-                <div>
-                    <h3>@T["ContactEmailLabel"]</h3>
-                    <p>@ContactResources["Email"]</p>
-                </div>
-            </article>
-            <article class="contact-card" data-reveal data-reveal-delay="100">
-                <div class="contact-card__icon">
-                    <i class="bi bi-geo-alt" aria-hidden="true"></i>
-                </div>
-                <div>
-                    <h3>@T["ContactAddressLabel"]</h3>
-                    <p>@ContactResources["Address"]</p>
-                </div>
-            </article>
+        
+        <div class="text-center mt-4">
+            <a asp-page="/Services" class="btn btn-outline-primary">
+                @T["ViewAllStandards"]
+            </a>
         </div>
-    </section>
+    </div>
+</section>
 
-</div>
+<!-- Jak to funguje -->
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="h3 fw-bold">@T["ProcessHeading"]</h2>
+            <p class="text-muted">@T["ProcessDescription"]</p>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-lg-4">
+                <div class="text-center">
+                    <div class="process-step-number mx-auto mb-3">1</div>
+                    <h3 class="h5 fw-semibold">@T["ProcessStep1Title"]</h3>
+                    <p class="text-muted">@T["ProcessStep1Description"]</p>
+                </div>
+            </div>
+            
+            <div class="col-lg-4">
+                <div class="text-center">
+                    <div class="process-step-number mx-auto mb-3">2</div>
+                    <h3 class="h5 fw-semibold">@T["ProcessStep2Title"]</h3>
+                    <p class="text-muted">@T["ProcessStep2Description"]</p>
+                </div>
+            </div>
+            
+            <div class="col-lg-4">
+                <div class="text-center">
+                    <div class="process-step-number mx-auto mb-3">3</div>
+                    <h3 class="h5 fw-semibold">@T["ProcessStep3Title"]</h3>
+                    <p class="text-muted">@T["ProcessStep3Description"]</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
-@section Scripts {
-    <script src="~/js/landing-page.js" asp-append-version="true"></script>
+<!-- CTA sekce -->
+<section class="py-5 bg-primary text-white">
+    <div class="container">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-8">
+                <h2 class="h3 fw-bold mb-3">@T["CtaHeading"]</h2>
+                <p class="mb-0 opacity-90">@T["CtaDescription"]</p>
+            </div>
+            <div class="col-lg-4 text-lg-end">
+                <a asp-page="/CorporateInquiry" class="btn btn-light btn-lg">
+                    <i class="bi bi-envelope me-2"></i>
+                    @T["CtaButton"]
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+.hero-gradient {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
 }
+
+.icon-box {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    font-size: 1.5rem;
+}
+
+.process-step-number {
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    font-size: 2rem;
+    font-weight: bold;
+    border-radius: 50%;
+}
+
+.card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15) !important;
+}
+</style>
