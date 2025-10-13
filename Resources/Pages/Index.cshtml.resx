@@ -300,57 +300,57 @@
     <value>ISO 13485 — Medical Devices</value>
   </data>
   <data name="SearchPlaceholder" xml:space="preserve">
-  <value>Hledat kurz...</value>
-</data>
+    <value>Hledat kurz...</value>
+  </data>
   <data name="SearchLabel" xml:space="preserve">
-  <value>Hledat</value>
-</data>
+    <value>Hledat</value>
+  </data>
   <data name="NormsLabel" xml:space="preserve">
-  <value>Normy</value>
-</data>
+    <value>Normy</value>
+  </data>
   <data name="CitiesLabel" xml:space="preserve">
-  <value>Města</value>
-</data>
+    <value>Města</value>
+  </data>
   <data name="LevelsLabel" xml:space="preserve">
-  <value>Úrovně</value>
-</data>
+    <value>Úrovně</value>
+  </data>
   <data name="TypesLabel" xml:space="preserve">
-  <value>Forma</value>
-</data>
+    <value>Forma</value>
+  </data>
   <data name="PriceRangeLabel" xml:space="preserve">
-  <value>Cenové rozpětí</value>
-</data>
+    <value>Cenové rozpětí</value>
+  </data>
   <data name="PriceLabel" xml:space="preserve">
-  <value>Cena</value>
-</data>
+    <value>Cena</value>
+  </data>
   <data name="SaveFilters" xml:space="preserve">
-  <value>Uložit filtry</value>
-</data>
+    <value>Uložit filtry</value>
+  </data>
   <data name="FiltersSaved" xml:space="preserve">
-  <value>Filtry uloženy</value>
-</data>
+    <value>Filtry uloženy</value>
+  </data>
   <data name="Compare" xml:space="preserve">
-  <value>Porovnat</value>
-</data>
+    <value>Porovnat</value>
+  </data>
   <data name="CompareLimit" xml:space="preserve">
-  <value>Můžete porovnat max. 3 kurzy</value>
-</data>
+    <value>Můžete porovnat max. 3 kurzy</value>
+  </data>
   <data name="Details" xml:space="preserve">
-  <value>Detail</value>
-</data>
+    <value>Detail</value>
+  </data>
   <data name="Enroll" xml:space="preserve">
-  <value>Přihlásit se</value>
-</data>
+    <value>Přihlásit se</value>
+  </data>
   <data name="NoCoursesFound" xml:space="preserve">
-  <value>Žádné kurzy nenalezeny</value>
-</data>
+    <value>Žádné kurzy nenalezeny</value>
+  </data>
   <data name="FetchError" xml:space="preserve">
-  <value>Chyba při načítání kurzů</value>
-</data>
+    <value>Chyba při načítání kurzů</value>
+  </data>
   <data name="PageStatus" xml:space="preserve">
-  <value>Stránka {0} z {1}</value>
-</data>
+    <value>Stránka {0} z {1}</value>
+  </data>
   <data name="RemoveFilter" xml:space="preserve">
-  <value>Odebrat filtr</value>
-</data>
+    <value>Odebrat filtr</value>
+  </data>
 </root>
