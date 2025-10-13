@@ -24,7 +24,8 @@ const cssSources = [
 const jsSources = [
   path.join('lib', 'jquery', 'dist', 'jquery.min.js'),
   path.join('lib', 'bootstrap', 'dist', 'js', 'bootstrap.bundle.min.js'),
-  path.join('js', 'site.js')
+  path.join('js', 'site.js'),
+  path.join('js', 'chatbot.js')
 ];
 
 async function readFiles(files) {
