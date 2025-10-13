@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="SectionBadge" xml:space="preserve">
+    <value>Frequently Asked Questions</value>
+  </data>
+  <data name="SectionHeading" xml:space="preserve">
+    <value>What do clients ask most?</value>
+  </data>
+  <data name="SectionDescription" xml:space="preserve">
+    <value>Quick answers for fast orientation. Click to reveal more details.</value>
+  </data>
+  <data name="ToggleLabel" xml:space="preserve">
+    <value>Toggle answer visibility: {0}</value>
+  </data>
+  <data name="FaqItems" xml:space="preserve">
+    <value><![CDATA[[
+  {
+    "Id": 1,
+    "Question": "How quickly can I launch my first internal audit?",
+    "Answer": "We typically recommend running a pilot audit within 30 days of starting our collaboration. We'll provide prepared checklists and mentoring for your audit team."
+  },
+  {
+    "Id": 2,
+    "Question": "Do I need special software?",
+    "Answer": "No. Most clients start with a simple shared drive and spreadsheets. If you need a more complex solution, we'll help you choose and implement it."
+  },
+  {
+    "Id": 3,
+    "Question": "What if we don't have internal capacity?",
+    "Answer": "We can set up the processes with you at the beginning and gradually hand them over to your internal staff. We also offer long-term oversight and mentoring until you are confident running it independently."
+  }
+]]></value>
+  </data>
+</root>
