@@ -18,8 +18,8 @@
   <data name="InvoiceHeading" xml:space="preserve">
     <value>Invoice #{0}</value>
   </data>
-  <data name="DateLabel" xml:space="preserve">
-    <value>Date</value>
+  <data name="DateLine" xml:space="preserve">
+    <value>Date: {0}</value>
   </data>
   <data name="CompanyHeading" xml:space="preserve">
     <value>Company</value>
@@ -42,13 +42,13 @@
   <data name="TotalHeader" xml:space="preserve">
     <value>Total</value>
   </data>
-  <data name="SubtotalLabel" xml:space="preserve">
-    <value>Subtotal (excl. VAT)</value>
+  <data name="SubtotalLine" xml:space="preserve">
+    <value>Subtotal (excl. VAT): {0}</value>
   </data>
-  <data name="VatLabel" xml:space="preserve">
-    <value>VAT</value>
+  <data name="VatLine" xml:space="preserve">
+    <value>VAT: {0}</value>
   </data>
-  <data name="TotalLabel" xml:space="preserve">
-    <value>Grand total</value>
+  <data name="TotalLine" xml:space="preserve">
+    <value>Grand total: {0}</value>
   </data>
 </root>

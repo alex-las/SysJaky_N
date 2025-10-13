@@ -18,8 +18,8 @@
   <data name="InvoiceHeading" xml:space="preserve">
     <value>Faktura #{0}</value>
   </data>
-  <data name="DateLabel" xml:space="preserve">
-    <value>Datum</value>
+  <data name="DateLine" xml:space="preserve">
+    <value>Datum: {0}</value>
   </data>
   <data name="CompanyHeading" xml:space="preserve">
     <value>Společnost</value>
@@ -42,13 +42,13 @@
   <data name="TotalHeader" xml:space="preserve">
     <value>Celkem</value>
   </data>
-  <data name="SubtotalLabel" xml:space="preserve">
-    <value>Mezisoučet (bez DPH)</value>
+  <data name="SubtotalLine" xml:space="preserve">
+    <value>Mezisoučet (bez DPH): {0}</value>
   </data>
-  <data name="VatLabel" xml:space="preserve">
-    <value>DPH</value>
+  <data name="VatLine" xml:space="preserve">
+    <value>DPH: {0}</value>
   </data>
-  <data name="TotalLabel" xml:space="preserve">
-    <value>Celkem</value>
+  <data name="TotalLine" xml:space="preserve">
+    <value>Celkem: {0}</value>
   </data>
 </root>
