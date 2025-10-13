@@ -105,6 +105,21 @@
   <data name="NewsletterConsentText" xml:space="preserve">
     <value>Souhlasím se zpracováním</value>
   </data>
+  <data name="NewsletterHeading" xml:space="preserve">
+    <value>Zůstaňme v kontaktu</value>
+  </data>
+  <data name="NewsletterDescription" xml:space="preserve">
+    <value>Získejte aktuality o nových školeních, speciálních termínech a tipech pro systémy řízení jakosti.</value>
+  </data>
+  <data name="NewsletterSuccessMessage" xml:space="preserve">
+    <value>Děkujeme! Poslali jsme vám potvrzovací e-mail.</value>
+  </data>
+  <data name="NewsletterErrorMessage" xml:space="preserve">
+    <value>Omlouváme se, nepodařilo se odeslat přihlášení. Zkuste to prosím znovu.</value>
+  </data>
+  <data name="NewsletterButtonLoadingText" xml:space="preserve">
+    <value>Odesíláme…</value>
+  </data>
   <data name="LoginTitle" xml:space="preserve">
     <value>Přihlášení</value>
   </data>
