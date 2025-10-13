@@ -146,33 +146,59 @@
 @section Scripts {
     <script>
         function courseFilters(coursesData, labelsData) {
-            var courses = Array.isArray(coursesData) ? coursesData : [];
+            var rawCourses = Array.isArray(coursesData) ? coursesData : [];
+            var normalizedCourses = [];
             var labels = typeof labelsData === 'object' && labelsData !== null ? labelsData : {};
+
+            for (var i = 0; i < rawCourses.length; i++) {
+                var course = rawCourses[i];
+
+                if (!course || typeof course !== 'object') {
+                    continue;
+                }
+
+                var courseId = course.id;
+
+                if (courseId === undefined || courseId === null) {
+                    if (course.Id !== undefined && course.Id !== null) {
+                        courseId = course.Id;
+                    } else if (course.detailsUrl || course.DetailsUrl) {
+                        courseId = course.detailsUrl || course.DetailsUrl;
+                    } else {
+                        courseId = 'course-' + normalizedCourses.length;
+                    }
+                }
+
+                normalizedCourses.push({
+                    id: courseId,
+                    title: course.title || course.Title || '',
+                    description: course.description || course.Description || '',
+                    level: course.level || course.Level || '',
+                    mode: course.mode || course.Mode || '',
+                    dateDisplay: course.dateDisplay || course.DateDisplay || '',
+                    priceDisplay: course.priceDisplay || course.PriceDisplay || '',
+                    durationDisplay: course.durationDisplay || course.DurationDisplay || '',
+                    detailsUrl: course.detailsUrl || course.DetailsUrl || ''
+                });
+            }
 
             return {
                 format: 'all',
                 level: 'all',
                 search: '',
-                courses: courses,
+                courses: normalizedCourses,
                 formatAllLabel: labels.formatAllLabel || 'Všechny formáty',
                 levelAllLabel: labels.levelAllLabel || 'Všechny úrovně',
                 resultCountTemplate: labels.resultCountTemplate || '{0}',
                 detailsLabel: labels.detailsLabel || 'Detail',
                 noResultsLabel: labels.noResultsLabel || 'Žádné kurzy neodpovídají výběru.',
-                coalesce: function (value, fallback) {
-                    if (value === undefined || value === null) {
-                        return fallback === undefined ? '' : fallback;
-                    }
-
-                    return value;
-                },
                 getFormats: function () {
                     var values = {};
                     var list = ['all'];
 
                     for (var i = 0; i < this.courses.length; i++) {
                         var course = this.courses[i];
-                        var mode = this.coalesce(course.mode, '');
+                        var mode = course.mode || '';
 
                         if (mode && !values[mode]) {
                             values[mode] = true;
@@ -188,7 +214,7 @@
 
                     for (var i = 0; i < this.courses.length; i++) {
                         var course = this.courses[i];
-                        var level = this.coalesce(course.level, '');
+                        var level = course.level || '';
 
                         if (level && !values[level]) {
                             values[level] = true;
@@ -204,10 +230,10 @@
 
                     for (var i = 0; i < this.courses.length; i++) {
                         var course = this.courses[i];
-                        var mode = this.coalesce(course.mode, '');
-                        var level = this.coalesce(course.level, '');
-                        var title = this.coalesce(course.title, '');
-                        var description = this.coalesce(course.description, '');
+                        var mode = course.mode || '';
+                        var level = course.level || '';
+                        var title = course.title || '';
+                        var description = course.description || '';
                         var matchesFormat = this.format === 'all' || mode === this.format;
                         var matchesLevel = this.level === 'all' || level === this.level;
                         var matchesTerm = term === '' || title.toLowerCase().indexOf(term) !== -1 || description.toLowerCase().indexOf(term) !== -1;
