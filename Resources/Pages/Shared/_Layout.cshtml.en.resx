@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <root>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
@@ -158,7 +158,7 @@
     <value>info@systemy-jakosti.cz</value>
   </data>
   <data name="FooterContactPhone" xml:space="preserve">
-    <value>+420 XXX XXX XXX</value>
+    <value>+420 602 790 570</value>
   </data>
   <data name="FooterNotice" xml:space="preserve">
     <value>© {0} Systémy jakosti s.r.o. All rights reserved.</value>

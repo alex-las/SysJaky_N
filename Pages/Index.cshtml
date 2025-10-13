@@ -1,8 +1,10 @@
 @page
 @using System
 @using System.Linq
+@using SysJaky_N.Resources
 @model IndexModel
 @inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer T
+@inject IStringLocalizer<CompanyContactResources> ContactResources
 @inject SysJaky_N.Services.IsoStandards.IIsoSpecializationMetadataProvider IsoMetadataProvider
 @{ 
     ViewData["Title"] = T["Title"];
@@ -361,7 +363,7 @@
                 </div>
                 <div>
                     <h3>@T["ContactPhoneLabel"]</h3>
-                    <p>@T["ContactPhoneValue"]</p>
+                    <p>@ContactResources["Phone"]</p>
                 </div>
             </article>
             <article class="contact-card" data-reveal data-reveal-delay="50">
@@ -370,7 +372,7 @@
                 </div>
                 <div>
                     <h3>@T["ContactEmailLabel"]</h3>
-                    <p>@T["ContactEmailValue"]</p>
+                    <p>@ContactResources["Email"]</p>
                 </div>
             </article>
             <article class="contact-card" data-reveal data-reveal-delay="100">
@@ -379,7 +381,7 @@
                 </div>
                 <div>
                     <h3>@T["ContactAddressLabel"]</h3>
-                    <p>@T["ContactAddressValue"]</p>
+                    <p>@ContactResources["Address"]</p>
                 </div>
             </article>
         </div>
