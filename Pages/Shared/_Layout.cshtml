@@ -209,30 +209,29 @@
 
     <div class="pointer-events-none fixed inset-0 flex items-end justify-end px-4 py-6 sm:items-start sm:p-6" aria-live="assertive" aria-atomic="true">
         <div class="flex w-full flex-col gap-3 sm:max-w-sm">
-            <template x-for="item in $store.toast.items" :key="item.id">
-                <div
-                    role="status"
-                    class="pointer-events-auto flex items-start gap-4 rounded-2xl bg-gradient-to-br p-4 text-white shadow-lg shadow-slate-900/20 ring-1 ring-white/10"
-                    x-transition.opacity.duration.200ms
-                    :class="{
-                        'from-emerald-500 via-emerald-600 to-emerald-700': item.type === 'success',
-                        'from-rose-500 via-rose-600 to-rose-700': item.type === 'error' || item.type === 'danger',
-                        'from-amber-400 via-amber-500 to-amber-600 text-slate-900': item.type === 'warning',
-                        'from-slate-600 via-slate-700 to-slate-900': !['success', 'error', 'danger', 'warning'].includes(item.type)
-                    }"
+            <div
+                x-show="$store.toast.isOpen"
+                x-transition.opacity.duration.200ms
+                role="status"
+                class="pointer-events-auto flex items-start gap-4 rounded-2xl bg-gradient-to-br p-4 text-white shadow-lg shadow-slate-900/20 ring-1 ring-white/10"
+                :class="{
+                    'from-emerald-500 via-emerald-600 to-emerald-700': $store.toast.type === 'success',
+                    'from-rose-500 via-rose-600 to-rose-700': ['error', 'danger'].includes($store.toast.type),
+                    'from-amber-400 via-amber-500 to-amber-600 text-slate-900': $store.toast.type === 'warning',
+                    'from-slate-600 via-slate-700 to-slate-900': !['success', 'error', 'danger', 'warning'].includes($store.toast.type)
+                }"
+            >
+                <div class="flex-1 text-sm font-medium" x-text="$store.toast.message"></div>
+                <button
+                    type="button"
+                    class="rounded-full bg-white/20 p-1 text-white transition hover:bg-white/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-white"
+                    :class="{ 'text-slate-900 hover:bg-white/80 focus-visible:ring-slate-900': $store.toast.type === 'warning' }"
+                    aria-label='@Localizer["Dismiss"]'
+                    @@click="$store.toast.hide()"
                 >
-                    <div class="flex-1 text-sm font-medium" x-text="item.message"></div>
-                    <button
-                        type="button"
-                        class="rounded-full bg-white/20 p-1 text-white transition hover:bg-white/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-white"
-                        :class="{ 'text-slate-900 hover:bg-white/80 focus-visible:ring-slate-900': item.type === 'warning' }"
-                        aria-label='@Localizer["Dismiss"]'
-                        @@click="$store.toast.remove(item.id)"
-                    >
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-            </template>
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
         </div>
     </div>
 
