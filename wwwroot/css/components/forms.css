@@ -116,7 +116,7 @@ textarea.form-control {
 .login-dropdown .dropdown-menu {
   margin-top: 0.75rem;
   padding: 0;
-  width: min(30rem, calc(100vw - 2rem));
+  width: min(36rem, calc(100vw - 2rem));
   border: none;
   background: transparent;
   transform-origin: top right;

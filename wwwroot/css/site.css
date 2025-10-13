@@ -30,7 +30,13 @@ body {
     background: linear-gradient(90deg, var(--primary-blue) 0%, #0839b8 60%, rgba(247, 181, 0, 0.92) 100%);
     box-shadow: 0 18px 48px rgba(11, 74, 230, 0.28);
     position: relative;
-    overflow: hidden;
+    overflow: visible;
+}
+
+.brand-navbar.sticky-top {
+    position: sticky;
+    top: 0;
+    z-index: 1040;
 }
 
 .brand-navbar::after {
