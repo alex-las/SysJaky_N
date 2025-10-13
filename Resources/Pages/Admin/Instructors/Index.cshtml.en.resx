@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AddInstructorButton" xml:space="preserve">
+    <value>Add instructor</value>
+  </data>
+  <data name="SearchLabel" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="SearchPlaceholder" xml:space="preserve">
+    <value>Name or email</value>
+  </data>
+  <data name="SearchButton" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="ClearButton" xml:space="preserve">
+    <value>Clear</value>
+  </data>
+  <data name="NoResultsMessage" xml:space="preserve">
+    <value>No instructors were found.</value>
+  </data>
+  <data name="NameHeader" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="EmailHeader" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="PhoneHeader" xml:space="preserve">
+    <value>Phone</value>
+  </data>
+  <data name="AssignedTermsHeader" xml:space="preserve">
+    <value>Assigned terms</value>
+  </data>
+  <data name="EmailNotProvided" xml:space="preserve">
+    <value>Not provided</value>
+  </data>
+  <data name="EditButton" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="DeleteButton" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="ActionsAriaLabel" xml:space="preserve">
+    <value>Actions for {0}</value>
+  </data>
+</root>
