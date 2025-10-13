@@ -1,19 +1,34 @@
+@model IEnumerable<SysJaky_N.Models.Testimonial>?
+@using System
 @using System.Collections.Generic
-@using System.Text.Json
+@using System.Linq
+@using SysJaky_N.Extensions
 @inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
 
-@functions {
-    private sealed record TestimonialEntry(string Quote, string Name, string Title, string Company, string ImageUrl, int Rating);
-}
-
 @{
-    var serializerOptions = new JsonSerializerOptions
+    IEnumerable<SysJaky_N.Models.Testimonial> ResolveTestimonials()
     {
-        PropertyNameCaseInsensitive = true
-    };
+        if (Model is not null)
+        {
+            return Model;
+        }
 
-    var testimonialsJson = Localizer["TestimonialsJson"].Value;
-    var testimonials = JsonSerializer.Deserialize<List<TestimonialEntry>>(testimonialsJson ?? "[]", serializerOptions) ?? new List<TestimonialEntry>();
+        if (ViewData.TryGetValue("Testimonials", out var value) && value is IEnumerable<SysJaky_N.Models.Testimonial> viewDataTestimonials)
+        {
+            return viewDataTestimonials;
+        }
+
+        return Array.Empty<SysJaky_N.Models.Testimonial>();
+    }
+
+    var testimonials = ResolveTestimonials()
+        .Where(t => t is not null && t.IsPublished && t.ConsentGranted)
+        .ToList();
+
+    if (testimonials.Count == 0)
+    {
+        return;
+    }
 }
 
 <section class="container py-5" aria-labelledby="testimonialsHeading">
@@ -34,28 +49,98 @@
             @for (var i = 0; i < testimonials.Count; i++)
             {
                 var testimonial = testimonials[i];
+                var rating = testimonial.Rating;
+                if (rating < 0)
+                {
+                    rating = 0;
+                }
+                else if (rating > 5)
+                {
+                    rating = 5;
+                }
+                var displayInitial = string.IsNullOrWhiteSpace(testimonial.FullName)
+                    ? "?"
+                    : testimonial.FullName.Trim()[0].ToString().ToUpperInvariant();
+                var hasPhoto = !string.IsNullOrWhiteSpace(testimonial.PhotoUrl);
+                var avatarAlt = !string.IsNullOrWhiteSpace(testimonial.PhotoAltText)
+                    ? testimonial.PhotoAltText
+                    : testimonial.FullName;
+                var photoUrl = testimonial.PhotoUrl ?? string.Empty;
+                var avatarWebp1x = hasPhoto ? photoUrl.WithImageParameters(160, "webp") : string.Empty;
+                var avatarWebp2x = hasPhoto ? photoUrl.WithImageParameters(320, "webp") : string.Empty;
+                var avatarJpeg1x = hasPhoto ? photoUrl.WithImageParameters(160, "jpg") : string.Empty;
+                var avatarJpeg2x = hasPhoto ? photoUrl.WithImageParameters(320, "jpg") : string.Empty;
+                var jpegSources = new List<string>();
+                if (!string.IsNullOrWhiteSpace(avatarJpeg1x))
+                {
+                    jpegSources.Add($"{avatarJpeg1x} 160w");
+                }
+                if (!string.IsNullOrWhiteSpace(avatarJpeg2x))
+                {
+                    jpegSources.Add($"{avatarJpeg2x} 320w");
+                }
+                var jpegSrcSet = string.Join(", ", jpegSources);
                 <div class="carousel-item @(i == 0 ? "active" : null)">
                     <article class="row align-items-center justify-content-center g-4">
                         <div class="col-md-4 text-center">
                             <div class="ratio ratio-1x1 mx-auto" style="max-width: 160px;">
-                                <img src="@testimonial.ImageUrl" class="rounded-circle object-fit-cover shadow" alt="@testimonial.Name" loading="lazy" />
+                                @if (hasPhoto)
+                                {
+                                    <picture>
+                                        @if (!string.IsNullOrWhiteSpace(avatarWebp1x))
+                                        {
+                                            <source type="image/webp" srcset="@avatarWebp1x 160w@(string.IsNullOrWhiteSpace(avatarWebp2x) ? string.Empty : ", " + avatarWebp2x + " 320w")" sizes="160px" />
+                                        }
+                                        @if (!string.IsNullOrWhiteSpace(jpegSrcSet))
+                                        {
+                                            <source type="image/jpeg" srcset="@jpegSrcSet" sizes="160px" />
+                                        }
+                                        <img src="@(!string.IsNullOrWhiteSpace(avatarJpeg1x) ? avatarJpeg1x : photoUrl)" class="rounded-circle object-fit-cover shadow" alt="@avatarAlt" loading="lazy" width="160" height="160" decoding="async" />
+                                    </picture>
+                                }
+                                else
+                                {
+                                    <div class="rounded-circle bg-light border d-inline-flex align-items-center justify-content-center shadow" style="width: 160px; height: 160px;">
+                                        <span class="fw-semibold text-primary fs-2">@displayInitial</span>
+                                    </div>
+                                }
                             </div>
                             <div class="mt-3">
                                 <div class="text-warning d-flex justify-content-center gap-1" aria-hidden="true">
                                     @for (var star = 0; star < 5; star++)
                                     {
-                                        <i class="bi bi-star-fill"></i>
+                                        if (star < rating)
+                                        {
+                                            <i class="bi bi-star-fill"></i>
+                                        }
+                                        else
+                                        {
+                                            <i class="bi bi-star"></i>
+                                        }
                                     }
                                 </div>
-                                <span class="visually-hidden">@Localizer["RatingLabel", testimonial.Rating]</span>
+                                <span class="visually-hidden">@Localizer["RatingLabel", rating]</span>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <blockquote class="blockquote fs-5">
                                 <p class="mb-4">“@testimonial.Quote”</p>
                                 <footer class="blockquote-footer">
-                                    <span class="fw-semibold">@testimonial.Name</span>
-                                    <span class="d-block text-muted">@testimonial.Title, @testimonial.Company</span>
+                                    <span class="fw-semibold">@testimonial.FullName</span>
+                                    <span class="d-block text-muted">
+                                        @if (!string.IsNullOrWhiteSpace(testimonial.Position))
+                                        {
+                                            @testimonial.Position
+                                        }
+                                        @if (!string.IsNullOrWhiteSpace(testimonial.Position) && !string.IsNullOrWhiteSpace(testimonial.Company))
+                                        {
+                                            @:", "
+                                        }
+                                        @if (!string.IsNullOrWhiteSpace(testimonial.Company))
+                                        {
+                                            @testimonial.Company
+                                        }
+                                    </span>
                                 </footer>
                             </blockquote>
                         </div>

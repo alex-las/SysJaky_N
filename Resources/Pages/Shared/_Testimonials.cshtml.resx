@@ -30,32 +30,4 @@
   <data name="Next" xml:space="preserve">
     <value>Další</value>
   </data>
-  <data name="TestimonialsJson" xml:space="preserve">
-    <value><![CDATA[[
-  {
-    "Quote": "Absolvovali jsme komplexní přípravu k certifikaci ISO 9001. Profesionální přístup, srozumitelný výklad a praktické příklady nám velmi pomohly. Certifikaci jsme získali na první pokus.",
-    "Name": "Ing. Jana Nováková",
-    "Title": "Manažerka kvality",
-    "Company": "XYZ s.r.o.",
-    "ImageUrl": "https://via.placeholder.com/120",
-    "Rating": 5
-  },
-  {
-    "Quote": "Lektorský tým kombinuje teoretické znalosti s praktickými zkušenostmi. Díky jejich školení máme připravený interní tým auditorů.",
-    "Name": "Petr Svoboda",
-    "Title": "Jednatel",
-    "Company": "ABC Lab a.s.",
-    "ImageUrl": "https://via.placeholder.com/120",
-    "Rating": 5
-  },
-  {
-    "Quote": "Firemní školení na míru přesně odpovídalo potřebám naší organizace. Oceňujeme flexibilitu a odbornost lektorů.",
-    "Name": "Mgr. Marie Dvořáková",
-    "Title": "HR Manager",
-    "Company": "DEF Group",
-    "ImageUrl": "https://via.placeholder.com/120",
-    "Rating": 5
-  }
-]]]></value>
-  </data>
 </root>
