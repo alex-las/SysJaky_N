@@ -26,6 +26,7 @@
     <link rel="stylesheet" href="~/css/components/forms.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/components/modals.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/responsive.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/output.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/dist/styles.min.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/lib/altcha/altcha.min.css" asp-append-version="true" />
@@ -34,7 +35,7 @@
 <body>
     <a href="#main-content" class="visually-hidden-focusable">@Localizer["SkipToContent"]</a>
     <header role="banner" class="site-header">
-        <nav id="mainNav" class="navbar navbar-expand-lg app-navbar fixed-top" role="navigation" aria-label='@Localizer["PrimaryNavigation"]'>
+        <nav id="mainNav" class="navbar navbar-expand-lg app-navbar fixed-top" role="navigation" aria-label='@Localizer["PrimaryNavigation"]' x-data="{ mobileMenuOpen: false }" x-on:keydown.escape.window="mobileMenuOpen = false">
             <div class="container-xxl nav-inner d-flex align-items-center gap-3">
                 <a class="navbar-brand d-inline-flex align-items-center gap-3" asp-area="" asp-page="/Index">
                     <span class="icon-box" aria-hidden="true"><i class="bi bi-award-fill"></i></span>
@@ -82,71 +83,70 @@
                     </button>
                     <partial name="_LoginPartial" view-data='new ViewDataDictionary(ViewData) { ["LoginInstance"] = "desktop" }' />
                 </div>
-                <button class="navbar-toggler d-lg-none ms-auto" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileNav" aria-controls="mobileNav" aria-expanded="false" aria-label='@Localizer["ToggleNavigation"]'>
+                <button class="navbar-toggler d-lg-none ms-auto" type="button" x-on:click="mobileMenuOpen = !mobileMenuOpen" :aria-expanded="mobileMenuOpen.toString()" aria-controls="mobileNavPanel" aria-label='@Localizer["ToggleNavigation"]'>
                     <span class="navbar-toggler-icon"></span>
                 </button>
             </div>
+            <div id="mobileNavPanel" class="mobile-nav-panel d-lg-none glass-offcanvas" x-cloak x-show="mobileMenuOpen" x-transition.origin.top x-on:click.outside="mobileMenuOpen = false" :aria-hidden="(!mobileMenuOpen).toString()">
+                <div class="offcanvas-header px-4 pt-4">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="icon-box" aria-hidden="true"><i class="bi bi-award-fill"></i></span>
+                        <span class="fw-semibold">@Localizer["BrandName"]</span>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white" x-on:click="mobileMenuOpen = false" aria-label='@Localizer["OffcanvasClose"]'></button>
+                </div>
+                <div class="offcanvas-body d-flex flex-column gap-4 px-4 pb-4">
+                    <nav class="mobile-nav" aria-label='@Localizer["PrimaryNavigation"]'>
+                        <ul class="navbar-nav flex-column gap-2">
+                            <li class="nav-item">
+                                <a class="nav-link @(currentPage == "/Index" ? "active" : string.Empty)" asp-area="" asp-page="/Index" aria-current="@(currentPage == "/Index" ? "page" : null)" x-on:click="mobileMenuOpen = false">@Localizer["NavHome"]</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link @(currentPage == "/About" ? "active" : string.Empty)" asp-area="" asp-page="/About" aria-current="@(currentPage == "/About" ? "page" : null)" x-on:click="mobileMenuOpen = false">@Localizer["NavAbout"]</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link @(currentPage == "/Services" ? "active" : string.Empty)" asp-area="" asp-page="/Services" aria-current="@(currentPage == "/Services" ? "page" : null)" x-on:click="mobileMenuOpen = false">@Localizer["NavServices"]</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link @(currentPage == "/Courses/Index" ? "active" : string.Empty)" asp-area="" asp-page="/Courses/Index" aria-current="@(currentPage == "/Courses/Index" ? "page" : null)" x-on:click="mobileMenuOpen = false">@Localizer["NavCourses"]</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link @(currentPage == "/Articles/Index" ? "active" : string.Empty)" asp-area="" asp-page="/Articles/Index" aria-current="@(currentPage == "/Articles/Index" ? "page" : null)" x-on:click="mobileMenuOpen = false">@Localizer["NavArticles"]</a>
+                            </li>
+                        </ul>
+                    </nav>
+                    <div class="d-grid gap-3">
+                        @if (canAccessAdmin)
+                        {
+                            <a class="btn btn-admin-highlight w-100 d-inline-flex align-items-center justify-content-center gap-2" asp-page="/Admin/Dashboard/Index" aria-label='@Localizer["AdminDashboard"]' x-on:click="mobileMenuOpen = false">
+                                <i class="bi bi-speedometer2" aria-hidden="true"></i>
+                                <span>@Localizer["AdminDashboard"]</span>
+                            </a>
+                        }
+                        <a class="btn btn-gradient-cta w-100 d-inline-flex align-items-center justify-content-center gap-2" data-bs-toggle="offcanvas" href="#advisor" role="button" aria-controls="advisor" aria-haspopup="dialog" x-on:click="mobileMenuOpen = false">
+                            <i class="bi bi-magic"></i>
+                            @Localizer["AdvisorButton"]
+                        </a>
+                        <a class="btn btn-icon w-100 justify-content-center" asp-area="" asp-page="/Cart" aria-label='@Localizer["CartAriaLabel"]' x-on:click="mobileMenuOpen = false">
+                            <i class="bi bi-cart"></i>
+                            <span class="ms-2">@Localizer["Cart"]</span>
+                        </a>
+                        <div class="language-switcher-mobile">
+                            <partial name="_LanguageSwitcher" />
+                        </div>
+                        <button type="button" class="btn btn-outline-light d-inline-flex align-items-center justify-content-center gap-2 theme-toggle" title='@Localizer["ToggleTheme"]' x-on:click="mobileMenuOpen = false">
+                            <i class="bi bi-sun-fill theme-icon-light"></i>
+                            <i class="bi bi-moon-fill theme-icon-dark"></i>
+                            <span class="ms-1">@Localizer["ToggleTheme"]</span>
+                        </button>
+                        <div class="login-mobile">
+                            <partial name="_LoginPartial" view-data='new ViewDataDictionary(ViewData) { ["LoginInstance"] = "mobile" }' />
+                        </div>
+                    </div>
+                </div>
+            </div>
         </nav>
     </header>
-
-    <div class="offcanvas offcanvas-end glass-offcanvas" tabindex="-1" id="mobileNav" aria-labelledby="mobileNavLabel">
-        <div class="offcanvas-header">
-            <div class="d-flex align-items-center gap-2">
-                <span class="icon-box" aria-hidden="true"><i class="bi bi-award-fill"></i></span>
-                <span class="fw-semibold">@Localizer["BrandName"]</span>
-            </div>
-            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label='@Localizer["OffcanvasClose"]'></button>
-        </div>
-        <div class="offcanvas-body d-flex flex-column gap-4">
-            <nav class="mobile-nav" aria-label='@Localizer["PrimaryNavigation"]'>
-                <ul class="navbar-nav flex-column gap-2">
-                    <li class="nav-item">
-                        <a class="nav-link @(currentPage == "/Index" ? "active" : string.Empty)" asp-area="" asp-page="/Index" aria-current="@(currentPage == "/Index" ? "page" : null)">@Localizer["NavHome"]</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link @(currentPage == "/About" ? "active" : string.Empty)" asp-area="" asp-page="/About" aria-current="@(currentPage == "/About" ? "page" : null)">@Localizer["NavAbout"]</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link @(currentPage == "/Services" ? "active" : string.Empty)" asp-area="" asp-page="/Services" aria-current="@(currentPage == "/Services" ? "page" : null)">@Localizer["NavServices"]</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link @(currentPage == "/Courses/Index" ? "active" : string.Empty)" asp-area="" asp-page="/Courses/Index" aria-current="@(currentPage == "/Courses/Index" ? "page" : null)">@Localizer["NavCourses"]</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link @(currentPage == "/Articles/Index" ? "active" : string.Empty)" asp-area="" asp-page="/Articles/Index" aria-current="@(currentPage == "/Articles/Index" ? "page" : null)">@Localizer["NavArticles"]</a>
-                    </li>
-                </ul>
-            </nav>
-            <div class="d-grid gap-3">
-                @if (canAccessAdmin)
-                {
-                    <a class="btn btn-admin-highlight w-100 d-inline-flex align-items-center justify-content-center gap-2" asp-page="/Admin/Dashboard/Index" aria-label='@Localizer["AdminDashboard"]'>
-                        <i class="bi bi-speedometer2" aria-hidden="true"></i>
-                        <span>@Localizer["AdminDashboard"]</span>
-                    </a>
-                }
-                <a class="btn btn-gradient-cta w-100 d-inline-flex align-items-center justify-content-center gap-2" data-bs-toggle="offcanvas" href="#advisor" role="button" aria-controls="advisor" aria-haspopup="dialog">
-                    <i class="bi bi-magic"></i>
-                    @Localizer["AdvisorButton"]
-                </a>
-                <a class="btn btn-icon w-100 justify-content-center" asp-area="" asp-page="/Cart" aria-label='@Localizer["CartAriaLabel"]'>
-                    <i class="bi bi-cart"></i>
-                    <span class="ms-2">@Localizer["Cart"]</span>
-                </a>
-                <div class="language-switcher-mobile">
-                    <partial name="_LanguageSwitcher" />
-                </div>
-                <button type="button" class="btn btn-outline-light d-inline-flex align-items-center justify-content-center gap-2 theme-toggle" title='@Localizer["ToggleTheme"]'>
-                    <i class="bi bi-sun-fill theme-icon-light"></i>
-                    <i class="bi bi-moon-fill theme-icon-dark"></i>
-                    <span class="ms-1">@Localizer["ToggleTheme"]</span>
-                </button>
-                <div class="login-mobile">
-                    <partial name="_LoginPartial" view-data='new ViewDataDictionary(ViewData) { ["LoginInstance"] = "mobile" }' />
-                </div>
-            </div>
-        </div>
-    </div>
 
     @{
         var appContentClasses = ViewData["AppContentClasses"] as string;
@@ -200,9 +200,32 @@
         </div>
     </footer>
 
+    <div class="toast-container position-fixed top-0 end-0 p-3" x-data="{}" x-cloak aria-live="polite" aria-atomic="true" style="z-index: 1080;">
+        <template x-for="toast in $store.toast.items" :key="toast.id">
+            <div class="alert shadow border-0 toast-message" role="status" x-transition.opacity.duration.200ms x-transition.origin.top
+                 :class="{
+                    'alert-success text-dark': toast.type === 'success',
+                    'alert-danger text-white': toast.type === 'error',
+                    'alert-warning text-dark': toast.type === 'warning',
+                    'alert-info text-dark': toast.type === 'info',
+                    'alert-dark text-white': !['success', 'error', 'warning', 'info'].includes(toast.type)
+                 }">
+                <div class="d-flex align-items-start gap-3">
+                    <div class="flex-grow-1">
+                        <h6 class="fw-semibold mb-1" x-show="toast.title" x-text="toast.title"></h6>
+                        <p class="mb-0" x-text="toast.message"></p>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white" aria-label="Close notification" x-on:click="$store.toast.remove(toast.id)"></button>
+                </div>
+            </div>
+        </template>
+    </div>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script type="module" src="~/lib/altcha/altcha.min.js" asp-append-version="true"></script>
+    <script defer src="~/lib/alpine/alpine.js" asp-append-version="true"></script>
+    <script type="module" src="~/js/alpine-components.js" asp-append-version="true"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/js/chatbot.js" asp-append-version="true"></script>
 
