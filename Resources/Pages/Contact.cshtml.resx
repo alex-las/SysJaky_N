@@ -24,6 +24,9 @@
   <data name="MapTitle" xml:space="preserve">
     <value>Mapa umístění naší kanceláře</value>
   </data>
+  <data name="OfficeAddressLabel" xml:space="preserve">
+    <value>Adresa kanceláře</value>
+  </data>
   <data name="Submit" xml:space="preserve">
     <value>Odeslat</value>
   </data>
