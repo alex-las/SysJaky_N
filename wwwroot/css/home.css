@@ -627,6 +627,54 @@
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12), 0 10px 18px rgba(15, 23, 42, 0.18);
 }
 
+.icon-box-sky {
+  background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+  color: #f8fafc;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12), 0 14px 22px rgba(14, 165, 233, 0.28);
+}
+
+.icon-box-emerald {
+  background: linear-gradient(135deg, #34d399, #059669);
+  color: #f0fdf4;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12), 0 14px 22px rgba(5, 150, 105, 0.28);
+}
+
+.icon-box-violet {
+  background: linear-gradient(135deg, #c084fc, #8b5cf6);
+  color: #faf5ff;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12), 0 14px 22px rgba(139, 92, 246, 0.28);
+}
+
+.icon-box-rose {
+  background: linear-gradient(135deg, #fda4af, #f43f5e);
+  color: #fff1f2;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12), 0 14px 22px rgba(244, 63, 94, 0.28);
+}
+
+.icon-box-amber {
+  background: linear-gradient(135deg, #fbbf24, #f97316);
+  color: #1f2937;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16), 0 14px 22px rgba(249, 115, 22, 0.26);
+}
+
+.icon-box-indigo {
+  background: linear-gradient(135deg, #818cf8, #4338ca);
+  color: #eef2ff;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12), 0 14px 22px rgba(99, 102, 241, 0.28);
+}
+
+.icon-box-slate {
+  background: linear-gradient(135deg, #475569, #1f2937);
+  color: #f8fafc;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08), 0 14px 22px rgba(30, 41, 59, 0.28);
+}
+
+.icon-box-pink {
+  background: linear-gradient(135deg, #f9a8d4, #ec4899);
+  color: #fff1f2;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12), 0 14px 22px rgba(236, 72, 153, 0.28);
+}
+
 .specialization-card__icon .icon-box.iso-45001 {
   background: linear-gradient(135deg, #fde047, #facc15);
   color: #1f2937;
