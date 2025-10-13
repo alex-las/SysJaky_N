@@ -3,75 +3,68 @@
     ViewData["Title"] = "Alpine & Tailwind Demo";
 }
 
-<section class="py-5 bg-light">
-    <div class="container">
-        <div class="mb-5 text-center">
-            <span class="badge bg-primary-subtle text-primary text-uppercase">Alpine.js Sandbox</span>
-            <h1 class="display-6 mt-3">Rychlé ověření komponent</h1>
-            <p class="text-muted mb-0">Zvyšte jistotu, že integrace Alpine.js a Tailwind utility funguje správně.</p>
+<section class="bg-slate-50 py-16">
+    <div class="container mx-auto max-w-6xl px-4">
+        <div class="text-center">
+            <span class="badge-soft">Alpine.js Sandbox</span>
+            <h1 class="section-heading mt-4">Rychlé ověření komponent</h1>
+            <p class="section-subtitle mx-auto">Zvyšte jistotu, že integrace Alpine.js a Tailwind utility funguje správně.</p>
         </div>
 
-        <div class="row g-4">
-            <div class="col-12 col-lg-6">
-                <div class="card shadow-sm border-0 h-100" x-data="{ count: 0 }">
-                    <div class="card-body d-flex flex-column gap-3">
-                        <div>
-                            <h2 class="h4 mb-1">Počítadlo</h2>
-                            <p class="text-muted mb-0">Jednoduchý counter pro rychlé testování reaktivity.</p>
-                        </div>
-                        <div class="d-flex align-items-center justify-content-between">
-                            <span class="display-4 fw-semibold" x-text="count"></span>
-                            <div class="btn-group" role="group" aria-label="Counter controls">
-                                <button type="button" class="btn btn-outline-secondary" x-on:click="count--">-1</button>
-                                <button type="button" class="btn btn-primary" x-on:click="count++">+1</button>
-                            </div>
-                        </div>
+        <div class="mt-12 grid gap-8 md:grid-cols-2">
+            <div class="card-modern" x-data="{ count: 0 }">
+                <div>
+                    <h2 class="text-xl font-semibold text-ink">Počítadlo</h2>
+                    <p class="mt-1 text-sm text-neutral-500">Jednoduchý counter pro rychlé testování reaktivity.</p>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span class="text-5xl font-semibold text-primary-600" x-text="count"></span>
+                    <div class="flex items-center gap-3">
+                        <button type="button" class="btn-ghost" x-on:click="count--">-1</button>
+                        <button type="button" class="btn-primary" x-on:click="count++">+1</button>
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-lg-6">
-                <div class="card shadow-sm border-0 h-100" x-data="{ enabled: false }" x-id="['toggle']">
-                    <div class="card-body d-flex flex-column gap-3">
-                        <div>
-                            <h2 class="h4 mb-1">Přepínač režimu</h2>
-                            <p class="text-muted mb-0">Ukázka práce s ARIA a tailwind utilitou <code>bg-emerald-500</code>.</p>
-                        </div>
-                        <button type="button"
-                                :id="$id('toggle')"
-                                class="position-relative d-inline-flex align-items-center border rounded-pill px-2 py-1"
-                                :class="enabled ? 'bg-success bg-emerald-500 border-success text-white' : 'bg-white border-secondary-subtle'"
-                                role="switch"
-                                :aria-checked="enabled"
-                                x-on:click="enabled = !enabled">
-                            <span class="px-2 small" x-text="enabled ? 'Zapnuto' : 'Vypnuto'"></span>
-                            <span class="position-absolute top-50 translate-middle-y start-0 ms-1 rounded-circle bg-white"
-                                  :style="`width: 28px; height: 28px; transition: transform .2s ease; transform: translate(${enabled ? 'calc(100% - 4px)' : '0'}, -50%);`"></span>
-                        </button>
-                    </div>
+
+            <div class="card-modern" x-data="{ enabled: false }" x-id="['toggle']">
+                <div>
+                    <h2 class="text-xl font-semibold text-ink">Přepínač režimu</h2>
+                    <p class="mt-1 text-sm text-neutral-500">Ukázka práce s ARIA a tailwind utilitou <code>bg-emerald-500</code>.</p>
                 </div>
+                <button type="button"
+                        :id="$id('toggle')"
+                        class="relative inline-flex items-center rounded-full border border-neutral-300 bg-white/90 px-2 py-1 text-sm font-medium text-neutral-700 transition hover:border-primary-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-400"
+                        :class="enabled ? 'bg-emerald-500 text-white shadow-lg ring-emerald-300' : 'bg-white/90'"
+                        role="switch"
+                        :aria-checked="enabled"
+                        x-on:click="enabled = !enabled">
+                    <span class="px-3" x-text="enabled ? 'Zapnuto' : 'Vypnuto'"></span>
+                    <span class="absolute left-1 top-1 h-7 w-7 rounded-full bg-white shadow transition-transform duration-200"
+                          :class="enabled ? 'translate-x-9' : 'translate-x-0'"></span>
+                </button>
             </div>
         </div>
 
-        <div class="mt-5" x-data>
-            <h2 class="h4 mb-3 text-center">Toast notifikace</h2>
-            <div class="d-flex flex-column flex-md-row align-items-center justify-content-center gap-3">
-                <button type="button" class="btn btn-success" x-on:click="$store.toast.show('Úspěšně otestováno!', { type: 'success' })">Zobraz úspěch</button>
-                <button type="button" class="btn btn-warning" x-on:click="$store.toast.show('Pozor na varování.', { type: 'warning', duration: 7000 })">Zobraz upozornění</button>
-                <button type="button" class="btn btn-outline-secondary" x-on:click="$store.toast.hide()">Skrýt</button>
+        <div class="mt-16" x-data>
+            <h2 class="text-center text-xl font-semibold text-ink">Toast notifikace</h2>
+            <div class="mt-6 flex flex-col items-center justify-center gap-3 md:flex-row">
+                <button type="button" class="btn-primary" x-on:click="$store.toast.show('Úspěšně otestováno!', { type: 'success' })">Zobraz úspěch</button>
+                <button type="button" class="btn-warning" x-on:click="$store.toast.show('Pozor na varování.', { type: 'warning', duration: 7000 })">Zobraz upozornění</button>
+                <button type="button" class="btn-ghost" x-on:click="$store.toast.hide()">Skrýt</button>
             </div>
 
-            <div class="position-relative mt-4">
-                <div class="position-absolute top-0 end-0" style="min-width: 260px;">
+            <div class="relative mt-8 flex justify-end">
+                <div class="w-full max-w-xs">
                     <div x-cloak
                          x-show="$store.toast.isOpen"
                          x-transition.opacity
-                         class="toast align-items-center text-bg-dark border-0 show">
-                        <div class="d-flex">
-                            <div class="toast-body">
-                                <strong class="d-block text-uppercase small" x-text="$store.toast.type"></strong>
-                                <span x-text="$store.toast.message"></span>
+                         class="rounded-2xl bg-neutral-900/95 p-5 text-white shadow-2xl ring-1 ring-neutral-800">
+                        <div class="flex items-start justify-between gap-3">
+                            <div>
+                                <strong class="text-xs font-semibold uppercase tracking-wide text-primary-300" x-text="$store.toast.type"></strong>
+                                <p class="mt-1 text-sm" x-text="$store.toast.message"></p>
                             </div>
-                            <button type="button" class="btn-close btn-close-white me-2 m-auto" aria-label="Zavřít" x-on:click="$store.toast.hide()"></button>
+                            <button type="button" class="btn-ghost h-9 px-3 py-2 text-xs" aria-label="Zavřít" x-on:click="$store.toast.hide()">✕</button>
                         </div>
                     </div>
                 </div>
