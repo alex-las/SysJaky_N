@@ -32,6 +32,11 @@ module.exports = {
           500: "#f0ad1b",
           600: "#c98a0f"
         },
+        warning: {
+          DEFAULT: "#f9c43c",
+          500: "#f9c43c",
+          600: "#f0ad1b"
+        },
         neutral: {
           50: "#f8fafc",
           100: "#f1f5f9",
