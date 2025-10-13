@@ -8,7 +8,10 @@
     ViewData["Title"] = Localizer["Title"];
 
     var serializerOptions = new JsonSerializerOptions(JsonSerializerDefaults.Web);
-    var courseItems = Model.Courses.Select(course => new
+    var courseSource = Model.Courses ?? Enumerable.Empty<SysJaky_N.Models.CourseCardViewModel>();
+    var courseItems = courseSource
+        .Where(course => course is not null)
+        .Select(course => new
     {
         id = course.Id,
         title = course.Title,
@@ -27,6 +30,14 @@
     var resultCountTemplateValue = Localizer["ResultCount", "{0}"].Value ?? "{0}";
     var detailsLabelValue = Localizer["Details"].Value ?? "Detail";
     var noResultsLabelValue = Localizer["NoCoursesFound"].Value ?? "Žádné kurzy neodpovídají výběru.";
+    var labelsJson = JsonSerializer.Serialize(new
+    {
+        formatAllLabel = formatAllLabelValue,
+        levelAllLabel = levelAllLabelValue,
+        resultCountTemplate = resultCountTemplateValue,
+        detailsLabel = detailsLabelValue,
+        noResultsLabel = noResultsLabelValue
+    }, serializerOptions);
 }
 
 <nav aria-label="breadcrumb" class="mb-3">
@@ -48,85 +59,7 @@
     <div class="alert alert-danger" role="alert">@cartError</div>
 }
 
-<div class="space-y-6" x-data="{
-        format: 'all',
-        level: 'all',
-        search: '',
-        courses: (function () {
-            const data = @Html.Raw(coursesJson);
-            return Array.isArray(data) ? data : [];
-        })(),
-        formatAllLabel: @Html.Raw(Json.Serialize(formatAllLabelValue)),
-        levelAllLabel: @Html.Raw(Json.Serialize(levelAllLabelValue)),
-        resultCountTemplate: @Html.Raw(Json.Serialize(resultCountTemplateValue)),
-        detailsLabel: @Html.Raw(Json.Serialize(detailsLabelValue)),
-        noResultsLabel: @Html.Raw(Json.Serialize(noResultsLabelValue)),
-        coalesce(value, fallback) {
-            if (value === undefined || value === null) {
-                return fallback === undefined ? '' : fallback;
-            }
-
-            return value;
-        },
-        get formats() {
-            const values = new Set();
-
-            for (const course of this.courses) {
-                const mode = this.coalesce(course.mode, '');
-                if (mode) {
-                    values.add(mode);
-                }
-            }
-
-            return ['all'].concat(Array.from(values));
-        },
-        get levels() {
-            const values = new Set();
-
-            for (const course of this.courses) {
-                const level = this.coalesce(course.level, '');
-                if (level) {
-                    values.add(level);
-                }
-            }
-
-            return ['all'].concat(Array.from(values));
-        },
-        get filteredCourses() {
-            const term = this.search.trim().toLowerCase();
-            const results = [];
-
-            for (const course of this.courses) {
-                const mode = this.coalesce(course.mode, '');
-                const level = this.coalesce(course.level, '');
-                const title = this.coalesce(course.title, '');
-                const description = this.coalesce(course.description, '');
-                const matchesFormat = this.format === 'all' || mode === this.format;
-                const matchesLevel = this.level === 'all' || level === this.level;
-                const matchesTerm = term === '' || title.toLowerCase().indexOf(term) !== -1 || description.toLowerCase().indexOf(term) !== -1;
-
-                if (matchesFormat && matchesLevel && matchesTerm) {
-                    results.push(course);
-                }
-            }
-
-            return results;
-        },
-        formatLabel(option) {
-            return option === 'all' ? this.formatAllLabel : option;
-        },
-        levelLabel(option) {
-            return option === 'all' ? this.levelAllLabel : option;
-        },
-        formatResultCount(count) {
-            return this.resultCountTemplate.replace('{0}', String(count));
-        },
-        resetFilters() {
-            this.format = 'all';
-            this.level = 'all';
-            this.search = '';
-        }
-    }">
+<div class="space-y-6" x-data="courseFilters(@Html.Raw(coursesJson), @Html.Raw(labelsJson))">
     <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
         <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
             <label class="flex w-full flex-col gap-2 lg:max-w-md">
@@ -145,7 +78,7 @@
                 </div>
             </label>
             <div class="flex flex-wrap gap-2">
-                <template x-for="option in formats" :key="option">
+                <template x-for="option in getFormats()" :key="option">
                     <button type="button"
                             class="inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition"
                             @@click="format = option"
@@ -158,7 +91,7 @@
         <div class="mt-6 flex flex-col gap-3">
             <span class="text-sm font-medium text-slate-700">@Localizer["LevelsLabel"]</span>
             <div class="flex flex-wrap gap-2">
-                <template x-for="option in levels" :key="option">
+                <template x-for="option in getLevels()" :key="option">
                     <button type="button"
                             class="inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition"
                             @@click="level = option"
@@ -170,7 +103,7 @@
         </div>
         <div class="mt-6 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
             <p class="text-sm text-slate-600">
-                <span x-text="formatResultCount(filteredCourses.length)"></span>
+                <span x-text="formatResultCount(filterCourses().length)"></span>
             </p>
             <div class="flex gap-2">
                 <button type="button"
@@ -183,7 +116,7 @@
     </div>
 
     <div class="grid gap-6 lg:grid-cols-2 xl:grid-cols-3" role="list">
-        <template x-for="course in filteredCourses" :key="course.id">
+        <template x-for="course in filterCourses()" :key="course.id">
             <article class="flex h-full flex-col justify-between rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md" role="listitem">
                 <div class="flex flex-col gap-4">
                     <div class="flex items-start justify-between gap-3">
@@ -207,5 +140,100 @@
         </template>
     </div>
 
-    <div class="rounded-2xl border border-dashed border-slate-300 p-8 text-center text-sm text-slate-500" x-show="filteredCourses.length === 0" x-text="noResultsLabel"></div>
+    <div class="rounded-2xl border border-dashed border-slate-300 p-8 text-center text-sm text-slate-500" x-show="filterCourses().length === 0" x-text="noResultsLabel"></div>
 </div>
+
+@section Scripts {
+    <script>
+        function courseFilters(coursesData, labelsData) {
+            var courses = Array.isArray(coursesData) ? coursesData : [];
+            var labels = typeof labelsData === 'object' && labelsData !== null ? labelsData : {};
+
+            return {
+                format: 'all',
+                level: 'all',
+                search: '',
+                courses: courses,
+                formatAllLabel: labels.formatAllLabel || 'Všechny formáty',
+                levelAllLabel: labels.levelAllLabel || 'Všechny úrovně',
+                resultCountTemplate: labels.resultCountTemplate || '{0}',
+                detailsLabel: labels.detailsLabel || 'Detail',
+                noResultsLabel: labels.noResultsLabel || 'Žádné kurzy neodpovídají výběru.',
+                coalesce: function (value, fallback) {
+                    if (value === undefined || value === null) {
+                        return fallback === undefined ? '' : fallback;
+                    }
+
+                    return value;
+                },
+                getFormats: function () {
+                    var values = {};
+                    var list = ['all'];
+
+                    for (var i = 0; i < this.courses.length; i++) {
+                        var course = this.courses[i];
+                        var mode = this.coalesce(course.mode, '');
+
+                        if (mode && !values[mode]) {
+                            values[mode] = true;
+                            list.push(mode);
+                        }
+                    }
+
+                    return list;
+                },
+                getLevels: function () {
+                    var values = {};
+                    var list = ['all'];
+
+                    for (var i = 0; i < this.courses.length; i++) {
+                        var course = this.courses[i];
+                        var level = this.coalesce(course.level, '');
+
+                        if (level && !values[level]) {
+                            values[level] = true;
+                            list.push(level);
+                        }
+                    }
+
+                    return list;
+                },
+                filterCourses: function () {
+                    var term = this.search.replace(/^\s+|\s+$/g, '').toLowerCase();
+                    var results = [];
+
+                    for (var i = 0; i < this.courses.length; i++) {
+                        var course = this.courses[i];
+                        var mode = this.coalesce(course.mode, '');
+                        var level = this.coalesce(course.level, '');
+                        var title = this.coalesce(course.title, '');
+                        var description = this.coalesce(course.description, '');
+                        var matchesFormat = this.format === 'all' || mode === this.format;
+                        var matchesLevel = this.level === 'all' || level === this.level;
+                        var matchesTerm = term === '' || title.toLowerCase().indexOf(term) !== -1 || description.toLowerCase().indexOf(term) !== -1;
+
+                        if (matchesFormat && matchesLevel && matchesTerm) {
+                            results.push(course);
+                        }
+                    }
+
+                    return results;
+                },
+                formatLabel: function (option) {
+                    return option === 'all' ? this.formatAllLabel : option;
+                },
+                levelLabel: function (option) {
+                    return option === 'all' ? this.levelAllLabel : option;
+                },
+                formatResultCount: function (count) {
+                    return this.resultCountTemplate.replace('{0}', String(count));
+                },
+                resetFilters: function () {
+                    this.format = 'all';
+                    this.level = 'all';
+                    this.search = '';
+                }
+            };
+        }
+    </script>
+}
