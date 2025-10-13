@@ -135,27 +135,31 @@
 
 .badge-primary {
     color: #fff;
-    background: linear-gradient(135deg, #4f46e5, #22d3ee);
+    background: linear-gradient(135deg, var(--color-primary-600), var(--color-primary-700));
 }
 
 .badge-success {
-    color: #0f172a;
-    background: linear-gradient(135deg, #34d399, #6ee7b7);
+    color: var(--color-neutral-900);
+    background: linear-gradient(135deg, var(--color-accent-400), var(--color-accent-500));
 }
 
 .badge-warning {
-    color: #78350f;
-    background: linear-gradient(135deg, #facc15, #f97316);
+    color: color-mix(in oklab, var(--color-accent-600) 80%, var(--color-neutral-900));
+    background: linear-gradient(135deg, var(--color-accent-300), var(--color-accent-500));
 }
 
 .badge-danger {
     color: #fff;
-    background: linear-gradient(135deg, #ef4444, #f97316);
+    background: linear-gradient(
+        135deg,
+        color-mix(in oklab, var(--color-primary-800) 85%, transparent) 0%,
+        var(--color-primary-600) 100%
+    );
 }
 
 .badge-neutral {
-    color: #0f172a;
-    background: linear-gradient(135deg, #e2e8f0, #cbd5f5);
+    color: var(--color-neutral-900);
+    background: linear-gradient(135deg, var(--color-neutral-200), var(--color-neutral-300));
 }
 
 .badge-outline {
@@ -170,22 +174,22 @@
 }
 
 .badge-soft-success {
-    color: #047857;
-    background: rgba(34, 197, 94, 0.18);
+    color: var(--color-primary-650);
+    background: rgba(var(--color-accent-rgb), 0.22);
 }
 
 .badge-soft-warning {
-    color: #b45309;
-    background: rgba(245, 158, 11, 0.18);
+    color: color-mix(in oklab, var(--color-accent-600) 85%, var(--color-neutral-900));
+    background: rgba(var(--color-accent-rgb), 0.24);
 }
 
 .badge-soft-danger {
-    color: #b91c1c;
-    background: rgba(248, 113, 113, 0.2);
+    color: var(--color-primary-700);
+    background: color-mix(in oklab, var(--color-primary-600) 20%, rgba(255, 255, 255, 0.8));
 }
 
 .badge-soft-neutral {
-    color: #334155;
+    color: var(--color-neutral-700);
     background: rgba(226, 232, 240, 0.75);
 }
 

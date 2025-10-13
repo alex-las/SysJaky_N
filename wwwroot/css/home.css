@@ -4,7 +4,12 @@
   flex-direction: column;
   gap: var(--section-spacing);
   padding-block: clamp(4rem, 8vw, 6rem);
-  background: linear-gradient(180deg, #f8fafc 0%, #eef2ff 45%, #f8fafc 100%);
+  background: linear-gradient(
+    180deg,
+    var(--color-neutral-50) 0%,
+    color-mix(in oklab, var(--color-primary-50) 70%, var(--color-neutral-50) 30%) 45%,
+    var(--color-neutral-50) 100%
+  );
   width: min(100%, 1440px);
   margin-inline: auto;
   box-sizing: border-box;
@@ -695,9 +700,9 @@
 }
 
 .course-level-featured {
-  background: linear-gradient(135deg, #fde047, #f97316);
+  background: linear-gradient(135deg, var(--color-accent-400), var(--color-accent-500));
   color: #0f172a;
-  box-shadow: 0 12px 20px -15px rgba(249, 115, 22, 0.6);
+  box-shadow: 0 12px 20px -15px color-mix(in oklab, var(--color-accent-500) 45%, transparent);
 }
 
 .course-format {
@@ -862,7 +867,11 @@
   position: relative;
   padding: 1.9rem;
   border-radius: var(--radius-lg);
-  background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 64, 175, 0.85));
+  background: linear-gradient(
+    135deg,
+    rgba(var(--color-neutral-900), 0.95),
+    color-mix(in oklab, var(--color-primary-700) 85%, transparent) 100%
+  );
   color: #e2e8f0;
   border: 1px solid rgba(var(--color-brand-rgb), 0.25);
   box-shadow: var(--shadow-lg);
@@ -874,7 +883,7 @@
 .insight-card h3 {
   font-size: 1.3rem;
   font-weight: 700;
-  color: #bfdbfe;
+  color: var(--color-primary-200);
 }
 
 .insight-card ul {
@@ -1089,7 +1098,7 @@
   display: grid;
   place-items: center;
   background: rgba(15, 23, 42, 0.18);
-  color: #bbf7d0;
+  color: var(--color-primary-200);
   flex-shrink: 0;
   margin-top: 0.15rem;
 }
