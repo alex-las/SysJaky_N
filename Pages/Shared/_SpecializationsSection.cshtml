@@ -26,8 +26,10 @@
                     : specialization.IconLabel;
 
                 <article class="specialization-card" data-reveal data-reveal-delay="@revealDelay">
-                    <div class="specialization-card__icon @specialization.IconColorClass" title="@iconLabel" aria-hidden="true">
-                        <i class="@specialization.CardIconClass"></i>
+                    <div class="specialization-card__icon" title="@iconLabel" aria-hidden="true">
+                        <div class="icon-box @specialization.IconColorClass">
+                            <i class="@specialization.CardIconClass"></i>
+                        </div>
                     </div>
                     <div class="specialization-card__body">
                         <h3>@specialization.Name</h3>
