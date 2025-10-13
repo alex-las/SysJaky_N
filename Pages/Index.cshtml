@@ -5,12 +5,10 @@
 @model IndexModel
 @inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer T
 @inject IStringLocalizer<CompanyContactResources> ContactResources
-@inject SysJaky_N.Services.IsoStandards.IIsoSpecializationMetadataProvider IsoMetadataProvider
-@{
+@{ 
     ViewData["Title"] = T["Title"];
     ViewData["AppContentClasses"] = "container-fluid px-0";
 
-    var specializations = IsoMetadataProvider.GetAll();
     var heroMetrics = Model.HeroMetrics?.ToArray() ?? Array.Empty<IndexModel.HeroMetric>();
     var heroMetricConfigs = new (IndexModel.HeroMetric? Metric, int Target, int Step, int Interval, string Icon, string AccentClass)[]
     {
@@ -23,6 +21,18 @@
         .Where(config => config.Metric is not null)
         .Select(config => (Metric: config.Metric!, config.Target, config.Step, config.Interval, config.Icon, config.AccentClass))
         .ToArray();
+
+    var standards = new (string Code, string ResourceKey, string IconClass, string Color)[]
+    {
+        ("ISO9001", "ISO9001", "bi bi-award-fill", "sky"),
+        ("ISO14001", "ISO14001", "bi bi-tree-fill", "emerald"),
+        ("ISOIEC17025", "ISO17025", "bi bi-clipboard-data-fill", "violet"),
+        ("ISO15189", "ISO15189", "bi bi-hospital-fill", "rose"),
+        ("ISO45001", "ISO45001", "bi bi-shield-fill-check", "amber"),
+        ("ISO27001", "ISO27001", "bi bi-shield-lock-fill", "indigo"),
+        ("IATF16949", "IATF16949", "bi bi-car-front-fill", "slate"),
+        ("ISO13485", "ISO13485", "bi bi-heart-pulse-fill", "pink")
+    };
 }
 
 @section Head {
@@ -178,7 +188,64 @@
         </section>
     }
 
-    @await Html.PartialAsync("/Pages/Shared/_SpecializationsSection.cshtml", specializations)
+    <section class="py-20" id="specializations">
+        <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+            <div class="mx-auto max-w-3xl text-center" data-reveal>
+                <h2 class="section-heading">@T["SpecializationsHeading"]</h2>
+                <p class="section-subtitle">@T["SpecializationsDescription"]</p>
+            </div>
+
+            <div class="mt-12 grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
+                @for (var index = 0; index < standards.Length; index++)
+                {
+                    var standard = standards[index];
+                    var localizedText = T[standard.ResourceKey];
+                    var localizedValue = localizedText.Value;
+                    if (string.IsNullOrWhiteSpace(localizedValue))
+                    {
+                        localizedValue = standard.ResourceKey;
+                    }
+
+                    localizedValue = localizedValue.Trim();
+
+                    var separatorIndex = localizedValue.IndexOf('—');
+                    if (separatorIndex < 0)
+                    {
+                        separatorIndex = localizedValue.IndexOf('–');
+                    }
+
+                    var title = separatorIndex >= 0
+                        ? localizedValue.Substring(0, separatorIndex).Trim()
+                        : localizedValue;
+                    var description = separatorIndex >= 0 && separatorIndex + 1 < localizedValue.Length
+                        ? localizedValue.Substring(separatorIndex + 1).Trim()
+                        : string.Empty;
+                    var revealDelay = (index % 4) * 50;
+                    var detailUrl = Url.Page("/Standards/Detail", new { code = standard.Code }) ?? $"/Standards/Detail/{standard.Code}";
+
+                    <a class="group flex h-full flex-col gap-6 rounded-3xl border border-neutral-200/70 bg-white/90 p-8 text-left shadow-md transition-transform duration-200 ease-out hover:-translate-y-1 hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2"
+                       href="@detailUrl"
+                       data-reveal
+                       data-reveal-delay="@revealDelay"
+                       aria-label="@localizedValue">
+                        <span class="icon-box icon-box-@standard.Color shadow-lg transition-transform duration-200 ease-out group-hover:scale-105" aria-hidden="true">
+                            <i class="@standard.IconClass" aria-hidden="true"></i>
+                        </span>
+                        <div class="space-y-2">
+                            <h3 class="text-xl font-semibold text-neutral-900">@title</h3>
+                            @if (!string.IsNullOrEmpty(description))
+                            {
+                                <p class="text-sm text-neutral-600">@description</p>
+                            }
+                        </div>
+                        <span class="mt-auto inline-flex h-10 w-10 items-center justify-center rounded-full bg-primary-50 text-primary-600 transition-transform duration-200 ease-out group-hover:translate-x-1" aria-hidden="true">
+                            <i class="bi bi-arrow-up-right"></i>
+                        </span>
+                    </a>
+                }
+            </div>
+        </div>
+    </section>
 
     <section class="section courses" id="courses">
         <header class="section__header" data-reveal>
