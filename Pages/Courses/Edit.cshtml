@@ -3,19 +3,20 @@
 @using Microsoft.AspNetCore.Html
 @using Microsoft.AspNetCore.Mvc.Rendering
 @using SysJaky_N.Pages.Courses
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
 @{
-    ViewData["Title"] = "Upravit kurz";
+    ViewData["Title"] = Localizer["Title"].Value;
     var actions = new HtmlContentBuilder();
     var submitButton = new TagBuilder("button");
     submitButton.Attributes["type"] = "submit";
     submitButton.AddCssClass("btn btn-primary");
-    submitButton.InnerHtml.Append("Uložit");
+    submitButton.InnerHtml.Append(Localizer["SaveButton"].Value);
     actions.AppendHtml(submitButton);
 
     var backLink = new TagBuilder("a");
     backLink.AddCssClass("btn btn-secondary");
     backLink.Attributes["href"] = Url.Page("Index");
-    backLink.InnerHtml.Append("Zpět na přehled");
+    backLink.InnerHtml.Append(Localizer["BackToListLink"].Value);
     actions.AppendHtml(backLink);
 
     var formModel = new CourseFormModel
@@ -27,14 +28,14 @@
     };
 }
 
-<h1>Upravit kurz</h1>
+<h1>@Localizer["Heading"]</h1>
 
 <form method="post" enctype="multipart/form-data">
     <input type="hidden" asp-for="Course.Id" />
     @if (!string.IsNullOrEmpty(Model.Course.CoverImageUrl))
     {
         <div class="mb-3">
-            <img src="@Model.Course.CoverImageUrl" alt="Obálka kurzu @Model.Course.Title" class="img-fluid rounded" style="max-width: 240px;" loading="lazy" decoding="async" />
+            <img src="@Model.Course.CoverImageUrl" alt='@Localizer["CoverImageAlt", Model.Course.Title]' class="img-fluid rounded" style="max-width: 240px;" loading="lazy" decoding="async" />
         </div>
     }
 

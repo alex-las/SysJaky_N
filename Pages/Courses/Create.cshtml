@@ -3,19 +3,20 @@
 @using Microsoft.AspNetCore.Html
 @using Microsoft.AspNetCore.Mvc.Rendering
 @using SysJaky_N.Pages.Courses
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
 @{
-    ViewData["Title"] = "Vytvořit kurz";
+    ViewData["Title"] = Localizer["Title"].Value;
     var actions = new HtmlContentBuilder();
     var submitButton = new TagBuilder("button");
     submitButton.Attributes["type"] = "submit";
     submitButton.AddCssClass("btn btn-primary");
-    submitButton.InnerHtml.Append("Vytvořit");
+    submitButton.InnerHtml.Append(Localizer["CreateButton"].Value);
     actions.AppendHtml(submitButton);
 
     var backLink = new TagBuilder("a");
     backLink.AddCssClass("btn btn-secondary");
     backLink.Attributes["href"] = Url.Page("Index");
-    backLink.InnerHtml.Append("Zpět na přehled");
+    backLink.InnerHtml.Append(Localizer["BackToListLink"].Value);
     actions.AppendHtml(backLink);
 
     var formModel = new CourseFormModel
@@ -27,7 +28,7 @@
     };
 }
 
-<h1>Vytvořit kurz</h1>
+<h1>@Localizer["Heading"]</h1>
 
 <form method="post" enctype="multipart/form-data">
     <partial name="Courses/Shared/_CourseForm" model="formModel" />
