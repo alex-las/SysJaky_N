@@ -57,6 +57,24 @@
   <data name="ExpertiseDescription" xml:space="preserve">
     <value>We support certifications and accreditations across key standards and industries.</value>
   </data>
+  <data name="DocumentationPreviewHeading" xml:space="preserve">
+    <value>See a documentation sample</value>
+  </data>
+  <data name="DocumentationPreviewDescription" xml:space="preserve">
+    <value>The template preview shows how we structure processes and records before certification.</value>
+  </data>
+  <data name="DocumentationPreviewButton" xml:space="preserve">
+    <value>Open preview</value>
+  </data>
+  <data name="DocumentationPreviewImageAlt" xml:space="preserve">
+    <value>Illustration of ISO 9001 preparation</value>
+  </data>
+  <data name="DocumentationPreviewLightboxTitle" xml:space="preserve">
+    <value>ISO 9001 template preview</value>
+  </data>
+  <data name="DocumentationPreviewLightboxDescription" xml:space="preserve">
+    <value>A detailed look at the recommended documentation structure before certification.</value>
+  </data>
   <data name="ISO9001Title" xml:space="preserve">
     <value>ISO 9001</value>
   </data>

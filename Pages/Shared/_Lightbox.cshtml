@@ -1,3 +1,10 @@
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+@{
+    var closeLabel = Localizer["CloseLabel"].Value ?? "Close preview";
+    var imageFallbackAlt = Localizer["ImageFallbackAlt"].Value ?? "Preview image";
+    var imageFallbackAltJson = System.Text.Json.JsonSerializer.Serialize(imageFallbackAlt);
+}
+
 <div x-data="lightbox()"
      x-cloak
      x-show="isOpen"
@@ -18,13 +25,13 @@
                 class="btn btn-light position-absolute top-0 end-0 m-3 rounded-circle"
                 x-on:click="close()"
                 data-initial-focus>
-            <span class="visually-hidden">Zavřít náhled</span>
+            <span class="visually-hidden">@closeLabel</span>
             <i class="bi bi-x-lg" aria-hidden="true"></i>
         </button>
 
         <template x-if="imageUrl">
             <img :src="imageUrl"
-                 :alt="title || 'Náhled obrázku'"
+                 :alt="title || @Html.Raw(imageFallbackAltJson)"
                  class="img-fluid w-100"
                  loading="lazy" />
         </template>

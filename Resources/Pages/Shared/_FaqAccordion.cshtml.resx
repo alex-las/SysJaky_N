@@ -12,7 +12,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="SectionBadge" xml:space="preserve">
+  <data name="SectionEyebrow" xml:space="preserve">
     <value>Nejčastější dotazy</value>
   </data>
   <data name="SectionHeading" xml:space="preserve">
@@ -22,25 +22,24 @@
     <value>Krátké odpovědi pro rychlou orientaci. Kliknutím zobrazíte další detaily.</value>
   </data>
   <data name="ToggleLabel" xml:space="preserve">
-    <value>Přepnout zobrazení odpovědi: {0}</value>
+    <value>Přepnout položku {0}</value>
   </data>
-  <data name="FaqItems" xml:space="preserve">
-    <value><![CDATA[[
-  {
-    "Id": 1,
-    "Question": "Jak rychle mohu spustit první interní audit?",
-    "Answer": "Nejčastěji doporučujeme pilotní audit do 30 dnů od zahájení spolupráce. Rádi vám poskytneme připravené checklisty i mentoring pro auditorský tým."
-  },
-  {
-    "Id": 2,
-    "Question": "Musím mít speciální software?",
-    "Answer": "Ne. Většina klientů začíná s jednoduchým sdíleným úložištěm a tabulkami. Pokud budete potřebovat komplexnější řešení, pomůžeme s výběrem i implementací."
-  },
-  {
-    "Id": 3,
-    "Question": "Co když nemáme interní kapacity?",
-    "Answer": "Na začátku umíme procesy nastavit s vámi a postupně je předat interním pracovníkům. Nabízíme také dlouhodobý dohled a mentoring, dokud si nebudete jistí samostatným provozem."
-  }
-]]></value>
+  <data name="FaqQuestion1" xml:space="preserve">
+    <value>Jak rychle mohu spustit první interní audit?</value>
+  </data>
+  <data name="FaqAnswer1" xml:space="preserve">
+    <value>Nejčastěji doporučujeme pilotní audit do 30 dnů od zahájení spolupráce. Rádi vám poskytneme připravené checklisty i mentoring pro auditorský tým.</value>
+  </data>
+  <data name="FaqQuestion2" xml:space="preserve">
+    <value>Musím mít speciální software?</value>
+  </data>
+  <data name="FaqAnswer2" xml:space="preserve">
+    <value>Ne. Většina klientů začíná s jednoduchým sdíleným úložištěm a tabulkami. Pokud budete potřebovat komplexnější řešení, pomůžeme s výběrem i implementací.</value>
+  </data>
+  <data name="FaqQuestion3" xml:space="preserve">
+    <value>Co když nemáme interní kapacity?</value>
+  </data>
+  <data name="FaqAnswer3" xml:space="preserve">
+    <value>Na začátku umíme procesy nastavit s vámi a postupně je předat interním pracovníkům. Nabízíme také dlouhodobý dohled a mentoring, dokud si nebudete jistí samostatným provozem.</value>
   </data>
 </root>

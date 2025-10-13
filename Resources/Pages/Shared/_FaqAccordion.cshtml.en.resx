@@ -12,35 +12,34 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="SectionBadge" xml:space="preserve">
-    <value>Frequently Asked Questions</value>
+  <data name="SectionEyebrow" xml:space="preserve">
+    <value>Frequently asked questions</value>
   </data>
   <data name="SectionHeading" xml:space="preserve">
-    <value>What do clients ask most?</value>
+    <value>What clients ask the most</value>
   </data>
   <data name="SectionDescription" xml:space="preserve">
-    <value>Quick answers for fast orientation. Click to reveal more details.</value>
+    <value>Quick answers for easy orientation. Click to reveal more details.</value>
   </data>
   <data name="ToggleLabel" xml:space="preserve">
-    <value>Toggle answer visibility: {0}</value>
+    <value>Toggle item {0}</value>
   </data>
-  <data name="FaqItems" xml:space="preserve">
-    <value><![CDATA[[
-  {
-    "Id": 1,
-    "Question": "How quickly can I launch my first internal audit?",
-    "Answer": "We typically recommend running a pilot audit within 30 days of starting our collaboration. We'll provide prepared checklists and mentoring for your audit team."
-  },
-  {
-    "Id": 2,
-    "Question": "Do I need special software?",
-    "Answer": "No. Most clients start with a simple shared drive and spreadsheets. If you need a more complex solution, we'll help you choose and implement it."
-  },
-  {
-    "Id": 3,
-    "Question": "What if we don't have internal capacity?",
-    "Answer": "We can set up the processes with you at the beginning and gradually hand them over to your internal staff. We also offer long-term oversight and mentoring until you are confident running it independently."
-  }
-]]></value>
+  <data name="FaqQuestion1" xml:space="preserve">
+    <value>How fast can we run our first internal audit?</value>
+  </data>
+  <data name="FaqAnswer1" xml:space="preserve">
+    <value>We typically recommend a pilot audit within 30 days of starting our cooperation. We will provide prepared checklists and mentoring for your audit team.</value>
+  </data>
+  <data name="FaqQuestion2" xml:space="preserve">
+    <value>Do we need specialised software?</value>
+  </data>
+  <data name="FaqAnswer2" xml:space="preserve">
+    <value>No. Most clients begin with a simple shared drive and spreadsheets. If you need a more advanced solution, we will help you select and implement it.</value>
+  </data>
+  <data name="FaqQuestion3" xml:space="preserve">
+    <value>What if we lack internal capacity?</value>
+  </data>
+  <data name="FaqAnswer3" xml:space="preserve">
+    <value>We can set up the processes together at the beginning and gradually hand them over to your team. We also offer long-term oversight and mentoring until you are confident running the system yourselves.</value>
   </data>
 </root>

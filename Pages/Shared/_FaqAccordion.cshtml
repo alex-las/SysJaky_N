@@ -1,24 +1,29 @@
-@using System.Text.Json
+@using System.Linq
 @inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
-
-@functions {
-    private record FaqItem(int Id, string Question, string Answer);
-}
-
 @{
-    var faqItemsResource = Localizer["FaqItems"];
-    var faqItems = faqItemsResource.ResourceNotFound
-        ? Array.Empty<FaqItem>()
-        : JsonSerializer.Deserialize<FaqItem[]>(faqItemsResource.Value) ?? Array.Empty<FaqItem>();
+    var faqItems = Enumerable.Range(1, 5)
+        .Select(id => new
+        {
+            Id = id,
+            Question = Localizer[$"FaqQuestion{id}"].Value,
+            Answer = Localizer[$"FaqAnswer{id}"].Value
+        })
+        .Where(item => !string.IsNullOrWhiteSpace(item.Question) && !string.IsNullOrWhiteSpace(item.Answer))
+        .ToList();
+
+    var sectionEyebrow = Localizer["SectionEyebrow"].Value ?? string.Empty;
+    var sectionHeading = Localizer["SectionHeading"].Value ?? string.Empty;
+    var sectionDescription = Localizer["SectionDescription"].Value ?? string.Empty;
+    var toggleLabelTemplate = Localizer["ToggleLabel"].Value ?? "Toggle item {0}";
 }
 
 <section class="py-5 bg-light">
     <div class="container">
         <div class="mx-auto max-w-3xl" x-data="{ activeItem: null }">
             <div class="text-center mb-4">
-                <span class="text-primary text-uppercase fw-semibold">@Localizer["SectionBadge"]</span>
-                <h2 class="h3 mt-2">@Localizer["SectionHeading"]</h2>
-                <p class="text-muted mb-0">@Localizer["SectionDescription"]</p>
+                <span class="text-primary text-uppercase fw-semibold">@sectionEyebrow</span>
+                <h2 class="h3 mt-2">@sectionHeading</h2>
+                <p class="text-muted mb-0">@sectionDescription</p>
             </div>
 
             <div class="d-grid gap-3">
@@ -33,7 +38,7 @@
                             <span class="badge rounded-pill"
                                   :class="activeItem === id ? 'bg-primary text-white' : 'bg-secondary-subtle text-secondary'">
                                 <i class="bi" :class="activeItem === id ? 'bi-dash-lg' : 'bi-plus-lg'" aria-hidden="true"></i>
-                                <span class="visually-hidden">@Localizer["ToggleLabel", item.Question]</span>
+                                <span class="visually-hidden">@string.Format(toggleLabelTemplate, item.Id)</span>
                             </span>
                         </button>
                         <div class="px-4 pb-4" x-cloak x-show="activeItem === id" x-transition.opacity x-transition.duration.300ms>
