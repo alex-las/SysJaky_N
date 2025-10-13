@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Title" xml:space="preserve">
+    <value>Design systém</value>
+  </data>
+  <data name="HeaderTagline" xml:space="preserve">
+    <value>Pouze pro interní použití</value>
+  </data>
+  <data name="HeaderHeading" xml:space="preserve">
+    <value>Style Guide &amp; design systém</value>
+  </data>
+  <data name="HeaderDescription" xml:space="preserve">
+    <value>Aktuální živá dokumentace základních prvků front-end knihovny SysJaky. Stránka je dostupná pouze správcům a používá reálné komponenty z produkčního projektu.</value>
+  </data>
+  <data name="ColorsHeading" xml:space="preserve">
+    <value>1. Barevná paleta</value>
+  </data>
+  <data name="ColorCoreBlueTitle" xml:space="preserve">
+    <value>Core Blue</value>
+  </data>
+  <data name="ColorCoreBlueHex" xml:space="preserve">
+    <value>#0B4AE6</value>
+  </data>
+  <data name="ColorCoreBlueDescription" xml:space="preserve">
+    <value>Primární brandová modrá pro CTA prvky, hlavní navigaci a hero gradienty.</value>
+  </data>
+  <data name="ColorSignalYellowTitle" xml:space="preserve">
+    <value>Signal Yellow</value>
+  </data>
+  <data name="ColorSignalYellowHex" xml:space="preserve">
+    <value>#F7B500</value>
+  </data>
+  <data name="ColorSignalYellowDescription" xml:space="preserve">
+    <value>Podpůrná barva pro zvýraznění kroků, badge a akcentované ikony.</value>
+  </data>
+  <data name="ColorLightGreyTitle" xml:space="preserve">
+    <value>Light Grey</value>
+  </data>
+  <data name="ColorLightGreyHex" xml:space="preserve">
+    <value>#D9DDE2</value>
+  </data>
+  <data name="ColorLightGreyDescription" xml:space="preserve">
+    <value>Sekundární pozadí pro tabulky, oddělovací bloky a jemné rámečky.</value>
+  </data>
+  <data name="ColorIvoryBaseTitle" xml:space="preserve">
+    <value>Ivory Base</value>
+  </data>
+  <data name="ColorIvoryBaseHex" xml:space="preserve">
+    <value>#F4F2E7</value>
+  </data>
+  <data name="ColorIvoryBaseDescription" xml:space="preserve">
+    <value>Výchozí stránkové pozadí a jemné zvýraznění sekcí s větší plochou.</value>
+  </data>
+  <data name="ColorAnthraciteTitle" xml:space="preserve">
+    <value>Anthracite</value>
+  </data>
+  <data name="ColorAnthraciteHex" xml:space="preserve">
+    <value>#1C1F26</value>
+  </data>
+  <data name="ColorAnthraciteDescription" xml:space="preserve">
+    <value>Hlavní textová barva na světlých pozadích a kontrastní akcenty.</value>
+  </data>
+  <data name="TypographyHeading" xml:space="preserve">
+    <value>2. Typografie (Fraunces · Merriweather · Inter)</value>
+  </data>
+  <data name="TypographyHierarchyTitle" xml:space="preserve">
+    <value>Ukázka hierarchie</value>
+  </data>
+  <data name="TypographyHierarchyDescription" xml:space="preserve">
+    <value>Nadpisy: Fraunces / Merriweather · Text: Inter</value>
+  </data>
+  <data name="TypographyDisplay" xml:space="preserve">
+    <value>Display – 48px / 1.2 / Fraunces 600</value>
+  </data>
+  <data name="TypographyH1" xml:space="preserve">
+    <value>H1 – 40px / 1.25 / Merriweather 600</value>
+  </data>
+  <data name="TypographyH2" xml:space="preserve">
+    <value>H2 – 32px / 1.3 / Merriweather 600</value>
+  </data>
+  <data name="TypographyH3" xml:space="preserve">
+    <value>H3 – 28px / 1.3 / Merriweather 500</value>
+  </data>
+  <data name="TypographyLead" xml:space="preserve">
+    <value>Lead – 20px / 1.6 / Inter 500</value>
+  </data>
+  <data name="TypographyBody" xml:space="preserve">
+    <value>Body – 16px / 1.6 / Inter 400</value>
+  </data>
+  <data name="TypographyCaption" xml:space="preserve">
+    <value>Caption – 14px / 1.4 / Inter 500</value>
+  </data>
+  <data name="TypographyRulesTitle" xml:space="preserve">
+    <value>Pravidla použití</value>
+  </data>
+  <data name="TypographyRule1" xml:space="preserve">
+    <value>&lt;strong&gt;Velké nadpisy&lt;/strong&gt; (display/h1) využívají Fraunces pro emotivní „akademický“ charakter.</value>
+  </data>
+  <data name="TypographyRule2" xml:space="preserve">
+    <value>&lt;strong&gt;H2–H4&lt;/strong&gt; stavíme na Merriweather kvůli čitelnosti delších textových bloků.</value>
+  </data>
+  <data name="TypographyRule3" xml:space="preserve">
+    <value>&lt;strong&gt;Lead text&lt;/strong&gt; a doprovodné perexy používají Inter 500 pro lepší rytmus.</value>
+  </data>
+  <data name="TypographyRule4" xml:space="preserve">
+    <value>&lt;strong&gt;Body text&lt;/strong&gt; drží Inter 16px se line-height 1.6 pro komfortní čtení.</value>
+  </data>
+  <data name="TypographyRule5" xml:space="preserve">
+    <value>&lt;strong&gt;Váhy&lt;/strong&gt;: 400 (regular), 500 (medium), 600 (semibold) – více kontrastu pouze pro CTA.</value>
+  </data>
+  <data name="ComponentsHeading" xml:space="preserve">
+    <value>3. Komponenty</value>
+  </data>
+  <data name="ButtonsTitle" xml:space="preserve">
+    <value>Buttons</value>
+  </data>
+  <data name="ButtonsDescription" xml:space="preserve">
+    <value>Používejte &lt;code&gt;.btn&lt;/code&gt; se stavovými variantami pro konzistentní CTA.</value>
+  </data>
+  <data name="ButtonsPrimary" xml:space="preserve">
+    <value>Primary button</value>
+  </data>
+  <data name="ButtonsSecondary" xml:space="preserve">
+    <value>Secondary button</value>
+  </data>
+  <data name="ButtonsGhost" xml:space="preserve">
+    <value>Ghost button</value>
+  </data>
+  <data name="CardsTitle" xml:space="preserve">
+    <value>Cards</value>
+  </data>
+  <data name="CardsDescription" xml:space="preserve">
+    <value>Karty používají &lt;code&gt;.card&lt;/code&gt; pro základ a &lt;code&gt;.card-hover&lt;/code&gt; pro jemnou animaci.</value>
+  </data>
+  <data name="CardDefaultTitle" xml:space="preserve">
+    <value>Základní karta</value>
+  </data>
+  <data name="CardDefaultBody" xml:space="preserve">
+    <value>Text těla karty používá výchozí typografii a odstup tříd &lt;code&gt;.card&lt;/code&gt;.</value>
+  </data>
+  <data name="CardDefaultAction" xml:space="preserve">
+    <value>Akce</value>
+  </data>
+  <data name="CardHoverTitle" xml:space="preserve">
+    <value>Hover varianta</value>
+  </data>
+  <data name="CardHoverBody" xml:space="preserve">
+    <value>Třída &lt;code&gt;.card-hover&lt;/code&gt; přidává zvýšení stínu a posun při hover/focus.</value>
+  </data>
+  <data name="CardHoverAction" xml:space="preserve">
+    <value>Více</value>
+  </data>
+  <data name="FormsTitle" xml:space="preserve">
+    <value>Forms</value>
+  </data>
+  <data name="FormsDescription" xml:space="preserve">
+    <value>Výchozí vstupy používají &lt;code&gt;.form-control&lt;/code&gt; a selekty &lt;code&gt;.form-select&lt;/code&gt;.</value>
+  </data>
+  <data name="FormTextInputLabel" xml:space="preserve">
+    <value>Text input</value>
+  </data>
+  <data name="FormTextInputPlaceholder" xml:space="preserve">
+    <value>Sem napište text</value>
+  </data>
+  <data name="FormSelectLabel" xml:space="preserve">
+    <value>Select input</value>
+  </data>
+  <data name="FormSelectOption1" xml:space="preserve">
+    <value>Možnost 1</value>
+  </data>
+  <data name="FormSelectOption2" xml:space="preserve">
+    <value>Možnost 2</value>
+  </data>
+  <data name="FormSelectOption3" xml:space="preserve">
+    <value>Možnost 3</value>
+  </data>
+  <data name="ChipsTitle" xml:space="preserve">
+    <value>Chips</value>
+  </data>
+  <data name="ChipsDescription" xml:space="preserve">
+    <value>Mini CTA používají &lt;code&gt;.chip&lt;/code&gt;; světlá varianta &lt;code&gt;.chip-light&lt;/code&gt; na tmavém pozadí.</value>
+  </data>
+  <data name="ChipDefault" xml:space="preserve">
+    <value>Chip</value>
+  </data>
+  <data name="ChipLight" xml:space="preserve">
+    <value>Chip light</value>
+  </data>
+  <data name="IconsTitle" xml:space="preserve">
+    <value>Icons</value>
+  </data>
+  <data name="IconsDescription" xml:space="preserve">
+    <value>Bootstrap Icons z CDN – používejte &lt;code&gt;&amp;lt;i class=&quot;bi bi-*&quot;&amp;gt;&lt;/code&gt;.</value>
+  </data>
+  <data name="SpacingHeading" xml:space="preserve">
+    <value>4. Spacing scale</value>
+  </data>
+  <data name="SpacingDescription" xml:space="preserve">
+    <value>Vychází z Bootstrap spacing utilit &lt;code&gt;.m|p-{breakpoint}-{0-5}&lt;/code&gt;.</value>
+  </data>
+  <data name="SpacingTableToken" xml:space="preserve">
+    <value>Token</value>
+  </data>
+  <data name="SpacingTableRem" xml:space="preserve">
+    <value>Rem</value>
+  </data>
+  <data name="SpacingTableExample" xml:space="preserve">
+    <value>Příklad</value>
+  </data>
+  <data name="SpacingTableDescription" xml:space="preserve">
+    <value>Popis</value>
+  </data>
+  <data name="SpacingRow0" xml:space="preserve">
+    <value>Bez vnitřního/venkovního odsazení.</value>
+  </data>
+  <data name="SpacingRow1" xml:space="preserve">
+    <value>Mikro odsazení pro skupiny prvků.</value>
+  </data>
+  <data name="SpacingRow2" xml:space="preserve">
+    <value>Výchozí mezerování mezi komponentami.</value>
+  </data>
+  <data name="SpacingRow3" xml:space="preserve">
+    <value>Standardní padding karet a sekcí.</value>
+  </data>
+  <data name="SpacingRow4" xml:space="preserve">
+    <value>Větší oddělení bloků/sekcí.</value>
+  </data>
+  <data name="SpacingRow5" xml:space="preserve">
+    <value>Hero sekce, vertikální rytmus stránky.</value>
+  </data>
+  <data name="BreakpointsHeading" xml:space="preserve">
+    <value>5. Breakpoints &amp; responsive behavior</value>
+  </data>
+  <data name="BreakpointsTableBreakpoint" xml:space="preserve">
+    <value>Breakpoint</value>
+  </data>
+  <data name="BreakpointsTableWidth" xml:space="preserve">
+    <value>Šířka</value>
+  </data>
+  <data name="BreakpointsTableUsage" xml:space="preserve">
+    <value>Příklad použití</value>
+  </data>
+  <data name="BreakpointsRowXs" xml:space="preserve">
+    <value>Stackované sloupce, full-width CTA.</value>
+  </data>
+  <data name="BreakpointsRowSm" xml:space="preserve">
+    <value>&lt;code&gt;.row-cols-sm-2&lt;/code&gt; pro dvousloupcové layouty.</value>
+  </data>
+  <data name="BreakpointsRowMd" xml:space="preserve">
+    <value>Navigace v řádku, formuláře ve dvou sloupcích.</value>
+  </data>
+  <data name="BreakpointsRowLg" xml:space="preserve">
+    <value>Vícesloupcové karty, layout &lt;code&gt;.container-lg&lt;/code&gt;.</value>
+  </data>
+  <data name="BreakpointsRowXl" xml:space="preserve">
+    <value>Rozšířená mřížka, maximální šířka marketingových sekcí.</value>
+  </data>
+  <data name="BreakpointsRowXxl" xml:space="preserve">
+    <value>Hero bloky s margin auto, jemné prázdné okraje.</value>
+  </data>
+  <data name="BreakpointsDescription" xml:space="preserve">
+    <value>Mřížka Bootstrapu umožňuje přidávat breakpointový suffix (např. &lt;code&gt;.col-md-6&lt;/code&gt;). U komponent jako karty a formuláře kombinujte &lt;code&gt;.row&lt;/code&gt;, &lt;code&gt;.col&lt;/code&gt; a spacing utility.</value>
+  </data>
+  <data name="AccessibilityHeading" xml:space="preserve">
+    <value>6. Accessibility guidelines</value>
+  </data>
+  <data name="AccessibilityRule1" xml:space="preserve">
+    <value>Dodržujte kontrastní poměry: hlavní text vs. pozadí minimálně 4.5:1 (paleta výše).</value>
+  </data>
+  <data name="AccessibilityRule2" xml:space="preserve">
+    <value>Vždy nastavujte &lt;code&gt;aria-label&lt;/code&gt;/&lt;code&gt;aria-describedby&lt;/code&gt; pro ikonická tlačítka a formuláře.</value>
+  </data>
+  <data name="AccessibilityRule3" xml:space="preserve">
+    <value>Používejte &lt;code&gt;:focus-visible&lt;/code&gt; styly ze &lt;code&gt;site.css&lt;/code&gt; – neodstraňovat outline.</value>
+  </data>
+  <data name="AccessibilityRule4" xml:space="preserve">
+    <value>Skupiny ovládacích prvků popisujte nadpisy (např. &lt;code&gt;&amp;lt;legend&amp;gt;&lt;/code&gt;, &lt;code&gt;&amp;lt;h2&amp;gt;&lt;/code&gt;).</value>
+  </data>
+  <data name="AccessibilityRule5" xml:space="preserve">
+    <value>Interaktivní prvky (chip, card-hover) musí mít &lt;code&gt;role&lt;/code&gt; a &lt;code&gt;tabindex&lt;/code&gt;, pokud nejsou odkazem/tlačítkem.</value>
+  </data>
+  <data name="CodeHeading" xml:space="preserve">
+    <value>7. Code snippets</value>
+  </data>
+  <data name="CodeDescription" xml:space="preserve">
+    <value>Pro rychlé znovupoužití můžete kopírovat kód výše uvedený v blocích. Doporučujeme udržovat komponenty v partial view (&lt;code&gt;Pages/Shared&lt;/code&gt;) pro znovupoužitelnost.</value>
+  </data>
+  <data name="CodeTipLabel" xml:space="preserve">
+    <value>Tip:</value>
+  </data>
+  <data name="CodeTipText" xml:space="preserve">
+    <value>Při úpravách komponent vždy kontrolujte dostupnost v tmavém i světlém kontextu a testujte focus states.</value>
+  </data>
+</root>
