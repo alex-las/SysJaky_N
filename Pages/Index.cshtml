@@ -11,6 +11,18 @@
     ViewData["AppContentClasses"] = "container-fluid px-0";
 
     var specializations = IsoMetadataProvider.GetAll();
+    var heroMetrics = Model.HeroMetrics?.ToArray() ?? Array.Empty<IndexModel.HeroMetric>();
+    var heroMetricConfigs = new (IndexModel.HeroMetric? Metric, int Target, int Step, int Interval, string Icon, string AccentClass)[]
+    {
+        (heroMetrics.Length > 0 ? heroMetrics[0] : null, 20, 1, 50, "bi bi-award", "bg-amber-50 text-amber-600"),
+        (heroMetrics.Length > 1 ? heroMetrics[1] : null, 500, 10, 20, "bi bi-people", "bg-blue-50 text-blue-600"),
+        (heroMetrics.Length > 2 ? heroMetrics[2] : null, 2000, 50, 15, "bi bi-journal-check", "bg-emerald-50 text-emerald-600"),
+        (heroMetrics.Length > 3 ? heroMetrics[3] : null, 15, 1, 60, "bi bi-person-badge", "bg-purple-50 text-purple-600")
+    };
+    var heroMetricCards = heroMetricConfigs
+        .Where(config => config.Metric is not null)
+        .Select(config => (Metric: config.Metric!, config.Target, config.Step, config.Interval, config.Icon, config.AccentClass))
+        .ToArray();
 }
 
 @section Head {
@@ -117,6 +129,54 @@
             </div>
         </div>
     </section>
+
+    @if (heroMetricCards.Length > 0)
+    {
+        <section class="py-16 bg-gray-50">
+            <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+                <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+                    @foreach (var card in heroMetricCards)
+                    {
+                        var metricSuffix = card.Metric.Value.EndsWith("+", StringComparison.Ordinal) ? "+" : string.Empty;
+                        var ariaLabel = string.IsNullOrWhiteSpace(card.Metric.AriaLabel)
+                            ? card.Metric.Label
+                            : card.Metric.AriaLabel;
+
+                        <article class="flex items-center gap-4 rounded-3xl bg-white/85 p-6 shadow-sm ring-1 ring-black/5 backdrop-blur"
+                                 data-reveal
+                                 aria-label="@ariaLabel"
+                                 x-data="{
+                                     value: 0,
+                                     target: @card.Target,
+                                     step: @card.Step,
+                                     interval: @card.Interval,
+                                     suffix: '@metricSuffix',
+                                     start() {
+                                         const tick = () => {
+                                             if (this.value < this.target) {
+                                                 this.value = Math.min(this.value + this.step, this.target);
+                                                 setTimeout(tick, this.interval);
+                                             }
+                                         };
+                                         tick();
+                                     }
+                                 }"
+                                 x-init="start()">
+                            <div class="flex h-14 w-14 items-center justify-center rounded-2xl @card.AccentClass">
+                                <i class="@card.Icon text-2xl" aria-hidden="true"></i>
+                            </div>
+                            <dl class="space-y-1">
+                                <dt class="text-sm font-medium text-neutral-500">@card.Metric.Label</dt>
+                                <dd class="text-3xl font-semibold text-neutral-900" x-text="value.toLocaleString('cs-CZ') + suffix">
+                                    @card.Metric.Value
+                                </dd>
+                            </dl>
+                        </article>
+                    }
+                </div>
+            </div>
+        </section>
+    }
 
     @await Html.PartialAsync("/Pages/Shared/_SpecializationsSection.cshtml", specializations)
 
