@@ -15,6 +15,10 @@
     @apply inline-flex items-center justify-center gap-2 rounded-lg border border-neutral-200/70 bg-white/80 px-5 py-2.5 text-sm font-semibold text-ink transition-all duration-200 hover:-translate-y-0.5 hover:border-primary-200 hover:text-primary-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2;
   }
 
+  .btn-warning {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg bg-warning-500 px-5 py-2.5 text-sm font-semibold text-neutral-900 shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:bg-warning-600 hover:text-white hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-warning-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-60;
+  }
+
   .card-modern {
     @apply relative flex h-full flex-col gap-5 rounded-xl border border-neutral-200/70 bg-white/80 p-7 shadow-md transition-transform duration-200 ease-out hover:-translate-y-1 hover:shadow-lg focus-within:-translate-y-1 focus-within:shadow-lg;
   }
@@ -37,5 +41,13 @@
 
   .section-subtitle {
     @apply mt-2 max-w-2xl text-base text-neutral-600;
+  }
+
+  .icon-box {
+    @apply relative inline-flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-primary-600/95 via-primary-500/85 to-accent-400/90 text-lg text-white shadow-lg transition-transform duration-200 ease-out hover:-translate-y-1 hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2;
+  }
+
+  .icon-box-warning {
+    @apply inline-flex h-12 w-12 items-center justify-center rounded-xl border border-warning-500/60 bg-warning-500/10 text-lg text-warning-600 shadow-md transition-transform duration-200 ease-out hover:-translate-y-1 hover:border-warning-600 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-warning-500 focus-visible:ring-offset-2;
   }
 }
