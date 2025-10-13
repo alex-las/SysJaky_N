@@ -1,39 +1,63 @@
 (function () {
     const DEFAULT_TOAST_DURATION = 5000;
 
-    document.addEventListener('alpine:init', () => {
-        Alpine.store('toast', {
-            isOpen: false,
-            message: '',
-            type: 'info',
-            timeoutId: null,
-            show(message, options = {}) {
-                const { type = 'info', duration = DEFAULT_TOAST_DURATION } = options;
+    let toastRegistered = false;
+    let lightboxRegistered = false;
 
-                this.clearTimeout();
-                this.message = message;
-                this.type = type;
-                this.isOpen = true;
+    const createToastStore = () => ({
+        isOpen: false,
+        message: '',
+        type: 'info',
+        timeoutId: null,
+        show(message, options = {}) {
+            const { type = 'info', duration = DEFAULT_TOAST_DURATION } = options;
 
-                if (duration > 0) {
-                    this.timeoutId = window.setTimeout(() => {
-                        this.hide();
-                    }, duration);
-                }
-            },
-            hide() {
-                this.clearTimeout();
-                this.isOpen = false;
-                this.message = '';
-                this.type = 'info';
-            },
-            clearTimeout() {
-                if (this.timeoutId) {
-                    window.clearTimeout(this.timeoutId);
-                    this.timeoutId = null;
-                }
+            this.clearTimeout();
+            this.message = message;
+            this.type = type;
+            this.isOpen = true;
+
+            if (duration > 0) {
+                this.timeoutId = window.setTimeout(() => {
+                    this.hide();
+                }, duration);
             }
-        });
+        },
+        hide() {
+            this.clearTimeout();
+            this.isOpen = false;
+            this.message = '';
+            this.type = 'info';
+        },
+        clearTimeout() {
+            if (this.timeoutId !== null) {
+                window.clearTimeout(this.timeoutId);
+                this.timeoutId = null;
+            }
+        }
+    });
+
+    const registerToastStore = (Alpine) => {
+        if (!Alpine || toastRegistered) {
+            return;
+        }
+
+        const toastStore = createToastStore();
+
+        Alpine.store('toast', toastStore);
+
+        window.toast = {
+            show: (...args) => toastStore.show(...args),
+            hide: () => toastStore.hide()
+        };
+
+        toastRegistered = true;
+    };
+
+    const registerLightbox = (Alpine) => {
+        if (!Alpine || lightboxRegistered) {
+            return;
+        }
 
         Alpine.data('lightbox', () => ({
             isOpen: false,
@@ -67,5 +91,17 @@
                 });
             }
         }));
+
+        lightboxRegistered = true;
+    };
+
+    document.addEventListener('alpine:init', () => {
+        registerToastStore(window.Alpine);
+        registerLightbox(window.Alpine);
     });
+
+    if (window.Alpine) {
+        registerToastStore(window.Alpine);
+        registerLightbox(window.Alpine);
+    }
 })();
