@@ -66,6 +66,28 @@
 
 @await Html.PartialAsync("/Pages/Shared/_ServiceOverviewSnippets.cshtml")
 
+<section class="py-5 border-top">
+    <div class="container">
+        <div class="row g-4 align-items-center">
+            <div class="col-12 col-lg-6">
+                <img src="~/img/articles/iso9001-preparation.svg"
+                     alt="Ilustrační grafika přípravy na ISO 9001"
+                     class="img-fluid rounded-4 shadow-sm" />
+            </div>
+            <div class="col-12 col-lg-6" x-data>
+                <h2 class="h3 mb-3">Podívejte se na ukázku dokumentace</h2>
+                <p class="text-muted">Náhled šablony vám ukáže, jak přehledně dokážeme strukturovat procesy a záznamy před certifikací.</p>
+                <button type="button"
+                        class="btn btn-outline-primary d-inline-flex align-items-center gap-2"
+                        x-on:click="$dispatch('open-lightbox', { title: 'Ukázka šablony ISO 9001', description: 'Detailní pohled na doporučenou strukturu dokumentace před certifikací.', imageUrl: '@Url.Content("~/img/articles/iso9001-preparation.svg")' })">
+                    <i class="bi bi-arrows-fullscreen" aria-hidden="true"></i>
+                    Otevřít náhled
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
+
 <section class="py-5 bg-light rounded-4">
     <div class="container py-4">
         <div class="text-center mb-4">
