@@ -3180,3 +3180,7 @@ footer.app-footer a:focus {
   --standard-link-color: color-mix(in oklab, var(--color-accent-600) 75%, var(--color-neutral-900));
 }
 
+[x-cloak] {
+  display: none !important;
+}
+
