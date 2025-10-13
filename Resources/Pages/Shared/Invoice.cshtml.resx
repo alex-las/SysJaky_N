@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="InvoiceTitle" xml:space="preserve">
+    <value>Faktura</value>
+  </data>
+  <data name="InvoiceHeading" xml:space="preserve">
+    <value>Faktura #{0}</value>
+  </data>
+  <data name="DateLine" xml:space="preserve">
+    <value>Datum: {0}</value>
+  </data>
+  <data name="CompanyHeading" xml:space="preserve">
+    <value>Společnost</value>
+  </data>
+  <data name="ItemsHeading" xml:space="preserve">
+    <value>Položky</value>
+  </data>
+  <data name="CourseHeader" xml:space="preserve">
+    <value>Kurz</value>
+  </data>
+  <data name="QuantityHeader" xml:space="preserve">
+    <value>Množství</value>
+  </data>
+  <data name="UnitPriceHeader" xml:space="preserve">
+    <value>Jednotková cena (bez DPH)</value>
+  </data>
+  <data name="VatHeader" xml:space="preserve">
+    <value>DPH</value>
+  </data>
+  <data name="TotalHeader" xml:space="preserve">
+    <value>Celkem</value>
+  </data>
+  <data name="SubtotalLine" xml:space="preserve">
+    <value>Mezisoučet (bez DPH): {0}</value>
+  </data>
+  <data name="VatLine" xml:space="preserve">
+    <value>DPH: {0}</value>
+  </data>
+  <data name="TotalLine" xml:space="preserve">
+    <value>Celkem: {0}</value>
+  </data>
+</root>
