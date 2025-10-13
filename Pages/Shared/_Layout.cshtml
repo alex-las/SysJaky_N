@@ -10,6 +10,29 @@
     var currentCulture = requestCulture?.RequestCulture.Culture.TwoLetterISOLanguageName ?? "cs";
     var currentPage = ViewContext.RouteData.Values["page"]?.ToString() ?? string.Empty;
     var canAccessAdmin = User.IsInRole("Admin");
+    var navigationItems = new (string Page, string ResourceKey)[]
+    {
+        ("/Index", "NavHome"),
+        ("/About", "NavAbout"),
+        ("/Services", "NavServices"),
+        ("/Courses/Index", "NavCourses"),
+        ("/Articles/Index", "NavArticles")
+    };
+    bool IsCurrentPage(string page) => string.Equals(currentPage, page, System.StringComparison.OrdinalIgnoreCase);
+    string GetDesktopNavClasses(string page)
+    {
+        var baseClasses = "inline-flex items-center rounded-lg px-3 py-2 transition duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500";
+        var activeClasses = " bg-primary-100 text-primary-700";
+        var inactiveClasses = " text-slate-600 hover:bg-primary-50 hover:text-primary-700";
+        return baseClasses + (IsCurrentPage(page) ? activeClasses : inactiveClasses);
+    }
+    string GetMobileNavClasses(string page)
+    {
+        var baseClasses = "inline-flex w-full items-center rounded-lg px-3 py-2 text-base transition duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500";
+        var activeClasses = " bg-primary-100 text-primary-700";
+        var inactiveClasses = " text-slate-700 hover:bg-primary-50 hover:text-primary-700";
+        return baseClasses + (IsCurrentPage(page) ? activeClasses : inactiveClasses);
+    }
 }
 <!DOCTYPE html>
 <html lang="@currentCulture">
@@ -43,21 +66,13 @@
                 </a>
                 <div class="hidden flex-1 items-center lg:flex lg:gap-1">
                     <ul class="flex items-center gap-1 text-sm font-medium">
-                        <li>
-                            <a class="inline-flex items-center rounded-lg px-3 py-2 transition duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500@(currentPage == "/Index" ? " bg-primary-100 text-primary-700" : " text-slate-600 hover:bg-primary-50 hover:text-primary-700")" asp-area="" asp-page="/Index" aria-current="@(currentPage == "/Index" ? "page" : null)">@Localizer["NavHome"]</a>
-                        </li>
-                        <li>
-                            <a class="inline-flex items-center rounded-lg px-3 py-2 transition duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500@(currentPage == "/About" ? " bg-primary-100 text-primary-700" : " text-slate-600 hover:bg-primary-50 hover:text-primary-700")" asp-area="" asp-page="/About" aria-current="@(currentPage == "/About" ? "page" : null)">@Localizer["NavAbout"]</a>
-                        </li>
-                        <li>
-                            <a class="inline-flex items-center rounded-lg px-3 py-2 transition duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500@(currentPage == "/Services" ? " bg-primary-100 text-primary-700" : " text-slate-600 hover:bg-primary-50 hover:text-primary-700")" asp-area="" asp-page="/Services" aria-current="@(currentPage == "/Services" ? "page" : null)">@Localizer["NavServices"]</a>
-                        </li>
-                        <li>
-                            <a class="inline-flex items-center rounded-lg px-3 py-2 transition duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500@(currentPage == "/Courses/Index" ? " bg-primary-100 text-primary-700" : " text-slate-600 hover:bg-primary-50 hover:text-primary-700")" asp-area="" asp-page="/Courses/Index" aria-current="@(currentPage == "/Courses/Index" ? "page" : null)">@Localizer["NavCourses"]</a>
-                        </li>
-                        <li>
-                            <a class="inline-flex items-center rounded-lg px-3 py-2 transition duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500@(currentPage == "/Articles/Index" ? " bg-primary-100 text-primary-700" : " text-slate-600 hover:bg-primary-50 hover:text-primary-700")" asp-area="" asp-page="/Articles/Index" aria-current="@(currentPage == "/Articles/Index" ? "page" : null)">@Localizer["NavArticles"]</a>
-                        </li>
+                        @foreach (var item in navigationItems)
+                        {
+                            var isCurrent = IsCurrentPage(item.Page);
+                            <li>
+                                <a class="@GetDesktopNavClasses(item.Page)" asp-area="" asp-page="@item.Page" aria-current="@(isCurrent ? "page" : null)">@Localizer[item.ResourceKey]</a>
+                            </li>
+                        }
                     </ul>
                 </div>
                 <div class="ml-auto hidden items-center gap-2 lg:flex">
@@ -103,21 +118,13 @@
                     </div>
                     <nav aria-label='@Localizer["PrimaryNavigation"]'>
                         <ul class="flex flex-col gap-1">
-                            <li>
-                                <a class="inline-flex w-full items-center rounded-lg px-3 py-2 text-base transition duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500@(currentPage == "/Index" ? " bg-primary-100 text-primary-700" : " text-slate-700 hover:bg-primary-50 hover:text-primary-700")" asp-area="" asp-page="/Index" aria-current="@(currentPage == "/Index" ? "page" : null)" @@click="mobileMenuOpen = false">@Localizer["NavHome"]</a>
-                            </li>
-                            <li>
-                                <a class="inline-flex w-full items-center rounded-lg px-3 py-2 text-base transition duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500@(currentPage == "/About" ? " bg-primary-100 text-primary-700" : " text-slate-700 hover:bg-primary-50 hover:text-primary-700")" asp-area="" asp-page="/About" aria-current="@(currentPage == "/About" ? "page" : null)" @@click="mobileMenuOpen = false">@Localizer["NavAbout"]</a>
-                            </li>
-                            <li>
-                                <a class="inline-flex w-full items-center rounded-lg px-3 py-2 text-base transition duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500@(currentPage == "/Services" ? " bg-primary-100 text-primary-700" : " text-slate-700 hover:bg-primary-50 hover:text-primary-700")" asp-area="" asp-page="/Services" aria-current="@(currentPage == "/Services" ? "page" : null)" @@click="mobileMenuOpen = false">@Localizer["NavServices"]</a>
-                            </li>
-                            <li>
-                                <a class="inline-flex w-full items-center rounded-lg px-3 py-2 text-base transition duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500@(currentPage == "/Courses/Index" ? " bg-primary-100 text-primary-700" : " text-slate-700 hover:bg-primary-50 hover:text-primary-700")" asp-area="" asp-page="/Courses/Index" aria-current="@(currentPage == "/Courses/Index" ? "page" : null)" @@click="mobileMenuOpen = false">@Localizer["NavCourses"]</a>
-                            </li>
-                            <li>
-                                <a class="inline-flex w-full items-center rounded-lg px-3 py-2 text-base transition duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500@(currentPage == "/Articles/Index" ? " bg-primary-100 text-primary-700" : " text-slate-700 hover:bg-primary-50 hover:text-primary-700")" asp-area="" asp-page="/Articles/Index" aria-current="@(currentPage == "/Articles/Index" ? "page" : null)" @@click="mobileMenuOpen = false">@Localizer["NavArticles"]</a>
-                            </li>
+                            @foreach (var item in navigationItems)
+                            {
+                                var isCurrent = IsCurrentPage(item.Page);
+                                <li>
+                                    <a class="@GetMobileNavClasses(item.Page)" asp-area="" asp-page="@item.Page" aria-current="@(isCurrent ? "page" : null)" @@click="mobileMenuOpen = false">@Localizer[item.ResourceKey]</a>
+                                </li>
+                            }
                         </ul>
                     </nav>
                     <div class="flex flex-col gap-3">
