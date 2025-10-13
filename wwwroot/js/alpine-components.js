@@ -1,25 +1,63 @@
 (function () {
     const DEFAULT_TOAST_DURATION = 5000;
 
-    const createId = () => `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
+    let toastRegistered = false;
+    let lightboxRegistered = false;
 
-    document.addEventListener('alpine:init', () => {
-        Alpine.store('toast', {
-            items: [],
-            show(message, type = 'info', duration = DEFAULT_TOAST_DURATION) {
-                const id = createId();
-                this.items.push({ id, message, type });
+    const createToastStore = () => ({
+        isOpen: false,
+        message: '',
+        type: 'info',
+        timeoutId: null,
+        show(message, options = {}) {
+            const { type = 'info', duration = DEFAULT_TOAST_DURATION } = options;
 
-                if (duration > 0) {
-                    window.setTimeout(() => {
-                        this.remove(id);
-                    }, duration);
-                }
-            },
-            remove(id) {
-                this.items = this.items.filter((item) => item.id !== id);
+            this.clearTimeout();
+            this.message = message;
+            this.type = type;
+            this.isOpen = true;
+
+            if (duration > 0) {
+                this.timeoutId = window.setTimeout(() => {
+                    this.hide();
+                }, duration);
             }
-        });
+        },
+        hide() {
+            this.clearTimeout();
+            this.isOpen = false;
+            this.message = '';
+            this.type = 'info';
+        },
+        clearTimeout() {
+            if (this.timeoutId !== null) {
+                window.clearTimeout(this.timeoutId);
+                this.timeoutId = null;
+            }
+        }
+    });
+
+    const registerToastStore = (Alpine) => {
+        if (!Alpine || toastRegistered) {
+            return;
+        }
+
+        const toastStore = createToastStore();
+
+        Alpine.store('toast', toastStore);
+
+        window.toast = {
+            show: (...args) => toastStore.show(...args),
+            hide: () => toastStore.hide()
+        };
+
+        toastRegistered = true;
+    };
+
+    const registerLightbox = (Alpine) => {
+        if (!Alpine || lightboxRegistered) {
+            return;
+        }
 
         Alpine.data('lightbox', () => ({
             isOpen: false,
@@ -53,5 +91,17 @@
                 });
             }
         }));
+
+        lightboxRegistered = true;
+    };
+
+    document.addEventListener('alpine:init', () => {
+        registerToastStore(window.Alpine);
+        registerLightbox(window.Alpine);
     });
+
+    if (window.Alpine) {
+        registerToastStore(window.Alpine);
+        registerLightbox(window.Alpine);
+    }
 })();
