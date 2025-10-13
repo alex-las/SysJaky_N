@@ -1,41 +1,23 @@
 (function () {
     const DEFAULT_TOAST_DURATION = 5000;
 
-    const normalizeOptions = (options) => ({
-        type: 'info',
-        duration: DEFAULT_TOAST_DURATION,
-        ...options
-    });
+    const createId = () => `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
 
     document.addEventListener('alpine:init', () => {
         Alpine.store('toast', {
-            isOpen: false,
-            message: '',
-            type: 'info',
-            timeoutHandle: null,
-            show(message, options = {}) {
-                const settings = normalizeOptions(options);
+            items: [],
+            show(message, type = 'info', duration = DEFAULT_TOAST_DURATION) {
+                const id = createId();
+                this.items.push({ id, message, type });
 
-                this.message = message;
-                this.type = settings.type;
-                this.isOpen = true;
-
-                if (this.timeoutHandle) {
-                    window.clearTimeout(this.timeoutHandle);
-                }
-
-                if (settings.duration > 0) {
-                    this.timeoutHandle = window.setTimeout(() => {
-                        this.hide();
-                    }, settings.duration);
+                if (duration > 0) {
+                    window.setTimeout(() => {
+                        this.remove(id);
+                    }, duration);
                 }
             },
-            hide() {
-                this.isOpen = false;
-                if (this.timeoutHandle) {
-                    window.clearTimeout(this.timeoutHandle);
-                    this.timeoutHandle = null;
-                }
+            remove(id) {
+                this.items = this.items.filter((item) => item.id !== id);
             }
         });
 
