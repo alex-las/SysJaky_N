@@ -6,6 +6,34 @@
 document.addEventListener('DOMContentLoaded', () => {
     const bootstrap = window.bootstrap;
 
+    const patchJqueryValidator = () => {
+        const $ = window.jQuery;
+        if (!$ || !$.validator || !$.validator.prototype) {
+            return false;
+        }
+
+        const prototype = $.validator.prototype;
+        if (prototype.elementValuePatched) {
+            return true;
+        }
+
+        const originalElementValue = prototype.elementValue;
+        prototype.elementValue = function patchedElementValue(element) {
+            if (!element) {
+                return "";
+            }
+
+            return originalElementValue.call(this, element);
+        };
+
+        prototype.elementValuePatched = true;
+        return true;
+    };
+
+    if (!patchJqueryValidator()) {
+        window.addEventListener('load', patchJqueryValidator, { once: true });
+    }
+
     const getFocusableElements = (root) => Array.from(
         root.querySelectorAll(
             'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])'
