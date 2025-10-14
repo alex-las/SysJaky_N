@@ -129,4 +129,34 @@
   <data name="ISO13485Description" xml:space="preserve">
     <value>Medical devices</value>
   </data>
+  <data name="TeamBadge" xml:space="preserve">
+    <value>INSTRUCTOR TEAM</value>
+  </data>
+  <data name="TeamHeading" xml:space="preserve">
+    <value>Our instructor team</value>
+  </data>
+  <data name="TeamDescription" xml:space="preserve">
+    <value>Seasoned auditors and consultants with dozens of successful projects across standards and industries.</value>
+  </data>
+  <data name="TeamAuditsLabel" xml:space="preserve">
+    <value>Audits/trainings delivered</value>
+  </data>
+  <data name="TeamEducationHeading" xml:space="preserve">
+    <value>Education</value>
+  </data>
+  <data name="TeamExperienceHeading" xml:space="preserve">
+    <value>Professional experience</value>
+  </data>
+  <data name="TeamSpecializationsHeading" xml:space="preserve">
+    <value>Specializations</value>
+  </data>
+  <data name="TeamPortfolioHeading" xml:space="preserve">
+    <value>Course portfolio</value>
+  </data>
+  <data name="TeamLinkedInLabel" xml:space="preserve">
+    <value>LinkedIn profile</value>
+  </data>
+  <data name="TeamLinkedInAriaLabel" xml:space="preserve">
+    <value>Open LinkedIn profile for {0}</value>
+  </data>
 </root>
