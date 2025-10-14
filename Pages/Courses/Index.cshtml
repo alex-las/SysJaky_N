@@ -1,5 +1,4 @@
 @page
-@using System.Globalization
 @using System.Linq
 @using System.Text.Json
 @using Microsoft.AspNetCore.Mvc.Localization
@@ -12,28 +11,18 @@
     var courseSource = Model.Courses ?? Enumerable.Empty<SysJaky_N.Models.CourseCardViewModel>();
     var courseItems = courseSource
         .Where(course => course is not null)
-        .Select((course, index) =>
+        .Select(course => new
         {
-            var id = course.Id != 0
-                ? course.Id.ToString(CultureInfo.InvariantCulture)
-                : !string.IsNullOrWhiteSpace(course.DetailsUrl)
-                    ? course.DetailsUrl
-                    : $"course-{index}";
-
-            return new
-            {
-                id,
-                title = course.Title ?? string.Empty,
-                description = course.Description ?? string.Empty,
-                level = course.Level ?? string.Empty,
-                mode = course.Mode ?? string.Empty,
-                dateDisplay = course.DateDisplay ?? string.Empty,
-                priceDisplay = course.PriceDisplay ?? string.Empty,
-                durationDisplay = course.DurationDisplay ?? string.Empty,
-                detailsUrl = course.DetailsUrl ?? string.Empty
-            };
-        })
-        .ToList();
+            id = course.Id,
+            title = course.Title,
+            description = course.Description,
+            level = course.Level,
+            mode = course.Mode,
+            dateDisplay = course.DateDisplay,
+            priceDisplay = course.PriceDisplay,
+            durationDisplay = course.DurationDisplay,
+            detailsUrl = course.DetailsUrl
+        }).ToList();
 
     var coursesJson = JsonSerializer.Serialize(courseItems, serializerOptions);
     var formatAllLabelValue = Localizer["FiltersFormatAll"].Value ?? Localizer["FiltersButton"].Value ?? "Všechny formáty";
@@ -41,6 +30,14 @@
     var resultCountTemplateValue = Localizer["ResultCount", "{0}"].Value ?? "{0}";
     var detailsLabelValue = Localizer["Details"].Value ?? "Detail";
     var noResultsLabelValue = Localizer["NoCoursesFound"].Value ?? "Žádné kurzy neodpovídají výběru.";
+    var labelsJson = JsonSerializer.Serialize(new
+    {
+        formatAllLabel = formatAllLabelValue,
+        levelAllLabel = levelAllLabelValue,
+        resultCountTemplate = resultCountTemplateValue,
+        detailsLabel = detailsLabelValue,
+        noResultsLabel = noResultsLabelValue
+    }, serializerOptions);
 }
 
 <nav aria-label="breadcrumb" class="mb-3">
@@ -62,92 +59,7 @@
     <div class="alert alert-danger" role="alert">@cartError</div>
 }
 
-<div class="space-y-6" x-data='{
-        format: "all",
-        level: "all",
-        search: "",
-        courses: @Html.Raw(string.IsNullOrEmpty(coursesJson) ? "[]" : coursesJson),
-        formatAllLabel: @Html.Raw(JsonSerializer.Serialize(formatAllLabelValue, serializerOptions)),
-        levelAllLabel: @Html.Raw(JsonSerializer.Serialize(levelAllLabelValue, serializerOptions)),
-        resultCountTemplate: @Html.Raw(JsonSerializer.Serialize(resultCountTemplateValue, serializerOptions)),
-        detailsLabel: @Html.Raw(JsonSerializer.Serialize(detailsLabelValue, serializerOptions)),
-        noResultsLabel: @Html.Raw(JsonSerializer.Serialize(noResultsLabelValue, serializerOptions)),
-        getFormats: function () {
-            var values = {};
-            var list = ["all"];
-            var source = Array.isArray(this.courses) ? this.courses : [];
-
-            for (var i = 0; i < source.length; i++) {
-                var course = source[i] || {};
-                var mode = course.mode || "";
-
-                if (mode && !values[mode]) {
-                    values[mode] = true;
-                    list.push(mode);
-                }
-            }
-
-            return list;
-        },
-        getLevels: function () {
-            var values = {};
-            var list = ["all"];
-            var source = Array.isArray(this.courses) ? this.courses : [];
-
-            for (var i = 0; i < source.length; i++) {
-                var course = source[i] || {};
-                var level = course.level || "";
-
-                if (level && !values[level]) {
-                    values[level] = true;
-                    list.push(level);
-                }
-            }
-
-            return list;
-        },
-        filterCourses: function () {
-            var source = Array.isArray(this.courses) ? this.courses : [];
-            var term = "";
-
-            if (typeof this.search === "string") {
-                term = this.search.trim().toLowerCase();
-            }
-
-            var results = [];
-
-            for (var i = 0; i < source.length; i++) {
-                var course = source[i] || {};
-                var mode = course.mode || "";
-                var level = course.level || "";
-                var title = course.title || "";
-                var description = course.description || "";
-                var matchesFormat = this.format === "all" || mode === this.format;
-                var matchesLevel = this.level === "all" || level === this.level;
-                var matchesTerm = term === "" || title.toLowerCase().indexOf(term) !== -1 || description.toLowerCase().indexOf(term) !== -1;
-
-                if (matchesFormat && matchesLevel && matchesTerm) {
-                    results.push(course);
-                }
-            }
-
-            return results;
-        },
-        formatLabel: function (option) {
-            return option === "all" ? this.formatAllLabel : option;
-        },
-        levelLabel: function (option) {
-            return option === "all" ? this.levelAllLabel : option;
-        },
-        formatResultCount: function (count) {
-            return this.resultCountTemplate.replace("{0}", String(count));
-        },
-        resetFilters: function () {
-            this.format = "all";
-            this.level = "all";
-            this.search = "";
-        }
-    }'>
+<div class="space-y-6" x-data="courseFilters()">
     <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
         <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
             <label class="flex w-full flex-col gap-2 lg:max-w-md">
@@ -233,22 +145,53 @@
 
 @section Scripts {
     <script>
-        function courseFilters(coursesData, labelsData) {
-            var rawCourses = Array.isArray(coursesData) ? coursesData : [];
+        // Globální data - s fallbacky pokud nejsou definována
+        window.coursesData = @Html.Raw(coursesJson);
+        window.labelsData = @Html.Raw(labelsJson);
+
+        function courseFilters() {
+            // Bezpečné načtení dat s fallbacky
+            var rawCourses;
+            var labels;
+
+            try {
+                rawCourses = window.coursesData;
+                if (!Array.isArray(rawCourses)) {
+                    console.warn('coursesData is not an array, using empty array');
+                    rawCourses = [];
+                }
+            } catch (e) {
+                console.error('Error loading coursesData:', e);
+                rawCourses = [];
+            }
+
+            try {
+                labels = window.labelsData;
+                if (typeof labels !== 'object' || labels === null) {
+                    console.warn('labelsData is not an object, using defaults');
+                    labels = {};
+                }
+            } catch (e) {
+                console.error('Error loading labelsData:', e);
+                labels = {};
+            }
+
+            // Normalizace dat kurzů s bezpečnými fallbacky
             var normalizedCourses = [];
-            var labels = typeof labelsData === 'object' && labelsData !== null ? labelsData : {};
 
             for (var i = 0; i < rawCourses.length; i++) {
                 var course = rawCourses[i];
 
+                // Přeskočit nevalidní položky
                 if (!course || typeof course !== 'object') {
+                    console.warn('Invalid course at index ' + i + ', skipping');
                     continue;
                 }
 
+                // Bezpečné získání ID
                 var courseId = course.id;
-
-                if (courseId === undefined || courseId === null) {
-                    if (course.Id !== undefined && course.Id !== null) {
+                if (courseId === undefined || courseId === null || courseId === '') {
+                    if (course.Id !== undefined && course.Id !== null && course.Id !== '') {
                         courseId = course.Id;
                     } else if (course.detailsUrl || course.DetailsUrl) {
                         courseId = course.detailsUrl || course.DetailsUrl;
@@ -257,19 +200,21 @@
                     }
                 }
 
+                // Přidat normalizovaný kurz
                 normalizedCourses.push({
                     id: courseId,
-                    title: course.title || course.Title || '',
+                    title: course.title || course.Title || 'Bez názvu',
                     description: course.description || course.Description || '',
                     level: course.level || course.Level || '',
                     mode: course.mode || course.Mode || '',
                     dateDisplay: course.dateDisplay || course.DateDisplay || '',
                     priceDisplay: course.priceDisplay || course.PriceDisplay || '',
                     durationDisplay: course.durationDisplay || course.DurationDisplay || '',
-                    detailsUrl: course.detailsUrl || course.DetailsUrl || ''
+                    detailsUrl: course.detailsUrl || course.DetailsUrl || '#'
                 });
             }
 
+            // Return Alpine.js data objekt
             return {
                 format: 'all',
                 level: 'all',
@@ -280,14 +225,20 @@
                 resultCountTemplate: labels.resultCountTemplate || '{0}',
                 detailsLabel: labels.detailsLabel || 'Detail',
                 noResultsLabel: labels.noResultsLabel || 'Žádné kurzy neodpovídají výběru.',
+
                 getFormats: function () {
+                    if (!this.courses || !Array.isArray(this.courses)) {
+                        return ['all'];
+                    }
+
                     var values = {};
                     var list = ['all'];
 
                     for (var i = 0; i < this.courses.length; i++) {
                         var course = this.courses[i];
-                        var mode = course.mode || '';
+                        if (!course) continue;
 
+                        var mode = course.mode || '';
                         if (mode && !values[mode]) {
                             values[mode] = true;
                             list.push(mode);
@@ -296,14 +247,20 @@
 
                     return list;
                 },
+
                 getLevels: function () {
+                    if (!this.courses || !Array.isArray(this.courses)) {
+                        return ['all'];
+                    }
+
                     var values = {};
                     var list = ['all'];
 
                     for (var i = 0; i < this.courses.length; i++) {
                         var course = this.courses[i];
-                        var level = course.level || '';
+                        if (!course) continue;
 
+                        var level = course.level || '';
                         if (level && !values[level]) {
                             values[level] = true;
                             list.push(level);
@@ -312,19 +269,36 @@
 
                     return list;
                 },
+
                 filterCourses: function () {
-                    var term = this.search.replace(/^\s+|\s+$/g, '').toLowerCase();
+                    if (!this.courses || !Array.isArray(this.courses)) {
+                        return [];
+                    }
+
+                    var term = '';
+                    try {
+                        term = (this.search || '').replace(/^\s+|\s+$/g, '').toLowerCase();
+                    } catch (e) {
+                        console.warn('Error processing search term:', e);
+                        term = '';
+                    }
+
                     var results = [];
 
                     for (var i = 0; i < this.courses.length; i++) {
                         var course = this.courses[i];
+                        if (!course) continue;
+
                         var mode = course.mode || '';
                         var level = course.level || '';
                         var title = course.title || '';
                         var description = course.description || '';
+
                         var matchesFormat = this.format === 'all' || mode === this.format;
                         var matchesLevel = this.level === 'all' || level === this.level;
-                        var matchesTerm = term === '' || title.toLowerCase().indexOf(term) !== -1 || description.toLowerCase().indexOf(term) !== -1;
+                        var matchesTerm = term === '' ||
+                                        title.toLowerCase().indexOf(term) !== -1 ||
+                                        description.toLowerCase().indexOf(term) !== -1;
 
                         if (matchesFormat && matchesLevel && matchesTerm) {
                             results.push(course);
@@ -333,15 +307,32 @@
 
                     return results;
                 },
+
                 formatLabel: function (option) {
-                    return option === 'all' ? this.formatAllLabel : option;
+                    if (!option || option === 'all') {
+                        return this.formatAllLabel || 'Všechny formáty';
+                    }
+                    return option;
                 },
+
                 levelLabel: function (option) {
-                    return option === 'all' ? this.levelAllLabel : option;
+                    if (!option || option === 'all') {
+                        return this.levelAllLabel || 'Všechny úrovně';
+                    }
+                    return option;
                 },
+
                 formatResultCount: function (count) {
-                    return this.resultCountTemplate.replace('{0}', String(count));
+                    try {
+                        var template = this.resultCountTemplate || '{0}';
+                        var countStr = String(count || 0);
+                        return template.replace('{0}', countStr);
+                    } catch (e) {
+                        console.warn('Error formatting result count:', e);
+                        return String(count || 0);
+                    }
                 },
+
                 resetFilters: function () {
                     this.format = 'all';
                     this.level = 'all';
