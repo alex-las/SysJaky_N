@@ -60,26 +60,22 @@
     <NpmInstallInput Include="package-lock.json" />
   </ItemGroup>
 
-  <Target Name="EnsureNodeModules"
-          Inputs="@(NpmInstallInput)"
-          Outputs="node_modules/.install-stamp"
-          Condition="'$(NpmSkipStaticAssets)' != 'true'">
+  <Target Name="EnsureNodeModules" Inputs="@(NpmInstallInput)" Outputs="node_modules/.install-stamp" Condition="'$(NpmSkipStaticAssets)' != 'true'">
     <Message Importance="high" Text="Restoring npm packages for static asset bundling" />
 
     <Touch Files="node_modules/.install-stamp" AlwaysCreate="true" />
   </Target>
 
-  <Target Name="BundleStaticAssets"
-          DependsOnTargets="EnsureNodeModules"
-          Inputs="@(StaticAssetBundleSource)"
-          Outputs="@(StaticAssetBundleOutput)"
-          BeforeTargets="ResolveCurrentProjectStaticWebAssets;ComputeFilesToPublish"
-          Condition="'$(NpmSkipStaticAssets)' != 'true'">
+  <Target Name="BundleStaticAssets" DependsOnTargets="EnsureNodeModules" Inputs="@(StaticAssetBundleSource)" Outputs="@(StaticAssetBundleOutput)" BeforeTargets="ResolveCurrentProjectStaticWebAssets;ComputeFilesToPublish" Condition="'$(NpmSkipStaticAssets)' != 'true'">
     <Message Importance="high" Text="Bundling static web assets" />
 
   </Target>
 
   <ItemGroup>
     <Compile Remove="SysJaky_N.Tests/**/*.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\css\NováSložka\" />
   </ItemGroup>
 </Project>
