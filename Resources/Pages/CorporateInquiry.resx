@@ -16,7 +16,7 @@
     <value>Firemní školení na míru</value>
   </data>
   <data name="Intro" xml:space="preserve">
-    <value>Pomůžeme vám s přípravou firemního školení dle požadovaných ISO norem. Vyplňte poptávku a my se vám ozveme s přesnou nabídkou.</value>
+    <value>Pomůžeme vám s přípravou firemního školení dle požadovaných ISO norem. Vyplňte poptávku a ozveme se do jednoho pracovního dne – žádný spam, jen konkrétní doporučení.</value>
   </data>
   <data name="EnableJavaScriptWarning" xml:space="preserve">
     <value>Pro odeslání poptávky je nutné mít povolený JavaScript.</value>
@@ -31,7 +31,7 @@
     <value>Pokračovat</value>
   </data>
   <data name="Submit" xml:space="preserve">
-    <value>Odeslat poptávku</value>
+    <value>Nezávazně poptat služby</value>
   </data>
   <data name="EstimatedPriceLabel" xml:space="preserve">
     <value>Odhad ceny</value>
@@ -119,6 +119,12 @@
   </data>
   <data name="PriceUnavailable" xml:space="preserve">
     <value>Doplnit údaje</value>
+  </data>
+  <data name="FormBenefitResponse" xml:space="preserve">
+    <value>Odezva do jednoho pracovního dne</value>
+  </data>
+  <data name="FormBenefitNoSpam" xml:space="preserve">
+    <value>Žádný spam – jen doporučení k dalším krokům</value>
   </data>
   <data name="ParticipantCountHint" xml:space="preserve">
     <value>Posuňte posuvník (hodnota 50 znamená 50 a více účastníků).</value>
