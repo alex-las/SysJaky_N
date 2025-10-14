@@ -129,4 +129,34 @@
   <data name="ISO13485Description" xml:space="preserve">
     <value>Zdravotnické prostředky</value>
   </data>
+  <data name="TeamBadge" xml:space="preserve">
+    <value>LEKTORSKÝ TÝM</value>
+  </data>
+  <data name="TeamHeading" xml:space="preserve">
+    <value>Lektorský tým</value>
+  </data>
+  <data name="TeamDescription" xml:space="preserve">
+    <value>Zkušení auditoři a konzultanti s desítkami úspěšných projektů napříč normami a odvětvími.</value>
+  </data>
+  <data name="TeamAuditsLabel" xml:space="preserve">
+    <value>Počet auditů/školení</value>
+  </data>
+  <data name="TeamEducationHeading" xml:space="preserve">
+    <value>Vzdělání</value>
+  </data>
+  <data name="TeamExperienceHeading" xml:space="preserve">
+    <value>Odborná praxe</value>
+  </data>
+  <data name="TeamSpecializationsHeading" xml:space="preserve">
+    <value>Specializace</value>
+  </data>
+  <data name="TeamPortfolioHeading" xml:space="preserve">
+    <value>Portfolio kurzů</value>
+  </data>
+  <data name="TeamLinkedInLabel" xml:space="preserve">
+    <value>LinkedIn profil</value>
+  </data>
+  <data name="TeamLinkedInAriaLabel" xml:space="preserve">
+    <value>Otevřít LinkedIn profil {0}</value>
+  </data>
 </root>

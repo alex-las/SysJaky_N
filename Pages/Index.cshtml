@@ -10,7 +10,7 @@
 <section class="hero-gradient py-5">
     <div class="container py-5">
         <div class="row align-items-center g-5">
-            <div class="col-lg-7">
+            <div class="col-lg-6">
                 <div class="badge bg-primary-subtle text-primary px-3 py-2 mb-3">
                     @T["HeroBadge"]
                 </div>
@@ -46,21 +46,49 @@
                     </div>
                 </div>
                 
-                <div class="d-flex flex-column flex-sm-row gap-3">
-                    <a asp-page="/Courses/Index" class="btn btn-primary btn-lg">
-                        <i class="bi bi-mortarboard me-2"></i>
-                        @T["HeroPrimaryCTA"]
-                    </a>
-                    <a asp-page="/CorporateInquiry" class="btn btn-outline-primary btn-lg">
-                        <i class="bi bi-briefcase me-2"></i>
-                        @T["HeroSecondaryCTA"]
-                    </a>
+                <div class="row g-3 g-lg-4">
+                    <div class="col-12">
+                        <a asp-page="/CorporateInquiry/Qualification"
+                           class="card border-0 shadow-sm h-100 text-decoration-none text-start transition-all">
+                            <div class="card-body p-4">
+                                <div class="d-flex align-items-center gap-3 mb-3">
+                                    <span class="d-inline-flex align-items-center justify-content-center rounded-circle bg-primary-subtle text-primary" style="width: 48px; height: 48px;">
+                                        <i class="bi bi-briefcase fs-4" aria-hidden="true"></i>
+                                    </span>
+                                    <h2 class="h4 fw-semibold mb-0">@T["HeroCorporateCardTitle"]</h2>
+                                </div>
+                                <p class="text-muted mb-4">@T["HeroCorporateCardDescription"]</p>
+                                <span class="fw-semibold text-primary d-inline-flex align-items-center gap-2">
+                                    @T["HeroCorporateCardCta"]
+                                    <i class="bi bi-arrow-right-short fs-4" aria-hidden="true"></i>
+                                </span>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-12">
+                        <a asp-page="/Courses/Index"
+                           class="card border-0 shadow-sm h-100 text-decoration-none text-start transition-all">
+                            <div class="card-body p-4">
+                                <div class="d-flex align-items-center gap-3 mb-3">
+                                    <span class="d-inline-flex align-items-center justify-content-center rounded-circle bg-success-subtle text-success" style="width: 48px; height: 48px;">
+                                        <i class="bi bi-mortarboard fs-4" aria-hidden="true"></i>
+                                    </span>
+                                    <h2 class="h4 fw-semibold mb-0">@T["HeroCoursesCardTitle"]</h2>
+                                </div>
+                                <p class="text-muted mb-4">@T["HeroCoursesCardDescription"]</p>
+                                <span class="fw-semibold text-success d-inline-flex align-items-center gap-2">
+                                    @T["HeroCoursesCardCta"]
+                                    <i class="bi bi-arrow-right-short fs-4" aria-hidden="true"></i>
+                                </span>
+                            </div>
+                        </a>
+                    </div>
                 </div>
             </div>
-            
-            <div class="col-lg-5">
+
+            <div class="col-lg-6">
                 <div class="position-relative">
-                    <img src="~/img/hero-training.svg" alt="@T["HeroImageAlt"]" 
+                    <img src="~/img/hero-training.svg" alt="@T["HeroImageAlt"]"
                          class="img-fluid rounded-4 shadow-lg" />
                 </div>
             </div>
@@ -98,21 +126,21 @@
             </div>
         </div>
 
-        <div class="trusted-clients-rail mt-5" role="list" aria-label="@T["TrustedClientsLogosLabel"]">
-            <div class="trusted-clients-card" role="listitem" tabindex="0">
-                <img src="~/img/clients/skoda-auto.svg" alt="@T["TrustedClientsLogoSkoda"]" loading="lazy" />
+        <div class="trusted-clients-logos mt-5" role="list" aria-label="@T["TrustedClientsLogosLabel"]">
+            <div class="trusted-clients-logo" role="listitem">
+                <img src="~/img/clients/logo_proman_130.png" alt="@T["TrustedClientsLogoSkoda"]" loading="lazy" />
             </div>
-            <div class="trusted-clients-card" role="listitem" tabindex="0">
-                <img src="~/img/clients/cez.svg" alt="@T["TrustedClientsLogoCez"]" loading="lazy" />
+            <div class="trusted-clients-logo" role="listitem">
+                <img src="~/img/clients/Logo_SPEA_100.png" alt="@T["TrustedClientsLogoCez"]" loading="lazy" />
             </div>
-            <div class="trusted-clients-card" role="listitem" tabindex="0">
-                <img src="~/img/clients/continental-automotive.svg" alt="@T["TrustedClientsLogoContinental"]" loading="lazy" />
+            <div class="trusted-clients-logo" role="listitem">
+                <img src="~/img/clients/Zetor_logo_red_130.png" alt="@T["TrustedClientsLogoContinental"]" loading="lazy" />
             </div>
-            <div class="trusted-clients-card" role="listitem" tabindex="0">
-                <img src="~/img/clients/pilsner-urquell.svg" alt="@T["TrustedClientsLogoPilsner"]" loading="lazy" />
+            <div class="trusted-clients-logo" role="listitem">
+                <img src="~/img/clients/Nemocnice_Blansko-2.png" alt="@T["TrustedClientsLogoPilsner"]" loading="lazy" />
             </div>
-            <div class="trusted-clients-card" role="listitem" tabindex="0">
-                <img src="~/img/clients/honeywell.svg" alt="@T["TrustedClientsLogoHoneywell"]" loading="lazy" />
+            <div class="trusted-clients-logo" role="listitem">
+                <img src="~/img/clients/Pacovske_strojirny-logo.png" alt="@T["TrustedClientsLogoHoneywell"]" loading="lazy" />
             </div>
         </div>
 

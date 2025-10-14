@@ -41,7 +41,19 @@
                 <textarea asp-for="Input.Message" class="form-control"></textarea>
                 <span asp-validation-for="Input.Message" class="text-danger"></span>
             </div>
-            <button type="submit" class="btn btn-primary">@Localizer["Submit"]</button>
+            <div class="d-flex flex-column flex-sm-row align-items-sm-center gap-3">
+                <button type="submit" class="btn btn-primary">@Localizer["Submit"]</button>
+                <ul class="list-unstyled small text-muted mb-0">
+                    <li class="d-flex align-items-center gap-2">
+                        <i class="bi bi-clock-history text-primary" aria-hidden="true"></i>
+                        <span>@Localizer["FormBenefitResponse"]</span>
+                    </li>
+                    <li class="d-flex align-items-center gap-2">
+                        <i class="bi bi-shield-check text-primary" aria-hidden="true"></i>
+                        <span>@Localizer["FormBenefitNoSpam"]</span>
+                    </li>
+                </ul>
+            </div>
         </form>
         @if (TempData["Success"] is string success && !string.IsNullOrEmpty(success))
         {

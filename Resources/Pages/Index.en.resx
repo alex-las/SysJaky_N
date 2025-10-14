@@ -98,11 +98,68 @@
   <data name="HeroUSP3Description" xml:space="preserve">
     <value>We tailor training, consulting, and internal audits to your processes and bring the right experts to your location.</value>
   </data>
+  <data name="HeroCorporateCardTitle" xml:space="preserve">
+    <value>Corporate audit &amp; advisory</value>
+  </data>
+  <data name="HeroCorporateCardDescription" xml:space="preserve">
+    <value>Start with a short qualification questionnaire to receive a tailored proposal from a senior auditor.</value>
+  </data>
+  <data name="HeroCorporateCardCta" xml:space="preserve">
+    <value>Request services</value>
+  </data>
+  <data name="HeroCoursesCardTitle" xml:space="preserve">
+    <value>Courses &amp; trainings</value>
+  </data>
+  <data name="HeroCoursesCardDescription" xml:space="preserve">
+    <value>Browse the catalogue with powerful filters, wishlist and date alerts.</value>
+  </data>
+  <data name="HeroCoursesCardCta" xml:space="preserve">
+    <value>View dates</value>
+  </data>
   <data name="HeroPrimaryCTA" xml:space="preserve">
-    <value>Browse ISO course offering</value>
+    <value>Request services</value>
   </data>
   <data name="HeroSecondaryCTA" xml:space="preserve">
-    <value>Request a tailored corporate solution</value>
+    <value>Contact the team</value>
+  </data>
+  <data name="TrustedClientsHeading" xml:space="preserve">
+    <value>Trusted across industries</value>
+  </data>
+  <data name="TrustedClientsSubtitle" xml:space="preserve">
+    <value>Our experts empower manufacturing, technology and public organizations to achieve measurable improvements.</value>
+  </data>
+  <data name="TrustedClientsMetricParticipants" xml:space="preserve">
+    <value>1,200+ trained participants</value>
+  </data>
+  <data name="TrustedClientsMetricRating" xml:space="preserve">
+    <value>4.9/5 average course rating</value>
+  </data>
+  <data name="TrustedClientsMetricAudits" xml:space="preserve">
+    <value>300+ successful audits delivered</value>
+  </data>
+  <data name="TrustedClientsMetricAccreditations" xml:space="preserve">
+    <value>Accreditations from CIA and leading bodies</value>
+  </data>
+  <data name="TrustedClientsLogosLabel" xml:space="preserve">
+    <value>Logotypes of key clients</value>
+  </data>
+  <data name="TrustedClientsLogoSkoda" xml:space="preserve">
+    <value>Škoda Auto</value>
+  </data>
+  <data name="TrustedClientsLogoCez" xml:space="preserve">
+    <value>ČEZ</value>
+  </data>
+  <data name="TrustedClientsLogoContinental" xml:space="preserve">
+    <value>Continental Automotive</value>
+  </data>
+  <data name="TrustedClientsLogoPilsner" xml:space="preserve">
+    <value>Pilsner Urquell</value>
+  </data>
+  <data name="TrustedClientsLogoHoneywell" xml:space="preserve">
+    <value>Honeywell</value>
+  </data>
+  <data name="TrustedClientsReferenceNote" xml:space="preserve">
+    <value>References available upon request as part of the procurement process.</value>
   </data>
   <data name="TrustedClientsHeading" xml:space="preserve">
     <value>Trusted across industries</value>
@@ -219,25 +276,25 @@
     <value>Certification standards we support end-to-end</value>
   </data>
   <data name="IsoStandardsDescription" xml:space="preserve">
-    <value>We cover assessment, implementation, and team training for the key ISO, HACCP, and accreditation standards.</value>
+    <value>Select a standard and we will plan every step to certification – from discovery to training and the external audit.</value>
   </data>
   <data name="Iso9001Description" xml:space="preserve">
-    <value>Quality management focused on processes, risks, and customer satisfaction from the first analysis to the certification audit.</value>
+    <value>Stabilise processes, raise quality, and demonstrate compliance in every certification audit.</value>
   </data>
   <data name="Iso14001Description" xml:space="preserve">
-    <value>Systematically reduce environmental impact, comply with regulations, and establish measurable sustainability goals.</value>
+    <value>Build a sustainable EMS and cut operational environmental risks.</value>
   </data>
   <data name="Iso17025Description" xml:space="preserve">
-    <value>Support for testing and calibration laboratories with documentation, metrology, and competence management.</value>
+    <value>Increase confidence in measurement results and succeed in accreditation assessments.</value>
   </data>
   <data name="HaccpDescription" xml:space="preserve">
-    <value>Food safety management and control of critical points in production, gastronomy, and logistics with a focus on prevention.</value>
+    <value>Keep critical control points in check and prevent downtime across production and logistics.</value>
   </data>
   <data name="Iso45001Description" xml:space="preserve">
-    <value>Modern occupational health and safety management preventing incidents, managing risks, and engaging employees.</value>
+    <value>Strengthen OH&amp;S culture, lower incident rates, and stay compliant with regulations.</value>
   </data>
   <data name="Iso27001Description" xml:space="preserve">
-    <value>Information security, cyber-risk management, and compliance with GDPR and customer security requirements.</value>
+    <value>Safeguard critical data, satisfy customer requirements, and prepare for ISMS audits.</value>
   </data>
   <data name="ProcessHeading" xml:space="preserve">
     <value>How we guide you to successful certification</value>
@@ -269,6 +326,9 @@
   <data name="CtaDescription" xml:space="preserve">
     <value>Contact us to design the right mix of training, consulting, and internal audits tailored to your organization.</value>
   </data>
+  <data name="CtaButton" xml:space="preserve">
+    <value>Request services</value>
+  </data>
   <data name="CoursesHeading" xml:space="preserve">
     <value>Current training and courses</value>
   </data>
@@ -295,10 +355,10 @@
   </data>
   
   <data name="CourseDetailsCTA" xml:space="preserve">
-    <value>Course details</value>
+    <value>View dates</value>
   </data>
   <data name="CourseEnrollCTA" xml:space="preserve">
-    <value>Enroll now</value>
+    <value>View dates</value>
   </data>
   <data name="WhyChooseDescription" xml:space="preserve">
     <value>20 years of experience, a team of external auditors, and know-how from dozens of industries.</value>
@@ -331,13 +391,13 @@
     <value>Discover our story</value>
   </data>
   <data name="ContactCtaHeading" xml:space="preserve">
-    <value>Book a free consultation</value>
+    <value>Need a quick consultation?</value>
   </data>
   <data name="ContactHeading" xml:space="preserve">
-    <value>Contact us</value>
+    <value>Contact the team</value>
   </data>
   <data name="ContactDescription" xml:space="preserve">
-    <value>We are happy to answer your questions and help you choose the right training.</value>
+    <value>Write to us and we'll respond within one business day. No spam – only clear next steps for your project.</value>
   </data>
   <data name="ContactPhoneLabel" xml:space="preserve">
     <value>Phone</value>
@@ -421,10 +481,10 @@
     <value>You can compare up to 3 courses.</value>
   </data>
   <data name="Details" xml:space="preserve">
-    <value>Details</value>
+    <value>View dates</value>
   </data>
   <data name="Enroll" xml:space="preserve">
-    <value>Enroll</value>
+    <value>Add to cart</value>
   </data>
   <data name="NoCoursesFound" xml:space="preserve">
     <value>No courses match your selection.</value>
@@ -466,7 +526,7 @@
     <value>Free</value>
   </data>
   <data name="UpcomingTrainingsCta" xml:space="preserve">
-    <value>View course</value>
+    <value>View dates</value>
   </data>
   <data name="UpcomingTrainingsMode_SelfPaced" xml:space="preserve">
     <value>Self-paced online</value>

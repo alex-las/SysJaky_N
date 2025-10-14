@@ -16,7 +16,7 @@
     <value>Contact</value>
   </data>
   <data name="Intro" xml:space="preserve">
-    <value>Looking for training for your whole team? Let us know the topics, preferred format (online/on-site) and dates.</value>
+    <value>Looking for training for your whole team? Tell us the topics, preferred format, and dates. We'll respond within one business day.</value>
   </data>
   <data name="ContactDetailsRegionLabel" xml:space="preserve">
     <value>Contact details and form</value>
@@ -28,9 +28,15 @@
     <value>Office address</value>
   </data>
   <data name="Submit" xml:space="preserve">
-    <value>Send</value>
+    <value>Contact the team</value>
   </data>
   <data name="Success" xml:space="preserve">
     <value>Your message has been sent.</value>
+  </data>
+  <data name="FormBenefitResponse" xml:space="preserve">
+    <value>Response within one business day</value>
+  </data>
+  <data name="FormBenefitNoSpam" xml:space="preserve">
+    <value>No spam — only actionable guidance</value>
   </data>
 </root>

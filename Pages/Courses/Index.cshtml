@@ -2,6 +2,7 @@
 @using System.Linq
 @using System.Text.Json
 @using Microsoft.AspNetCore.Mvc.Localization
+@using SysJaky_N.Models
 @inject IViewLocalizer Localizer
 @model SysJaky_N.Pages.Courses.IndexModel
 @{
@@ -21,22 +22,38 @@
             dateDisplay = course.DateDisplay,
             priceDisplay = course.PriceDisplay,
             durationDisplay = course.DurationDisplay,
-            detailsUrl = course.DetailsUrl
+            detailsUrl = course.DetailsUrl,
+            wishlistUrl = course.WishlistUrl,
+            isoStandard = course.IsoStandard,
+            norms = course.Norms,
+            cities = course.Cities
         }).ToList();
 
     var coursesJson = JsonSerializer.Serialize(courseItems, serializerOptions);
     var formatAllLabelValue = Localizer["FiltersFormatAll"].Value ?? Localizer["FiltersButton"].Value ?? "Všechny formáty";
     var levelAllLabelValue = Localizer["FiltersLevelAll"].Value ?? Localizer["LevelsLabel"].Value ?? "Všechny úrovně";
+    var normAllLabelValue = Localizer["FiltersNormAll"].Value ?? Localizer["NormsLabel"].Value ?? "Všechny normy";
+    var cityAllLabelValue = Localizer["FiltersCityAll"].Value ?? Localizer["CitiesLabel"].Value ?? "Všechna města";
     var resultCountTemplateValue = Localizer["ResultCount", "{0}"].Value ?? "{0}";
     var detailsLabelValue = Localizer["Details"].Value ?? "Detail";
     var noResultsLabelValue = Localizer["NoCoursesFound"].Value ?? "Žádné kurzy neodpovídají výběru.";
+    var wishlistLabelValue = Localizer["WishlistButtonLabel"].Value ?? "Hlídat termín";
+    var modeLabelsValue = Enum.GetValues<CourseMode>()
+        .ToDictionary(mode => mode.ToString(), mode => Localizer[$"CourseMode_{mode}"].Value ?? mode.ToString());
+    var levelLabelsValue = Enum.GetValues<CourseLevel>()
+        .ToDictionary(level => level.ToString(), level => Localizer[$"CourseLevel_{level}"].Value ?? level.ToString());
     var labelsJson = JsonSerializer.Serialize(new
     {
         formatAllLabel = formatAllLabelValue,
         levelAllLabel = levelAllLabelValue,
+        normAllLabel = normAllLabelValue,
+        cityAllLabel = cityAllLabelValue,
         resultCountTemplate = resultCountTemplateValue,
         detailsLabel = detailsLabelValue,
-        noResultsLabel = noResultsLabelValue
+        noResultsLabel = noResultsLabelValue,
+        wishlistLabel = wishlistLabelValue,
+        modeLabels = modeLabelsValue,
+        levelLabels = levelLabelsValue
     }, serializerOptions);
 }
 
@@ -61,8 +78,8 @@
 
 <div class="space-y-6" x-data="courseFilters()">
     <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-        <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-            <label class="flex w-full flex-col gap-2 lg:max-w-md">
+        <div class="grid gap-6 lg:grid-cols-12">
+            <label class="flex flex-col gap-2 lg:col-span-5">
                 <span class="text-sm font-medium text-slate-700">@Localizer["SearchLabel"]</span>
                 <div class="relative">
                     <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
@@ -77,28 +94,53 @@
                            aria-label="@Localizer["SearchLabel"]" />
                 </div>
             </label>
-            <div class="flex flex-wrap gap-2">
-                <template x-for="option in getFormats()" :key="option">
-                    <button type="button"
-                            class="inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition"
-                            @@click="format = option"
-                            :class="format === option ? 'border-transparent bg-blue-600 text-white shadow-sm' : 'border-slate-300 bg-white text-slate-600 hover:border-blue-400 hover:text-blue-600'">
-                        <span x-text="formatLabel(option)"></span>
-                    </button>
-                </template>
+            <div class="grid gap-4 sm:grid-cols-2 lg:col-span-7">
+                <label class="flex flex-col gap-2">
+                    <span class="text-sm font-medium text-slate-700">@Localizer["NormsLabel"]</span>
+                    <select x-model="norm"
+                            class="block w-full rounded-xl border border-slate-300 bg-white py-2 pl-3 pr-8 text-sm text-slate-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-200">
+                        <template x-for="option in getNormOptions()" :key="option">
+                            <option :value="option" x-text="option === 'all' ? normAllLabel : option"></option>
+                        </template>
+                    </select>
+                </label>
+                <label class="flex flex-col gap-2">
+                    <span class="text-sm font-medium text-slate-700">@Localizer["CitiesLabel"]</span>
+                    <select x-model="city"
+                            class="block w-full rounded-xl border border-slate-300 bg-white py-2 pl-3 pr-8 text-sm text-slate-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-200">
+                        <template x-for="option in getCityOptions()" :key="option">
+                            <option :value="option" x-text="option === 'all' ? cityAllLabel : option"></option>
+                        </template>
+                    </select>
+                </label>
             </div>
         </div>
-        <div class="mt-6 flex flex-col gap-3">
-            <span class="text-sm font-medium text-slate-700">@Localizer["LevelsLabel"]</span>
-            <div class="flex flex-wrap gap-2">
-                <template x-for="option in getLevels()" :key="option">
-                    <button type="button"
-                            class="inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition"
-                            @@click="level = option"
-                            :class="level === option ? 'border-transparent bg-slate-900 text-white shadow-sm' : 'border-slate-300 bg-white text-slate-600 hover:border-slate-400 hover:text-slate-900'">
-                        <span x-text="levelLabel(option)"></span>
-                    </button>
-                </template>
+        <div class="mt-6 grid gap-4 lg:grid-cols-2">
+            <div class="flex flex-col gap-3">
+                <span class="text-sm font-medium text-slate-700">@Localizer["TypesLabel"]</span>
+                <div class="flex flex-wrap gap-2">
+                    <template x-for="option in getFormats()" :key="option">
+                        <button type="button"
+                                class="inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition"
+                                @@click="mode = option"
+                                :class="mode === option ? 'border-transparent bg-blue-600 text-white shadow-sm' : 'border-slate-300 bg-white text-slate-600 hover:border-blue-400 hover:text-blue-600'">
+                            <span x-text="modeLabel(option)"></span>
+                        </button>
+                    </template>
+                </div>
+            </div>
+            <div class="flex flex-col gap-3">
+                <span class="text-sm font-medium text-slate-700">@Localizer["LevelsLabel"]</span>
+                <div class="flex flex-wrap gap-2">
+                    <template x-for="option in getLevels()" :key="option">
+                        <button type="button"
+                                class="inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition"
+                                @@click="level = option"
+                                :class="level === option ? 'border-transparent bg-slate-900 text-white shadow-sm' : 'border-slate-300 bg-white text-slate-600 hover:border-slate-400 hover:text-slate-900'">
+                            <span x-text="levelLabel(option)"></span>
+                        </button>
+                    </template>
+                </div>
             </div>
         </div>
         <div class="mt-6 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
@@ -120,21 +162,45 @@
             <article class="flex h-full flex-col justify-between rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md" role="listitem">
                 <div class="flex flex-col gap-4">
                     <div class="flex items-start justify-between gap-3">
-                        <h2 class="text-lg font-semibold text-slate-900" x-text="course.title"></h2>
-                        <span class="inline-flex items-center rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-700" x-text="course.mode"></span>
+                        <div class="flex flex-col gap-3">
+                            <h2 class="text-lg font-semibold text-slate-900" x-text="course.title"></h2>
+                            <div class="flex flex-wrap gap-2">
+                                <template x-if="course.isoStandard">
+                                    <span class="inline-flex items-center rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-700" x-text="course.isoStandard"></span>
+                                </template>
+                                <template x-for="norm in course.extraNorms" :key="norm">
+                                    <span class="inline-flex items-center rounded-full bg-blue-50 px-3 py-1 text-xs font-medium text-blue-700" x-text="norm"></span>
+                                </template>
+                            </div>
+                        </div>
+                        <span class="inline-flex items-center rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-700" x-text="modeLabel(course.mode)"></span>
                     </div>
                     <p class="text-sm text-slate-600" x-show="course.description" x-text="course.description"></p>
                     <div class="flex flex-wrap items-center gap-2">
-                        <span class="inline-flex items-center rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700" x-text="course.level"></span>
+                        <span class="inline-flex items-center rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700" x-text="levelLabel(course.level)"></span>
                         <span class="text-sm font-medium text-slate-700" x-text="course.dateDisplay"></span>
                         <span class="text-sm font-semibold text-blue-600" x-text="course.priceDisplay"></span>
                     </div>
+                    <div class="flex flex-wrap gap-2" x-show="course.cities && course.cities.length">
+                        <template x-for="cityName in course.cities" :key="cityName">
+                            <span class="inline-flex items-center rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600" x-text="cityName"></span>
+                        </template>
+                    </div>
                 </div>
-                <div class="mt-6 flex items-center justify-between">
-                    <span class="text-sm text-slate-500" x-text="course.durationDisplay"></span>
-                    <a class="inline-flex items-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-500"
-                       :href="course.detailsUrl"
-                       x-text="detailsLabel"></a>
+                <div class="mt-6 flex flex-col gap-3">
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm text-slate-500" x-text="course.durationDisplay"></span>
+                        <a class="inline-flex items-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-500"
+                           :href="course.detailsUrl"
+                           x-text="detailsLabel"></a>
+                    </div>
+                    <form method="post" x-show="course.wishlistUrl" :action="course.wishlistUrl" class="inline-flex">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="inline-flex items-center gap-2 rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-600 transition hover:border-blue-500 hover:text-blue-600">
+                            <i class="bi bi-heart" aria-hidden="true"></i>
+                            <span x-text="wishlistLabel"></span>
+                        </button>
+                    </form>
                 </div>
             </article>
         </template>
@@ -150,157 +216,188 @@
         window.labelsData = @Html.Raw(labelsJson);
 
         function courseFilters() {
-            // Bezpečné načtení dat s fallbacky
-            var rawCourses;
-            var labels;
-
-            try {
-                rawCourses = window.coursesData;
-                if (!Array.isArray(rawCourses)) {
-                    console.warn('coursesData is not an array, using empty array');
-                    rawCourses = [];
-                }
-            } catch (e) {
-                console.error('Error loading coursesData:', e);
-                rawCourses = [];
+            function toLowerSafe(value) {
+                return typeof value === 'string' ? value.toLowerCase() : '';
             }
 
-            try {
-                labels = window.labelsData;
-                if (typeof labels !== 'object' || labels === null) {
-                    console.warn('labelsData is not an object, using defaults');
-                    labels = {};
+            function normalizeList(list) {
+                if (!Array.isArray(list)) {
+                    return [];
                 }
-            } catch (e) {
-                console.error('Error loading labelsData:', e);
-                labels = {};
+
+                var result = [];
+                for (var i = 0; i < list.length; i++) {
+                    var item = list[i];
+                    if (typeof item !== 'string') {
+                        continue;
+                    }
+                    var trimmed = item.trim();
+                    if (trimmed.length === 0) {
+                        continue;
+                    }
+                    if (!result.some(function (existing) { return existing.localeCompare(trimmed, undefined, { sensitivity: 'accent' }) === 0; })) {
+                        result.push(trimmed);
+                    }
+                }
+                return result;
             }
 
-            // Normalizace dat kurzů s bezpečnými fallbacky
+            function equalsIgnoreCase(a, b) {
+                if (typeof a !== 'string' || typeof b !== 'string') {
+                    return false;
+                }
+                return a.localeCompare(b, undefined, { sensitivity: 'accent' }) === 0;
+            }
+
+            var rawCourses = Array.isArray(window.coursesData) ? window.coursesData : [];
+            var labels = (typeof window.labelsData === 'object' && window.labelsData !== null) ? window.labelsData : {};
+
             var normalizedCourses = [];
+            var normSet = new Set();
+            var citySet = new Set();
+            var modeSet = new Set();
+            var levelSet = new Set();
 
             for (var i = 0; i < rawCourses.length; i++) {
                 var course = rawCourses[i];
-
-                // Přeskočit nevalidní položky
                 if (!course || typeof course !== 'object') {
-                    console.warn('Invalid course at index ' + i + ', skipping');
                     continue;
                 }
 
-                // Bezpečné získání ID
-                var courseId = course.id;
-                if (courseId === undefined || courseId === null || courseId === '') {
-                    if (course.Id !== undefined && course.Id !== null && course.Id !== '') {
-                        courseId = course.Id;
-                    } else if (course.detailsUrl || course.DetailsUrl) {
-                        courseId = course.detailsUrl || course.DetailsUrl;
+                var id = course.id || course.Id || '';
+                if (!id) {
+                    if (course.detailsUrl || course.DetailsUrl) {
+                        id = course.detailsUrl || course.DetailsUrl;
                     } else {
-                        courseId = 'course-' + normalizedCourses.length;
+                        id = 'course-' + normalizedCourses.length;
                     }
                 }
 
-                // Přidat normalizovaný kurz
+                var title = (course.title || course.Title || '').trim();
+                if (!title) {
+                    title = 'Bez názvu';
+                }
+                var description = (course.description || course.Description || '').trim();
+                var level = course.level || course.Level || '';
+                var mode = course.mode || course.Mode || '';
+                var detailsUrl = course.detailsUrl || course.DetailsUrl || '#';
+                var wishlistUrl = course.wishlistUrl || course.WishlistUrl || '';
+                var isoStandard = (course.isoStandard || course.IsoStandard || '').trim();
+                var norms = normalizeList(course.norms || course.Norms || []);
+
+                if (isoStandard && !norms.some(function (item) { return equalsIgnoreCase(item, isoStandard); })) {
+                    norms.push(isoStandard);
+                }
+
+                var cities = normalizeList(course.cities || course.Cities || []);
+
+                norms.forEach(function (norm) { normSet.add(norm); });
+                cities.forEach(function (city) { citySet.add(city); });
+                if (mode) { modeSet.add(mode); }
+                if (level) { levelSet.add(level); }
+
                 normalizedCourses.push({
-                    id: courseId,
-                    title: course.title || course.Title || 'Bez názvu',
-                    description: course.description || course.Description || '',
-                    level: course.level || course.Level || '',
-                    mode: course.mode || course.Mode || '',
+                    id: id,
+                    title: title,
+                    description: description,
+                    level: level,
+                    mode: mode,
                     dateDisplay: course.dateDisplay || course.DateDisplay || '',
                     priceDisplay: course.priceDisplay || course.PriceDisplay || '',
                     durationDisplay: course.durationDisplay || course.DurationDisplay || '',
-                    detailsUrl: course.detailsUrl || course.DetailsUrl || '#'
+                    detailsUrl: detailsUrl,
+                    wishlistUrl: wishlistUrl,
+                    isoStandard: isoStandard,
+                    norms: norms,
+                    extraNorms: isoStandard
+                        ? norms.filter(function (norm) { return !equalsIgnoreCase(norm, isoStandard); })
+                        : norms.slice(),
+                    cities: cities
                 });
             }
 
-            // Return Alpine.js data objekt
+            var formatAllLabel = labels.formatAllLabel || 'Všechny formáty';
+            var levelAllLabel = labels.levelAllLabel || 'Všechny úrovně';
+            var normAllLabel = labels.normAllLabel || 'Všechny normy';
+            var cityAllLabel = labels.cityAllLabel || 'Všechna města';
+            var resultCountTemplate = labels.resultCountTemplate || '{0}';
+            var detailsLabel = labels.detailsLabel || 'Detail';
+            var noResultsLabel = labels.noResultsLabel || 'Žádné kurzy neodpovídají výběru.';
+            var wishlistLabel = labels.wishlistLabel || 'Hlídat termín';
+            var modeLabels = labels.modeLabels || {};
+            var levelLabels = labels.levelLabels || {};
+
             return {
-                format: 'all',
-                level: 'all',
                 search: '',
+                norm: 'all',
+                mode: 'all',
+                level: 'all',
+                city: 'all',
                 courses: normalizedCourses,
-                formatAllLabel: labels.formatAllLabel || 'Všechny formáty',
-                levelAllLabel: labels.levelAllLabel || 'Všechny úrovně',
-                resultCountTemplate: labels.resultCountTemplate || '{0}',
-                detailsLabel: labels.detailsLabel || 'Detail',
-                noResultsLabel: labels.noResultsLabel || 'Žádné kurzy neodpovídají výběru.',
+                normOptions: Array.from(normSet).sort(),
+                cityOptions: Array.from(citySet).sort(),
+                modeOptions: Array.from(modeSet).sort(),
+                levelOptions: Array.from(levelSet).sort(),
+                formatAllLabel: formatAllLabel,
+                levelAllLabel: levelAllLabel,
+                normAllLabel: normAllLabel,
+                cityAllLabel: cityAllLabel,
+                resultCountTemplate: resultCountTemplate,
+                detailsLabel: detailsLabel,
+                noResultsLabel: noResultsLabel,
+                wishlistLabel: wishlistLabel,
+                modeLabels: modeLabels,
+                levelLabels: levelLabels,
+
+                getNormOptions: function () {
+                    return ['all'].concat(this.normOptions);
+                },
+
+                getCityOptions: function () {
+                    return ['all'].concat(this.cityOptions);
+                },
 
                 getFormats: function () {
-                    if (!this.courses || !Array.isArray(this.courses)) {
-                        return ['all'];
-                    }
-
-                    var values = {};
-                    var list = ['all'];
-
-                    for (var i = 0; i < this.courses.length; i++) {
-                        var course = this.courses[i];
-                        if (!course) continue;
-
-                        var mode = course.mode || '';
-                        if (mode && !values[mode]) {
-                            values[mode] = true;
-                            list.push(mode);
-                        }
-                    }
-
-                    return list;
+                    return ['all'].concat(this.modeOptions);
                 },
 
                 getLevels: function () {
-                    if (!this.courses || !Array.isArray(this.courses)) {
-                        return ['all'];
-                    }
-
-                    var values = {};
-                    var list = ['all'];
-
-                    for (var i = 0; i < this.courses.length; i++) {
-                        var course = this.courses[i];
-                        if (!course) continue;
-
-                        var level = course.level || '';
-                        if (level && !values[level]) {
-                            values[level] = true;
-                            list.push(level);
-                        }
-                    }
-
-                    return list;
+                    return ['all'].concat(this.levelOptions);
                 },
 
                 filterCourses: function () {
-                    if (!this.courses || !Array.isArray(this.courses)) {
+                    if (!Array.isArray(this.courses)) {
                         return [];
                     }
 
-                    var term = '';
-                    try {
-                        term = (this.search || '').replace(/^\s+|\s+$/g, '').toLowerCase();
-                    } catch (e) {
-                        console.warn('Error processing search term:', e);
-                        term = '';
-                    }
+                    var term = toLowerSafe(this.search).trim();
+                    var selectedNorm = this.norm;
+                    var selectedMode = this.mode;
+                    var selectedLevel = this.level;
+                    var selectedCity = this.city;
 
                     var results = [];
 
                     for (var i = 0; i < this.courses.length; i++) {
                         var course = this.courses[i];
-                        if (!course) continue;
+                        if (!course) {
+                            continue;
+                        }
 
-                        var mode = course.mode || '';
-                        var level = course.level || '';
+                        var matchesNorm = selectedNorm === 'all'
+                            || (Array.isArray(course.norms) && course.norms.some(function (norm) { return equalsIgnoreCase(norm, selectedNorm); }));
+                        var matchesMode = selectedMode === 'all' || equalsIgnoreCase(course.mode, selectedMode);
+                        var matchesLevel = selectedLevel === 'all' || equalsIgnoreCase(course.level, selectedLevel);
+                        var matchesCity = selectedCity === 'all'
+                            || (Array.isArray(course.cities) && course.cities.some(function (city) { return equalsIgnoreCase(city, selectedCity); }));
+
                         var title = course.title || '';
                         var description = course.description || '';
+                        var matchesTerm = term === ''
+                            || toLowerSafe(title).indexOf(term) !== -1
+                            || toLowerSafe(description).indexOf(term) !== -1;
 
-                        var matchesFormat = this.format === 'all' || mode === this.format;
-                        var matchesLevel = this.level === 'all' || level === this.level;
-                        var matchesTerm = term === '' ||
-                                        title.toLowerCase().indexOf(term) !== -1 ||
-                                        description.toLowerCase().indexOf(term) !== -1;
-
-                        if (matchesFormat && matchesLevel && matchesTerm) {
+                        if (matchesNorm && matchesMode && matchesLevel && matchesCity && matchesTerm) {
                             results.push(course);
                         }
                     }
@@ -308,34 +405,35 @@
                     return results;
                 },
 
-                formatLabel: function (option) {
+                modeLabel: function (option) {
                     if (!option || option === 'all') {
-                        return this.formatAllLabel || 'Všechny formáty';
+                        return this.formatAllLabel;
                     }
-                    return option;
+                    return this.modeLabels[option] || option;
                 },
 
                 levelLabel: function (option) {
                     if (!option || option === 'all') {
-                        return this.levelAllLabel || 'Všechny úrovně';
+                        return this.levelAllLabel;
                     }
-                    return option;
+                    return this.levelLabels[option] || option;
                 },
 
                 formatResultCount: function (count) {
                     try {
                         var template = this.resultCountTemplate || '{0}';
-                        var countStr = String(count || 0);
-                        return template.replace('{0}', countStr);
-                    } catch (e) {
-                        console.warn('Error formatting result count:', e);
+                        return template.replace('{0}', String(count || 0));
+                    } catch (error) {
+                        console.warn('Error formatting result count:', error);
                         return String(count || 0);
                     }
                 },
 
                 resetFilters: function () {
-                    this.format = 'all';
+                    this.norm = 'all';
+                    this.mode = 'all';
                     this.level = 'all';
+                    this.city = 'all';
                     this.search = '';
                 }
             };

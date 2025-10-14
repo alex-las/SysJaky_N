@@ -36,6 +36,12 @@
   <data name="FiltersButton" xml:space="preserve">
     <value>Filters</value>
   </data>
+  <data name="FiltersNormAll" xml:space="preserve">
+    <value>All standards</value>
+  </data>
+  <data name="FiltersCityAll" xml:space="preserve">
+    <value>All cities</value>
+  </data>
   <data name="SearchPlaceholder" xml:space="preserve">
     <value>What do you want to learn? Enter a course, tool, or skill</value>
   </data>
@@ -143,6 +149,9 @@
   </data>
   <data name="Details" xml:space="preserve">
     <value>Details</value>
+  </data>
+  <data name="WishlistButtonLabel" xml:space="preserve">
+    <value>Watch this date</value>
   </data>
   <data name="Enroll" xml:space="preserve">
     <value>Enroll</value>

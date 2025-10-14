@@ -244,13 +244,13 @@
     <value>Easy cancellation up to 5 business days</value>
   </data>
   <data name="EnrollButton" xml:space="preserve">
-    <value>Enroll</value>
+    <value>Add to cart</value>
   </data>
   <data name="ContactSubject" xml:space="preserve">
     <value>Corporate inquiry: {0}</value>
   </data>
   <data name="TeamButton" xml:space="preserve">
-    <value>For teams</value>
+    <value>Contact the team</value>
   </data>
   <data name="WishlistButton" xml:space="preserve">
     <value>Add to wishlist</value>

@@ -85,12 +85,12 @@
     <value>Compare</value>
   </data>
   <data name="Details" xml:space="preserve">
-    <value>Details</value>
+    <value>View dates</value>
   </data>
   <data name="Enroll" xml:space="preserve">
-    <value>Enroll</value>
+    <value>Add to cart</value>
   </data>
   <data name="EnrollAriaLabel" xml:space="preserve">
-    <value>Enroll to {0}</value>
+    <value>Add {0} to cart</value>
   </data>
 </root>
