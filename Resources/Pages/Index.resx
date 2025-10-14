@@ -143,6 +143,45 @@
   <data name="TrustedClientsLogosLabel" xml:space="preserve">
     <value>Loga významných klientů</value>
   </data>
+  <data name="TrustedClientsHeading" xml:space="preserve">
+    <value>Důvěřují nám napříč obory</value>
+  </data>
+  <data name="TrustedClientsSubtitle" xml:space="preserve">
+    <value>Naši experti dlouhodobě pomáhají výrobním podnikům, technologiím i veřejným institucím dosahovat lepších výsledků.</value>
+  </data>
+  <data name="TrustedClientsMetricParticipants" xml:space="preserve">
+    <value>1 200+ vyškolených účastníků</value>
+  </data>
+  <data name="TrustedClientsMetricRating" xml:space="preserve">
+    <value>4,9/5 průměrné hodnocení</value>
+  </data>
+  <data name="TrustedClientsMetricAudits" xml:space="preserve">
+    <value>300+ úspěšně vedených auditů</value>
+  </data>
+  <data name="TrustedClientsMetricAccreditations" xml:space="preserve">
+    <value>Akreditace ČIA a další profesní uznání</value>
+  </data>
+  <data name="TrustedClientsLogosLabel" xml:space="preserve">
+    <value>Loga významných klientů</value>
+  </data>
+  <data name="TrustedClientsLogoSkoda" xml:space="preserve">
+    <value>Škoda Auto</value>
+  </data>
+  <data name="TrustedClientsLogoCez" xml:space="preserve">
+    <value>ČEZ</value>
+  </data>
+  <data name="TrustedClientsLogoContinental" xml:space="preserve">
+    <value>Continental Automotive</value>
+  </data>
+  <data name="TrustedClientsLogoPilsner" xml:space="preserve">
+    <value>Pilsner Urquell</value>
+  </data>
+  <data name="TrustedClientsLogoHoneywell" xml:space="preserve">
+    <value>Honeywell</value>
+  </data>
+  <data name="TrustedClientsReferenceNote" xml:space="preserve">
+    <value>Reference zašleme na vyžádání jako součást nabídkového řízení.</value>
+  </data>
   <data name="HeroSearchLabel" xml:space="preserve">
     <value>Vyhledávání</value>
   </data>

@@ -143,6 +143,24 @@
   <data name="TrustedClientsLogosLabel" xml:space="preserve">
     <value>Logotypes of key clients</value>
   </data>
+  <data name="TrustedClientsLogoSkoda" xml:space="preserve">
+    <value>Škoda Auto</value>
+  </data>
+  <data name="TrustedClientsLogoCez" xml:space="preserve">
+    <value>ČEZ</value>
+  </data>
+  <data name="TrustedClientsLogoContinental" xml:space="preserve">
+    <value>Continental Automotive</value>
+  </data>
+  <data name="TrustedClientsLogoPilsner" xml:space="preserve">
+    <value>Pilsner Urquell</value>
+  </data>
+  <data name="TrustedClientsLogoHoneywell" xml:space="preserve">
+    <value>Honeywell</value>
+  </data>
+  <data name="TrustedClientsReferenceNote" xml:space="preserve">
+    <value>References available upon request as part of the procurement process.</value>
+  </data>
   <data name="HeroSearchLabel" xml:space="preserve">
     <value>Search</value>
   </data>
