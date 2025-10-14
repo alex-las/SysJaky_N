@@ -23,7 +23,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 return "";
             }
 
-            return originalElementValue.call(this, element);
+            if (this && this.settings) {
+                return originalElementValue.call(this, element);
+            }
+
+            const $element = window.jQuery ? window.jQuery(element) : null;
+            if ($element && typeof $element.val === "function") {
+                return $element.val();
+            }
+
+            return typeof element.value === "string" ? element.value : "";
         };
 
         prototype.elementValuePatched = true;
