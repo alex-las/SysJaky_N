@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="CompanySizeMicro" xml:space="preserve">
+    <value>Do 10 zaměstnanců</value>
+  </data>
+  <data name="CompanySizeSmall" xml:space="preserve">
+    <value>11–50 zaměstnanců</value>
+  </data>
+  <data name="CompanySizeMedium" xml:space="preserve">
+    <value>51–250 zaměstnanců</value>
+  </data>
+  <data name="CompanySizeLarge" xml:space="preserve">
+    <value>251–1000 zaměstnanců</value>
+  </data>
+  <data name="CompanySizeEnterprise" xml:space="preserve">
+    <value>Více než 1000 zaměstnanců</value>
+  </data>
+  <data name="SuccessMessage" xml:space="preserve">
+    <value>Děkujeme za důvěru. Váš požadavek jsme obdrželi a nejpozději do jednoho pracovního dne se vám ozveme s dalším postupem.</value>
+  </data>
+</root>

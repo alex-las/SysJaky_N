@@ -98,6 +98,24 @@
   <data name="HeroUSP3Description" xml:space="preserve">
     <value>We tailor training, consulting, and internal audits to your processes and bring the right experts to your location.</value>
   </data>
+  <data name="HeroCorporateCardTitle" xml:space="preserve">
+    <value>Corporate audit &amp; advisory</value>
+  </data>
+  <data name="HeroCorporateCardDescription" xml:space="preserve">
+    <value>Start with a short qualification questionnaire to receive a tailored proposal from a senior auditor.</value>
+  </data>
+  <data name="HeroCorporateCardCta" xml:space="preserve">
+    <value>Launch quick qualification</value>
+  </data>
+  <data name="HeroCoursesCardTitle" xml:space="preserve">
+    <value>Courses &amp; trainings</value>
+  </data>
+  <data name="HeroCoursesCardDescription" xml:space="preserve">
+    <value>Browse the catalogue with powerful filters, wishlist and date alerts.</value>
+  </data>
+  <data name="HeroCoursesCardCta" xml:space="preserve">
+    <value>Open the course catalogue</value>
+  </data>
   <data name="HeroPrimaryCTA" xml:space="preserve">
     <value>Browse ISO course offering</value>
   </data>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Title" xml:space="preserve">
+    <value>Quick corporate audit consultation</value>
+  </data>
+  <data name="Badge" xml:space="preserve">
+    <value>Corporate audit &amp; advisory</value>
+  </data>
+  <data name="Heading" xml:space="preserve">
+    <value>Let us understand your needs in just a few minutes</value>
+  </data>
+  <data name="Intro" xml:space="preserve">
+    <value>A couple of answers is all we need to tailor the right solution for your organisation.</value>
+  </data>
+  <data name="ThankYouHeading" xml:space="preserve">
+    <value>Thank you for your submission</value>
+  </data>
+  <data name="CompanySizeLabel" xml:space="preserve">
+    <value>Company size</value>
+  </data>
+  <data name="CompanySizePlaceholder" xml:space="preserve">
+    <value>Select company size</value>
+  </data>
+  <data name="StandardLabel" xml:space="preserve">
+    <value>Main standard or focus area</value>
+  </data>
+  <data name="StandardPlaceholder" xml:space="preserve">
+    <value>Select a standard</value>
+  </data>
+  <data name="DesiredDateLabel" xml:space="preserve">
+    <value>Preferred timeline</value>
+  </data>
+  <data name="LocationLabel" xml:space="preserve">
+    <value>Location</value>
+  </data>
+  <data name="LocationPlaceholder" xml:space="preserve">
+    <value>e.g. Prague or Moravian-Silesian Region</value>
+  </data>
+  <data name="SlaHeading" xml:space="preserve">
+    <value>We get back within 1 business day</value>
+  </data>
+  <data name="SlaDescription" xml:space="preserve">
+    <value>A senior consultant will contact you with the next steps based on the information you provide.</value>
+  </data>
+  <data name="SubmitButton" xml:space="preserve">
+    <value>Send request</value>
+  </data>
+  <data name="AdvancedFlowLink" xml:space="preserve">
+    <value>Continue to detailed configuration</value>
+  </data>
+  <data name="SuccessMessage" xml:space="preserve">
+    <value>Thank you for your trust. We have received your request and will reach out within one business day with the proposed approach.</value>
+  </data>
+  <data name="CompanySizeMicro" xml:space="preserve">
+    <value>Up to 10 employees</value>
+  </data>
+  <data name="CompanySizeSmall" xml:space="preserve">
+    <value>11–50 employees</value>
+  </data>
+  <data name="CompanySizeMedium" xml:space="preserve">
+    <value>51–250 employees</value>
+  </data>
+  <data name="CompanySizeLarge" xml:space="preserve">
+    <value>251–1000 employees</value>
+  </data>
+  <data name="CompanySizeEnterprise" xml:space="preserve">
+    <value>More than 1000 employees</value>
+  </data>
+</root>

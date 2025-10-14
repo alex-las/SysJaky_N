@@ -1,0 +1,101 @@
+@page
+@using Microsoft.AspNetCore.Mvc.Localization
+@model SysJaky_N.Pages.CorporateInquiry.QualificationModel
+@inject IViewLocalizer Localizer
+@{
+    ViewData["Title"] = Localizer["Title"];
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-8 col-xl-7">
+        <header class="mb-5 text-center text-lg-start">
+            <span class="badge bg-primary-subtle text-primary px-3 py-2 mb-3">@Localizer["Badge"]</span>
+            <h1 class="fw-bold mb-3">@Localizer["Heading"]</h1>
+            <p class="lead text-muted mb-0">@Localizer["Intro"]</p>
+        </header>
+
+        @if (!string.IsNullOrWhiteSpace(Model.SuccessMessage))
+        {
+            <div class="alert alert-success shadow-sm" role="status">
+                <div class="d-flex flex-column gap-2">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-check-circle-fill fs-4 text-success" aria-hidden="true"></i>
+                        <h2 class="h5 mb-0">@Localizer["ThankYouHeading"]</h2>
+                    </div>
+                    <p class="mb-0">@Model.SuccessMessage</p>
+                </div>
+            </div>
+        }
+
+        <div class="card border-0 shadow-sm">
+            <div class="card-body p-4 p-lg-5">
+                <form method="post" novalidate>
+                    <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+
+                    <div class="row g-4">
+                        <div class="col-12">
+                            <label asp-for="Input.CompanySize" class="form-label fw-semibold">@Localizer["CompanySizeLabel"]</label>
+                            <select asp-for="Input.CompanySize" class="form-select form-select-lg">
+                                <option value="">@Localizer["CompanySizePlaceholder"]</option>
+                                @foreach (var option in Model.CompanySizeOptions)
+                                {
+                                    <option value="@option.Value">@option.Text</option>
+                                }
+                            </select>
+                            <span asp-validation-for="Input.CompanySize" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-12">
+                            <label asp-for="Input.Standard" class="form-label fw-semibold">@Localizer["StandardLabel"]</label>
+                            <select asp-for="Input.Standard" class="form-select form-select-lg">
+                                <option value="">@Localizer["StandardPlaceholder"]</option>
+                                @foreach (var option in Model.StandardOptions)
+                                {
+                                    <option value="@option.Value">@option.Text</option>
+                                }
+                            </select>
+                            <span asp-validation-for="Input.Standard" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                            <label asp-for="Input.DesiredDate" class="form-label fw-semibold">@Localizer["DesiredDateLabel"]</label>
+                            <input asp-for="Input.DesiredDate" class="form-control form-control-lg" />
+                            <span asp-validation-for="Input.DesiredDate" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                            <label asp-for="Input.Location" class="form-label fw-semibold">@Localizer["LocationLabel"]</label>
+                            <input asp-for="Input.Location" class="form-control form-control-lg" placeholder="@Localizer["LocationPlaceholder"]" />
+                            <span asp-validation-for="Input.Location" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-12">
+                            <div class="alert alert-info d-flex align-items-start gap-3" role="note">
+                                <i class="bi bi-info-circle-fill fs-4 text-primary" aria-hidden="true"></i>
+                                <div>
+                                    <h2 class="h6 fw-semibold mb-1">@Localizer["SlaHeading"]</h2>
+                                    <p class="mb-0">@Localizer["SlaDescription"]</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-grid d-md-flex gap-3 mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg px-4">
+                            <i class="bi bi-send-fill me-2" aria-hidden="true"></i>
+                            @Localizer["SubmitButton"]
+                        </button>
+                        <a asp-page="/CorporateInquiry" class="btn btn-outline-secondary btn-lg">
+                            <i class="bi bi-list-check me-2" aria-hidden="true"></i>
+                            @Localizer["AdvancedFlowLink"]
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

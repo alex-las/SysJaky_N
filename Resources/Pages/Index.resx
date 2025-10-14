@@ -98,6 +98,24 @@
   <data name="HeroUSP3Description" xml:space="preserve">
     <value>Školení, konzultace i interní audity přizpůsobíme vašim procesům a přivedeme experty přímo do vaší firmy.</value>
   </data>
+  <data name="HeroCorporateCardTitle" xml:space="preserve">
+    <value>Firemní audit &amp; poradenství</value>
+  </data>
+  <data name="HeroCorporateCardDescription" xml:space="preserve">
+    <value>Krátký kvalifikační dotazník vám otevře cestu k nabídce na míru a konzultaci se seniorním auditorem.</value>
+  </data>
+  <data name="HeroCorporateCardCta" xml:space="preserve">
+    <value>Spustit rychlou kvalifikaci</value>
+  </data>
+  <data name="HeroCoursesCardTitle" xml:space="preserve">
+    <value>Kurzy a školení</value>
+  </data>
+  <data name="HeroCoursesCardDescription" xml:space="preserve">
+    <value>Vyberte si z katalogu s chytrými filtry, wishlistem a hlídáním termínů.</value>
+  </data>
+  <data name="HeroCoursesCardCta" xml:space="preserve">
+    <value>Prohlédnout katalog kurzů</value>
+  </data>
   <data name="HeroPrimaryCTA" xml:space="preserve">
     <value>Nezávazně poptat audit/poradenství</value>
   </data>
