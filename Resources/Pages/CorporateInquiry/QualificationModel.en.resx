@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="CompanySizeMicro" xml:space="preserve">
+    <value>Up to 10 employees</value>
+  </data>
+  <data name="CompanySizeSmall" xml:space="preserve">
+    <value>11–50 employees</value>
+  </data>
+  <data name="CompanySizeMedium" xml:space="preserve">
+    <value>51–250 employees</value>
+  </data>
+  <data name="CompanySizeLarge" xml:space="preserve">
+    <value>251–1000 employees</value>
+  </data>
+  <data name="CompanySizeEnterprise" xml:space="preserve">
+    <value>More than 1000 employees</value>
+  </data>
+  <data name="SuccessMessage" xml:space="preserve">
+    <value>Thank you for your trust. We have received your request and will reach out within one business day with the proposed approach.</value>
+  </data>
+</root>

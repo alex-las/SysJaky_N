@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Title" xml:space="preserve">
+    <value>Rychlá konzultace pro firemní audit</value>
+  </data>
+  <data name="Badge" xml:space="preserve">
+    <value>Firemní audit a poradenství</value>
+  </data>
+  <data name="Heading" xml:space="preserve">
+    <value>Zjistíme, jak vám můžeme pomoci během několika minut</value>
+  </data>
+  <data name="Intro" xml:space="preserve">
+    <value>Stačí pár odpovědí, abychom pochopili vaši situaci a mohli připravit nabídku na míru.</value>
+  </data>
+  <data name="ThankYouHeading" xml:space="preserve">
+    <value>Děkujeme za vyplnění</value>
+  </data>
+  <data name="CompanySizeLabel" xml:space="preserve">
+    <value>Velikost vaší společnosti</value>
+  </data>
+  <data name="CompanySizePlaceholder" xml:space="preserve">
+    <value>Vyberte velikost firmy</value>
+  </data>
+  <data name="StandardLabel" xml:space="preserve">
+    <value>Hlavní norma nebo oblast</value>
+  </data>
+  <data name="StandardPlaceholder" xml:space="preserve">
+    <value>Vyberte normu</value>
+  </data>
+  <data name="DesiredDateLabel" xml:space="preserve">
+    <value>Požadovaný termín</value>
+  </data>
+  <data name="LocationLabel" xml:space="preserve">
+    <value>Lokalita</value>
+  </data>
+  <data name="LocationPlaceholder" xml:space="preserve">
+    <value>Např. Praha nebo Moravskoslezský kraj</value>
+  </data>
+  <data name="SlaHeading" xml:space="preserve">
+    <value>Ozveme se během 1 pracovního dne</value>
+  </data>
+  <data name="SlaDescription" xml:space="preserve">
+    <value>Na základě vyplněných údajů vás bude kontaktovat seniorní konzultant s konkrétním návrhem dalšího postupu.</value>
+  </data>
+  <data name="SubmitButton" xml:space="preserve">
+    <value>Odeslat poptávku</value>
+  </data>
+  <data name="AdvancedFlowLink" xml:space="preserve">
+    <value>Pokračovat na detailní konfiguraci</value>
+  </data>
+  <data name="SuccessMessage" xml:space="preserve">
+    <value>Děkujeme za důvěru. Váš požadavek jsme obdrželi a nejpozději do jednoho pracovního dne se vám ozveme s dalším postupem.</value>
+  </data>
+  <data name="CompanySizeMicro" xml:space="preserve">
+    <value>Do 10 zaměstnanců</value>
+  </data>
+  <data name="CompanySizeSmall" xml:space="preserve">
+    <value>11–50 zaměstnanců</value>
+  </data>
+  <data name="CompanySizeMedium" xml:space="preserve">
+    <value>51–250 zaměstnanců</value>
+  </data>
+  <data name="CompanySizeLarge" xml:space="preserve">
+    <value>251–1000 zaměstnanců</value>
+  </data>
+  <data name="CompanySizeEnterprise" xml:space="preserve">
+    <value>Více než 1000 zaměstnanců</value>
+  </data>
+</root>
