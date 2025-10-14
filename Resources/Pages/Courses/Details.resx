@@ -244,13 +244,13 @@
     <value>Snadné storno do 5 pracovních dnů</value>
   </data>
   <data name="EnrollButton" xml:space="preserve">
-    <value>Přihlásit se</value>
+    <value>Přidat do košíku</value>
   </data>
   <data name="ContactSubject" xml:space="preserve">
     <value>Firemní poptávka: {0}</value>
   </data>
   <data name="TeamButton" xml:space="preserve">
-    <value>Pro tým</value>
+    <value>Kontaktovat tým</value>
   </data>
   <data name="WishlistButton" xml:space="preserve">
     <value>Přidat do wishlistu</value>

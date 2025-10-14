@@ -16,7 +16,7 @@
     <value>Tailored corporate training</value>
   </data>
   <data name="Intro" xml:space="preserve">
-    <value>We help organisations prepare corporate training aligned with the ISO standards you need. Fill in the inquiry and we will get back to you with a tailored quote.</value>
+    <value>We help organisations prepare corporate training aligned with the ISO standards you need. Share your needs and we'll respond within one business day — no spam, just clear recommendations.</value>
   </data>
   <data name="EnableJavaScriptWarning" xml:space="preserve">
     <value>JavaScript must be enabled to submit the inquiry.</value>
@@ -31,7 +31,7 @@
     <value>Continue</value>
   </data>
   <data name="Submit" xml:space="preserve">
-    <value>Send inquiry</value>
+    <value>Request services</value>
   </data>
   <data name="EstimatedPriceLabel" xml:space="preserve">
     <value>Estimated price</value>
@@ -119,6 +119,12 @@
   </data>
   <data name="PriceUnavailable" xml:space="preserve">
     <value>Enter details</value>
+  </data>
+  <data name="FormBenefitResponse" xml:space="preserve">
+    <value>Response within one business day</value>
+  </data>
+  <data name="FormBenefitNoSpam" xml:space="preserve">
+    <value>No spam — just practical next steps</value>
   </data>
   <data name="ParticipantCountHint" xml:space="preserve">
     <value>Use the slider (value 50 stands for 50+ participants).</value>

@@ -101,16 +101,16 @@
     <value>Your email</value>
   </data>
   <data name="NewsletterButtonText" xml:space="preserve">
-    <value>Subscribe</value>
+    <value>Download the ISO 9001 checklist: 10 quick pre-audit checks</value>
   </data>
   <data name="NewsletterConsentText" xml:space="preserve">
-    <value>I agree with data processing</value>
+    <value>I agree to receive the checklist and follow-up tips. No spam.</value>
   </data>
   <data name="NewsletterHeading" xml:space="preserve">
-    <value>Stay in the loop</value>
+    <value>Free ISO 9001 checklist</value>
   </data>
   <data name="NewsletterDescription" xml:space="preserve">
-    <value>Receive updates about new trainings, special dates and practical ISO compliance tips.</value>
+    <value>Enter your email and we'll send you the ISO 9001 checklist with 10 quick checks before your audit.</value>
   </data>
   <data name="NewsletterSuccessMessage" xml:space="preserve">
     <value>Thank you! We've sent you a confirmation email.</value>

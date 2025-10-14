@@ -16,7 +16,7 @@
     <value>Kontakt</value>
   </data>
   <data name="Intro" xml:space="preserve">
-    <value>Hledáte školení pro celý tým? Napište nám témata, preferovanou formu (online/prezenčně) a termíny.</value>
+    <value>Hledáte školení pro celý tým? Napište nám témata, preferovanou formu a termíny. Odpovíme do jednoho pracovního dne.</value>
   </data>
   <data name="ContactDetailsRegionLabel" xml:space="preserve">
     <value>Kontaktní údaje a formulář</value>
@@ -28,9 +28,15 @@
     <value>Adresa kanceláře</value>
   </data>
   <data name="Submit" xml:space="preserve">
-    <value>Odeslat</value>
+    <value>Kontaktovat tým</value>
   </data>
   <data name="Success" xml:space="preserve">
     <value>Zpráva byla odeslána.</value>
+  </data>
+  <data name="FormBenefitResponse" xml:space="preserve">
+    <value>Odezva do jednoho pracovního dne</value>
+  </data>
+  <data name="FormBenefitNoSpam" xml:space="preserve">
+    <value>Žádný spam – jen konkrétní doporučení</value>
   </data>
 </root>

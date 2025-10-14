@@ -105,7 +105,7 @@
     <value>Krátký kvalifikační dotazník vám otevře cestu k nabídce na míru a konzultaci se seniorním auditorem.</value>
   </data>
   <data name="HeroCorporateCardCta" xml:space="preserve">
-    <value>Spustit rychlou kvalifikaci</value>
+    <value>Nezávazně poptat služby</value>
   </data>
   <data name="HeroCoursesCardTitle" xml:space="preserve">
     <value>Kurzy a školení</value>
@@ -114,13 +114,13 @@
     <value>Vyberte si z katalogu s chytrými filtry, wishlistem a hlídáním termínů.</value>
   </data>
   <data name="HeroCoursesCardCta" xml:space="preserve">
-    <value>Prohlédnout katalog kurzů</value>
+    <value>Zobrazit termíny</value>
   </data>
   <data name="HeroPrimaryCTA" xml:space="preserve">
-    <value>Nezávazně poptat audit/poradenství</value>
+    <value>Nezávazně poptat služby</value>
   </data>
   <data name="HeroSecondaryCTA" xml:space="preserve">
-    <value>Prohlédnout termíny kurzů</value>
+    <value>Kontaktovat tým</value>
   </data>
   <data name="TrustedClientsHeading" xml:space="preserve">
     <value>Důvěřují nám napříč obory</value>
@@ -219,25 +219,25 @@
     <value>Certifikační normy, se kterými vám pomůžeme</value>
   </data>
   <data name="IsoStandardsDescription" xml:space="preserve">
-    <value>Zajistíme analýzu, implementaci i školení týmu pro nejdůležitější normy ISO, HACCP a akreditační standardy.</value>
+    <value>Vyberte normu a společně naplánujeme kroky k úspěšné certifikaci – od úvodní analýzy přes školení až po audit.</value>
   </data>
   <data name="Iso9001Description" xml:space="preserve">
-    <value>Řízení kvality zaměřené na procesy, rizika a spokojenost zákazníků od první analýzy po úspěšný certifikační audit.</value>
+    <value>Stabilizujte procesy, zvyšte kvalitu a obhajte shodu při každém certifikačním auditu.</value>
   </data>
   <data name="Iso14001Description" xml:space="preserve">
-    <value>Systematické snižování ekologické stopy, plnění legislativních požadavků a zavedení environmentálních cílů.</value>
+    <value>Zaveďte udržitelný systém EMS a snižte provozní rizika.</value>
   </data>
   <data name="Iso17025Description" xml:space="preserve">
-    <value>Podpora pro zkušební a kalibrační laboratoře při zavádění dokumentace, metrologie a řízení kompetencí.</value>
+    <value>Zvyšte důvěryhodnost výsledků měření a obstojte při akreditačních kontrolách.</value>
   </data>
   <data name="HaccpDescription" xml:space="preserve">
-    <value>Bezpečnost potravin a řízení kritických bodů ve výrobě, gastronomii i logistice s důrazem na prevenci rizik.</value>
+    <value>Držte kritické body pod kontrolou a předejděte odstávkám ve výrobě i logistice.</value>
   </data>
   <data name="Iso45001Description" xml:space="preserve">
-    <value>Moderní systém BOZP pro prevenci pracovních úrazů, řízení rizik a zapojení zaměstnanců do bezpečnostní kultury.</value>
+    <value>Posilte kulturu BOZP, snižte úrazovost a splňte zákonné povinnosti.</value>
   </data>
   <data name="Iso27001Description" xml:space="preserve">
-    <value>Ochrana informací, kybernetická bezpečnost a compliance s požadavky GDPR i zákaznických auditů.</value>
+    <value>Chraňte klíčová data, splňte požadavky zákazníků a připravte se na audit ISMS.</value>
   </data>
   <data name="ProcessHeading" xml:space="preserve">
     <value>Jak probíhá spolupráce na cestě k certifikaci</value>
@@ -269,6 +269,9 @@
   <data name="CtaDescription" xml:space="preserve">
     <value>Ozvěte se nám a společně navrhneme optimální kombinaci školení, konzultací i interních auditů pro váš tým.</value>
   </data>
+  <data name="CtaButton" xml:space="preserve">
+    <value>Nezávazně poptat služby</value>
+  </data>
   <data name="CoursesHeading" xml:space="preserve">
     <value>Aktuální školení a kurzy</value>
   </data>
@@ -295,10 +298,10 @@
   </data>
   
   <data name="CourseDetailsCTA" xml:space="preserve">
-    <value>Detail kurzu</value>
+    <value>Zobrazit termíny</value>
   </data>
   <data name="CourseEnrollCTA" xml:space="preserve">
-    <value>Přihlásit se</value>
+    <value>Zobrazit termíny</value>
   </data>
   <data name="WhyChooseDescription" xml:space="preserve">
     <value>20 let praxe v oboru, tým externích auditorů a know-how z desítek odvětví.</value>
@@ -331,13 +334,13 @@
     <value>Poznejte náš příběh</value>
   </data>
   <data name="ContactCtaHeading" xml:space="preserve">
-    <value>Nezávazná konzultace</value>
+    <value>Potřebujete rychlou konzultaci?</value>
   </data>
   <data name="ContactHeading" xml:space="preserve">
-    <value>Kontaktujte nás</value>
+    <value>Kontaktovat tým</value>
   </data>
   <data name="ContactDescription" xml:space="preserve">
-    <value>Rádi zodpovíme vaše dotazy a poradíme s výběrem vhodného školení.</value>
+    <value>Ozvěte se nám, odpovíme do jednoho pracovního dne. Žádný spam, jen konkrétní doporučení k dalšímu kroku.</value>
   </data>
   <data name="ContactPhoneLabel" xml:space="preserve">
     <value>Telefon</value>
@@ -421,10 +424,10 @@
     <value>Můžete porovnat max. 3 kurzy</value>
   </data>
   <data name="Details" xml:space="preserve">
-    <value>Detail</value>
+    <value>Zobrazit termíny</value>
   </data>
   <data name="Enroll" xml:space="preserve">
-    <value>Přihlásit se</value>
+    <value>Přidat do košíku</value>
   </data>
   <data name="NoCoursesFound" xml:space="preserve">
     <value>Žádné kurzy nenalezeny</value>
@@ -466,7 +469,7 @@
     <value>Zdarma</value>
   </data>
   <data name="UpcomingTrainingsCta" xml:space="preserve">
-    <value>Detail kurzu</value>
+    <value>Zobrazit termíny</value>
   </data>
   <data name="UpcomingTrainingsMode_SelfPaced" xml:space="preserve">
     <value>E-learning (vlastním tempem)</value>

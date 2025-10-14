@@ -85,12 +85,12 @@
     <value>Porovnat</value>
   </data>
   <data name="Details" xml:space="preserve">
-    <value>Detail</value>
+    <value>Zobrazit termíny</value>
   </data>
   <data name="Enroll" xml:space="preserve">
-    <value>Přihlásit se</value>
+    <value>Přidat do košíku</value>
   </data>
   <data name="EnrollAriaLabel" xml:space="preserve">
-    <value>Přihlásit se na {0}</value>
+    <value>Přidat do košíku – {0}</value>
   </data>
 </root>
