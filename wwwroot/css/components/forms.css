@@ -116,8 +116,9 @@ textarea.form-control {
 .login-dropdown-menu {
   margin-top: 0.75rem;
   padding: 0;
-  width: min(52rem, calc(100vw - 2rem));
-  min-width: min(36rem, calc(100vw - 2rem));
+  --bs-dropdown-min-width: min(36rem, calc(100vw - 2rem));
+  width: min(52rem, calc(100vw - 2rem)) !important;
+  min-width: var(--bs-dropdown-min-width) !important;
   border: none;
   background: transparent;
   transform-origin: top right;
@@ -127,8 +128,9 @@ textarea.form-control {
 
 @media (max-width: 1199.98px) {
   .login-dropdown-menu {
-    width: min(48rem, calc(100vw - 1.5rem));
-    min-width: min(32rem, calc(100vw - 1.5rem));
+    --bs-dropdown-min-width: min(32rem, calc(100vw - 1.5rem));
+    width: min(48rem, calc(100vw - 1.5rem)) !important;
+    min-width: var(--bs-dropdown-min-width) !important;
   }
 }
 
