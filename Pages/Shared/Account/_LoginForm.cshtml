@@ -8,15 +8,24 @@
     var rememberId = Model.RememberMeInputId ?? $"{formId}-remember";
     var altchaId = Model.AltchaId ?? $"{formId}-altcha";
     var headingTag = string.IsNullOrWhiteSpace(Model.HeadingTagName) ? "h1" : Model.HeadingTagName;
+    var headingContent = !string.IsNullOrWhiteSpace(Model.HeadingText)
+        ? Model.HeadingText
+        : (!string.IsNullOrWhiteSpace(Model.HeadingLocalizationKey)
+            ? Localizer[Model.HeadingLocalizationKey].Value
+            : null);
+    var introContent = !string.IsNullOrWhiteSpace(Model.IntroText)
+        ? Model.IntroText
+        : (!string.IsNullOrWhiteSpace(Model.IntroLocalizationKey)
+            ? Localizer[Model.IntroLocalizationKey].Value
+            : null);
     var workerUrl = Model.UseAbsoluteWorkerUrl
         ? $"{Context.Request.Scheme}://{Context.Request.Host}{Url.Content(Model.AltchaWorkerUrl)}{(string.IsNullOrEmpty(Model.AltchaWorkerVersionSuffix) ? string.Empty : Model.AltchaWorkerVersionSuffix)}"
         : Url.Content(Model.AltchaWorkerUrl);
     var method = string.IsNullOrWhiteSpace(Model.Method) ? "post" : Model.Method;
 }
 
-@if (!string.IsNullOrWhiteSpace(Model.HeadingLocalizationKey))
+@if (!string.IsNullOrWhiteSpace(headingContent))
 {
-    var headingContent = Localizer[Model.HeadingLocalizationKey];
     if (headingTag.Equals("h1", StringComparison.OrdinalIgnoreCase))
     {
         <h1 id="@Model.HeadingId">@headingContent</h1>
@@ -35,13 +44,19 @@
     }
 }
 
+@if (!string.IsNullOrWhiteSpace(introContent))
+{
+    <p class="text-muted mb-4">@introContent</p>
+}
+
 <form method="@method"
       id="@formId"
       class="@Model.FormCssClass"
       asp-page="@(string.IsNullOrEmpty(Model.AspPage) ? null : Model.AspPage)"
       asp-page-handler="@(string.IsNullOrEmpty(Model.AspPageHandler) ? null : Model.AspPageHandler)"
       action="@(string.IsNullOrEmpty(Model.Action) ? null : Model.Action)"
-      asp-antiforgery="@Model.IncludeAntiforgery">
+      asp-antiforgery="@Model.IncludeAntiforgery"
+      aria-labelledby="@Model.FormAriaLabelledById">
     <div asp-validation-summary="All" class="@Model.ValidationSummaryCssClass"></div>
 
     <div class="mb-3">

@@ -15,4 +15,10 @@
   <data name="RegisterTitle" xml:space="preserve">
     <value>Register</value>
   </data>
+  <data name="RegisterIntro" xml:space="preserve">
+    <value>Create an account to manage your courses, orders and company training in one place.</value>
+  </data>
+  <data name="RegisterReferralHelp" xml:space="preserve">
+    <value>Got a company referral code? Enter it to link your account with your organisation.</value>
+  </data>
 </root>

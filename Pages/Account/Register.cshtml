@@ -1,15 +1,42 @@
 @page
 @model SysJaky_N.Pages.Account.RegisterModel
 @inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
-@{
+
+@{ 
     ViewData["Title"] = Localizer["RegisterTitle"];
+    var registerTitle = Localizer["RegisterTitle"].Value;
+    var registerFormOptions = new RegisterFormOptions
+    {
+        Input = Model.Input,
+        FormId = "account-register-form",
+        FormCssClass = "card card-body p-4 auth-form",
+        HeadingText = registerTitle,
+        HeadingTagName = "h1",
+        HeadingId = "account-register-heading",
+        IntroText = Localizer["RegisterIntro"].Value,
+        FormAriaLabelledById = "account-register-heading",
+        ValidationSummaryCssClass = "text-danger",
+        EmailInputId = "account-register-email",
+        PasswordInputId = "account-register-password",
+        ConfirmPasswordInputId = "account-register-confirm",
+        ReferralCodeInputId = "account-register-referral",
+        AltchaId = "account-register-altcha",
+        AltchaChallengeUrl = "~/altcha/challenge",
+        AltchaWorkerVersionSuffix = string.Empty,
+        AltchaWorkers = "1",
+        AltchaMaxNumber = "500000",
+        IncludeConfirmPassword = true,
+        IncludeReferralCode = true,
+        EnableRefetchOnExpire = true,
+        ReferralCodeHelpText = Localizer["RegisterReferralHelp"].Value
+    };
 }
 
 <div class="auth-form-container" data-page="account-register">
     <div class="card card-body p-4 auth-form">
         <div class="text-center mb-4">
             <h1>@Localizer["RegisterTitle"]</h1>
-            <p class="mb-0">Vytvoøte si úèet a získejte pøístup k personalizovaným doporuèením a historii kurzù.</p>
+            <p class="mb-0">VytvoÃ¸te si ÃºÃ¨et a zÃ­skejte pÃ¸Ã­stup k personalizovanÃ½m doporuÃ¨enÃ­m a historii kurzÃ¹.</p>
         </div>
 
         <form id="account-register-form" method="post">
@@ -31,7 +58,7 @@
                        type="password" 
                        class="form-control" 
                        autocomplete="new-password" 
-                       placeholder="Silné heslo" 
+                       placeholder="SilnÃ© heslo" 
                        aria-required="true" />
                 <span asp-validation-for="Input.Password" class="text-danger"></span>
             </div>
@@ -51,7 +78,7 @@
                 <label asp-for="Input.ReferralCode" class="form-label">@Localizer["ReferralCodeLabel"]</label>
                 <input asp-for="Input.ReferralCode" 
                        class="form-control" 
-                       placeholder="Volitelné - kód doporuèení" />
+                       placeholder="VolitelnÃ© - kÃ³d doporuÃ¨enÃ­" />
                 <span asp-validation-for="Input.ReferralCode" class="text-danger"></span>
             </div>
 
@@ -64,13 +91,13 @@
                     workers="1"
                     maxnumber="500000"
                     strings='@System.Text.Json.JsonSerializer.Serialize(new {
-                        error = "Ovìøení se nezdaøilo",
-                        expired = "Ovìøení vypršelo. Zkuste to znovu.",
+                        error = "OvÃ¬Ã¸enÃ­ se nezdaÃ¸ilo",
+                        expired = "OvÃ¬Ã¸enÃ­ vyprÅ¡elo. Zkuste to znovu.",
                         footer = "Ochrana proti spamu",
-                        label = "Jsem èlovìk",
-                        verified = "Ovìøeno",
-                        verifying = "Ovìøuji...",
-                        waitAlert = "Ovìøování..."
+                        label = "Jsem Ã¨lovÃ¬k",
+                        verified = "OvÃ¬Ã¸eno",
+                        verifying = "OvÃ¬Ã¸uji...",
+                        waitAlert = "OvÃ¬Ã¸ovÃ¡nÃ­..."
                     })'>
                 </altcha-widget>
             </div>
