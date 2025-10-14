@@ -104,6 +104,27 @@
   <data name="HeroSecondaryCTA" xml:space="preserve">
     <value>Request a tailored corporate solution</value>
   </data>
+  <data name="TrustedClientsHeading" xml:space="preserve">
+    <value>Trusted across industries</value>
+  </data>
+  <data name="TrustedClientsSubtitle" xml:space="preserve">
+    <value>Our experts empower manufacturing, technology and public organizations to achieve measurable improvements.</value>
+  </data>
+  <data name="TrustedClientsMetricParticipants" xml:space="preserve">
+    <value>1,200+ trained participants</value>
+  </data>
+  <data name="TrustedClientsMetricRating" xml:space="preserve">
+    <value>4.9/5 average course rating</value>
+  </data>
+  <data name="TrustedClientsMetricAudits" xml:space="preserve">
+    <value>300+ successful audits delivered</value>
+  </data>
+  <data name="TrustedClientsMetricAccreditations" xml:space="preserve">
+    <value>Accreditations from CIA and leading bodies</value>
+  </data>
+  <data name="TrustedClientsLogosLabel" xml:space="preserve">
+    <value>Logotypes of key clients</value>
+  </data>
   <data name="HeroSearchLabel" xml:space="preserve">
     <value>Search</value>
   </data>
