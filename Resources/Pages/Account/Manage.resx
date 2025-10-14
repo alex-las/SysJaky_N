@@ -123,4 +123,10 @@
   <data name="OrderStatusRefunded" xml:space="preserve">
     <value>Vráceno</value>
   </data>
+  <data name="Subtitle" xml:space="preserve">
+    <value>Spravujte osobní údaje, objednávky a přihlášky na jednom místě.</value>
+  </data>
+  <data name="ProfileDescription" xml:space="preserve">
+    <value>Aktualizujte kontaktní údaje i firemní kód pro bezproblémové fakturování.</value>
+  </data>
 </root>

@@ -9,50 +9,58 @@
 }
 
 <div class="account-page" data-page="account-manage">
-    <h1 class="mb-4">@Localizer["Title"]</h1>
+    <div class="text-center mb-5">
+        <h1 class="mb-3">@Localizer["Title"]</h1>
+        <p class="lead text-muted mb-0">@Localizer["Subtitle"]</p>
+    </div>
 
     @if (!string.IsNullOrEmpty(Model.StatusMessage))
     {
-        <div class="alert alert-info">@Model.StatusMessage</div>
+        <div class="alert alert-info shadow-sm mb-5">@Model.StatusMessage</div>
     }
 
-    <div class="row g-4 mb-4">
+    <div class="row g-4 mb-5">
         <div class="col-lg-6">
             <section class="card card-body h-100">
                 <h2 class="h5 mb-3">@Localizer["ProfileHeading"]</h2>
-                <form method="post">
+                <p class="text-muted mb-4">@Localizer["ProfileDescription"]</p>
+                <form method="post" class="d-flex flex-column gap-3">
                     <div asp-validation-summary="All" class="text-danger"></div>
-                    <div class="mb-3">
+                    <div class="mb-0">
                         <label asp-for="Input.Email" class="form-label">@Localizer["EmailLabel"]</label>
                         <input asp-for="Input.Email" class="form-control" autocomplete="email" />
                         <span asp-validation-for="Input.Email" class="text-danger"></span>
                     </div>
-                    <div class="mb-3">
+                    <div class="mb-0">
                         <label asp-for="Input.PhoneNumber" class="form-label">@Localizer["PhoneLabel"]</label>
                         <input asp-for="Input.PhoneNumber" class="form-control" autocomplete="tel" />
                         <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
                     </div>
-                    <div class="mb-3">
+                    <div class="mb-0">
                         <label asp-for="Input.ReferenceCode" class="form-label">@Localizer["ReferenceCodeLabel"]</label>
                         <input asp-for="Input.ReferenceCode" class="form-control" />
                         <span asp-validation-for="Input.ReferenceCode" class="text-danger"></span>
                     </div>
-                    <button type="submit" class="btn btn-primary">@Localizer["SaveButton"]</button>
+                    <div class="d-flex justify-content-start">
+                        <button type="submit" class="btn btn-primary">@Localizer["SaveButton"]</button>
+                    </div>
                 </form>
             </section>
         </div>
         <div class="col-lg-6">
             <section class="card card-body h-100">
                 <h2 class="h5 mb-3">@Localizer["RedeemHeading"]</h2>
-                <p class="text-muted">@Localizer["RedeemDescription"]</p>
-                <form method="post" asp-page-handler="RedeemToken" class="mt-3">
+                <p class="text-muted mb-4">@Localizer["RedeemDescription"]</p>
+                <form method="post" asp-page-handler="RedeemToken" class="d-flex flex-column gap-3">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                    <div class="mb-3">
+                    <div class="mb-0">
                         <label asp-for="RedeemTokenInput.Token" class="form-label">@Localizer["RedeemTokenLabel"]</label>
                         <input asp-for="RedeemTokenInput.Token" class="form-control form-control-warning" />
                         <span asp-validation-for="RedeemTokenInput.Token" class="text-danger"></span>
                     </div>
-                    <button type="submit" class="btn btn-outline-primary">@Localizer["RedeemButton"]</button>
+                    <div class="d-flex justify-content-start">
+                        <button type="submit" class="btn btn-outline-primary">@Localizer["RedeemButton"]</button>
+                    </div>
                 </form>
                 @if (Model.Company != null)
                 {
@@ -107,7 +115,7 @@
 
     <section id="enrollments" class="card card-body mb-4">
         <h2 class="h5 mb-3">@Localizer["EnrollmentsHeading"]</h2>
-        <p>
+        <p class="mb-4">
             <strong>@Localizer["CalendarFeedLabel"]</strong>
             <a href="@Model.CalendarFeedUrl">@Model.CalendarFeedUrl</a>
         </p>
@@ -158,10 +166,10 @@
 
         @if (Model.WishlistItems.Any())
         {
-            <ul class="list-unstyled mb-0">
+            <ul class="list-unstyled mb-0 d-grid gap-2">
                 @foreach (var item in Model.WishlistItems)
                 {
-                    <li>@item.Course?.Title</li>
+                    <li class="py-2 px-3 rounded bg-light text-start">@item.Course?.Title</li>
                 }
             </ul>
         }
@@ -197,7 +205,6 @@
         </section>
     }
 </div>
-
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }

@@ -15,4 +15,40 @@
   <data name="RegisterTitle" xml:space="preserve">
     <value>Registrace</value>
   </data>
+  <data name="RegisterLead" xml:space="preserve">
+    <value>Vytvořte si účet a získejte přístup k personalizovaným doporučením a historii kurzů.</value>
+  </data>
+  <data name="EmailLabel" xml:space="preserve">
+    <value>E-mail</value>
+  </data>
+  <data name="EmailPlaceholder" xml:space="preserve">
+    <value>vas.email@example.com</value>
+  </data>
+  <data name="PasswordLabel" xml:space="preserve">
+    <value>Heslo</value>
+  </data>
+  <data name="PasswordPlaceholder" xml:space="preserve">
+    <value>Silné heslo</value>
+  </data>
+  <data name="ConfirmPasswordLabel" xml:space="preserve">
+    <value>Potvrzení hesla</value>
+  </data>
+  <data name="ConfirmPasswordPlaceholder" xml:space="preserve">
+    <value>Zadejte heslo znovu</value>
+  </data>
+  <data name="ReferralCodeLabel" xml:space="preserve">
+    <value>Doporučující kód</value>
+  </data>
+  <data name="ReferralCodePlaceholder" xml:space="preserve">
+    <value>Volitelné – kód doporučení</value>
+  </data>
+  <data name="RegisterButton" xml:space="preserve">
+    <value>Vytvořit účet</value>
+  </data>
+  <data name="AlreadyHaveAccount" xml:space="preserve">
+    <value>Máte už účet?</value>
+  </data>
+  <data name="LoginLink" xml:space="preserve">
+    <value>Přihlaste se</value>
+  </data>
 </root>

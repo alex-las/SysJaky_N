@@ -9,53 +9,53 @@
     <div class="card card-body p-4 auth-form">
         <div class="text-center mb-4">
             <h1>@Localizer["RegisterTitle"]</h1>
-            <p class="mb-0">Vytvoøte si úèet a získejte pøístup k personalizovaným doporuèením a historii kurzù.</p>
+            <p class="lead mb-0">@Localizer["RegisterLead"]</p>
         </div>
 
-        <form id="account-register-form" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger mb-3" role="alert"></div>
+        <form id="account-register-form" method="post" class="d-flex flex-column gap-3">
+            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
 
-            <div class="mb-3">
+            <div class="mb-0">
                 <label asp-for="Input.Email" class="form-label">@Localizer["EmailLabel"]</label>
-                <input asp-for="Input.Email" 
-                       class="form-control" 
-                       autocomplete="username" 
-                       placeholder="vas.email@example.com" 
+                <input asp-for="Input.Email"
+                       class="form-control"
+                       autocomplete="username"
+                       placeholder="@Localizer["EmailPlaceholder"]"
                        aria-required="true" />
                 <span asp-validation-for="Input.Email" class="text-danger"></span>
             </div>
 
-            <div class="mb-3">
+            <div class="mb-0">
                 <label asp-for="Input.Password" class="form-label">@Localizer["PasswordLabel"]</label>
-                <input asp-for="Input.Password" 
-                       type="password" 
-                       class="form-control" 
-                       autocomplete="new-password" 
-                       placeholder="Silné heslo" 
+                <input asp-for="Input.Password"
+                       type="password"
+                       class="form-control"
+                       autocomplete="new-password"
+                       placeholder="@Localizer["PasswordPlaceholder"]"
                        aria-required="true" />
                 <span asp-validation-for="Input.Password" class="text-danger"></span>
             </div>
 
-            <div class="mb-3">
+            <div class="mb-0">
                 <label asp-for="Input.ConfirmPassword" class="form-label">@Localizer["ConfirmPasswordLabel"]</label>
-                <input asp-for="Input.ConfirmPassword" 
-                       type="password" 
-                       class="form-control" 
-                       autocomplete="new-password" 
-                       placeholder="Zadejte heslo znovu" 
+                <input asp-for="Input.ConfirmPassword"
+                       type="password"
+                       class="form-control"
+                       autocomplete="new-password"
+                       placeholder="@Localizer["ConfirmPasswordPlaceholder"]"
                        aria-required="true" />
                 <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
             </div>
 
-            <div class="mb-3">
+            <div class="mb-0">
                 <label asp-for="Input.ReferralCode" class="form-label">@Localizer["ReferralCodeLabel"]</label>
-                <input asp-for="Input.ReferralCode" 
-                       class="form-control" 
-                       placeholder="Volitelné - kód doporuèení" />
+                <input asp-for="Input.ReferralCode"
+                       class="form-control"
+                       placeholder="@Localizer["ReferralCodePlaceholder"]" />
                 <span asp-validation-for="Input.ReferralCode" class="text-danger"></span>
             </div>
 
-            <div class="mb-3">
+            <div>
                 <altcha-widget
                     id="account-register-altcha"
                     challengeurl="@Url.Page("/Altcha/Challenge")"
@@ -64,25 +64,25 @@
                     workers="1"
                     maxnumber="500000"
                     strings='@System.Text.Json.JsonSerializer.Serialize(new {
-                        error = "Ovìøení se nezdaøilo",
-                        expired = "Ovìøení vypršelo. Zkuste to znovu.",
+                        error = "OvÄ›Å™enÃ­ se nezdaÅ™ilo",
+                        expired = "OvÄ›Å™enÃ­ vyprÅ¡elo. Zkuste to znovu.",
                         footer = "Ochrana proti spamu",
-                        label = "Jsem èlovìk",
-                        verified = "Ovìøeno",
-                        verifying = "Ovìøuji...",
-                        waitAlert = "Ovìøování..."
+                        label = "Jsem ÄlovÄ›k",
+                        verified = "OvÄ›Å™eno",
+                        verifying = "OvÄ›Å™uji...",
+                        waitAlert = "OvÄ›Å™ovÃ¡nÃ­..."
                     })'>
                 </altcha-widget>
             </div>
 
-            <div class="d-grid mb-3">
+            <div class="d-grid">
                 <button type="submit" class="btn btn-primary">@Localizer["RegisterButton"]</button>
             </div>
         </form>
 
         <div class="text-center mt-3">
             <p class="mb-0">
-                @Localizer["AlreadyHaveAccount"] 
+                @Localizer["AlreadyHaveAccount"]
                 <a asp-page="/Account/Login">@Localizer["LoginLink"]</a>
             </p>
         </div>
