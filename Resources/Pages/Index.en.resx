@@ -74,11 +74,29 @@
   <data name="HeroUSP1" xml:space="preserve">
     <value>Seasoned auditors and consultants with years of experience</value>
   </data>
+  <data name="HeroUSP1Title" xml:space="preserve">
+    <value>Expert auditors and consultants on your team</value>
+  </data>
+  <data name="HeroUSP1Description" xml:space="preserve">
+    <value>Lead auditors with 20+ years of practice from certification bodies and industry projects guide your implementation.</value>
+  </data>
   <data name="HeroUSP2" xml:space="preserve">
     <value>Practical know-how drawn from real-world audits</value>
   </data>
+  <data name="HeroUSP2Title" xml:space="preserve">
+    <value>Insights proven by successful certifications</value>
+  </data>
+  <data name="HeroUSP2Description" xml:space="preserve">
+    <value>Our recommendations build on dozens of passed certifications across manufacturing, laboratories, and services.</value>
+  </data>
   <data name="HeroUSP3" xml:space="preserve">
     <value>Internal workshops delivered directly at your company</value>
+  </data>
+  <data name="HeroUSP3Title" xml:space="preserve">
+    <value>Flexible cooperation with on-site workshops</value>
+  </data>
+  <data name="HeroUSP3Description" xml:space="preserve">
+    <value>We tailor training, consulting, and internal audits to your processes and bring the right experts to your location.</value>
   </data>
   <data name="HeroPrimaryCTA" xml:space="preserve">
     <value>Browse ISO course offering</value>
@@ -157,6 +175,60 @@
   </data>
   <data name="SpecializationsDescription" xml:space="preserve">
     <value>We deliver comprehensive consulting and training for the following standards.</value>
+  </data>
+  <data name="IsoStandardsHeading" xml:space="preserve">
+    <value>Certification standards we support end-to-end</value>
+  </data>
+  <data name="IsoStandardsDescription" xml:space="preserve">
+    <value>We cover assessment, implementation, and team training for the key ISO, HACCP, and accreditation standards.</value>
+  </data>
+  <data name="Iso9001Description" xml:space="preserve">
+    <value>Quality management focused on processes, risks, and customer satisfaction from the first analysis to the certification audit.</value>
+  </data>
+  <data name="Iso14001Description" xml:space="preserve">
+    <value>Systematically reduce environmental impact, comply with regulations, and establish measurable sustainability goals.</value>
+  </data>
+  <data name="Iso17025Description" xml:space="preserve">
+    <value>Support for testing and calibration laboratories with documentation, metrology, and competence management.</value>
+  </data>
+  <data name="HaccpDescription" xml:space="preserve">
+    <value>Food safety management and control of critical points in production, gastronomy, and logistics with a focus on prevention.</value>
+  </data>
+  <data name="Iso45001Description" xml:space="preserve">
+    <value>Modern occupational health and safety management preventing incidents, managing risks, and engaging employees.</value>
+  </data>
+  <data name="Iso27001Description" xml:space="preserve">
+    <value>Information security, cyber-risk management, and compliance with GDPR and customer security requirements.</value>
+  </data>
+  <data name="ProcessHeading" xml:space="preserve">
+    <value>How we guide you to successful certification</value>
+  </data>
+  <data name="ProcessDescription" xml:space="preserve">
+    <value>We lead you through every milestone – from the initial gap analysis to implementation and the final certification audit.</value>
+  </data>
+  <data name="ProcessStep1Title" xml:space="preserve">
+    <value>Kick-off analysis and roadmap</value>
+  </data>
+  <data name="ProcessStep1Description" xml:space="preserve">
+    <value>We assess the current state, define the project scope, and prepare a plan with clear activities, owners, and deadlines.</value>
+  </data>
+  <data name="ProcessStep2Title" xml:space="preserve">
+    <value>Process implementation and team training</value>
+  </data>
+  <data name="ProcessStep2Description" xml:space="preserve">
+    <value>Together we configure documentation, processes, and metrics, train your team, and conduct the internal audit.</value>
+  </data>
+  <data name="ProcessStep3Title" xml:space="preserve">
+    <value>Support during the certification audit</value>
+  </data>
+  <data name="ProcessStep3Description" xml:space="preserve">
+    <value>We prepare you for the certification visit, accompany the auditor, and assist with corrective actions if needed.</value>
+  </data>
+  <data name="CtaHeading" xml:space="preserve">
+    <value>Need help preparing for certification?</value>
+  </data>
+  <data name="CtaDescription" xml:space="preserve">
+    <value>Contact us to design the right mix of training, consulting, and internal audits tailored to your organization.</value>
   </data>
   <data name="CoursesHeading" xml:space="preserve">
     <value>Current training and courses</value>
