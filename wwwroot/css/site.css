@@ -1,7 +1,9 @@
 /* Systémy jakosti - Hlavní CSS */
 
 @import url("components/forms.css");
-
+@import url("pages/account.css");
+@import url("pages/admin.css");
+@import url("pages/home.css");
 
 /* Barevná paleta */
 :root {

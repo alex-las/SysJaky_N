@@ -74,8 +74,4 @@
   <ItemGroup>
     <Compile Remove="SysJaky_N.Tests/**/*.cs" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="wwwroot\css\NováSložka\" />
-  </ItemGroup>
 </Project>

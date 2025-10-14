@@ -1,0 +1,472 @@
+﻿/* ========================================
+   ACCOUNT PAGES - JEDNOTNÝ VIZUÁLNÍ STYL
+   Přidat do wwwroot/css/site.css nebo wwwroot/css/pages/account.css
+   ======================================== */
+
+/* Společné pozadí pro všechny Account stránky */
+body:has([data-page^="account-"]) main,
+body:has(.auth-form) main,
+body:has(.account-page) main {
+    min-height: calc(100vh - 140px);
+    background: linear-gradient(135deg, #f0f4ff 0%, #e5edff 100%);
+    padding: 2rem 1rem;
+}
+
+/* ========================================
+   REGISTRACE - Centrovaná modrá karta
+   ======================================== */
+
+.auth-form-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100vh - 200px);
+}
+
+.auth-form {
+    width: 100%;
+    max-width: 42rem;
+    background: linear-gradient(135deg, #2563EB 0%, #3B82F6 50%, #60A5FA 100%) !important;
+    border-radius: 1.5rem !important;
+    padding: 2.5rem !important;
+    box-shadow: 0 20px 50px rgba(37, 99, 235, 0.4), 0 8px 16px rgba(0, 0, 0, 0.1) !important;
+    color: #fff !important;
+    border: none !important;
+    isolation: isolate;
+    transform: translateZ(0);
+    -webkit-font-smoothing: antialiased;
+}
+
+    /* Odstranit všechny divné bordery a paddingy */
+    .auth-form *:not(.form-control):not(.btn):not(altcha-widget) {
+        border-left: none !important;
+        border-right: none !important;
+    }
+
+    .auth-form > * {
+        border: none !important;
+    }
+
+    .auth-form h1,
+    .auth-form .h1,
+    .auth-form h2,
+    .auth-form .h2 {
+        font-size: clamp(1.75rem, 1.5rem + 0.75vw, 2.25rem);
+        font-weight: 700;
+        margin-bottom: 1rem !important;
+        color: #fff !important;
+        text-align: center;
+        border: none !important;
+        padding: 0 !important;
+    }
+
+    /* Popisek pod nadpisem */
+    .auth-form .lead,
+    .auth-form > p:first-of-type,
+    .auth-form .text-center:first-child p {
+        font-size: clamp(0.95rem, 0.88rem + 0.25vw, 1.05rem);
+        opacity: 0.9;
+        margin-bottom: 2rem !important;
+        line-height: 1.6;
+        text-align: center;
+        color: #fff !important;
+        font-weight: 400;
+    }
+
+    /* Header blok v kartě */
+    .auth-form .text-center:first-child {
+        margin-bottom: 2rem !important;
+        padding-bottom: 0 !important;
+        border: none !important;
+    }
+
+    /* Form elementy v auth-form */
+    .auth-form .form-label {
+        color: rgba(255, 255, 255, 0.95) !important;
+        font-weight: 600;
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+
+    /* Odstranit všechny divné bordery a paddingy které dělají ty divné čáry */
+    .auth-form .mb-3,
+    .auth-form .form-group,
+    .auth-form .row > *,
+    .auth-form .col,
+    .auth-form .col-12 {
+        border: none !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        margin-bottom: 1rem !important;
+    }
+
+    .auth-form .row {
+        border: none !important;
+        padding: 0 !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+
+    /* Zajistit, že form má správný spacing */
+    .auth-form form {
+        border: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    .auth-form .form-control,
+    .auth-form .form-select {
+        background-color: rgba(255, 255, 255, 0.95) !important;
+        border: 2px solid rgba(255, 255, 255, 0.3) !important;
+        color: #1C1F26 !important;
+        border-radius: 0.5rem !important;
+        padding: 0.75rem 0.875rem;
+        font-size: 1rem;
+    }
+
+        .auth-form .form-control::placeholder {
+            color: rgba(28, 31, 38, 0.5) !important;
+        }
+
+        .auth-form .form-control:focus,
+        .auth-form .form-select:focus {
+            background-color: #ffffff !important;
+            border-color: #FFC107 !important;
+            box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.3) !important;
+            color: #1C1F26 !important;
+            outline: none;
+        }
+
+    /* Validation errors */
+    .auth-form .text-danger,
+    .auth-form .field-validation-error,
+    .auth-form .validation-summary-errors {
+        background: rgba(239, 68, 68, 0.15) !important;
+        color: #FEE !important;
+        padding: 0.5rem 0.75rem;
+        border-radius: 0.5rem;
+        font-size: 0.875rem;
+        border-left: 3px solid #FEE;
+        margin-top: 0.5rem;
+    }
+
+    /* Altcha v auth-form */
+    .auth-form altcha-widget,
+    .auth-form .altcha {
+        display: block;
+        width: 100%;
+        background: white !important;
+        border-radius: 0.5rem;
+        padding: 0.875rem;
+        border: 2px solid rgba(255, 255, 255, 0.6);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        margin: 0;
+        filter: none !important;
+    }
+
+        .auth-form altcha-widget *,
+        .auth-form .altcha * {
+            color: #1C1F26 !important;
+            background: transparent !important;
+        }
+
+    .auth-form altcha-widget {
+        --altcha-color-base: #1C1F26;
+        --altcha-color-text: #1C1F26;
+        --altcha-color-footer: #64748b;
+        --altcha-max-width: 100%;
+    }
+
+    /* Submit button container */
+    .auth-form .d-grid {
+        display: grid;
+        gap: 0;
+        margin-bottom: 1rem;
+    }
+
+    /* Submit button */
+    .auth-form button[type="submit"],
+    .auth-form .btn-primary {
+        padding: 0.875rem 2.5rem !important;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        background-color: #FFC107 !important;
+        border: none !important;
+        color: #1C1F26 !important;
+        border-radius: 0.5rem !important;
+        transition: all 0.2s ease;
+        font-size: 1rem;
+        width: 100% !important;
+    }
+
+        .auth-form button[type="submit"]:hover,
+        .auth-form .btn-primary:hover {
+            background-color: #FFB300 !important;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 16px rgba(255, 179, 0, 0.5) !important;
+            color: #1C1F26 !important;
+        }
+
+@media (min-width: 768px) {
+    .auth-form button[type="submit"],
+    .auth-form .btn-primary {
+        width: auto;
+        min-width: 200px;
+    }
+}
+
+/* Footer links (už máte účet?) */
+.auth-form .text-center:last-child,
+.auth-form .text-center.mt-3,
+.auth-form > .mt-3:last-child,
+.auth-form > p:last-child {
+    margin-top: 2rem !important;
+    padding-top: 1.5rem !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.2) !important;
+    text-align: center;
+    font-size: 0.95rem;
+    opacity: 0.95;
+    color: #fff !important;
+}
+
+.auth-form .text-center a,
+.auth-form .mt-3 a,
+.auth-form p a {
+    color: #FFC107 !important;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+    .auth-form .text-center a:hover,
+    .auth-form .mt-3 a:hover,
+    .auth-form p a:hover {
+        color: #FFD54F !important;
+        text-decoration: underline;
+    }
+
+@media (max-width: 767.98px) {
+    .auth-form {
+        padding: 1.75rem !important;
+        max-width: 100%;
+    }
+}
+
+/* ========================================
+   MANAGE - Centrovaný kontejner s bílými kartami
+   ======================================== */
+
+.account-page {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+    .account-page h1 {
+        font-size: clamp(2rem, 1.75rem + 0.75vw, 2.5rem);
+        font-weight: 700;
+        color: #1C1F26;
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+
+    .account-page .alert {
+        max-width: 800px;
+        margin: 0 auto 2rem;
+    }
+
+    /* Karty v account page */
+    .account-page .card {
+        background: white !important;
+        border: none !important;
+        border-radius: 1rem !important;
+        box-shadow: 0 4px 16px rgba(37, 99, 235, 0.08) !important;
+        transition: all 0.3s ease;
+    }
+
+        .account-page .card:hover {
+            box-shadow: 0 8px 24px rgba(37, 99, 235, 0.15) !important;
+            transform: translateY(-2px);
+        }
+
+    .account-page .card-body {
+        padding: 2rem !important;
+    }
+
+    .account-page .card h2 {
+        color: #2563EB;
+        font-weight: 700;
+        font-size: 1.25rem;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 2px solid rgba(37, 99, 235, 0.1);
+    }
+
+    /* Form elementy v manage page */
+    .account-page .form-label {
+        font-weight: 600;
+        color: #1C1F26;
+        margin-bottom: 0.5rem;
+    }
+
+    .account-page .form-control,
+    .account-page .form-select {
+        border: 2px solid #e5e7eb;
+        border-radius: 0.5rem;
+        padding: 0.75rem 0.875rem;
+        transition: all 0.2s ease;
+    }
+
+        .account-page .form-control:focus,
+        .account-page .form-select:focus {
+            border-color: #2563EB;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+    /* Tlačítka v manage page */
+    .account-page .btn-primary {
+        background-color: #2563EB !important;
+        border: none;
+        padding: 0.75rem 2rem;
+        font-weight: 600;
+        border-radius: 0.5rem;
+        transition: all 0.2s ease;
+    }
+
+        .account-page .btn-primary:hover {
+            background-color: #1d4ed8 !important;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+
+    .account-page .btn-outline-primary {
+        border-color: #2563EB;
+        color: #2563EB;
+        font-weight: 600;
+        border-radius: 0.5rem;
+        padding: 0.75rem 2rem;
+    }
+
+        .account-page .btn-outline-primary:hover {
+            background-color: #2563EB;
+            border-color: #2563EB;
+            transform: translateY(-1px);
+        }
+
+    .account-page .btn-outline-secondary {
+        border-radius: 0.5rem;
+        font-weight: 500;
+    }
+
+    /* Tabulky v manage page */
+    .account-page .table {
+        margin-bottom: 0;
+    }
+
+        .account-page .table th {
+            background-color: #f8fafc;
+            color: #475569;
+            font-weight: 600;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 0.875rem 1rem;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .account-page .table td {
+            padding: 1rem;
+            vertical-align: middle;
+            color: #1e293b;
+        }
+
+        .account-page .table tbody tr {
+            transition: background-color 0.2s ease;
+        }
+
+            .account-page .table tbody tr:hover {
+                background-color: #f8fafc;
+            }
+
+    /* Alert v manage page */
+    .account-page .alert-secondary {
+        background-color: #f1f5f9 !important;
+        border: 1px solid #cbd5e1 !important;
+        border-radius: 0.5rem !important;
+        color: #475569 !important;
+    }
+
+    .account-page .alert-info {
+        background-color: #dbeafe !important;
+        border: 1px solid #93c5fd !important;
+        border-radius: 0.5rem !important;
+        color: #1e40af !important;
+    }
+
+    /* Form control warning */
+    .account-page .form-control-warning {
+        border-color: #FFC107 !important;
+        background-color: rgba(255, 193, 7, 0.05) !important;
+    }
+
+        .account-page .form-control-warning:focus {
+            border-color: #FFB300 !important;
+            box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.15) !important;
+        }
+
+    /* Empty states */
+    .account-page .text-muted {
+        color: #64748b !important;
+        font-style: italic;
+    }
+
+/* Responzivita */
+@media (max-width: 991.98px) {
+    .account-page {
+        padding: 0 1rem;
+    }
+
+        .account-page .card-body {
+            padding: 1.5rem !important;
+        }
+
+        .account-page h1 {
+            font-size: 1.75rem;
+            margin-bottom: 1.5rem;
+        }
+}
+
+@media (max-width: 767.98px) {
+    .account-page .table {
+        font-size: 0.875rem;
+    }
+
+        .account-page .table th,
+        .account-page .table td {
+            padding: 0.75rem 0.5rem;
+        }
+}
+
+/* ========================================
+   SPOLEČNÉ PRO OBĚ STRÁNKY
+   ======================================== */
+
+/* Row a col spacing */
+.auth-form .row,
+.account-page .row {
+    margin-left: -0.5rem;
+    margin-right: -0.5rem;
+}
+
+    .auth-form .row > *,
+    .account-page .row > * {
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+    }
+
+@media (max-width: 767.98px) {
+    .auth-form .row > *,
+    .account-page .row > * {
+        padding-left: 0;
+        padding-right: 0;
+    }
+}
