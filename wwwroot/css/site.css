@@ -1,5 +1,8 @@
 /* Systémy jakosti - Hlavní CSS */
 
+@import url("components/forms.css");
+
+
 /* Barevná paleta */
 :root {
     --primary-blue: #0B4AE6;

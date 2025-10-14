@@ -1,347 +1,491 @@
+/* FORMS.CSS - Opravená verze pro Systémy jakosti */
+
 .form-label {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  font-family: var(--font-sans);
-  font-weight: 600;
-  font-size: 0.95rem;
-  letter-spacing: -0.005em;
-  color: var(--color-neutral-600);
-  margin-bottom: 0.35rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 0.95rem;
+    letter-spacing: -0.005em;
+    color: var(--color-neutral-600);
+    margin-bottom: 0.35rem;
 }
 
 .form-control,
 .form-select {
-  border: 2px solid var(--border-subtle);
-  border-radius: var(--radius-xl);
-  background-color: var(--surface-card);
-  color: var(--color-neutral-700);
-  transition: border-color var(--transition-snappy), box-shadow var(--transition-snappy), background-color var(--transition-snappy);
-  box-shadow: none;
+    border: 2px solid var(--border-subtle);
+    border-radius: var(--radius-xl);
+    background-color: var(--surface-card);
+    color: var(--color-neutral-700);
+    transition: border-color var(--transition-snappy), box-shadow var(--transition-snappy), background-color var(--transition-snappy);
+    box-shadow: none;
 }
 
 .form-check-input {
-  border: 2px solid var(--border-subtle);
-  border-radius: 0.75rem;
-  background-color: var(--surface-card);
-  color: var(--color-neutral-700);
-  transition: border-color var(--transition-snappy), box-shadow var(--transition-snappy), background-color var(--transition-snappy);
-  box-shadow: none;
+    border: 2px solid var(--border-subtle);
+    border-radius: 0.75rem;
+    background-color: var(--surface-card);
+    color: var(--color-neutral-700);
+    transition: border-color var(--transition-snappy), box-shadow var(--transition-snappy), background-color var(--transition-snappy);
+    box-shadow: none;
 }
 
 .form-control:focus,
 .form-select:focus,
 .form-control:focus-visible,
 .form-select:focus-visible {
-  border-color: var(--color-brand-600);
-  box-shadow: var(--focus-ring);
-  background-color: var(--surface-card);
-  color: var(--color-neutral-700);
-  outline: none;
+    border-color: var(--color-brand-600);
+    box-shadow: var(--focus-ring);
+    background-color: var(--surface-card);
+    color: var(--color-neutral-700);
+    outline: none;
 }
 
 .form-control::placeholder {
-  color: var(--color-neutral-500);
+    color: var(--color-neutral-500);
 }
 
 .form-text {
-  color: var(--color-neutral-500);
+    color: var(--color-neutral-500);
 }
 
 textarea.form-control {
-  min-height: 8rem;
-  border-radius: var(--radius-xl);
+    min-height: 8rem;
+    border-radius: var(--radius-xl);
 }
 
 .form-check-input:focus {
-  box-shadow: var(--focus-ring);
-  border-color: var(--color-brand-600);
-  outline: none;
+    box-shadow: var(--focus-ring);
+    border-color: var(--color-brand-600);
+    outline: none;
 }
 
 .form-check-input:checked {
-  background-color: var(--color-brand-600);
-  border-color: var(--color-brand-600);
+    background-color: var(--color-brand-600);
+    border-color: var(--color-brand-600);
 }
 
 .form-control-warning {
-  border-color: rgba(var(--color-secondary-rgb), 0.45);
-  background-color: color-mix(in oklab, var(--color-secondary-200) 45%, transparent);
-  color: var(--color-neutral-700);
+    border-color: rgba(var(--color-secondary-rgb), 0.45);
+    background-color: color-mix(in oklab, var(--color-secondary-200) 45%, transparent);
+    color: var(--color-neutral-700);
 }
 
-.form-control-warning:focus,
-.form-control-warning:focus-visible {
-  border-color: var(--color-warning-600);
-  box-shadow: 0 0 0 3px color-mix(in oklab, var(--color-secondary-200) 75%, transparent), 0 0 0 6px rgba(var(--color-secondary-rgb), 0.45);
-  background-color: color-mix(in oklab, var(--color-secondary-200) 65%, transparent);
-}
+    .form-control-warning:focus,
+    .form-control-warning:focus-visible {
+        border-color: var(--color-warning-600);
+        box-shadow: 0 0 0 3px color-mix(in oklab, var(--color-secondary-200) 75%, transparent), 0 0 0 6px rgba(var(--color-secondary-rgb), 0.45);
+        background-color: color-mix(in oklab, var(--color-secondary-200) 65%, transparent);
+    }
 
 .input-group-text {
-  background: var(--surface-muted);
-  border-color: var(--border-subtle);
-  color: var(--color-neutral-600);
+    background: var(--surface-muted);
+    border-color: var(--border-subtle);
+    color: var(--color-neutral-600);
 }
 
 .chip:focus-visible,
 .dropdown-item:focus-visible,
 .navbar-toggler:focus-visible {
-  outline: 3px solid rgba(var(--color-secondary-rgb), 0.55);
-  outline-offset: 2px;
-  background-color: rgba(15, 23, 42, 0.85);
-  color: var(--surface-card);
+    outline: 3px solid rgba(var(--color-secondary-rgb), 0.55);
+    outline-offset: 2px;
+    background-color: rgba(15, 23, 42, 0.85);
+    color: var(--surface-card);
 }
 
+/* ========================================
+   LOGIN DROPDOWN - OPRAVENÉ STYLY
+   ======================================== */
+
 .login-dropdown {
-  position: relative;
+    position: relative;
 }
 
 .login-dropdown-toggle {
-  border-radius: var(--radius-pill);
-  border: none;
-  font-weight: 700;
-  padding-inline: 1.15rem;
-  letter-spacing: 0.04em;
-  box-shadow: 0 18px 36px rgba(var(--color-highlight-rgb), 0.28);
-  transition: transform var(--transition-snappy), box-shadow var(--transition-snappy);
+    border-radius: var(--radius-pill);
+    border: none;
+    font-weight: 700;
+    padding-inline: 1.15rem;
+    letter-spacing: 0.04em;
+    box-shadow: 0 18px 36px rgba(11, 74, 230, 0.28);
+    transition: transform var(--transition-snappy), box-shadow var(--transition-snappy);
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
 }
 
-.login-dropdown-toggle:hover,
-.login-dropdown-toggle:focus-visible,
-.login-dropdown.show .login-dropdown-toggle {
-  transform: translateY(-2px);
-  box-shadow: 0 24px 52px rgba(var(--color-highlight-rgb), 0.32);
-}
+    .login-dropdown-toggle:hover,
+    .login-dropdown-toggle:focus-visible,
+    .login-dropdown.show .login-dropdown-toggle {
+        transform: translateY(-2px);
+        box-shadow: 0 24px 52px rgba(11, 74, 230, 0.32);
+        background: rgba(255, 255, 255, 0.25);
+        color: white;
+    }
 
+/* OPRAVA: Širší dropdown s !important pro pøepsání Bootstrap */
 .login-dropdown-menu {
-  margin-top: 0.75rem;
-  padding: 0;
-  width: min(52rem, calc(100vw - 2rem));
-  min-width: min(36rem, calc(100vw - 2rem));
-  border: none;
-  background: transparent;
-  transform-origin: top right;
-  animation: login-dropdown-fade 0.18s ease;
-  z-index: 1080;
+    margin-top: 0.75rem;
+    padding: 0;
+    width: min(36rem, calc(100vw - 2rem)) !important;
+    min-width: min(30rem, calc(100vw - 2rem)) !important;
+    border: none !important;
+    background: transparent !important;
+    transform-origin: top right;
+    animation: login-dropdown-fade 0.18s ease;
+    z-index: 1080;
+    --bs-dropdown-min-width: min(30rem, calc(100vw - 2rem));
+    /* Oprava artefaktù */
+    overflow: visible;
+    will-change: transform, opacity;
 }
 
 @media (max-width: 1199.98px) {
-  .login-dropdown-menu {
-    --bs-dropdown-min-width: min(32rem, calc(100vw - 1.5rem));
-    width: min(48rem, calc(100vw - 1.5rem)) !important;
-    min-width: var(--bs-dropdown-min-width) !important;
-  }
+    .login-dropdown-menu {
+        --bs-dropdown-min-width: min(28rem, calc(100vw - 1.5rem)) !important;
+        width: min(32rem, calc(100vw - 1.5rem)) !important;
+        min-width: min(28rem, calc(100vw - 1.5rem)) !important;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .login-dropdown-menu {
+        --bs-dropdown-min-width: calc(100vw - 1rem) !important;
+        width: calc(100vw - 1rem) !important;
+        min-width: calc(100vw - 1rem) !important;
+    }
 }
 
 @keyframes login-dropdown-fade {
-  from {
-    opacity: 0;
-    transform: scale(0.98) translateY(-8px);
-  }
+    from {
+        opacity: 0;
+        transform: scale(0.98) translateY(-8px);
+    }
 
-  to {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
 }
 
+/* OPRAVA: O odstín tmavší modrá - zlatá støední cesta */
 .login-dropdown-card {
-  background: linear-gradient(140deg, rgba(var(--color-brand-rgb), 0.92) 0%, rgba(14, 57, 170, 0.92) 55%, rgba(var(--color-highlight-rgb), 0.9) 100%);
-  border-radius: var(--radius-2xl);
-  padding: clamp(1.5rem, 1.15rem + 1.75vw, 2.75rem);
-  box-shadow: 0 28px 60px rgba(7, 22, 68, 0.35);
-  color: #fff;
-  border: 1px solid rgba(148, 163, 184, 0.28);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  width: 100%;
+    /* Tmavší, ale pøíjemnìjší než pùvodní */
+    background: linear-gradient(135deg, #2563EB 0%, #3B82F6 50%, #60A5FA 100%);
+    border-radius: var(--radius-2xl);
+    padding: clamp(1.5rem, 1.15rem + 1.75vw, 2.5rem);
+    box-shadow: 0 20px 50px rgba(37, 99, 235, 0.4), 0 8px 16px rgba(0, 0, 0, 0.1);
+    color: #fff;
+    border: none;
+    width: 100%;
+    /* Oprava artefaktù */
+    isolation: isolate;
+    transform: translateZ(0);
+    -webkit-font-smoothing: antialiased;
 }
 
 .login-dropdown-header {
-  display: flex;
-  gap: clamp(1rem, 0.75rem + 1vw, 1.75rem);
-  align-items: center;
-  padding-bottom: clamp(1rem, 0.75rem + 0.75vw, 1.5rem);
+    display: flex;
+    gap: clamp(1rem, 0.75rem + 1vw, 1.5rem);
+    align-items: center;
+    padding-bottom: clamp(1rem, 0.75rem + 0.75vw, 1.5rem);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    margin-bottom: clamp(1rem, 0.75rem + 0.75vw, 1.5rem);
 }
 
 .login-dropdown-icon {
-  display: grid;
-  place-items: center;
-  width: clamp(3rem, 2.4rem + 1.5vw, 3.75rem);
-  aspect-ratio: 1 / 1;
-  border-radius: var(--radius-xl);
-  background: rgba(15, 23, 42, 0.22);
-  box-shadow: inset 0 0 0 1px rgba(148, 163, 184, 0.35);
-  font-size: clamp(1.75rem, 1.5rem + 0.75vw, 2.25rem);
+    display: grid;
+    place-items: center;
+    width: clamp(3rem, 2.4rem + 1.5vw, 3.5rem);
+    aspect-ratio: 1 / 1;
+    border-radius: var(--radius-xl);
+    /* Svìtlejší pozadí pro kontrast */
+    background: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    font-size: clamp(1.75rem, 1.5rem + 0.75vw, 2rem);
+    flex-shrink: 0;
 }
 
 .login-dropdown-heading {
-  display: grid;
-  gap: 0.35rem;
-  max-width: min(32rem, 90%);
+    display: grid;
+    gap: 0.35rem;
+    max-width: min(32rem, 90%);
+    flex: 1;
 }
 
 .login-dropdown-title {
-  font-size: clamp(1.5rem, 1.25rem + 0.75vw, 2rem);
-  font-weight: 700;
+    font-size: clamp(1.35rem, 1.25rem + 0.5vw, 1.75rem);
+    font-weight: 700;
+    margin: 0;
 }
 
 .login-dropdown-subtitle {
-  font-size: clamp(0.95rem, 0.88rem + 0.25vw, 1.05rem);
-  opacity: 0.92;
+    font-size: clamp(0.9rem, 0.88rem + 0.15vw, 1rem);
+    opacity: 0.9;
+    margin: 0;
+    line-height: 1.5;
 }
 
 .login-dropdown-body {
-  padding-top: clamp(1.25rem, 1rem + 0.75vw, 1.75rem);
+    padding-top: 0;
 }
 
 .login-dropdown-form {
-  display: grid;
-  gap: 1rem;
+    display: grid;
+    gap: 1rem;
 }
 
-.login-dropdown-form .mb-3 {
-  margin-bottom: 0;
-}
+    .login-dropdown-form .mb-3 {
+        margin-bottom: 0 !important;
+    }
 
-.login-dropdown-form button[type="submit"] {
-  justify-self: start;
-  padding-inline: 1.75rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-}
+    .login-dropdown-form button[type="submit"] {
+        justify-self: start;
+        padding: 0.75rem 2rem;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        /* Svìtlejší žluté tlaèítko */
+        background-color: #FFC107;
+        border: none;
+        color: #1C1F26;
+        border-radius: 0.5rem;
+        transition: all 0.2s ease;
+    }
+
+        .login-dropdown-form button[type="submit"]:hover,
+        .login-dropdown-form button[type="submit"]:focus {
+            background-color: #FFB300;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 16px rgba(255, 179, 0, 0.5);
+            color: #1C1F26;
+        }
 
 @media (min-width: 992px) {
-  .login-dropdown-form {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    column-gap: 1.5rem;
-  }
+    .login-dropdown-form {
+        /* OPRAVA: Jeden sloupec - email a heslo stejnì široké */
+        grid-template-columns: 1fr;
+        column-gap: 0;
+    }
 
-  .login-dropdown-form .mb-3:nth-of-type(1),
-  .login-dropdown-form .mb-3:nth-of-type(2) {
-    grid-column: span 1;
-  }
+        .login-dropdown-form .mb-3:nth-of-type(1),
+        .login-dropdown-form .mb-3:nth-of-type(2),
+        .login-dropdown-form .mb-3:nth-of-type(n + 3) {
+            grid-column: span 1;
+        }
 
-  .login-dropdown-form .mb-3:nth-of-type(n + 3) {
-    grid-column: span 2;
-  }
-
-  .login-dropdown-form button[type="submit"] {
-    grid-column: span 2;
-  }
+        .login-dropdown-form button[type="submit"] {
+            grid-column: span 1;
+        }
 }
 
+@media (max-width: 767.98px) {
+    .login-dropdown-card {
+        padding: 1.5rem;
+    }
+
+    .login-dropdown-form {
+        grid-template-columns: 1fr !important;
+    }
+
+        .login-dropdown-form .mb-3:nth-of-type(1),
+        .login-dropdown-form .mb-3:nth-of-type(2),
+        .login-dropdown-form .mb-3:nth-of-type(n + 3),
+        .login-dropdown-form button[type="submit"] {
+            grid-column: span 1 !important;
+        }
+}
+
+/* OPRAVA: Bílé inputy pro lepší èitelnost */
 .login-dropdown-card .form-label {
-  color: rgba(226, 232, 240, 0.92);
-  font-weight: 600;
-  font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.95);
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
 }
 
-.login-dropdown-card .form-control,
+.login-dropdown-card .form-control {
+    background-color: rgba(255, 255, 255, 0.95);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    color: #1C1F26;
+    border-radius: 0.5rem;
+    padding: 0.625rem 0.875rem;
+}
+
+    .login-dropdown-card .form-control::placeholder {
+        color: rgba(28, 31, 38, 0.5);
+    }
+
+    .login-dropdown-card .form-control:focus {
+        background-color: #ffffff;
+        border-color: #FFC107;
+        box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.3);
+        color: #1C1F26;
+        outline: none;
+    }
+
+.login-dropdown-card .form-check-input {
+    background-color: rgba(255, 255, 255, 0.3);
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+    .login-dropdown-card .form-check-input:checked {
+        background-color: #FFC107;
+        border-color: #FFC107;
+    }
+
+    .login-dropdown-card .form-check-input:focus {
+        box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.3);
+        border-color: #FFC107;
+    }
+
 .login-dropdown-card .form-check-label {
-  background-color: rgba(15, 23, 42, 0.55);
-  border-color: rgba(71, 85, 105, 0.55);
-  color: rgba(226, 232, 240, 0.88);
+    color: rgba(255, 255, 255, 0.95);
+    font-size: 0.9rem;
+    background: transparent;
+    border: none;
+    font-weight: 500;
 }
 
-.login-dropdown-card .form-control:focus {
-  background-color: rgba(15, 23, 42, 0.65);
-  border-color: rgba(var(--color-brand-rgb), 0.75);
-  box-shadow: 0 0 0 4px rgba(var(--color-brand-rgb), 0.24);
+/* Altcha widget - lepší èitelnost */
+.login-dropdown-card altcha-widget,
+.login-dropdown-card .altcha {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.98);
+    border-radius: 0.5rem;
+    padding: 0.75rem;
+    border: 2px solid rgba(255, 255, 255, 0.5);
 }
+
+    .login-dropdown-card altcha-widget::part(base) {
+        background: transparent;
+        border: none;
+    }
+
+    .login-dropdown-card altcha-widget::part(label),
+    .login-dropdown-card altcha-widget::part(text) {
+        color: #1C1F26 !important;
+        font-weight: 500;
+    }
+
+    .login-dropdown-card altcha-widget::part(checkbox) {
+        border: 2px solid #2563EB;
+        background: white;
+    }
+
+    .login-dropdown-card altcha-widget::part(footer) {
+        color: #64748b !important;
+    }
 
 .login-dropdown-footer {
-  border-top: 1px solid rgba(148, 163, 184, 0.18);
-  margin-top: 1.25rem;
-  padding-top: 1.25rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem 1.5rem;
-  flex-wrap: wrap;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    margin-top: clamp(1rem, 0.75rem + 0.5vw, 1.25rem);
+    padding-top: clamp(1rem, 0.75rem + 0.5vw, 1.25rem);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem 1.5rem;
+    flex-wrap: wrap;
 }
 
 .login-dropdown-footer-text {
-  font-size: 0.95rem;
-  opacity: 0.9;
+    font-size: 0.9rem;
+    opacity: 0.95;
+    font-weight: 500;
 }
 
 .login-dropdown-footer-link {
-  color: rgba(226, 232, 240, 0.9);
-  font-weight: 500;
+    color: #FFC107;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    transition: all 0.2s ease;
 }
 
-.login-dropdown-footer-link:hover,
-.login-dropdown-footer-link:focus-visible {
-  color: rgba(var(--color-brand-rgb), 0.95);
-}
+    .login-dropdown-footer-link:hover,
+    .login-dropdown-footer-link:focus-visible {
+        color: #FFD54F;
+        text-decoration: none;
+        transform: translateX(2px);
+    }
+
+    .login-dropdown-footer-link i {
+        font-size: 1.1rem;
+    }
 
 .login-register-button {
-  border-color: rgba(255, 255, 255, 0.55);
-  color: rgba(255, 255, 255, 0.92);
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  padding-inline: 1.2rem;
-  transition: transform var(--transition-snappy), box-shadow var(--transition-snappy), border-color var(--transition-snappy);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    background: transparent;
+    color: white;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    padding-inline: 1.2rem;
+    transition: transform var(--transition-snappy), box-shadow var(--transition-snappy), border-color var(--transition-snappy);
 }
 
-.login-register-button:hover,
-.login-register-button:focus-visible {
-  transform: translateY(-2px);
-  border-color: rgba(255, 255, 255, 0.85);
-  box-shadow: 0 16px 36px rgba(8, 18, 52, 0.28);
-  color: #fff;
-}
+    .login-register-button:hover,
+    .login-register-button:focus-visible {
+        transform: translateY(-2px);
+        border-color: rgba(255, 255, 255, 0.5);
+        box-shadow: 0 8px 24px rgba(8, 18, 52, 0.2);
+        background: rgba(255, 255, 255, 0.1);
+        color: #fff;
+    }
 
 .login-account-toggle {
-  border-color: rgba(255, 255, 255, 0.6);
-  color: rgba(255, 255, 255, 0.92);
-  font-weight: 600;
+    border-color: rgba(255, 255, 255, 0.6);
+    color: rgba(255, 255, 255, 0.92);
+    font-weight: 600;
 }
 
-.login-account-toggle:hover,
-.login-account-toggle:focus-visible {
-  color: #fff;
-  border-color: rgba(255, 255, 255, 0.85);
-}
+    .login-account-toggle:hover,
+    .login-account-toggle:focus-visible {
+        color: #fff;
+        border-color: rgba(255, 255, 255, 0.85);
+    }
 
+/* Dark mode support */
 [data-theme="dark"] .form-control,
 [data-theme="dark"] .form-select,
 [data-theme="dark"] .input-group-text {
-  background-color: rgba(15, 23, 42, 0.65);
-  color: rgba(226, 232, 240, 0.9);
-  border-color: rgba(148, 163, 184, 0.35);
+    background-color: rgba(15, 23, 42, 0.65);
+    color: rgba(226, 232, 240, 0.9);
+    border-color: rgba(148, 163, 184, 0.35);
 }
 
 [data-theme="dark"] .form-check-input {
-  background-color: rgba(30, 41, 59, 0.55);
-  border-color: rgba(148, 163, 184, 0.5);
+    background-color: rgba(30, 41, 59, 0.55);
+    border-color: rgba(148, 163, 184, 0.5);
 }
 
 [data-theme="dark"] .form-control:focus,
 [data-theme="dark"] .form-select:focus {
-  background-color: rgba(30, 41, 59, 0.75);
-  border-color: rgba(var(--color-brand-rgb), 0.75);
-  box-shadow: var(--focus-ring);
+    background-color: rgba(30, 41, 59, 0.75);
+    border-color: rgba(var(--color-brand-rgb), 0.75);
+    box-shadow: var(--focus-ring);
 }
 
 [data-theme="dark"] .form-text {
-  color: rgba(148, 163, 184, 0.85);
+    color: rgba(148, 163, 184, 0.85);
 }
 
 [data-theme="dark"] .login-dropdown-footer-link:hover,
 [data-theme="dark"] .login-dropdown-footer-link:focus-visible {
-  color: color-mix(in oklab, var(--color-primary-300) 85%, var(--color-neutral-50));
-}
-[data-theme="dark"] .form-control-warning {
-  border-color: color-mix(in oklab, var(--color-secondary-300) 65%, transparent);
-  background-color: color-mix(in oklab, var(--color-secondary-600) 28%, transparent);
-  color: rgba(250, 250, 249, 0.92);
+    color: color-mix(in oklab, var(--color-primary-300) 85%, var(--color-neutral-50));
 }
 
-[data-theme="dark"] .form-control-warning:focus,
-[data-theme="dark"] .form-control-warning:focus-visible {
-  border-color: color-mix(in oklab, var(--color-secondary-300) 85%, transparent);
-  box-shadow: 0 0 0 3px color-mix(in oklab, var(--color-secondary-600) 35%, transparent), 0 0 0 6px rgba(var(--color-secondary-rgb), 0.5);
-  background-color: color-mix(in oklab, var(--color-secondary-600) 35%, transparent);
+[data-theme="dark"] .form-control-warning {
+    border-color: color-mix(in oklab, var(--color-secondary-300) 65%, transparent);
+    background-color: color-mix(in oklab, var(--color-secondary-600) 28%, transparent);
+    color: rgba(250, 250, 249, 0.92);
 }
+
+    [data-theme="dark"] .form-control-warning:focus,
+    [data-theme="dark"] .form-control-warning:focus-visible {
+        border-color: color-mix(in oklab, var(--color-secondary-300) 85%, transparent);
+        box-shadow: 0 0 0 3px color-mix(in oklab, var(--color-secondary-600) 35%, transparent), 0 0 0 6px rgba(var(--color-secondary-rgb), 0.5);
+        background-color: color-mix(in oklab, var(--color-secondary-600) 35%, transparent);
+    }
