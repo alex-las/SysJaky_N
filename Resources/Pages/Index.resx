@@ -66,10 +66,10 @@
     <value>Profesionální kurzy a školení pro vaši firmu.</value>
   </data>
   <data name="HeroMainHeading" xml:space="preserve">
-    <value>Implementace, audity a školení systémů jakosti</value>
+    <value>Získejte certifikaci ISO bez stresu. A naučte tým dělat věci správně.</value>
   </data>
   <data name="HeroSubheading" xml:space="preserve">
-    <value>Provázíme organizace celým cyklem ISO 9001, ISO 14001, ISO/IEC 17025, ISO 15189, HACCP, ISO 45001, ISO 27001, IATF 16949 a ISO 13485 — od analýzy po certifikaci.</value>
+    <value>Pomáháme firmám napříč obory – od úvodní analýzy přes dokumentaci až po úspěšnou certifikaci. Kurzy s praxí, poradenské projekty s měřitelným dopadem.</value>
   </data>
   <data name="HeroUSP1" xml:space="preserve">
     <value>Dlouholeté zkušenosti auditorů a konzultantů</value>
@@ -98,11 +98,50 @@
   <data name="HeroUSP3Description" xml:space="preserve">
     <value>Školení, konzultace i interní audity přizpůsobíme vašim procesům a přivedeme experty přímo do vaší firmy.</value>
   </data>
+  <data name="HeroCorporateCardTitle" xml:space="preserve">
+    <value>Firemní audit &amp; poradenství</value>
+  </data>
+  <data name="HeroCorporateCardDescription" xml:space="preserve">
+    <value>Krátký kvalifikační dotazník vám otevře cestu k nabídce na míru a konzultaci se seniorním auditorem.</value>
+  </data>
+  <data name="HeroCorporateCardCta" xml:space="preserve">
+    <value>Spustit rychlou kvalifikaci</value>
+  </data>
+  <data name="HeroCoursesCardTitle" xml:space="preserve">
+    <value>Kurzy a školení</value>
+  </data>
+  <data name="HeroCoursesCardDescription" xml:space="preserve">
+    <value>Vyberte si z katalogu s chytrými filtry, wishlistem a hlídáním termínů.</value>
+  </data>
+  <data name="HeroCoursesCardCta" xml:space="preserve">
+    <value>Prohlédnout katalog kurzů</value>
+  </data>
   <data name="HeroPrimaryCTA" xml:space="preserve">
-    <value>Prohlédnout nabídku kurzů ISO</value>
+    <value>Nezávazně poptat audit/poradenství</value>
   </data>
   <data name="HeroSecondaryCTA" xml:space="preserve">
-    <value>Nechat si připravit firemní řešení</value>
+    <value>Prohlédnout termíny kurzů</value>
+  </data>
+  <data name="TrustedClientsHeading" xml:space="preserve">
+    <value>Důvěřují nám napříč obory</value>
+  </data>
+  <data name="TrustedClientsSubtitle" xml:space="preserve">
+    <value>Naši experti dlouhodobě pomáhají výrobním podnikům, technologiím i veřejným institucím dosahovat lepších výsledků.</value>
+  </data>
+  <data name="TrustedClientsMetricParticipants" xml:space="preserve">
+    <value>1 200+ vyškolených účastníků</value>
+  </data>
+  <data name="TrustedClientsMetricRating" xml:space="preserve">
+    <value>4,9/5 průměrné hodnocení</value>
+  </data>
+  <data name="TrustedClientsMetricAudits" xml:space="preserve">
+    <value>300+ úspěšně vedených auditů</value>
+  </data>
+  <data name="TrustedClientsMetricAccreditations" xml:space="preserve">
+    <value>Akreditace ČIA a další profesní uznání</value>
+  </data>
+  <data name="TrustedClientsLogosLabel" xml:space="preserve">
+    <value>Loga významných klientů</value>
   </data>
   <data name="TrustedClientsHeading" xml:space="preserve">
     <value>Důvěřují nám napříč obory</value>

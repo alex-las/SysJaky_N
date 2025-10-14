@@ -46,7 +46,12 @@ public static class CourseCardExtensions
             DetailsUrl = detailsUrl,
             AddToCartUrl = addToCartUrl,
             WishlistUrl = wishlistUrl,
+            IsoStandard = string.IsNullOrWhiteSpace(course.IsoStandard)
+                ? null
+                : course.IsoStandard.Trim(),
             IsoBadges = ExtractIsoBadges(course),
+            Norms = BuildNorms(course),
+            Cities = ExtractCities(course),
             DaysUntilStart = daysUntilStart,
             Capacity = capacity,
             SeatsTaken = seatsTaken,
@@ -82,6 +87,98 @@ public static class CourseCardExtensions
         }
 
         return badges;
+    }
+
+    private static IReadOnlyList<string> BuildNorms(Course course)
+    {
+        var norms = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+        if (!string.IsNullOrWhiteSpace(course.IsoStandard))
+        {
+            norms.Add(course.IsoStandard.Trim());
+        }
+
+        foreach (var badge in ExtractIsoBadges(course))
+        {
+            if (!string.IsNullOrWhiteSpace(badge.Label))
+            {
+                norms.Add(badge.Label.Trim());
+            }
+        }
+
+        if (course.CourseTags != null)
+        {
+            foreach (var tag in course.CourseTags)
+            {
+                var name = tag.Tag?.Name;
+                if (string.IsNullOrWhiteSpace(name))
+                {
+                    continue;
+                }
+
+                if (name.Contains("ISO", StringComparison.OrdinalIgnoreCase)
+                    || name.Contains("ČSN", StringComparison.OrdinalIgnoreCase)
+                    || name.Contains("EN", StringComparison.OrdinalIgnoreCase))
+                {
+                    norms.Add(name.Trim());
+                }
+            }
+        }
+
+        return norms.Count == 0
+            ? Array.Empty<string>()
+            : norms.OrderBy(n => n).ToArray();
+    }
+
+    private static readonly string[] KnownCityNames =
+    {
+        "Praha",
+        "Brno",
+        "Ostrava",
+        "Plzeň",
+        "Liberec",
+        "Olomouc",
+        "Hradec Králové",
+        "Pardubice",
+        "České Budějovice",
+        "Zlín"
+    };
+
+    private static IReadOnlyList<string> ExtractCities(Course course)
+    {
+        var cities = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+        if (course.CourseTags != null)
+        {
+            foreach (var tag in course.CourseTags)
+            {
+                var name = tag.Tag?.Name;
+                if (string.IsNullOrWhiteSpace(name))
+                {
+                    continue;
+                }
+
+                if (KnownCityNames.Any(city => city.Equals(name.Trim(), StringComparison.OrdinalIgnoreCase)))
+                {
+                    cities.Add(name.Trim());
+                }
+            }
+        }
+
+        if (!string.IsNullOrWhiteSpace(course.DeliveryForm))
+        {
+            foreach (var city in KnownCityNames)
+            {
+                if (course.DeliveryForm.Contains(city, StringComparison.OrdinalIgnoreCase))
+                {
+                    cities.Add(city);
+                }
+            }
+        }
+
+        return cities.Count == 0
+            ? Array.Empty<string>()
+            : cities.OrderBy(c => c).ToArray();
     }
 
     private static bool HasCertificate(Course course)

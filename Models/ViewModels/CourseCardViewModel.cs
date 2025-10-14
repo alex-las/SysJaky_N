@@ -23,7 +23,10 @@ public class CourseCardViewModel
     public string DetailsUrl { get; init; } = string.Empty;
     public string AddToCartUrl { get; init; } = string.Empty;
     public string WishlistUrl { get; init; } = string.Empty;
+    public string? IsoStandard { get; init; }
     public IReadOnlyList<IsoBadgeViewModel> IsoBadges { get; init; } = Array.Empty<IsoBadgeViewModel>();
+    public IReadOnlyList<string> Norms { get; init; } = Array.Empty<string>();
+    public IReadOnlyList<string> Cities { get; init; } = Array.Empty<string>();
     public int? DaysUntilStart { get; init; }
     public int Capacity { get; init; }
     public int SeatsTaken { get; init; }

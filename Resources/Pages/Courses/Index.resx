@@ -36,6 +36,12 @@
   <data name="FiltersButton" xml:space="preserve">
     <value>Filtry</value>
   </data>
+  <data name="FiltersNormAll" xml:space="preserve">
+    <value>Všechny normy</value>
+  </data>
+  <data name="FiltersCityAll" xml:space="preserve">
+    <value>Všechna města</value>
+  </data>
   <data name="SearchPlaceholder" xml:space="preserve">
     <value>Co se chcete naučit? Zadejte kurz, nástroj nebo dovednost</value>
   </data>
@@ -143,6 +149,9 @@
   </data>
   <data name="Details" xml:space="preserve">
     <value>Detail</value>
+  </data>
+  <data name="WishlistButtonLabel" xml:space="preserve">
+    <value>Hlídat termín</value>
   </data>
   <data name="Enroll" xml:space="preserve">
     <value>Přihlásit</value>
