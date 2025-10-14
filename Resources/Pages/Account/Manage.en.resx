@@ -123,4 +123,10 @@
   <data name="OrderStatusRefunded" xml:space="preserve">
     <value>Refunded</value>
   </data>
+  <data name="Subtitle" xml:space="preserve">
+    <value>Manage your personal details, orders, and enrolments in one place.</value>
+  </data>
+  <data name="ProfileDescription" xml:space="preserve">
+    <value>Keep your contact details and company code up to date for smooth invoicing.</value>
+  </data>
 </root>

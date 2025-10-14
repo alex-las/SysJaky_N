@@ -15,10 +15,40 @@
   <data name="RegisterTitle" xml:space="preserve">
     <value>Register</value>
   </data>
-  <data name="RegisterIntro" xml:space="preserve">
-    <value>Create an account to manage your courses, orders and company training in one place.</value>
+  <data name="RegisterLead" xml:space="preserve">
+    <value>Create your account to access personalised recommendations and your course history.</value>
   </data>
-  <data name="RegisterReferralHelp" xml:space="preserve">
-    <value>Got a company referral code? Enter it to link your account with your organisation.</value>
+  <data name="EmailLabel" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="EmailPlaceholder" xml:space="preserve">
+    <value>your.email@example.com</value>
+  </data>
+  <data name="PasswordLabel" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="PasswordPlaceholder" xml:space="preserve">
+    <value>Strong password</value>
+  </data>
+  <data name="ConfirmPasswordLabel" xml:space="preserve">
+    <value>Confirm password</value>
+  </data>
+  <data name="ConfirmPasswordPlaceholder" xml:space="preserve">
+    <value>Re-enter your password</value>
+  </data>
+  <data name="ReferralCodeLabel" xml:space="preserve">
+    <value>Referral code</value>
+  </data>
+  <data name="ReferralCodePlaceholder" xml:space="preserve">
+    <value>Optional – referral code</value>
+  </data>
+  <data name="RegisterButton" xml:space="preserve">
+    <value>Create account</value>
+  </data>
+  <data name="AlreadyHaveAccount" xml:space="preserve">
+    <value>Already have an account?</value>
+  </data>
+  <data name="LoginLink" xml:space="preserve">
+    <value>Sign in</value>
   </data>
 </root>
