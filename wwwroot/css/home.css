@@ -546,7 +546,6 @@
   .trusted-clients-rail-wrapper {
     width: min(100%, 95vw);
   }
-}
 
 @media (max-width: 575.98px) {
   .trusted-clients-section {
