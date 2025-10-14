@@ -74,11 +74,29 @@
   <data name="HeroUSP1" xml:space="preserve">
     <value>Dlouholeté zkušenosti auditorů a konzultantů</value>
   </data>
+  <data name="HeroUSP1Title" xml:space="preserve">
+    <value>Expertní tým auditorů a konzultantů</value>
+  </data>
+  <data name="HeroUSP1Description" xml:space="preserve">
+    <value>Na projektech pracují lead auditoři s více než 20 lety praxe z certifikačních autorit i průmyslových podniků.</value>
+  </data>
   <data name="HeroUSP2" xml:space="preserve">
     <value>Praktické know-how získané z reálných auditů</value>
   </data>
+  <data name="HeroUSP2Title" xml:space="preserve">
+    <value>Know-how ověřené skutečnými certifikacemi</value>
+  </data>
+  <data name="HeroUSP2Description" xml:space="preserve">
+    <value>Doporučení stavíme na desítkách úspěšných certifikací napříč výrobou, laboratořemi i službami.</value>
+  </data>
   <data name="HeroUSP3" xml:space="preserve">
     <value>Možnost interních workshopů přímo u vás</value>
+  </data>
+  <data name="HeroUSP3Title" xml:space="preserve">
+    <value>Flexibilní spolupráce a interní workshopy</value>
+  </data>
+  <data name="HeroUSP3Description" xml:space="preserve">
+    <value>Školení, konzultace i interní audity přizpůsobíme vašim procesům a přivedeme experty přímo do vaší firmy.</value>
   </data>
   <data name="HeroPrimaryCTA" xml:space="preserve">
     <value>Prohlédnout nabídku kurzů ISO</value>
@@ -157,6 +175,60 @@
   </data>
   <data name="SpecializationsDescription" xml:space="preserve">
     <value>Poskytujeme komplexní poradenství a školení pro následující normy.</value>
+  </data>
+  <data name="IsoStandardsHeading" xml:space="preserve">
+    <value>Certifikační normy, se kterými vám pomůžeme</value>
+  </data>
+  <data name="IsoStandardsDescription" xml:space="preserve">
+    <value>Zajistíme analýzu, implementaci i školení týmu pro nejdůležitější normy ISO, HACCP a akreditační standardy.</value>
+  </data>
+  <data name="Iso9001Description" xml:space="preserve">
+    <value>Řízení kvality zaměřené na procesy, rizika a spokojenost zákazníků od první analýzy po úspěšný certifikační audit.</value>
+  </data>
+  <data name="Iso14001Description" xml:space="preserve">
+    <value>Systematické snižování ekologické stopy, plnění legislativních požadavků a zavedení environmentálních cílů.</value>
+  </data>
+  <data name="Iso17025Description" xml:space="preserve">
+    <value>Podpora pro zkušební a kalibrační laboratoře při zavádění dokumentace, metrologie a řízení kompetencí.</value>
+  </data>
+  <data name="HaccpDescription" xml:space="preserve">
+    <value>Bezpečnost potravin a řízení kritických bodů ve výrobě, gastronomii i logistice s důrazem na prevenci rizik.</value>
+  </data>
+  <data name="Iso45001Description" xml:space="preserve">
+    <value>Moderní systém BOZP pro prevenci pracovních úrazů, řízení rizik a zapojení zaměstnanců do bezpečnostní kultury.</value>
+  </data>
+  <data name="Iso27001Description" xml:space="preserve">
+    <value>Ochrana informací, kybernetická bezpečnost a compliance s požadavky GDPR i zákaznických auditů.</value>
+  </data>
+  <data name="ProcessHeading" xml:space="preserve">
+    <value>Jak probíhá spolupráce na cestě k certifikaci</value>
+  </data>
+  <data name="ProcessDescription" xml:space="preserve">
+    <value>Provedeme vás každým krokem – od úvodní analýzy přes implementaci standardu až po finální certifikační audit.</value>
+  </data>
+  <data name="ProcessStep1Title" xml:space="preserve">
+    <value>Startovací analýza a roadmapa</value>
+  </data>
+  <data name="ProcessStep1Description" xml:space="preserve">
+    <value>Vyhodnotíme současný stav, stanovíme rozsah projektu a připravíme plán aktivit, odpovědností a termínů.</value>
+  </data>
+  <data name="ProcessStep2Title" xml:space="preserve">
+    <value>Implementace procesů a školení týmu</value>
+  </data>
+  <data name="ProcessStep2Description" xml:space="preserve">
+    <value>Společně nastavíme dokumentaci, procesy i metriky, vyškolíme tým a zajistíme interní audit.</value>
+  </data>
+  <data name="ProcessStep3Title" xml:space="preserve">
+    <value>Podpora při certifikačním auditu</value>
+  </data>
+  <data name="ProcessStep3Description" xml:space="preserve">
+    <value>Připravíme vás na certifikační audit, doprovodíme auditorem a pomůžeme s nápravnými opatřeními.</value>
+  </data>
+  <data name="CtaHeading" xml:space="preserve">
+    <value>Potřebujete poradit s přípravou na certifikaci?</value>
+  </data>
+  <data name="CtaDescription" xml:space="preserve">
+    <value>Ozvěte se nám a společně navrhneme optimální kombinaci školení, konzultací i interních auditů pro váš tým.</value>
   </data>
   <data name="CoursesHeading" xml:space="preserve">
     <value>Aktuální školení a kurzy</value>
