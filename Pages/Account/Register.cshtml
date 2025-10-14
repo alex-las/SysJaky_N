@@ -2,15 +2,19 @@
 @model SysJaky_N.Pages.Account.RegisterModel
 @inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
 
-@{
+@{ 
     ViewData["Title"] = Localizer["RegisterTitle"];
+    var registerTitle = Localizer["RegisterTitle"].Value;
     var registerFormOptions = new RegisterFormOptions
     {
         Input = Model.Input,
         FormId = "account-register-form",
         FormCssClass = "card card-body p-4 auth-form",
-        HeadingLocalizationKey = "RegisterTitle",
+        HeadingText = registerTitle,
         HeadingTagName = "h1",
+        HeadingId = "account-register-heading",
+        IntroText = Localizer["RegisterIntro"].Value,
+        FormAriaLabelledById = "account-register-heading",
         ValidationSummaryCssClass = "text-danger",
         EmailInputId = "account-register-email",
         PasswordInputId = "account-register-password",
@@ -23,7 +27,8 @@
         AltchaMaxNumber = "500000",
         IncludeConfirmPassword = true,
         IncludeReferralCode = true,
-        EnableRefetchOnExpire = true
+        EnableRefetchOnExpire = true,
+        ReferralCodeHelpText = Localizer["RegisterReferralHelp"].Value
     };
 }
 

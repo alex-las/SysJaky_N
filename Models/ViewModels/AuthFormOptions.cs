@@ -14,9 +14,13 @@ public abstract class AuthFormOptionsBase<TInput>
     public string? Action { get; set; }
     public bool IncludeAntiforgery { get; set; } = true;
     public string? HeadingLocalizationKey { get; set; }
+    public string? HeadingText { get; set; }
     public string HeadingTagName { get; set; } = "h1";
     public string? HeadingId { get; set; }
     public string? ValidationSummaryCssClass { get; set; } = "text-danger";
+    public string? IntroLocalizationKey { get; set; }
+    public string? IntroText { get; set; }
+    public string? FormAriaLabelledById { get; set; }
     public string AltchaChallengeUrl { get; set; } = "~/altcha/challenge?d=2";
     public string AltchaVerifyUrl { get; set; } = "~/altcha/verify";
     public string AltchaWorkerUrl { get; set; } = "~/lib/altcha/altcha.worker.js";
@@ -56,4 +60,6 @@ public class RegisterFormOptions : AuthFormOptionsBase<RegisterModel.InputModel>
     public string? ReferralCodeInputId { get; set; }
     public bool IncludeConfirmPassword { get; set; }
     public bool IncludeReferralCode { get; set; }
+    public string? ReferralCodeHelpLocalizationKey { get; set; }
+    public string? ReferralCodeHelpText { get; set; }
 }

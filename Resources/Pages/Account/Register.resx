@@ -15,4 +15,10 @@
   <data name="RegisterTitle" xml:space="preserve">
     <value>Registrace</value>
   </data>
+  <data name="RegisterIntro" xml:space="preserve">
+    <value>Vytvořte si účet a spravujte své kurzy, objednávky i firemní školení na jednom místě.</value>
+  </data>
+  <data name="RegisterReferralHelp" xml:space="preserve">
+    <value>Máte firemní referral kód? Zadejte jej a propojte svůj účet s organizací.</value>
+  </data>
 </root>
