@@ -90,7 +90,7 @@ else
     };
 
     <div class="d-flex align-items-center gap-2">
-        <div class="dropdown login-dropdown">
+        <div class="dropdown login-dropdown d-none d-lg-block">
             <button class="btn btn-warning btn-sm d-flex align-items-center gap-2 login-dropdown-toggle"
                     id="@dropdownId"
                     type="button"
@@ -127,6 +127,12 @@ else
                 </div>
             </div>
         </div>
+        <a class="btn btn-warning btn-sm d-inline-flex align-items-center gap-2 login-dropdown-toggle d-lg-none"
+           asp-page="/Account/Login"
+           asp-route-returnUrl="@returnUrl">
+            <i class="bi bi-box-arrow-in-right" aria-hidden="true"></i>
+            <span>@Localizer["Login"]</span>
+        </a>
         <a class="btn btn-outline-light btn-sm d-flex align-items-center gap-2 login-register-button" asp-page="/Account/Register" asp-route-returnUrl="@returnUrl">
             <i class="bi bi-person-plus" aria-hidden="true"></i>
             <span>@Localizer["Register"]</span>
