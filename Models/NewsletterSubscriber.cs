@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace SysJaky_N.Models;
@@ -22,4 +23,6 @@ public class NewsletterSubscriber
     public bool ConsentGiven { get; set; }
 
     public DateTime? ConsentGivenAtUtc { get; set; }
+
+    public ICollection<NewsletterSubscriberCategory> PreferredCategories { get; set; } = new List<NewsletterSubscriberCategory>();
 }

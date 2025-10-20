@@ -47,6 +47,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<CourseCategory> CourseCategories { get; set; } = default!;
     public DbSet<CourseCategoryTranslation> coursecategory_translations { get; set; } = default!;
     public DbSet<NewsletterSubscriber> NewsletterSubscribers { get; set; } = default!;
+    public DbSet<NewsletterSubscriberCategory> NewsletterSubscriberCategories { get; set; } = default!;
 
 
     protected override void OnModelCreating(ModelBuilder builder)
@@ -210,6 +211,27 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         builder.Entity<NewsletterSubscriber>()
             .HasIndex(n => n.ConfirmationToken)
             .IsUnique();
+
+        builder.Entity<NewsletterSubscriberCategory>()
+            .ToTable("NewsletterSubscriberCategories");
+
+        builder.Entity<NewsletterSubscriberCategory>()
+            .HasKey(nsc => new { nsc.NewsletterSubscriberId, nsc.CourseCategoryId });
+
+        builder.Entity<NewsletterSubscriberCategory>()
+            .HasIndex(nsc => nsc.CourseCategoryId);
+
+        builder.Entity<NewsletterSubscriberCategory>()
+            .HasOne(nsc => nsc.NewsletterSubscriber)
+            .WithMany(ns => ns.PreferredCategories)
+            .HasForeignKey(nsc => nsc.NewsletterSubscriberId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<NewsletterSubscriberCategory>()
+            .HasOne(nsc => nsc.CourseCategory)
+            .WithMany(cc => cc.NewsletterSubscriberCategories)
+            .HasForeignKey(nsc => nsc.CourseCategoryId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.Entity<CourseTag>()
             .HasKey(ct => new { ct.CourseId, ct.TagId });

@@ -27,4 +27,6 @@ public class CourseCategory
     public ICollection<Course> Courses { get; set; } = new List<Course>();
 
     public ICollection<CourseCategoryTranslation> Translations { get; set; } = new List<CourseCategoryTranslation>();
+
+    public ICollection<NewsletterSubscriberCategory> NewsletterSubscriberCategories { get; set; } = new List<NewsletterSubscriberCategory>();
 }
