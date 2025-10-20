@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using SysJaky_N.Models;
+using System.Collections.Generic;
 
 namespace SysJaky_N.Data;
 
@@ -44,6 +45,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<EmailLog> EmailLogs { get; set; } = default!;
     public DbSet<Tag> Tags { get; set; } = default!;
     public DbSet<CourseTag> CourseTags { get; set; } = default!;
+    public DbSet<CourseCategory> CourseCategories { get; set; } = default!;
     public DbSet<NewsletterSubscriber> NewsletterSubscribers { get; set; } = default!;
 
 
@@ -223,6 +225,29 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .WithMany(t => t.CourseTags)
             .HasForeignKey(ct => ct.TagId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<CourseCategory>()
+            .HasIndex(c => c.Slug)
+            .IsUnique();
+
+        builder.Entity<Course>()
+            .HasMany(c => c.Categories)
+            .WithMany(c => c.Courses)
+            .UsingEntity<Dictionary<string, object>>(
+                "CourseCourseCategory",
+                j => j.HasOne<CourseCategory>()
+                    .WithMany()
+                    .HasForeignKey("CourseCategoryId")
+                    .OnDelete(DeleteBehavior.Cascade),
+                j => j.HasOne<Course>()
+                    .WithMany()
+                    .HasForeignKey("CourseId")
+                    .OnDelete(DeleteBehavior.Cascade),
+                j =>
+                {
+                    j.HasKey("CourseId", "CourseCategoryId");
+                    j.ToTable("CourseCourseCategories");
+                });
 
         builder.Entity<ChatbotSettings>()
             .Property(s => s.IsEnabled)

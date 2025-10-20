@@ -9,6 +9,8 @@ using SysJaky_N.Data;
 using SysJaky_N.Models;
 using SysJaky_N.Services;
 using System.Security.Claims;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace SysJaky_N.Pages.Courses;
 
@@ -42,15 +44,23 @@ public class EditModel : PageModel
 
     public SelectList CourseGroups { get; set; } = default!;
 
+    public IEnumerable<SelectListItem> CategoryOptions { get; set; } = Enumerable.Empty<SelectListItem>();
+
+    [BindProperty]
+    public List<int> SelectedCategoryIds { get; set; } = new();
+
     public async Task<IActionResult> OnGetAsync(int id)
     {
-        Course? course = await _context.Courses.FindAsync(id);
+        Course? course = await _context.Courses
+            .Include(c => c.Categories)
+            .FirstOrDefaultAsync(c => c.Id == id);
         if (course == null)
         {
             return NotFound();
         }
         Course = course;
-        CourseGroups = new SelectList(_context.CourseGroups, "Id", "Name", Course.CourseGroupId);
+        SelectedCategoryIds = Course.Categories.Select(category => category.Id).ToList();
+        await LoadSelectionsAsync();
         return Page();
     }
 
@@ -58,16 +68,19 @@ public class EditModel : PageModel
     {
         _courseEditor.ValidateCoverImage(CoverImage, ModelState, nameof(CoverImage));
 
-        Course? courseToUpdate = await _context.Courses.FirstOrDefaultAsync(c => c.Id == Course.Id);
+        Course? courseToUpdate = await _context.Courses
+            .Include(c => c.Categories)
+            .FirstOrDefaultAsync(c => c.Id == Course.Id);
         if (courseToUpdate == null)
         {
             return NotFound();
         }
 
+        await LoadSelectionsAsync();
+
         if (!ModelState.IsValid)
         {
             Course.CoverImageUrl = courseToUpdate.CoverImageUrl;
-            CourseGroups = new SelectList(_context.CourseGroups, "Id", "Name", Course.CourseGroupId);
             return Page();
         }
 
@@ -83,6 +96,19 @@ public class EditModel : PageModel
         courseToUpdate.Mode = Course.Mode;
         courseToUpdate.Duration = Course.Duration;
 
+        courseToUpdate.Categories.Clear();
+        if (SelectedCategoryIds.Count > 0)
+        {
+            var categories = await _context.CourseCategories
+                .Where(category => SelectedCategoryIds.Contains(category.Id))
+                .ToListAsync();
+
+            foreach (var category in categories)
+            {
+                courseToUpdate.Categories.Add(category);
+            }
+        }
+
         var coverResult = await _courseEditor.SaveCoverImageAsync(
             courseToUpdate.Id,
             CoverImage,
@@ -92,7 +118,6 @@ public class EditModel : PageModel
         {
             ModelState.AddModelError(nameof(CoverImage), coverResult.ErrorMessage ?? string.Empty);
             Course.CoverImageUrl = courseToUpdate.CoverImageUrl;
-            CourseGroups = new SelectList(_context.CourseGroups, "Id", "Name", Course.CourseGroupId);
             return Page();
         }
 
@@ -121,5 +146,28 @@ public class EditModel : PageModel
         }
 
         return RedirectToPage("Index");
+    }
+
+    private async Task LoadSelectionsAsync()
+    {
+        var groups = await _context.CourseGroups
+            .AsNoTracking()
+            .OrderBy(group => group.Name)
+            .ToListAsync();
+
+        CourseGroups = new SelectList(groups, "Id", "Name", Course.CourseGroupId);
+
+        SelectedCategoryIds ??= new List<int>();
+        var selectedSet = new HashSet<int>(SelectedCategoryIds);
+
+        var categories = await _context.CourseCategories
+            .AsNoTracking()
+            .OrderBy(category => category.Name)
+            .Select(category => new { category.Id, category.Name })
+            .ToListAsync();
+
+        CategoryOptions = categories
+            .Select(category => new SelectListItem(category.Name, category.Id.ToString(), selectedSet.Contains(category.Id)))
+            .ToList();
     }
 }

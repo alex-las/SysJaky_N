@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="NameLabel" xml:space="preserve">
+    <value>Název kategorie</value>
+  </data>
+  <data name="SlugLabel" xml:space="preserve">
+    <value>Identifikátor (slug)</value>
+  </data>
+  <data name="SlugHelp" xml:space="preserve">
+    <value>Krátký jedinečný název pro URL nebo filtry (např. kvalita, bozp).</value>
+  </data>
+  <data name="DescriptionLabel" xml:space="preserve">
+    <value>Popis</value>
+  </data>
+  <data name="DescriptionHelp" xml:space="preserve">
+    <value>Volitelně doplňte stručný popis kategorie.</value>
+  </data>
+</root>

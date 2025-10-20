@@ -109,6 +109,8 @@ public class Course
 
     public ICollection<CourseTag> CourseTags { get; set; } = new List<CourseTag>();
 
+    public ICollection<CourseCategory> Categories { get; set; } = new List<CourseCategory>();
+
     [StringLength(1000)]
     public string? PopoverHtml { get; set; }
 }

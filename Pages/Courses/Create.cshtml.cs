@@ -9,6 +9,8 @@ using SysJaky_N.Data;
 using SysJaky_N.Models;
 using SysJaky_N.Services;
 using System.Security.Claims;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace SysJaky_N.Pages.Courses;
 
@@ -42,22 +44,37 @@ public class CreateModel : PageModel
 
     public SelectList CourseGroups { get; set; } = default!;
 
-    public void OnGet()
+    public IEnumerable<SelectListItem> CategoryOptions { get; set; } = Enumerable.Empty<SelectListItem>();
+
+    [BindProperty]
+    public List<int> SelectedCategoryIds { get; set; } = new();
+
+    public async Task OnGetAsync()
     {
-        CourseGroups = new SelectList(_context.CourseGroups, "Id", "Name");
+        await LoadSelectionsAsync();
     }
 
     public async Task<IActionResult> OnPostAsync()
     {
         _courseEditor.ValidateCoverImage(CoverImage, ModelState, nameof(CoverImage));
 
+        await LoadSelectionsAsync();
+
         if (!ModelState.IsValid)
         {
-            CourseGroups = new SelectList(_context.CourseGroups, "Id", "Name", Course.CourseGroupId);
             return Page();
         }
 
         await using var transaction = await _context.Database.BeginTransactionAsync();
+
+        var categories = await _context.CourseCategories
+            .Where(category => SelectedCategoryIds.Contains(category.Id))
+            .ToListAsync();
+
+        foreach (var category in categories)
+        {
+            Course.Categories.Add(category);
+        }
 
         _context.Courses.Add(Course);
         await _context.SaveChangesAsync();
@@ -72,7 +89,6 @@ public class CreateModel : PageModel
             await transaction.RollbackAsync();
             Course.Id = 0;
             ModelState.AddModelError(nameof(CoverImage), coverResult.ErrorMessage ?? string.Empty);
-            CourseGroups = new SelectList(_context.CourseGroups, "Id", "Name", Course.CourseGroupId);
             return Page();
         }
 
@@ -89,5 +105,28 @@ public class CreateModel : PageModel
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         await _auditService.LogAsync(userId, "CourseCreated", $"Course {Course.Id} created");
         return RedirectToPage("Index");
+    }
+
+    private async Task LoadSelectionsAsync()
+    {
+        var groups = await _context.CourseGroups
+            .AsNoTracking()
+            .OrderBy(group => group.Name)
+            .ToListAsync();
+
+        CourseGroups = new SelectList(groups, "Id", "Name", Course.CourseGroupId);
+
+        SelectedCategoryIds ??= new List<int>();
+        var selectedSet = new HashSet<int>(SelectedCategoryIds);
+
+        var categories = await _context.CourseCategories
+            .AsNoTracking()
+            .OrderBy(category => category.Name)
+            .Select(category => new { category.Id, category.Name })
+            .ToListAsync();
+
+        CategoryOptions = categories
+            .Select(category => new SelectListItem(category.Name, category.Id.ToString(), selectedSet.Contains(category.Id)))
+            .ToList();
     }
 }

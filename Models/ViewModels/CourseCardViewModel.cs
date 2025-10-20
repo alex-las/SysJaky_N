@@ -4,6 +4,8 @@ namespace SysJaky_N.Models;
 
 public record IsoBadgeViewModel(string Label, string Code);
 
+public record CourseCategoryViewModel(int Id, string Name, string Slug);
+
 public class CourseCardViewModel
 {
     public int Id { get; init; }
@@ -27,6 +29,7 @@ public class CourseCardViewModel
     public IReadOnlyList<IsoBadgeViewModel> IsoBadges { get; init; } = Array.Empty<IsoBadgeViewModel>();
     public IReadOnlyList<string> Norms { get; init; } = Array.Empty<string>();
     public IReadOnlyList<string> Cities { get; init; } = Array.Empty<string>();
+    public IReadOnlyList<CourseCategoryViewModel> Categories { get; init; } = Array.Empty<CourseCategoryViewModel>();
     public int? DaysUntilStart { get; init; }
     public int Capacity { get; init; }
     public int SeatsTaken { get; init; }
