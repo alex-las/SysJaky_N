@@ -741,7 +741,7 @@ namespace SysJaky_N.Migrations
                     b.HasIndex("Locale", "Slug")
                         .IsUnique();
 
-                    b.ToTable("CourseCategoryTranslations");
+                    b.ToTable("CourseCategory_Translations");
                 });
 
             modelBuilder.Entity("SysJaky_N.Models.CourseGroup", b =>
