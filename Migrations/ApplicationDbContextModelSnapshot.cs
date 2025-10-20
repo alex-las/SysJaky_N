@@ -643,6 +643,26 @@ namespace SysJaky_N.Migrations
                     b.HasIndex("IsActive");
 
                     b.ToTable("Courses");
+
+                    b.HasMany("SysJaky_N.Models.CourseCategory", "Categories")
+                        .WithMany("Courses")
+                        .UsingEntity("SysJaky_N.Models.CourseCourseCategory",
+                            r => r.HasOne("SysJaky_N.Models.CourseCategory", "CourseCategory")
+                                .WithMany("CourseCourseCategories")
+                                .HasForeignKey("CourseCategoryId")
+                                .OnDelete(DeleteBehavior.Cascade)
+                                .IsRequired(),
+                            l => l.HasOne("SysJaky_N.Models.Course", "Course")
+                                .WithMany("CourseCourseCategories")
+                                .HasForeignKey("CourseId")
+                                .OnDelete(DeleteBehavior.Cascade)
+                                .IsRequired(),
+                            j =>
+                            {
+                                j.HasKey("CourseId", "CourseCategoryId");
+                                j.ToTable("CourseCourseCategories");
+                                j.HasIndex(new[] { "CourseCategoryId" });
+                            });
                 });
 
             modelBuilder.Entity("SysJaky_N.Models.CourseBlock", b =>
