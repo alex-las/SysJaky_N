@@ -4,10 +4,13 @@
 @using SysJaky_N.Authorization
 @using SysJaky_N.Extensions
 @using SysJaky_N.Resources
+@using SysJaky_N.Services
+@using System.Globalization
 @using System.Linq
 @inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
 @inject IStringLocalizer<CompanyContactResources> CompanyContact
-@{
+@inject INewsletterCategoryProvider NewsletterCategoryProvider
+@{ 
     var requestCulture = Context.Features.Get<IRequestCultureFeature>();
     var currentCulture = requestCulture?.RequestCulture.Culture.TwoLetterISOLanguageName ?? "cs";
     var currentPage = ViewContext.RouteData.Values["page"]?.ToString() ?? string.Empty;
@@ -22,6 +25,7 @@
         ("/CorporateInquiry", "NavCorporateInquiry")
     };
     bool IsCurrentPage(string page) => string.Equals(currentPage, page, System.StringComparison.OrdinalIgnoreCase);
+    var newsletterCategories = await NewsletterCategoryProvider.GetLocalizedCategoriesAsync(CultureInfo.CurrentUICulture);
 }
 <!DOCTYPE html>
 <html lang="@currentCulture">
@@ -154,9 +158,44 @@
                             <span class="form-label fw-semibold">@Localizer["NewsletterCategoriesLabel"]</span>
                             <div class="d-flex flex-column gap-2"
                                  data-newsletter-categories
-                                 data-empty-text="@Localizer["NewsletterCategoriesEmpty"]"
-                                 data-error-text="@Localizer["NewsletterCategoriesError"]"
-                                 data-loading-text="@Localizer["NewsletterCategoriesLoading"]"
+                                 data-required-text="@Localizer["Validation.Categories.Required"]">
+                                @if (newsletterCategories.Count > 0)
+                                {
+                                    <div class="form-check">
+                                        <input class="form-check-input"
+                                               type="checkbox"
+                                               id="newsletter-category-select-all"
+                                               data-newsletter-category-select-all
+                                               checked="checked" />
+                                        <label class="form-check-label" for="newsletter-category-select-all">
+                                            @Localizer["NewsletterCategoriesSelectAll"]
+                                        </label>
+                                    </div>
+
+                                    @for (var index = 0; index < newsletterCategories.Count; index++)
+                                    {
+                                        var category = newsletterCategories[index];
+                                        var inputId = $"newsletter-category-{category.Id}-{index}";
+                                        <div class="form-check">
+                                            <input class="form-check-input"
+                                                   type="checkbox"
+                                                   id="@inputId"
+                                                   name="Input.CategoryIds"
+                                                   value="@category.Id"
+                                                   checked="checked"
+                                                   data-newsletter-category-input />
+                                            <label class="form-check-label" for="@inputId">@category.Name</label>
+                                        </div>
+                                    }
+                                }
+                                else
+                                {
+                                    <p class="small mb-0 text-muted">@Localizer["NewsletterCategoriesEmpty"]</p>
+                                }
+                            </div>
+                            <div class="invalid-feedback d-none"
+                                 data-newsletter-category-error
+                                 role="alert"
                                  aria-live="polite"></div>
                             <small class="text-muted">@Localizer["NewsletterCategoriesHint"]</small>
                         </div>

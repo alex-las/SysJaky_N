@@ -388,7 +388,10 @@
     <value>Choose the topics you're interested in</value>
   </data>
   <data name="NewsletterCategoriesHint" xml:space="preserve">
-    <value>Select one or more categories. If you leave everything unchecked, we'll subscribe you to all of them.</value>
+    <value>All categories are selected by default. Clear any topics you are not interested in.</value>
+  </data>
+  <data name="NewsletterCategoriesSelectAll" xml:space="preserve">
+    <value>Select all categories</value>
   </data>
   <data name="NewsletterCategoriesEmpty" xml:space="preserve">
     <value>There are no categories available right now.</value>
