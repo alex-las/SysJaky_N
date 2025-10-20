@@ -27,6 +27,10 @@
             </select>
         </div>
         <div>
+            <label class="form-label" asp-for="PublicationFilter">@Localizer["FilterPublicationLabel"]</label>
+            <select asp-for="PublicationFilter" asp-items="Model.PublicationOptions" class="form-select"></select>
+        </div>
+        <div>
             <label class="form-label" asp-for="CreatedFrom">@Localizer["FilterFromLabel"]</label>
             <input asp-for="CreatedFrom" type="date" class="form-control" />
         </div>
@@ -48,16 +52,40 @@
                 <th scope="col">@Localizer["TableHeaderTitle"]</th>
                 <th scope="col">@Localizer["TableHeaderAuthor"]</th>
                 <th scope="col">@Localizer["TableHeaderCreated"]</th>
+                <th scope="col">@Localizer["TableHeaderStatus"]</th>
                 <th scope="col" class="text-end">@Localizer["TableHeaderActions"]</th>
             </tr>
         </thead>
         <tbody>
+        @{ var nowUtc = Model.NowUtc; }
         @foreach (var item in Model.Articles)
         {
+            var statusText = string.Empty;
+            var statusClass = "bg-secondary";
+            if (!item.IsPublished)
+            {
+                statusText = Localizer["StatusDraft"];
+            }
+            else if (item.PublishedAtUtc.HasValue && item.PublishedAtUtc.Value > nowUtc)
+            {
+                var scheduledAtLocal = DateTime.SpecifyKind(item.PublishedAtUtc.Value, DateTimeKind.Utc).ToLocalTime();
+                statusText = Localizer["StatusScheduled", scheduledAtLocal.ToString("g")];
+                statusClass = "bg-warning text-dark";
+            }
+            else
+            {
+                var publishedAtUtc = item.PublishedAtUtc ?? item.CreatedAt;
+                var publishedAtLocal = DateTime.SpecifyKind(publishedAtUtc, DateTimeKind.Utc).ToLocalTime();
+                statusText = Localizer["StatusPublished", publishedAtLocal.ToString("g")];
+                statusClass = "bg-success";
+            }
             <tr>
                 <td>@item.Title</td>
                 <td>@(item.Author?.UserName ?? item.Author?.Email ?? Localizer["UnknownAuthor"])</td>
                 <td>@item.CreatedAt.ToString("g")</td>
+                <td>
+                    <span class="badge @statusClass">@statusText</span>
+                </td>
                 <td class="text-end">
                     <div class="admin-table-actions justify-content-end">
                         <a asp-page="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-admin-ghost">@Localizer["ActionEdit"]</a>

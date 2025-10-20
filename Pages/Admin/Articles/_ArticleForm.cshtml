@@ -1,4 +1,5 @@
 @model SysJaky_N.Models.Article
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
 
 <div class="form-group admin-article-editor">
     <label asp-for="Title"></label>
@@ -24,4 +25,15 @@
               data-editor-textarea></textarea>
     <div class="mt-3" data-editor-preview hidden aria-live="polite"></div>
     <span asp-validation-for="Content" class="text-danger"></span>
+</div>
+<div class="form-check form-switch mb-3">
+    <input asp-for="IsPublished" class="form-check-input" role="switch" />
+    <label asp-for="IsPublished" class="form-check-label">@Localizer["IsPublishedLabel"]</label>
+    <span asp-validation-for="IsPublished" class="text-danger"></span>
+</div>
+<div class="form-group mb-3">
+    <label asp-for="PublishedAtUtc" class="form-label">@Localizer["PublishedAtLabel"]</label>
+    <input asp-for="PublishedAtUtc" type="datetime-local" class="form-control" asp-format="{0:yyyy-MM-ddTHH:mm}" />
+    <span asp-validation-for="PublishedAtUtc" class="text-danger"></span>
+    <div class="form-text">@Localizer["PublishedAtHint"]</div>
 </div>
