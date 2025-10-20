@@ -11,6 +11,7 @@ using SysJaky_N.Services;
 using System.Security.Claims;
 using System.Linq;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace SysJaky_N.Pages.Courses;
 
@@ -119,6 +120,15 @@ public class CreateModel : PageModel
         SelectedCategoryIds ??= new List<int>();
         var selectedSet = new HashSet<int>(SelectedCategoryIds);
 
+        var localeCandidates = new[]
+            {
+                CultureInfo.CurrentUICulture.Name,
+                CultureInfo.CurrentUICulture.TwoLetterISOLanguageName
+            }
+            .Where(locale => !string.IsNullOrWhiteSpace(locale))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+
         var categories = await _context.CourseCategories
             .AsNoTracking()
             .Where(category => category.IsActive)
@@ -127,8 +137,50 @@ public class CreateModel : PageModel
             .Select(category => new { category.Id, category.Name })
             .ToListAsync();
 
+        var categoryIds = categories.Select(category => category.Id).ToList();
+
+        var translationPriority = localeCandidates
+            .Select((locale, index) => new { locale, index })
+            .ToDictionary(item => item.locale, item => item.index, StringComparer.OrdinalIgnoreCase);
+
+        Dictionary<int, CourseCategoryTranslation> translationsByCategory = new();
+
+        if (categoryIds.Count > 0 && localeCandidates.Length > 0)
+        {
+            var translations = await _context.CourseCategoryTranslations
+                .AsNoTracking()
+                .Where(translation => categoryIds.Contains(translation.CategoryId)
+                    && localeCandidates.Contains(translation.Locale))
+                .ToListAsync();
+
+            foreach (var grouping in translations.GroupBy(translation => translation.CategoryId))
+            {
+                var ordered = grouping
+                    .OrderBy(translation => translationPriority.TryGetValue(translation.Locale, out var priority)
+                        ? priority
+                        : int.MaxValue)
+                    .FirstOrDefault();
+
+                if (ordered is not null)
+                {
+                    translationsByCategory[grouping.Key] = ordered;
+                }
+            }
+        }
+
         CategoryOptions = categories
-            .Select(category => new SelectListItem(category.Name, category.Id.ToString(), selectedSet.Contains(category.Id)))
+            .Select(category =>
+            {
+                var displayName = category.Name;
+
+                if (translationsByCategory.TryGetValue(category.Id, out var translation)
+                    && !string.IsNullOrWhiteSpace(translation.Name))
+                {
+                    displayName = translation.Name;
+                }
+
+                return new SelectListItem(displayName, category.Id.ToString(), selectedSet.Contains(category.Id));
+            })
             .ToList();
     }
 }
