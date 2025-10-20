@@ -12,7 +12,7 @@ namespace SysJaky_N.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "CourseCategories",
+                name: "coursecategories",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -28,14 +28,16 @@ namespace SysJaky_N.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CourseCategories", x => x.Id);
+                    table.PrimaryKey("PK_coursecategories", x => x.Id);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "CourseCategoryTranslations",
+                name: "coursecategory_translations",
                 columns: table => new
                 {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     CategoryId = table.Column<int>(type: "int", nullable: false),
                     Locale = table.Column<string>(type: "varchar(10)", maxLength: 10, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
@@ -48,18 +50,18 @@ namespace SysJaky_N.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CourseCategoryTranslations", x => new { x.CategoryId, x.Locale });
+                    table.PrimaryKey("PK_coursecategory_translations", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_CourseCategoryTranslations_CourseCategories_CategoryId",
+                        name: "fk_cc_i18n_category",
                         column: x => x.CategoryId,
-                        principalTable: "CourseCategories",
+                        principalTable: "coursecategories",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "CourseCourseCategories",
+                name: "course_coursecategories",
                 columns: table => new
                 {
                     CourseId = table.Column<int>(type: "int", nullable: false),
@@ -67,15 +69,15 @@ namespace SysJaky_N.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CourseCourseCategories", x => new { x.CourseId, x.CourseCategoryId });
+                    table.PrimaryKey("PK_course_coursecategories", x => new { x.CourseId, x.CourseCategoryId });
                     table.ForeignKey(
-                        name: "FK_CourseCourseCategories_CourseCategories_CourseCategoryId",
+                        name: "FK_course_coursecategories_coursecategories_CourseCategoryId",
                         column: x => x.CourseCategoryId,
-                        principalTable: "CourseCategories",
+                        principalTable: "coursecategories",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_CourseCourseCategories_Courses_CourseId",
+                        name: "FK_course_coursecategories_Courses_CourseId",
                         column: x => x.CourseId,
                         principalTable: "Courses",
                         principalColumn: "Id",
@@ -85,19 +87,25 @@ namespace SysJaky_N.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_CourseCategories_Slug",
-                table: "CourseCategories",
+                table: "coursecategories",
                 column: "Slug",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_CourseCategoryTranslations_Locale_Slug",
-                table: "CourseCategoryTranslations",
+                name: "uq_category_locale",
+                table: "coursecategory_translations",
+                columns: new[] { "CategoryId", "Locale" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "uq_locale_slug",
+                table: "coursecategory_translations",
                 columns: new[] { "Locale", "Slug" },
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_CourseCourseCategories_CourseCategoryId",
-                table: "CourseCourseCategories",
+                name: "IX_course_coursecategories_CourseCategoryId",
+                table: "course_coursecategories",
                 column: "CourseCategoryId");
         }
 
@@ -105,13 +113,13 @@ namespace SysJaky_N.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "CourseCategoryTranslations");
+                name: "coursecategory_translations");
 
             migrationBuilder.DropTable(
-                name: "CourseCourseCategories");
+                name: "course_coursecategories");
 
             migrationBuilder.DropTable(
-                name: "CourseCategories");
+                name: "coursecategories");
         }
     }
 }

@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using SysJaky_N.Models;
-using System.Collections.Generic;
 
 namespace SysJaky_N.Data;
 
@@ -228,6 +227,9 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.Entity<CourseCategory>()
+            .ToTable("coursecategories");
+
+        builder.Entity<CourseCategory>()
             .HasIndex(c => c.Slug)
             .IsUnique();
 
@@ -246,7 +248,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.Entity<CourseCategoryTranslation>()
-            .HasKey(t => new { t.CategoryId, t.Locale });
+            .ToTable("coursecategory_translations");
 
         builder.Entity<CourseCategoryTranslation>()
             .Property(t => t.Locale)
@@ -266,26 +268,32 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .IsRequired(false);
 
         builder.Entity<CourseCategoryTranslation>()
+            .HasIndex(t => new { t.CategoryId, t.Locale })
+            .HasDatabaseName("uq_category_locale")
+            .IsUnique();
+
+        builder.Entity<CourseCategoryTranslation>()
             .HasIndex(t => new { t.Locale, t.Slug })
+            .HasDatabaseName("uq_locale_slug")
             .IsUnique();
 
         builder.Entity<Course>()
             .HasMany(c => c.Categories)
             .WithMany(c => c.Courses)
-            .UsingEntity<Dictionary<string, object>>(
-                "CourseCourseCategory",
-                j => j.HasOne<CourseCategory>()
-                    .WithMany()
-                    .HasForeignKey("CourseCategoryId")
+            .UsingEntity<CourseCourseCategory>(
+                j => j.HasOne(e => e.CourseCategory)
+                    .WithMany(c => c.CourseCourseCategories)
+                    .HasForeignKey(e => e.CourseCategoryId)
                     .OnDelete(DeleteBehavior.Cascade),
-                j => j.HasOne<Course>()
-                    .WithMany()
-                    .HasForeignKey("CourseId")
+                j => j.HasOne(e => e.Course)
+                    .WithMany(c => c.CourseCourseCategories)
+                    .HasForeignKey(e => e.CourseId)
                     .OnDelete(DeleteBehavior.Cascade),
                 j =>
                 {
-                    j.HasKey("CourseId", "CourseCategoryId");
-                    j.ToTable("CourseCourseCategories");
+                    j.HasKey(e => new { e.CourseId, e.CourseCategoryId });
+                    j.ToTable("course_coursecategories");
+                    j.HasIndex(e => e.CourseCategoryId);
                 });
 
         builder.Entity<ChatbotSettings>()
