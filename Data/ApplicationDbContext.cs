@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using SysJaky_N.Models;
-using System.Collections.Generic;
 
 namespace SysJaky_N.Data;
 
@@ -272,19 +271,18 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         builder.Entity<Course>()
             .HasMany(c => c.Categories)
             .WithMany(c => c.Courses)
-            .UsingEntity<Dictionary<string, object>>(
-                "CourseCourseCategory",
-                j => j.HasOne<CourseCategory>()
+            .UsingEntity<CourseCourseCategory>(
+                j => j.HasOne(e => e.CourseCategory)
                     .WithMany()
-                    .HasForeignKey("CourseCategoryId")
+                    .HasForeignKey(e => e.CourseCategoryId)
                     .OnDelete(DeleteBehavior.Cascade),
-                j => j.HasOne<Course>()
+                j => j.HasOne(e => e.Course)
                     .WithMany()
-                    .HasForeignKey("CourseId")
+                    .HasForeignKey(e => e.CourseId)
                     .OnDelete(DeleteBehavior.Cascade),
                 j =>
                 {
-                    j.HasKey("CourseId", "CourseCategoryId");
+                    j.HasKey(e => new { e.CourseId, e.CourseCategoryId });
                     j.ToTable("CourseCourseCategories");
                 });
 
