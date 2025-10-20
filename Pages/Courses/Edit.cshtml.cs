@@ -190,7 +190,7 @@ public class EditModel : PageModel
 
         if (categoryIds.Count > 0 && localeCandidates.Length > 0)
         {
-            var translations = await _context.CourseCategoryTranslations
+            var translations = await _context.coursecategory_translations
                 .AsNoTracking()
                 .Where(translation => categoryIds.Contains(translation.CategoryId)
                     && localeCandidates.Contains(translation.Locale))

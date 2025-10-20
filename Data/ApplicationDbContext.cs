@@ -45,7 +45,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Tag> Tags { get; set; } = default!;
     public DbSet<CourseTag> CourseTags { get; set; } = default!;
     public DbSet<CourseCategory> CourseCategories { get; set; } = default!;
-    public DbSet<CourseCategoryTranslation> CourseCategoryTranslations { get; set; } = default!;
+    public DbSet<CourseCategoryTranslation> coursecategory_translations { get; set; } = default!;
     public DbSet<NewsletterSubscriber> NewsletterSubscribers { get; set; } = default!;
 
 
