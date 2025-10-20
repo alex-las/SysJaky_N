@@ -66,10 +66,10 @@
     <value>Profesionální kurzy a školení pro vaši firmu.</value>
   </data>
   <data name="HeroMainHeading" xml:space="preserve">
-    <value>Posuňte svůj tým odbornými ISO školeními a kurzy.</value>
+    <value>Posilte kompetence týmu pro systémy ISO a laboratorní akreditace.</value>
   </data>
   <data name="HeroSubheading" xml:space="preserve">
-    <value>Vyberte si otevřené termíny i firemní workshopy vedené lead auditory. Když chcete pokračovat k certifikaci či akreditaci, navážeme poradenstvím a dokumentací.</value>
+    <value>Vyberte si otevřené termíny i firemní workshopy vedené lead auditory. Jsme poradci, kteří vás provedou přípravou na certifikaci či akreditaci ve spolupráci s nezávislým certifikačním orgánem.</value>
   </data>
   <data name="HeroUSP1" xml:space="preserve">
     <value>Dlouholeté zkušenosti auditorů a konzultantů</value>
@@ -78,7 +78,7 @@
     <value>Lektoři s auditorskou praxí</value>
   </data>
   <data name="HeroUSP1Description" xml:space="preserve">
-    <value>Každé školení vede expert, který připravuje firmy na certifikace a zná požadavky autorit z praxe.</value>
+    <value>Každé školení vede expert, který připravuje firmy na certifikační audity a zná požadavky autorit z praxe.</value>
   </data>
   <data name="HeroUSP2" xml:space="preserve">
     <value>Praktické know-how získané z reálných auditů</value>
@@ -96,7 +96,7 @@
     <value>Podpora od školení po akreditaci</value>
   </data>
   <data name="HeroUSP3Description" xml:space="preserve">
-    <value>Začít můžete kurzem, ale pokud chcete, provedeme vás také interním auditem, dokumentací i úspěšnou certifikací.</value>
+    <value>Začít můžete kurzem, ale pokud chcete, provedeme vás také interním auditem, dokumentací i přípravou na jednání s certifikačním orgánem.</value>
   </data>
   <data name="HeroCorporateCardTitle" xml:space="preserve">
     <value>Poradenství k akreditaci a certifikaci</value>
@@ -138,67 +138,7 @@
     <value>300+ úspěšně vedených auditů</value>
   </data>
   <data name="TrustedClientsMetricAccreditations" xml:space="preserve">
-    <value>Akreditace ČIA a další profesní uznání</value>
-  </data>
-  <data name="TrustedClientsLogosLabel" xml:space="preserve">
-    <value>Loga významných klientů</value>
-  </data>
-  <data name="TrustedClientsHeading" xml:space="preserve">
-    <value>Důvěřují nám napříč obory</value>
-  </data>
-  <data name="TrustedClientsSubtitle" xml:space="preserve">
-    <value>Naši experti dlouhodobě pomáhají výrobním podnikům, technologiím i veřejným institucím dosahovat lepších výsledků.</value>
-  </data>
-  <data name="TrustedClientsMetricParticipants" xml:space="preserve">
-    <value>1 200+ vyškolených účastníků</value>
-  </data>
-  <data name="TrustedClientsMetricRating" xml:space="preserve">
-    <value>4,9/5 průměrné hodnocení</value>
-  </data>
-  <data name="TrustedClientsMetricAudits" xml:space="preserve">
-    <value>300+ úspěšně vedených auditů</value>
-  </data>
-  <data name="TrustedClientsMetricAccreditations" xml:space="preserve">
-    <value>Akreditace ČIA a další profesní uznání</value>
-  </data>
-  <data name="TrustedClientsLogosLabel" xml:space="preserve">
-    <value>Loga významných klientů</value>
-  </data>
-  <data name="TrustedClientsLogoSkoda" xml:space="preserve">
-    <value>Škoda Auto</value>
-  </data>
-  <data name="TrustedClientsLogoCez" xml:space="preserve">
-    <value>ČEZ</value>
-  </data>
-  <data name="TrustedClientsLogoContinental" xml:space="preserve">
-    <value>Continental Automotive</value>
-  </data>
-  <data name="TrustedClientsLogoPilsner" xml:space="preserve">
-    <value>Pilsner Urquell</value>
-  </data>
-  <data name="TrustedClientsLogoHoneywell" xml:space="preserve">
-    <value>Honeywell</value>
-  </data>
-  <data name="TrustedClientsReferenceNote" xml:space="preserve">
-    <value>Reference zašleme na vyžádání jako součást nabídkového řízení.</value>
-  </data>
-  <data name="TrustedClientsHeading" xml:space="preserve">
-    <value>Důvěřují nám napříč obory</value>
-  </data>
-  <data name="TrustedClientsSubtitle" xml:space="preserve">
-    <value>Naši experti dlouhodobě pomáhají výrobním podnikům, technologiím i veřejným institucím dosahovat lepších výsledků.</value>
-  </data>
-  <data name="TrustedClientsMetricParticipants" xml:space="preserve">
-    <value>1 200+ vyškolených účastníků</value>
-  </data>
-  <data name="TrustedClientsMetricRating" xml:space="preserve">
-    <value>4,9/5 průměrné hodnocení</value>
-  </data>
-  <data name="TrustedClientsMetricAudits" xml:space="preserve">
-    <value>300+ úspěšně vedených auditů</value>
-  </data>
-  <data name="TrustedClientsMetricAccreditations" xml:space="preserve">
-    <value>Akreditace ČIA a další profesní uznání</value>
+    <value>Zkušenosti s požadavky ČIA a dalších autorit</value>
   </data>
   <data name="TrustedClientsLogosLabel" xml:space="preserve">
     <value>Loga významných klientů</value>
@@ -252,10 +192,10 @@
     <value>Sestavte plán školení týmu, naplánujte interní audit a rozdělte odpovědnosti.</value>
   </data>
   <data name="StepPayTitle" xml:space="preserve">
-    <value>Získejte certifikaci bez stresu</value>
+    <value>Připravte se na certifikaci bez stresu</value>
   </data>
   <data name="StepPayDescription" xml:space="preserve">
-    <value>Připravte dokumentaci, koordinujte certifikační audit a projděte celým procesem s jistotou.</value>
+    <value>Připravte dokumentaci, slaďte se zvoleným certifikačním orgánem a projděte celým procesem s naší podporou.</value>
   </data>
   <data name="CalendarButton" xml:space="preserve">
     <value>Kalendář termínů</value>
@@ -297,7 +237,7 @@
     <value>Certifikační normy, se kterými vám pomůžeme</value>
   </data>
   <data name="IsoStandardsDescription" xml:space="preserve">
-    <value>Vyberte normu a společně naplánujeme kroky k úspěšné certifikaci – od úvodní analýzy přes školení až po audit.</value>
+    <value>Vyberte normu a společně naplánujeme kroky k úspěšnému zvládnutí certifikačního auditu – od úvodní analýzy přes školení až po spolupráci s certifikační autoritou.</value>
   </data>
   <data name="Iso9001Description" xml:space="preserve">
     <value>Stabilizujte procesy, zvyšte kvalitu a obhajte shodu při každém certifikačním auditu.</value>
@@ -318,10 +258,10 @@
     <value>Chraňte klíčová data, splňte požadavky zákazníků a připravte se na audit ISMS.</value>
   </data>
   <data name="ProcessHeading" xml:space="preserve">
-    <value>Jak probíhá spolupráce na cestě k certifikaci</value>
+    <value>Jak probíhá naše spolupráce na cestě k certifikaci</value>
   </data>
   <data name="ProcessDescription" xml:space="preserve">
-    <value>Provedeme vás každým krokem – od úvodní analýzy přes implementaci standardu až po finální certifikační audit.</value>
+    <value>Provedeme vás každým krokem přípravy – od úvodní analýzy přes implementaci standardu až po koordinaci finálního certifikačního auditu, který zajišťuje nezávislý orgán.</value>
   </data>
   <data name="ProcessStep1Title" xml:space="preserve">
     <value>Startovací analýza a roadmapa</value>
@@ -339,13 +279,13 @@
     <value>Podpora při certifikačním auditu</value>
   </data>
   <data name="ProcessStep3Description" xml:space="preserve">
-    <value>Připravíme vás na certifikační audit, doprovodíme auditorem a pomůžeme s nápravnými opatřeními.</value>
+    <value>Připravíme vás na certifikační audit, pomůžeme s komunikací s certifikačním orgánem a navrhneme nápravná opatření.</value>
   </data>
   <data name="CtaHeading" xml:space="preserve">
-    <value>Potřebujete poradit s přípravou na certifikaci?</value>
+    <value>Potřebujete průvodce přípravou na certifikaci?</value>
   </data>
   <data name="CtaDescription" xml:space="preserve">
-    <value>Ozvěte se nám a společně navrhneme optimální kombinaci školení, konzultací i interních auditů pro váš tým.</value>
+    <value>Ozvěte se nám a společně navrhneme optimální kombinaci školení, konzultací i interních auditů. Certifikaci následně provede vámi zvolený nezávislý orgán.</value>
   </data>
   <data name="CtaButton" xml:space="preserve">
     <value>Nezávazně poptat služby</value>
@@ -363,13 +303,13 @@
     <value>Brzy startují</value>
   </data>
   <data name="TrustCertificate" xml:space="preserve">
-    <value>Certifikát v ceně vybraných kurzů. Absolventi získají oficiální potvrzení auditora / interního auditora.</value>
+    <value>Certifikát v ceně vybraných kurzů. Absolventi získají oficiální potvrzení o absolvování s uznáním relevantních autorit.</value>
   </data>
   <data name="TrustGraduates" xml:space="preserve">
     <value>Naše kurzy absolvovalo {0}</value>
   </data>
   <data name="TrustGuarantee" xml:space="preserve">
-    <value>Zaručujeme úspěšnou certifikaci nebo vrátíme kurzovné</value>
+    <value>Podporujeme váš tým od prvního kontaktu až po certifikační audit nezávislého orgánu</value>
   </data>
   <data name="TrustRating" xml:space="preserve">
     <value>Hodnocení {0} od účastníků kurzů</value>
@@ -397,10 +337,10 @@
     <value>Váš prověřený partner pro systémy ISO a HACCP</value>
   </data>
   <data name="AboutDescription" xml:space="preserve">
-    <value>Více než 20 let pomáháme výrobním firmám, laboratořím i zdravotnickým zařízením navrhovat, zavádět a udržovat certifikované systémy řízení. Naši konzultanti propojují praxi vedoucích auditorů s reálnými zkušenostmi z desítek odvětví.</value>
+    <value>Více než 20 let pomáháme výrobním firmám, laboratořím i zdravotnickým zařízením navrhovat, zavádět a udržovat systémy řízení splňující požadavky norem. Naši konzultanti propojují praxi vedoucích auditorů s reálnými zkušenostmi z desítek odvětví.</value>
   </data>
   <data name="AboutBulletConsulting" xml:space="preserve">
-    <value>Kompletní podpora od úvodní analýzy až po úspěšnou certifikaci.</value>
+    <value>Kompletní podpora od úvodní analýzy až po připravenost na certifikační audit.</value>
   </data>
   <data name="AboutBulletTraining" xml:space="preserve">
     <value>Akreditovaná školení pro manažery kvality, auditory i odborné týmy.</value>
