@@ -1,83 +1,244 @@
 @page
 @model SysJaky_N.Pages.Admin.Testimonials.IndexModel
+@using System.Globalization
+@inject Microsoft.Extensions.Localization.IStringLocalizer<SysJaky_N.Pages.Admin.Testimonials.IndexModel> Localizer
 @{
-    ViewData["Title"] = "Reference";
     Layout = "/Pages/Admin/_Layout.cshtml";
 }
 
-<div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3 mb-4">
-    <div>
-        <h1 class="h3 mb-1">Reference</h1>
-        <p class="text-muted mb-0">Spravujte doporučení absolventů se zaznamenaným souhlasem.</p>
-    </div>
-    <a class="btn btn-primary" asp-page="Create">
-        <i class="bi bi-plus-lg me-1" aria-hidden="true"></i>
-        Přidat referenci
-    </a>
-</div>
+@functions {
+    string FormatRelativeTime(TimeSpan span)
+    {
+        if (span.TotalDays >= 1)
+        {
+            var days = Math.Max(1, (int)Math.Round(span.TotalDays));
+            return Localizer["RelativeTimeDays", days];
+        }
 
-<div class="table-responsive shadow-sm rounded-3">
-    <table class="table align-middle mb-0">
-        <thead class="table-light">
-            <tr>
-                <th scope="col">Jméno</th>
-                <th scope="col" class="text-nowrap">Pozice</th>
-                <th scope="col">Společnost</th>
-                <th scope="col" class="text-center">Hodnocení</th>
-                <th scope="col" class="text-center">Publikováno</th>
-                <th scope="col" class="text-center">Souhlas</th>
-                <th scope="col" class="text-end">Akce</th>
-            </tr>
-        </thead>
-        <tbody>
-            @if (Model.Testimonials.Any())
-            {
-                foreach (var item in Model.Testimonials)
+        if (span.TotalHours >= 1)
+        {
+            var hours = Math.Max(1, (int)Math.Round(span.TotalHours));
+            return Localizer["RelativeTimeHours", hours];
+        }
+
+        if (span.TotalMinutes >= 1)
+        {
+            var minutes = Math.Max(1, (int)Math.Round(span.TotalMinutes));
+            return Localizer["RelativeTimeMinutes", minutes];
+        }
+
+        return Localizer["RelativeTimeMoments"];
+    }
+}
+
+<section class="admin-page-header">
+    <div class="admin-page-header__title">
+        <h1>@Localizer["HeaderTitle"]</h1>
+        <p class="text-muted mb-0">@Localizer["HeaderSubtitle"]</p>
+    </div>
+    <div class="admin-page-header__actions">
+        <a class="btn btn-admin-primary" asp-page="Create">
+            <i class="bi bi-plus-lg me-1" aria-hidden="true"></i>
+            @Localizer["CreateButton"]
+        </a>
+    </div>
+</section>
+
+@if (TempData["StatusMessage"] is string statusMessage)
+{
+    <div class="alert alert-success" role="status">@statusMessage</div>
+}
+
+<form method="get" class="admin-card" role="search" aria-label="@Localizer["FilterAriaLabel"]">
+    <div class="admin-filters">
+        <div class="flex-grow-1">
+            <label class="form-label visually-hidden" asp-for="Search">@Localizer["FilterSearchLabel"]</label>
+            <input asp-for="Search" class="form-control" placeholder="@Localizer["FilterSearchPlaceholder"]" />
+        </div>
+        <div class="d-flex flex-column flex-lg-row gap-3">
+            <fieldset class="admin-filter-group">
+                <legend class="form-label">@Localizer["FilterPublishedLabel"]</legend>
+                <div class="d-flex flex-wrap gap-2">
+                    @foreach (var state in Enum.GetValues(typeof(IndexModel.PublishedFilterState)).Cast<IndexModel.PublishedFilterState>())
+                    {
+                        var id = $"published_{state}";
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" id="@id" name="@nameof(Model.PublishedState)" value="@state" @(Model.PublishedState == state ? "checked" : null) />
+                            <label class="form-check-label" for="@id">@Localizer[$"FilterPublished{state}"]</label>
+                        </div>
+                    }
+                </div>
+            </fieldset>
+            <fieldset class="admin-filter-group">
+                <legend class="form-label">@Localizer["FilterConsentLabel"]</legend>
+                <div class="d-flex flex-wrap gap-2">
+                    @foreach (var state in Enum.GetValues(typeof(IndexModel.ConsentFilterState)).Cast<IndexModel.ConsentFilterState>())
+                    {
+                        var id = $"consent_{state}";
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" id="@id" name="@nameof(Model.ConsentState)" value="@state" @(Model.ConsentState == state ? "checked" : null) />
+                            <label class="form-check-label" for="@id">@Localizer[$"FilterConsent{state}"]</label>
+                        </div>
+                    }
+                </div>
+            </fieldset>
+        </div>
+    </div>
+    <div class="admin-form-actions">
+        <button type="submit" class="btn btn-admin-primary">@Localizer["FilterSubmit"]</button>
+        <a class="btn btn-admin-ghost" asp-page="/Admin/Testimonials/Index">@Localizer["FilterReset"]</a>
+    </div>
+</form>
+
+<section class="admin-card mt-4">
+    <h2 class="h5 mb-3">@Localizer["SummaryHeading"]</h2>
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-5 g-3">
+        <div class="col">
+            <div class="admin-stat">
+                <div class="admin-stat__label text-muted">@Localizer["SummaryTotal"]</div>
+                <div class="admin-stat__value h4 mb-0">@Model.Statistics.Total</div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="admin-stat">
+                <div class="admin-stat__label text-muted">@Localizer["SummaryPublished"]</div>
+                <div class="admin-stat__value h4 mb-0">@Model.Statistics.Published</div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="admin-stat">
+                <div class="admin-stat__label text-muted">@Localizer["SummaryAwaitingPublication"]</div>
+                <div class="admin-stat__value h4 mb-0">@Model.Statistics.AwaitingPublication</div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="admin-stat">
+                <div class="admin-stat__label text-muted">@Localizer["SummaryWithConsent"]</div>
+                <div class="admin-stat__value h4 mb-0">@Model.Statistics.WithConsent</div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="admin-stat">
+                <div class="admin-stat__label text-muted">@Localizer["SummaryWithoutConsent"]</div>
+                <div class="admin-stat__value h4 mb-0">@Model.Statistics.WithoutConsent</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<form method="post" asp-page="./Index" class="admin-card mt-4">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="Search" />
+    <input type="hidden" asp-for="PublishedState" />
+    <input type="hidden" asp-for="ConsentState" />
+
+    <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+    <div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3 mb-3">
+        <div>
+            <h2 class="h5 mb-1">@Localizer["BulkActionsHeading"]</h2>
+            <p class="text-muted mb-0">@Localizer["BulkActionsHint"]</p>
+        </div>
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-admin-primary" asp-page-handler="GrantConsent">@Localizer["BulkGrantConsentButton"]</button>
+            <button type="submit" class="btn btn-admin-warning" asp-page-handler="Unpublish">@Localizer["BulkUnpublishButton"]</button>
+        </div>
+    </div>
+
+    <div class="admin-table-wrapper table-responsive">
+        <table class="table admin-table align-middle mb-0">
+            <thead>
+                <tr>
+                    <th scope="col" class="text-center">
+                        <span class="visually-hidden">@Localizer["TableSelect"]</span>
+                        <input class="form-check-input" type="checkbox" data-select-all aria-label="@Localizer["TableSelectAll"]" />
+                    </th>
+                    <th scope="col">@Localizer["TableName"]</th>
+                    <th scope="col">@Localizer["TablePosition"]</th>
+                    <th scope="col">@Localizer["TableCompany"]</th>
+                    <th scope="col" class="text-center">@Localizer["TableRating"]</th>
+                    <th scope="col" class="text-center">@Localizer["TablePublication"]</th>
+                    <th scope="col" class="text-center">@Localizer["TableConsent"]</th>
+                    <th scope="col" class="text-center">@Localizer["TableConsentDate"]</th>
+                    <th scope="col" class="text-end">@Localizer["TableActions"]</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Testimonials.Any())
+                {
+                    foreach (var item in Model.Testimonials)
+                    {
+                        <tr>
+                            <td class="text-center">
+                                <input class="form-check-input" type="checkbox" name="SelectedTestimonialIds" value="@item.Id" data-select-item aria-label="@Localizer["TableSelect"]" />
+                            </td>
+                            <td>
+                                <div class="fw-semibold">@item.FullName</div>
+                                <div class="small text-muted text-wrap">@item.Quote</div>
+                            </td>
+                            <td>@item.Position</td>
+                            <td>@item.Company</td>
+                            <td class="text-center">@Localizer["RatingFormat", item.Rating]</td>
+                            <td class="text-center">
+                                <span class="badge @(item.IsPublished ? "bg-success" : "bg-secondary")">@Localizer[$"PublicationState_{item.PublicationState}"]</span>
+                            </td>
+                            <td class="text-center">
+                                <span class="badge @(item.ConsentGranted ? "bg-success" : "bg-warning text-dark")">@Localizer[$"ConsentStatus_{item.ConsentState}"]</span>
+                            </td>
+                            <td class="text-center">
+                                @if (item.ConsentGranted && item.ConsentGrantedAtLocal.HasValue)
+                                {
+                                    var consentDate = item.ConsentGrantedAtLocal.Value.ToString("g", CultureInfo.CurrentCulture);
+                                    <div class="small text-muted">@Localizer["ConsentGrantedAt", consentDate]</div>
+                                    if (item.ConsentGrantedAge.HasValue)
+                                    {
+                                        <div class="small text-muted">@Localizer["ConsentGrantedAgo", FormatRelativeTime(item.ConsentGrantedAge.Value)]</div>
+                                    }
+                                }
+                                else
+                                {
+                                    <span class="text-muted">—</span>
+                                }
+                            </td>
+                            <td class="text-end">
+                                <div class="admin-table-actions justify-content-end">
+                                    <a class="btn btn-sm btn-admin-ghost" asp-page="Details" asp-route-id="@item.Id">@Localizer["DetailButton"]</a>
+                                    <a class="btn btn-sm btn-admin-ghost" asp-page="Edit" asp-route-id="@item.Id">@Localizer["EditButton"]</a>
+                                    <a class="btn btn-sm btn-admin-warning" asp-page="Delete" asp-route-id="@item.Id">@Localizer["DeleteButton"]</a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
                 {
                     <tr>
-                        <td>
-                            <div class="fw-semibold">@item.FullName</div>
-                            <div class="small text-muted text-wrap">@item.Quote</div>
-                        </td>
-                        <td>@item.Position</td>
-                        <td>@item.Company</td>
-                        <td class="text-center">@($"{item.Rating}/5")</td>
-                        <td class="text-center">
-                            @if (item.IsPublished)
-                            {
-                                <span class="badge bg-success">Ano</span>
-                            }
-                            else
-                            {
-                                <span class="badge bg-secondary">Ne</span>
-                            }
-                        </td>
-                        <td class="text-center">
-                            @if (item.ConsentGranted)
-                            {
-                                <span class="badge bg-success">Udělil</span>
-                            }
-                            else
-                            {
-                                <span class="badge bg-warning text-dark">Chybí</span>
-                            }
-                        </td>
-                        <td class="text-end">
-                            <div class="btn-group" role="group" aria-label="Akce">
-                                <a class="btn btn-sm btn-outline-secondary" asp-page="Details" asp-route-id="@item.Id">Detail</a>
-                                <a class="btn btn-sm btn-outline-primary" asp-page="Edit" asp-route-id="@item.Id">Upravit</a>
-                                <a class="btn btn-sm btn-admin-warning" asp-page="Delete" asp-route-id="@item.Id">Smazat</a>
-                            </div>
-                        </td>
+                        <td colspan="9" class="text-center py-4 text-muted">@Localizer["EmptyState"]</td>
                     </tr>
                 }
+            </tbody>
+        </table>
+    </div>
+</form>
+
+@section Scripts {
+    <script>
+        (() => {
+            const selectAll = document.querySelector('[data-select-all]');
+            if (!selectAll) {
+                return;
             }
-            else
-            {
-                <tr>
-                    <td colspan="7" class="text-center py-4 text-muted">Zatím nejsou přidány žádné reference.</td>
-                </tr>
+
+            const form = selectAll.closest('form');
+            if (!form) {
+                return;
             }
-        </tbody>
-    </table>
-</div>
+
+            const items = () => Array.from(form.querySelectorAll('[data-select-item]'));
+
+            selectAll.addEventListener('change', () => {
+                items().forEach(cb => cb.checked = selectAll.checked);
+            });
+        })();
+    </script>
+}

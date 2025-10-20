@@ -12,4 +12,169 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Title" xml:space="preserve">
+    <value>Reference</value>
+  </data>
+  <data name="HeaderTitle" xml:space="preserve">
+    <value>Reference</value>
+  </data>
+  <data name="HeaderSubtitle" xml:space="preserve">
+    <value>Spravujte doporučení absolventů se zaznamenaným souhlasem.</value>
+  </data>
+  <data name="CreateButton" xml:space="preserve">
+    <value>Přidat referenci</value>
+  </data>
+  <data name="FilterAriaLabel" xml:space="preserve">
+    <value>Filtr referencí</value>
+  </data>
+  <data name="FilterSearchLabel" xml:space="preserve">
+    <value>Hledat</value>
+  </data>
+  <data name="FilterSearchPlaceholder" xml:space="preserve">
+    <value>Hledat podle jména, společnosti nebo textu...</value>
+  </data>
+  <data name="FilterPublishedLabel" xml:space="preserve">
+    <value>Publikace</value>
+  </data>
+  <data name="FilterConsentLabel" xml:space="preserve">
+    <value>Souhlas</value>
+  </data>
+  <data name="FilterSubmit" xml:space="preserve">
+    <value>Filtrovat</value>
+  </data>
+  <data name="FilterReset" xml:space="preserve">
+    <value>Resetovat</value>
+  </data>
+  <data name="FilterPublishedAll" xml:space="preserve">
+    <value>Vše</value>
+  </data>
+  <data name="FilterPublishedPublished" xml:space="preserve">
+    <value>Publikované</value>
+  </data>
+  <data name="FilterPublishedUnpublished" xml:space="preserve">
+    <value>Nepublikované</value>
+  </data>
+  <data name="FilterConsentAll" xml:space="preserve">
+    <value>Vše</value>
+  </data>
+  <data name="FilterConsentGranted" xml:space="preserve">
+    <value>Se souhlasem</value>
+  </data>
+  <data name="FilterConsentMissing" xml:space="preserve">
+    <value>Bez souhlasu</value>
+  </data>
+  <data name="SummaryHeading" xml:space="preserve">
+    <value>Souhrn</value>
+  </data>
+  <data name="SummaryTotal" xml:space="preserve">
+    <value>Celkem</value>
+  </data>
+  <data name="SummaryPublished" xml:space="preserve">
+    <value>Publikované</value>
+  </data>
+  <data name="SummaryAwaitingPublication" xml:space="preserve">
+    <value>Čeká na publikaci</value>
+  </data>
+  <data name="SummaryWithConsent" xml:space="preserve">
+    <value>Se souhlasem</value>
+  </data>
+  <data name="SummaryWithoutConsent" xml:space="preserve">
+    <value>Bez souhlasu</value>
+  </data>
+  <data name="BulkActionsHeading" xml:space="preserve">
+    <value>Hromadné akce</value>
+  </data>
+  <data name="BulkActionsHint" xml:space="preserve">
+    <value>Vyberte reference a spusťte potřebnou akci.</value>
+  </data>
+  <data name="BulkGrantConsentButton" xml:space="preserve">
+    <value>Schválit vybrané</value>
+  </data>
+  <data name="BulkUnpublishButton" xml:space="preserve">
+    <value>Nepublikovat vybrané</value>
+  </data>
+  <data name="TableSelect" xml:space="preserve">
+    <value>Výběr</value>
+  </data>
+  <data name="TableSelectAll" xml:space="preserve">
+    <value>Vybrat vše</value>
+  </data>
+  <data name="TableName" xml:space="preserve">
+    <value>Jméno</value>
+  </data>
+  <data name="TablePosition" xml:space="preserve">
+    <value>Pozice</value>
+  </data>
+  <data name="TableCompany" xml:space="preserve">
+    <value>Společnost</value>
+  </data>
+  <data name="TableRating" xml:space="preserve">
+    <value>Hodnocení</value>
+  </data>
+  <data name="TablePublication" xml:space="preserve">
+    <value>Publikace</value>
+  </data>
+  <data name="TableConsent" xml:space="preserve">
+    <value>Souhlas</value>
+  </data>
+  <data name="TableConsentDate" xml:space="preserve">
+    <value>Datum souhlasu</value>
+  </data>
+  <data name="TableActions" xml:space="preserve">
+    <value>Akce</value>
+  </data>
+  <data name="DetailButton" xml:space="preserve">
+    <value>Detail</value>
+  </data>
+  <data name="EditButton" xml:space="preserve">
+    <value>Upravit</value>
+  </data>
+  <data name="DeleteButton" xml:space="preserve">
+    <value>Smazat</value>
+  </data>
+  <data name="EmptyState" xml:space="preserve">
+    <value>Žádné reference neodpovídají zadaným filtrům.</value>
+  </data>
+  <data name="RatingFormat" xml:space="preserve">
+    <value>{0}/5</value>
+  </data>
+  <data name="PublicationState_Published" xml:space="preserve">
+    <value>Publikováno</value>
+  </data>
+  <data name="PublicationState_Unpublished" xml:space="preserve">
+    <value>Nepublikováno</value>
+  </data>
+  <data name="ConsentStatus_Granted" xml:space="preserve">
+    <value>Souhlas udělen</value>
+  </data>
+  <data name="ConsentStatus_Missing" xml:space="preserve">
+    <value>Souhlas chybí</value>
+  </data>
+  <data name="ConsentGrantedAt" xml:space="preserve">
+    <value>Udělil {0}</value>
+  </data>
+  <data name="ConsentGrantedAgo" xml:space="preserve">
+    <value>Před {0}</value>
+  </data>
+  <data name="RelativeTimeDays" xml:space="preserve">
+    <value>{0} dnů</value>
+  </data>
+  <data name="RelativeTimeHours" xml:space="preserve">
+    <value>{0} hod</value>
+  </data>
+  <data name="RelativeTimeMinutes" xml:space="preserve">
+    <value>{0} min</value>
+  </data>
+  <data name="RelativeTimeMoments" xml:space="preserve">
+    <value>okamžikem</value>
+  </data>
+  <data name="SelectionRequired" xml:space="preserve">
+    <value>Vyberte alespoň jednu referenci.</value>
+  </data>
+  <data name="BulkConsentSuccess" xml:space="preserve">
+    <value>Souhlas byl udělen {0} referencím.</value>
+  </data>
+  <data name="BulkUnpublishSuccess" xml:space="preserve">
+    <value>Nepublikovali jsme {0} referencí.</value>
+  </data>
 </root>
