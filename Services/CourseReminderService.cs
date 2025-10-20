@@ -39,13 +39,13 @@ public class CourseReminderService : ScopedRecurringBackgroundService<CourseRemi
         foreach (var course in courses)
         {
             var orders = await context.Orders
-                .Include(o => o.User)
+                .Include(o => o.Customer)
                 .Include(o => o.Items)
                 .Where(o => o.Status == OrderStatus.Paid && o.Items.Any(i => i.CourseId == course.Id))
                 .ToListAsync(stoppingToken);
 
             var recipients = orders
-                .Select(o => o.User?.Email)
+                .Select(o => o.Customer?.Email)
                 .Where(e => !string.IsNullOrWhiteSpace(e))
                 .Distinct();
 

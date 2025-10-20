@@ -15,4 +15,91 @@
   <data name="Title" xml:space="preserve">
     <value>Objednávky</value>
   </data>
+  <data name="SearchLabel" xml:space="preserve">
+    <value>Hledat</value>
+  </data>
+  <data name="SearchPlaceholder" xml:space="preserve">
+    <value>ID objednávky nebo e-mail</value>
+  </data>
+  <data name="StatusLabel" xml:space="preserve">
+    <value>Stav</value>
+  </data>
+  <data name="StatusAllOption" xml:space="preserve">
+    <value>Všechny stavy</value>
+  </data>
+  <data name="FromLabel" xml:space="preserve">
+    <value>Od</value>
+  </data>
+  <data name="ToLabel" xml:space="preserve">
+    <value>Do</value>
+  </data>
+  <data name="FilterButton" xml:space="preserve">
+    <value>Filtrovat</value>
+  </data>
+  <data name="ResetButton" xml:space="preserve">
+    <value>Vymazat</value>
+  </data>
+  <data name="SummaryTotalOrders" xml:space="preserve">
+    <value>Počet objednávek</value>
+  </data>
+  <data name="SummaryTotalRevenue" xml:space="preserve">
+    <value>Součet tržeb</value>
+  </data>
+  <data name="TableId" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="TableDate" xml:space="preserve">
+    <value>Datum</value>
+  </data>
+  <data name="TableCustomer" xml:space="preserve">
+    <value>Zákazník</value>
+  </data>
+  <data name="TableStatus" xml:space="preserve">
+    <value>Stav</value>
+  </data>
+  <data name="TableTotal" xml:space="preserve">
+    <value>Celkem</value>
+  </data>
+  <data name="TableItems" xml:space="preserve">
+    <value>Položky</value>
+  </data>
+  <data name="TableActions" xml:space="preserve">
+    <value>Akce</value>
+  </data>
+  <data name="TableEmpty" xml:space="preserve">
+    <value>Žádné objednávky neodpovídají filtrování.</value>
+  </data>
+  <data name="CustomerUnknown" xml:space="preserve">
+    <value>Neznámý zákazník</value>
+  </data>
+  <data name="ActionDetails" xml:space="preserve">
+    <value>Detail</value>
+  </data>
+  <data name="ActionChangeStatus" xml:space="preserve">
+    <value>Změnit stav</value>
+  </data>
+  <data name="PaginationAriaLabel" xml:space="preserve">
+    <value>Stránkování objednávek</value>
+  </data>
+  <data name="PaginationPrevious" xml:space="preserve">
+    <value>Předchozí</value>
+  </data>
+  <data name="PaginationNext" xml:space="preserve">
+    <value>Další</value>
+  </data>
+  <data name="PaginationInfo" xml:space="preserve">
+    <value>Stránka {0} z {1}</value>
+  </data>
+  <data name="OrderStatusPending" xml:space="preserve">
+    <value>Čeká na platbu</value>
+  </data>
+  <data name="OrderStatusPaid" xml:space="preserve">
+    <value>Zaplaceno</value>
+  </data>
+  <data name="OrderStatusCancelled" xml:space="preserve">
+    <value>Zrušeno</value>
+  </data>
+  <data name="OrderStatusRefunded" xml:space="preserve">
+    <value>Vráceno</value>
+  </data>
 </root>
