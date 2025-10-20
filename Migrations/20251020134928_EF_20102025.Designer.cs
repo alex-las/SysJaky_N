@@ -12,7 +12,7 @@ using SysJaky_N.Data;
 namespace SysJaky_N.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251020132054_EF_20102025")]
+    [Migration("20251020134928_EF_20102025")]
     partial class EF_20102025
     {
         /// <inheritdoc />
@@ -695,21 +695,28 @@ namespace SysJaky_N.Migrations
                     b.HasIndex("Slug")
                         .IsUnique();
 
-                    b.ToTable("CourseCategories");
+                    b.ToTable("coursecategories", (string)null);
                 });
 
             modelBuilder.Entity("SysJaky_N.Models.CourseCategoryTranslation", b =>
                 {
-                    b.Property<int>("CategoryId")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<string>("Locale")
-                        .HasMaxLength(10)
-                        .HasColumnType("varchar(10)");
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Description")
                         .HasMaxLength(500)
                         .HasColumnType("varchar(500)");
+
+                    b.Property<string>("Locale")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("varchar(10)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -721,12 +728,17 @@ namespace SysJaky_N.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("varchar(100)");
 
-                    b.HasKey("CategoryId", "Locale");
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId", "Locale")
+                        .IsUnique()
+                        .HasDatabaseName("uq_category_locale");
 
                     b.HasIndex("Locale", "Slug")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasDatabaseName("uq_locale_slug");
 
-                    b.ToTable("coursecategory_translations");
+                    b.ToTable("coursecategory_translations", (string)null);
                 });
 
             modelBuilder.Entity("SysJaky_N.Models.CourseCourseCategory", b =>
@@ -741,7 +753,7 @@ namespace SysJaky_N.Migrations
 
                     b.HasIndex("CourseCategoryId");
 
-                    b.ToTable("CourseCourseCategories", (string)null);
+                    b.ToTable("course_coursecategories", (string)null);
                 });
 
             modelBuilder.Entity("SysJaky_N.Models.CourseGroup", b =>
