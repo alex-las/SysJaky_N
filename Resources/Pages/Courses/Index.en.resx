@@ -75,8 +75,20 @@
   <data name="CategoriesLabel" xml:space="preserve">
     <value>Course categories</value>
   </data>
+  <data name="CategoryAllLabel" xml:space="preserve">
+    <value>All areas</value>
+  </data>
+  <data name="CategoryNavigationLabel" xml:space="preserve">
+    <value>Category navigation</value>
+  </data>
+  <data name="CategoryNavigationDescription" xml:space="preserve">
+    <value>Switch between ISO categories or view every course.</value>
+  </data>
   <data name="CategoryCountFormat" xml:space="preserve">
     <value>{0} ({1})</value>
+  </data>
+  <data name="CategoryTotalLabel" xml:space="preserve">
+    <value>Total courses</value>
   </data>
   <data name="PaginationLabel" xml:space="preserve">
     <value>Course pagination</value>

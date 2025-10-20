@@ -67,6 +67,8 @@ public class IndexModel : PageModel
 
     public IReadOnlyList<CategoryOption> CategoryOptions { get; private set; } = Array.Empty<CategoryOption>();
 
+    public IReadOnlyList<CourseCategoryGroupViewModel> CategoryGroups { get; private set; } = Array.Empty<CourseCategoryGroupViewModel>();
+
     public IReadOnlyList<EnumOption> LevelOptions { get; private set; } = Array.Empty<EnumOption>();
 
     public IReadOnlyList<EnumOption> TypeOptions { get; private set; } = Array.Empty<EnumOption>();
@@ -108,6 +110,8 @@ public class IndexModel : PageModel
         TotalPages = cacheEntry.TotalPages;
         TotalCount = cacheEntry.TotalCount;
         Courses = BuildCourseCards(cacheEntry);
+
+        CategoryGroups = await BuildCategoryGroupsAsync();
     }
 
     public async Task<IActionResult> OnGetCoursesAsync()
@@ -189,6 +193,7 @@ public class IndexModel : PageModel
             .Select(category => new CategoryOption(
                 category.Id,
                 category.Name,
+                category.Slug,
                 category.Courses.Count(course => course.IsActive)))
             .ToListAsync();
 
@@ -405,19 +410,127 @@ public class IndexModel : PageModel
         return $"page={filterContext.PageNumber}|search={searchKey}|norms={normsKey}|cities={citiesKey}|categories={categoriesKey}|levels={levelsKey}|types={typesKey}|minPrice={minKey}|maxPrice={maxKey}";
     }
 
+    private async Task<IReadOnlyList<CourseCategoryGroupViewModel>> BuildCategoryGroupsAsync()
+    {
+        if (CategoryOptions.Count == 0)
+        {
+            return Array.Empty<CourseCategoryGroupViewModel>();
+        }
+
+        var activeCourses = await _context.Courses
+            .AsNoTracking()
+            .Include(course => course.CourseGroup)
+            .Include(course => course.CourseTags)
+                .ThenInclude(courseTag => courseTag.Tag)
+            .Include(course => course.Categories)
+            .Where(course => course.IsActive)
+            .ToListAsync();
+
+        if (activeCourses.Count == 0)
+        {
+            return CategoryOptions
+                .OrderBy(option => option.Name, StringComparer.CurrentCultureIgnoreCase)
+                .Select(option => new CourseCategoryGroupViewModel(
+                    option.Id,
+                    option.Name,
+                    option.Slug,
+                    0,
+                    Array.Empty<CourseCardViewModel>()))
+                .ToList();
+        }
+
+        var termSnapshots = await _context.LoadTermSnapshotsAsync(activeCourses.Select(course => course.Id));
+        var courseCards = BuildCourseCards(activeCourses, termSnapshots);
+        var courseCardLookup = courseCards.ToDictionary(card => card.Id);
+
+        var coursesByCategoryId = new Dictionary<int, List<CourseCardViewModel>>();
+
+        foreach (var course in activeCourses)
+        {
+            if (!courseCardLookup.TryGetValue(course.Id, out var card))
+            {
+                continue;
+            }
+
+            if (course.Categories == null || course.Categories.Count == 0)
+            {
+                continue;
+            }
+
+            foreach (var category in course.Categories)
+            {
+                if (category == null)
+                {
+                    continue;
+                }
+
+                if (!coursesByCategoryId.TryGetValue(category.Id, out var list))
+                {
+                    list = new List<CourseCardViewModel>();
+                    coursesByCategoryId[category.Id] = list;
+                }
+
+                if (list.Any(existing => existing.Id == card.Id))
+                {
+                    continue;
+                }
+
+                list.Add(card);
+            }
+        }
+
+        foreach (var list in coursesByCategoryId.Values)
+        {
+            list.Sort((first, second) =>
+            {
+                var dateComparison = first.Date.CompareTo(second.Date);
+                if (dateComparison != 0)
+                {
+                    return dateComparison;
+                }
+
+                return string.Compare(first.Title, second.Title, StringComparison.CurrentCultureIgnoreCase);
+            });
+        }
+
+        var groups = CategoryOptions
+            .OrderBy(option => option.Name, StringComparer.CurrentCultureIgnoreCase)
+            .Select(option =>
+            {
+                coursesByCategoryId.TryGetValue(option.Id, out var list);
+                var courses = list?.ToList() ?? new List<CourseCardViewModel>();
+                return new CourseCategoryGroupViewModel(
+                    option.Id,
+                    option.Name,
+                    option.Slug,
+                    courses.Count,
+                    courses);
+            })
+            .ToList();
+
+        return groups;
+    }
+
     private List<CourseCardViewModel> BuildCourseCards(CourseListCacheEntry cacheEntry)
+    {
+        return BuildCourseCards(cacheEntry.Courses, cacheEntry.TermSnapshots);
+    }
+
+    private List<CourseCardViewModel> BuildCourseCards(
+        IEnumerable<Course> courses,
+        IReadOnlyDictionary<int, CourseTermSnapshot> termSnapshots)
     {
         var culture = CultureInfo.CurrentCulture;
         var addToCartUrl = Url.Page("/Courses/Index", pageHandler: "AddToCart") ?? "/Courses/Index?handler=AddToCart";
 
-        return cacheEntry.Courses
+        return courses
             .Select(course =>
             {
                 var detailsUrl = Url.Page("/Courses/Details", new { id = course.Id }) ?? $"/Courses/Details/{course.Id}";
                 var wishlistUrl = Url.Page("/Courses/Details", new { id = course.Id, handler = "AddToWishlist" })
                     ?? $"/Courses/Details/{course.Id}?handler=AddToWishlist";
 
-                cacheEntry.TermSnapshots.TryGetValue(course.Id, out var snapshot);
+                termSnapshots.TryGetValue(course.Id, out var snapshot);
 
                 return course.ToCourseCardViewModel(
                     culture,
@@ -444,7 +557,14 @@ public class IndexModel : PageModel
 
     public record EnumOption(string Value, string Label);
 
-    public record CategoryOption(int Id, string Name, int Count);
+    public record CategoryOption(int Id, string Name, string Slug, int Count);
+
+    public record CourseCategoryGroupViewModel(
+        int Id,
+        string Name,
+        string Slug,
+        int CourseCount,
+        IReadOnlyList<CourseCardViewModel> Courses);
 
     private record CoursesResponse(
         PaginationMetadata Pagination,

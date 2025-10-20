@@ -75,8 +75,20 @@
   <data name="CategoriesLabel" xml:space="preserve">
     <value>Kategorie kurzů</value>
   </data>
+  <data name="CategoryAllLabel" xml:space="preserve">
+    <value>Všechny oblasti</value>
+  </data>
+  <data name="CategoryNavigationLabel" xml:space="preserve">
+    <value>Navigace kategorií</value>
+  </data>
+  <data name="CategoryNavigationDescription" xml:space="preserve">
+    <value>Přepínejte mezi kategoriemi ISO nebo zobrazte všechny kurzy.</value>
+  </data>
   <data name="CategoryCountFormat" xml:space="preserve">
     <value>{0} ({1})</value>
+  </data>
+  <data name="CategoryTotalLabel" xml:space="preserve">
+    <value>Celkem kurzů</value>
   </data>
   <data name="PaginationLabel" xml:space="preserve">
     <value>Stránkování kurzů</value>
