@@ -109,6 +109,7 @@ public class Course
 
     public ICollection<CourseTag> CourseTags { get; set; } = new List<CourseTag>();
 
+    [InverseProperty(nameof(CourseCategory.Courses))]
     public ICollection<CourseCategory> Categories { get; set; } = new List<CourseCategory>();
 
     [StringLength(1000)]

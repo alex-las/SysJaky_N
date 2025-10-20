@@ -2,6 +2,7 @@ namespace SysJaky_N.Models;
 
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 public class CourseCategory
 {
@@ -22,6 +23,7 @@ public class CourseCategory
 
     public bool IsActive { get; set; } = true;
 
+    [InverseProperty(nameof(Course.Categories))]
     public ICollection<Course> Courses { get; set; } = new List<Course>();
 
     public ICollection<CourseCategoryTranslation> Translations { get; set; } = new List<CourseCategoryTranslation>();
