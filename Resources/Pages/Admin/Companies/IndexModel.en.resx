@@ -27,6 +27,15 @@
   <data name="TableHeaderManager" xml:space="preserve">
     <value>Manager</value>
   </data>
+  <data name="TableHeaderActions" xml:space="preserve">
+    <value>Actions</value>
+  </data>
+  <data name="EditButton" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="DeleteButton" xml:space="preserve">
+    <value>Delete</value>
+  </data>
   <data name="CompanyCreated" xml:space="preserve">
     <value>Company {0} has been created.</value>
   </data>

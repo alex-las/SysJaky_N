@@ -13,30 +13,27 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="PageTitle" xml:space="preserve">
-    <value>Společnosti</value>
+    <value>Smazat společnost</value>
   </data>
-  <data name="CreateButton" xml:space="preserve">
-    <value>Vytvořit</value>
+  <data name="ConfirmationMessage" xml:space="preserve">
+    <value>Opravdu chcete smazat společnost {0}? Tuto akci nelze vrátit.</value>
   </data>
-  <data name="TableHeaderName" xml:space="preserve">
+  <data name="NameLabel" xml:space="preserve">
     <value>Název</value>
   </data>
-  <data name="TableHeaderReferenceCode" xml:space="preserve">
+  <data name="ReferenceCodeLabel" xml:space="preserve">
     <value>Referenční kód</value>
   </data>
-  <data name="TableHeaderManager" xml:space="preserve">
+  <data name="ManagerLabel" xml:space="preserve">
     <value>Správce</value>
-  </data>
-  <data name="TableHeaderActions" xml:space="preserve">
-    <value>Akce</value>
-  </data>
-  <data name="EditButton" xml:space="preserve">
-    <value>Upravit</value>
   </data>
   <data name="DeleteButton" xml:space="preserve">
     <value>Smazat</value>
   </data>
-  <data name="CompanyCreated" xml:space="preserve">
-    <value>Společnost {0} byla vytvořena.</value>
+  <data name="CancelButton" xml:space="preserve">
+    <value>Zrušit</value>
+  </data>
+  <data name="CompanyDeleted" xml:space="preserve">
+    <value>Společnost {0} byla smazána.</value>
   </data>
 </root>

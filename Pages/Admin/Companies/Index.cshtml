@@ -12,24 +12,19 @@
 }
 
 <form method="post">
-    <div class="mb-3">
-        <label asp-for="NewCompany.Name"></label>
-        <input asp-for="NewCompany.Name" class="form-control" />
-    </div>
-    <div class="mb-3">
-        <label asp-for="NewCompany.ReferenceCode"></label>
-        <input asp-for="NewCompany.ReferenceCode" class="form-control" />
-    </div>
-    <div class="mb-3">
-        <label asp-for="NewCompany.ManagerId"></label>
-        <input asp-for="NewCompany.ManagerId" class="form-control" />
-    </div>
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <partial name="_CompanyForm" model="Model.NewCompany" />
     <button type="submit" class="btn btn-primary">@Localizer["CreateButton"]</button>
 </form>
 
 <table class="table mt-3">
     <thead>
-        <tr><th>@Localizer["TableHeaderName"]</th><th>@Localizer["TableHeaderReferenceCode"]</th><th>@Localizer["TableHeaderManager"]</th></tr>
+        <tr>
+            <th>@Localizer["TableHeaderName"]</th>
+            <th>@Localizer["TableHeaderReferenceCode"]</th>
+            <th>@Localizer["TableHeaderManager"]</th>
+            <th class="text-end">@Localizer["TableHeaderActions"]</th>
+        </tr>
     </thead>
     <tbody>
     @foreach (var company in Model.Companies)
@@ -38,6 +33,10 @@
             <td>@company.Name</td>
             <td>@company.ReferenceCode</td>
             <td>@company.Manager?.Email</td>
+            <td class="text-end">
+                <a asp-page="Edit" asp-route-id="@company.Id" class="btn btn-sm btn-secondary">@Localizer["EditButton"]</a>
+                <a asp-page="Delete" asp-route-id="@company.Id" class="btn btn-sm btn-danger ms-1">@Localizer["DeleteButton"]</a>
+            </td>
         </tr>
     }
     </tbody>

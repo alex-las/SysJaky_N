@@ -1,0 +1,15 @@
+@page "{id:int}"
+@model SysJaky_N.Pages.Admin.Companies.EditModel
+@inject IStringLocalizer<SysJaky_N.Pages.Admin.Companies.EditModel> Localizer
+@{
+    ViewData["Title"] = Localizer["PageTitle"];
+}
+
+<h1>@Localizer["PageTitle"]</h1>
+
+<form method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <partial name="_CompanyForm" model="Model.Company" />
+    <button type="submit" class="btn btn-primary">@Localizer["SaveButton"]</button>
+    <a asp-page="Index" class="btn btn-secondary">@Localizer["CancelButton"]</a>
+</form>

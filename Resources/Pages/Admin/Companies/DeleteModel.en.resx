@@ -13,30 +13,27 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="PageTitle" xml:space="preserve">
-    <value>Společnosti</value>
+    <value>Delete company</value>
   </data>
-  <data name="CreateButton" xml:space="preserve">
-    <value>Vytvořit</value>
+  <data name="ConfirmationMessage" xml:space="preserve">
+    <value>Are you sure you want to delete company {0}? This action cannot be undone.</value>
   </data>
-  <data name="TableHeaderName" xml:space="preserve">
-    <value>Název</value>
+  <data name="NameLabel" xml:space="preserve">
+    <value>Name</value>
   </data>
-  <data name="TableHeaderReferenceCode" xml:space="preserve">
-    <value>Referenční kód</value>
+  <data name="ReferenceCodeLabel" xml:space="preserve">
+    <value>Reference code</value>
   </data>
-  <data name="TableHeaderManager" xml:space="preserve">
-    <value>Správce</value>
-  </data>
-  <data name="TableHeaderActions" xml:space="preserve">
-    <value>Akce</value>
-  </data>
-  <data name="EditButton" xml:space="preserve">
-    <value>Upravit</value>
+  <data name="ManagerLabel" xml:space="preserve">
+    <value>Manager</value>
   </data>
   <data name="DeleteButton" xml:space="preserve">
-    <value>Smazat</value>
+    <value>Delete</value>
   </data>
-  <data name="CompanyCreated" xml:space="preserve">
-    <value>Společnost {0} byla vytvořena.</value>
+  <data name="CancelButton" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="CompanyDeleted" xml:space="preserve">
+    <value>Company {0} has been deleted.</value>
   </data>
 </root>
