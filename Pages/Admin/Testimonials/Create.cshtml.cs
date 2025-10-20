@@ -1,4 +1,6 @@
+using System;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Localization;
@@ -23,8 +25,14 @@ public class CreateModel : PageModel
     [BindProperty]
     public Testimonial Testimonial { get; set; } = new();
 
-    public void OnGet()
+    public IActionResult OnGet()
     {
+        if (IsAjaxRequest())
+        {
+            return Partial("_CreateModal", this);
+        }
+
+        return Page();
     }
 
     public async Task<IActionResult> OnPostAsync()
@@ -36,6 +44,12 @@ public class CreateModel : PageModel
 
         if (!ModelState.IsValid)
         {
+            if (IsAjaxRequest())
+            {
+                Response.StatusCode = StatusCodes.Status400BadRequest;
+                return Partial("_CreateModal", this);
+            }
+
             return Page();
         }
 
@@ -52,6 +66,15 @@ public class CreateModel : PageModel
         _context.Testimonials.Add(Testimonial);
         await _context.SaveChangesAsync();
 
+        if (IsAjaxRequest())
+        {
+            TempData["StatusMessage"] = $"Reference \"{Testimonial.FullName}\" byla vytvořena.";
+            return new JsonResult(new { success = true });
+        }
+
+        TempData["StatusMessage"] = $"Reference \"{Testimonial.FullName}\" byla vytvořena.";
         return RedirectToPage("Index");
     }
+
+    private bool IsAjaxRequest() => string.Equals(Request.Headers["X-Requested-With"], "XMLHttpRequest", StringComparison.OrdinalIgnoreCase);
 }

@@ -1,4 +1,6 @@
+using System;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Localization;
@@ -33,6 +35,12 @@ public class DeleteModel : PageModel
         }
 
         Testimonial = testimonial;
+
+        if (IsAjaxRequest())
+        {
+            return Partial("_DeleteModal", this);
+        }
+
         return Page();
     }
 
@@ -47,6 +55,15 @@ public class DeleteModel : PageModel
         _context.Testimonials.Remove(testimonial);
         await _context.SaveChangesAsync();
 
+        if (IsAjaxRequest())
+        {
+            TempData["StatusMessage"] = $"Reference \"{testimonial.FullName}\" byla odstraněna.";
+            return new JsonResult(new { success = true });
+        }
+
+        TempData["StatusMessage"] = $"Reference \"{testimonial.FullName}\" byla odstraněna.";
         return RedirectToPage("Index");
     }
+
+    private bool IsAjaxRequest() => string.Equals(Request.Headers["X-Requested-With"], "XMLHttpRequest", StringComparison.OrdinalIgnoreCase);
 }

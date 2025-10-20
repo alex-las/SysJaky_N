@@ -10,7 +10,12 @@
         <h1>@ViewData["Title"]</h1>
     </div>
     <div class="admin-page-header__actions">
-        <a asp-page="Create" class="btn btn-admin-primary">@Localizer["CreateButton"]</a>
+        <button type="button"
+                class="btn btn-admin-primary"
+                data-admin-modal-target="#adminModal"
+                data-url="@Url.Page("Create")">
+            @Localizer["CreateButton"]
+        </button>
     </div>
 </section>
 
@@ -41,8 +46,18 @@
                 <td>@category.CourseCount</td>
                 <td class="text-end">
                     <div class="admin-table-actions justify-content-end">
-                        <a asp-page="Edit" asp-route-id="@category.Id" class="btn btn-sm btn-admin-ghost">@Localizer["EditLink"]</a>
-                        <a asp-page="Delete" asp-route-id="@category.Id" class="btn btn-sm btn-admin-warning">@Localizer["DeleteLink"]</a>
+                        <button type="button"
+                                class="btn btn-sm btn-admin-ghost"
+                                data-admin-modal-target="#adminModal"
+                                data-url="@Url.Page("Edit", new { id = category.Id })">
+                            @Localizer["EditLink"]
+                        </button>
+                        <button type="button"
+                                class="btn btn-sm btn-admin-warning"
+                                data-admin-modal-target="#adminModal"
+                                data-url="@Url.Page("Delete", new { id = category.Id })">
+                            @Localizer["DeleteLink"]
+                        </button>
                     </div>
                 </td>
             </tr>

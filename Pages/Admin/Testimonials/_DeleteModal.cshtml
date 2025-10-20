@@ -1,0 +1,22 @@
+@model SysJaky_N.Pages.Admin.Testimonials.DeleteModel
+@{
+    Layout = null;
+    var title = "Smazat referenci";
+}
+
+<div data-admin-modal-slot="header">
+    <h5 class="modal-title text-danger">@title</h5>
+    <button type="button" class="btn-close" data-admin-modal-dismiss aria-label="Zavřít"></button>
+</div>
+<div data-admin-modal-slot="body">
+    <form method="post" id="adminModalForm">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="Testimonial!.Id" />
+        <p>Opravdu chcete smazat referenci <strong>@Model.Testimonial?.FullName</strong>?</p>
+        <blockquote class="blockquote small">@Model.Testimonial?.Quote</blockquote>
+    </form>
+</div>
+<div data-admin-modal-slot="actions">
+    <button type="submit" class="btn btn-admin-warning" form="adminModalForm">Smazat</button>
+    <button type="button" class="btn btn-admin-ghost" data-admin-modal-dismiss>Zrušit</button>
+</div>

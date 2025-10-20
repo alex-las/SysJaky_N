@@ -1,4 +1,6 @@
+using System;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -28,10 +30,16 @@ public class CreateModel : PageModel
     [BindProperty]
     public Article Article { get; set; } = new();
 
-    public void OnGet()
+    public IActionResult OnGet()
     {
         Article.IsPublished = false;
         Article.PublishedAtUtc = null;
+        if (IsAjaxRequest())
+        {
+            return Partial("_CreateModal", this);
+        }
+
+        return Page();
     }
 
     public async Task<IActionResult> OnPostAsync()
@@ -40,6 +48,12 @@ public class CreateModel : PageModel
 
         if (!ModelState.IsValid)
         {
+            if (IsAjaxRequest())
+            {
+                Response.StatusCode = StatusCodes.Status400BadRequest;
+                return Partial("_CreateModal", this);
+            }
+
             return Page();
         }
 
@@ -48,6 +62,14 @@ public class CreateModel : PageModel
 
         _context.Articles.Add(Article);
         await _context.SaveChangesAsync();
+
+        if (IsAjaxRequest())
+        {
+            TempData["StatusMessage"] = $"Článek \"{Article.Title}\" byl vytvořen.";
+            return new JsonResult(new { success = true });
+        }
+
+        TempData["StatusMessage"] = $"Článek \"{Article.Title}\" byl vytvořen.";
         return RedirectToPage("Index");
     }
 
@@ -74,4 +96,6 @@ public class CreateModel : PageModel
 
         Article.UpdatedAtUtc = now;
     }
+
+    private bool IsAjaxRequest() => string.Equals(Request.Headers["X-Requested-With"], "XMLHttpRequest", StringComparison.OrdinalIgnoreCase);
 }

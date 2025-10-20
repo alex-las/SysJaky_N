@@ -1,8 +1,10 @@
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Localization;
 using SysJaky_N.Data;
 using SysJaky_N.Models;
@@ -27,10 +29,17 @@ public class CreateModel : PageModel
     [BindProperty]
     public CourseCategoryEditorModel Editor { get; set; } = new();
 
-    public void OnGet()
+    public IActionResult OnGet()
     {
         ViewData["Title"] = _localizer["Title"];
         Editor.EnsureLocales();
+
+        if (IsAjaxRequest())
+        {
+            return Partial("_CreateModal", this);
+        }
+
+        return Page();
     }
 
     public async Task<IActionResult> OnPostAsync()
@@ -43,6 +52,12 @@ public class CreateModel : PageModel
 
         if (!ModelState.IsValid)
         {
+            if (IsAjaxRequest())
+            {
+                Response.StatusCode = StatusCodes.Status400BadRequest;
+                return Partial("_CreateModal", this);
+            }
+
             return Page();
         }
 
@@ -64,6 +79,13 @@ public class CreateModel : PageModel
         await _context.SaveChangesAsync();
         _cacheService.InvalidateCourseList();
 
+        if (IsAjaxRequest())
+        {
+            TempData["StatusMessage"] = $"Kategorie \"{Editor.Category.Name}\" byla vytvořena.";
+            return new JsonResult(new { success = true });
+        }
+
+        TempData["StatusMessage"] = $"Kategorie \"{Editor.Category.Name}\" byla vytvořena.";
         return RedirectToPage("Index");
     }
 
@@ -127,4 +149,6 @@ public class CreateModel : PageModel
             }
         }
     }
+
+    private bool IsAjaxRequest() => string.Equals(Request.Headers["X-Requested-With"], "XMLHttpRequest", StringComparison.OrdinalIgnoreCase);
 }
