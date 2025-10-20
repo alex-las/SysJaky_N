@@ -26,7 +26,13 @@
             wishlistUrl = course.WishlistUrl,
             isoStandard = course.IsoStandard,
             norms = course.Norms,
-            cities = course.Cities
+            cities = course.Cities,
+            categories = course.Categories.Select(category => new
+            {
+                id = category.Id,
+                name = category.Name,
+                slug = category.Slug
+            })
         }).ToList();
 
     var coursesJson = JsonSerializer.Serialize(courseItems, serializerOptions);
@@ -291,6 +297,17 @@
 
                 var cities = normalizeList(course.cities || course.Cities || []);
 
+                var categoriesRaw = course.categories || course.Categories;
+                var categories = Array.isArray(categoriesRaw) ? categoriesRaw.filter(function (category) {
+                    return category && typeof category === 'object' && category.name;
+                }).map(function (category) {
+                    return {
+                        id: category.id || category.Id || null,
+                        name: (category.name || category.Name || '').trim(),
+                        slug: (category.slug || category.Slug || '').trim()
+                    };
+                }) : [];
+
                 norms.forEach(function (norm) { normSet.add(norm); });
                 cities.forEach(function (city) { citySet.add(city); });
                 if (mode) { modeSet.add(mode); }
@@ -312,7 +329,8 @@
                     extraNorms: isoStandard
                         ? norms.filter(function (norm) { return !equalsIgnoreCase(norm, isoStandard); })
                         : norms.slice(),
-                    cities: cities
+                    cities: cities,
+                    categories: categories
                 });
             }
 

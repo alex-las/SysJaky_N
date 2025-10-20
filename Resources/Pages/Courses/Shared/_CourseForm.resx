@@ -48,6 +48,12 @@
   <data name="CourseGroupLabel" xml:space="preserve">
     <value>Skupina</value>
   </data>
+  <data name="CourseCategoriesLabel" xml:space="preserve">
+    <value>Kategorie</value>
+  </data>
+  <data name="CourseCategoriesHelp" xml:space="preserve">
+    <value>Vyberte všechny kategorie, do kterých kurz patří.</value>
+  </data>
   <data name="PricePlaceholder" xml:space="preserve">
     <value>Zadejte cenu</value>
   </data>

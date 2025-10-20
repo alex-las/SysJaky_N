@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore;
 using SysJaky_N.Data;
@@ -52,6 +54,7 @@ public static class CourseCardExtensions
             IsoBadges = ExtractIsoBadges(course),
             Norms = BuildNorms(course),
             Cities = ExtractCities(course),
+            Categories = BuildCategories(course),
             DaysUntilStart = daysUntilStart,
             Capacity = capacity,
             SeatsTaken = seatsTaken,
@@ -191,6 +194,27 @@ public static class CourseCardExtensions
         return course.CourseTags.Any(ct =>
             ct.Tag?.Name != null &&
             ct.Tag.Name.Contains("certifik", StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static IReadOnlyList<CourseCategoryViewModel> BuildCategories(Course course)
+    {
+        if (course.Categories == null || course.Categories.Count == 0)
+        {
+            return Array.Empty<CourseCategoryViewModel>();
+        }
+
+        var categories = course.Categories
+            .Where(category => category != null && !string.IsNullOrWhiteSpace(category.Name))
+            .Select(category => new CourseCategoryViewModel(
+                category!.Id,
+                category.Name.Trim(),
+                string.IsNullOrWhiteSpace(category.Slug) ? string.Empty : category.Slug.Trim()))
+            .OrderBy(category => category.Name, StringComparer.CurrentCultureIgnoreCase)
+            .ToList();
+
+        return categories.Count == 0
+            ? Array.Empty<CourseCategoryViewModel>()
+            : categories;
     }
 
     private static string BuildPreview(string? description)

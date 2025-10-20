@@ -1,0 +1,44 @@
+@page
+@model SysJaky_N.Pages.Admin.CourseCategories.IndexModel
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+@{
+    ViewData["Title"] = ViewData["Title"] ?? Localizer["Title"].Value;
+}
+
+<section class="admin-page-header">
+    <div class="admin-page-header__title">
+        <h1>@ViewData["Title"]</h1>
+    </div>
+    <div class="admin-page-header__actions">
+        <a asp-page="Create" class="btn btn-admin-primary">@Localizer["CreateButton"]</a>
+    </div>
+</section>
+
+<div class="admin-table-wrapper table-responsive">
+    <table class="table admin-table align-middle mb-0">
+        <thead>
+            <tr>
+                <th scope="col">@Localizer["NameHeader"]</th>
+                <th scope="col">@Localizer["SlugHeader"]</th>
+                <th scope="col">@Localizer["CourseCountHeader"]</th>
+                <th scope="col" class="text-end">@Localizer["ActionsHeader"]</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var category in Model.Categories)
+        {
+            <tr>
+                <td>@category.Name</td>
+                <td>@category.Slug</td>
+                <td>@category.CourseCount</td>
+                <td class="text-end">
+                    <div class="admin-table-actions justify-content-end">
+                        <a asp-page="Edit" asp-route-id="@category.Id" class="btn btn-sm btn-admin-ghost">@Localizer["EditLink"]</a>
+                        <a asp-page="Delete" asp-route-id="@category.Id" class="btn btn-sm btn-admin-warning">@Localizer["DeleteLink"]</a>
+                    </div>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>

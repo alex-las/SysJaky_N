@@ -37,6 +37,18 @@
         </select>
         <span asp-validation-for="Course.CourseGroupId" class="text-danger"></span>
     </div>
+    <div class="col-md-6">
+        <label asp-for="SelectedCategoryIds" class="form-label">@Localizer["CourseCategoriesLabel"]</label>
+        <select asp-for="SelectedCategoryIds"
+                asp-items="Model.CategoryOptions"
+                class="form-select"
+                multiple>
+        </select>
+        <div class="form-text">@Localizer["CourseCategoriesHelp"]</div>
+        <span asp-validation-for="SelectedCategoryIds" class="text-danger"></span>
+    </div>
+</div>
+<div class="row g-3">
     <div class="col-md-3">
         <label asp-for="Course.Price" class="form-label">@Localizer["PriceLabel"]</label>
         <input asp-for="Course.Price" class="form-control" placeholder="@Localizer["PricePlaceholder"]" />
