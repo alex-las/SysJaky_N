@@ -15,4 +15,139 @@
   <data name="Title" xml:space="preserve">
     <value>Vouchery</value>
   </data>
+  <data name="SearchFormAriaLabel" xml:space="preserve">
+    <value>Filtr voucherů</value>
+  </data>
+  <data name="FiltersTitle" xml:space="preserve">
+    <value>Filtry</value>
+  </data>
+  <data name="FiltersDescription" xml:space="preserve">
+    <value>Upřesněte seznam voucherů pomocí vyhledávání a filtrů.</value>
+  </data>
+  <data name="SearchLabel" xml:space="preserve">
+    <value>Vyhledávání</value>
+  </data>
+  <data name="SearchPlaceholder" xml:space="preserve">
+    <value>Hledat podle kódu</value>
+  </data>
+  <data name="TypeFilterLabel" xml:space="preserve">
+    <value>Typ</value>
+  </data>
+  <data name="TypeAllOption" xml:space="preserve">
+    <value>Všechny typy</value>
+  </data>
+  <data name="TypePercentageOption" xml:space="preserve">
+    <value>Procentuální sleva</value>
+  </data>
+  <data name="TypeFixedAmountOption" xml:space="preserve">
+    <value>Fixní částka</value>
+  </data>
+  <data name="StateFilterLabel" xml:space="preserve">
+    <value>Stav</value>
+  </data>
+  <data name="StateAllOption" xml:space="preserve">
+    <value>Všechny stavy</value>
+  </data>
+  <data name="StateActiveOption" xml:space="preserve">
+    <value>Aktivní</value>
+  </data>
+  <data name="StateExpiredOption" xml:space="preserve">
+    <value>Expirované</value>
+  </data>
+  <data name="StateDepletedOption" xml:space="preserve">
+    <value>Vyčerpané</value>
+  </data>
+  <data name="CourseFilterLabel" xml:space="preserve">
+    <value>Kurz</value>
+  </data>
+  <data name="CourseAllOption" xml:space="preserve">
+    <value>Všechny kurzy</value>
+  </data>
+  <data name="ApplyFiltersButton" xml:space="preserve">
+    <value>Použít filtry</value>
+  </data>
+  <data name="TotalVouchersStatLabel" xml:space="preserve">
+    <value>Celkem</value>
+  </data>
+  <data name="ActiveVouchersStatLabel" xml:space="preserve">
+    <value>Aktivní</value>
+  </data>
+  <data name="ExpiredVouchersStatLabel" xml:space="preserve">
+    <value>Expirované</value>
+  </data>
+  <data name="DepletedVouchersStatLabel" xml:space="preserve">
+    <value>Vyčerpané</value>
+  </data>
+  <data name="AvailableCodesStatLabel" xml:space="preserve">
+    <value>Dostupné kódy</value>
+  </data>
+  <data name="NoVouchersMessage" xml:space="preserve">
+    <value>Žádné vouchery nebyly nalezeny.</value>
+  </data>
+  <data name="CodeColumn" xml:space="preserve">
+    <value>Kód</value>
+  </data>
+  <data name="TypeColumn" xml:space="preserve">
+    <value>Typ</value>
+  </data>
+  <data name="ValueColumn" xml:space="preserve">
+    <value>Hodnota</value>
+  </data>
+  <data name="ValidityColumn" xml:space="preserve">
+    <value>Platnost</value>
+  </data>
+  <data name="MaxRedemptionsColumn" xml:space="preserve">
+    <value>Max. uplatnění</value>
+  </data>
+  <data name="UsedColumn" xml:space="preserve">
+    <value>Využito</value>
+  </data>
+  <data name="UsageColumn" xml:space="preserve">
+    <value>Využití</value>
+  </data>
+  <data name="CourseColumn" xml:space="preserve">
+    <value>Platí pro</value>
+  </data>
+  <data name="ActionsColumn" xml:space="preserve">
+    <value>Akce</value>
+  </data>
+  <data name="PercentageValueFormat" xml:space="preserve">
+    <value>{0:0.##} %</value>
+  </data>
+  <data name="NeverExpires" xml:space="preserve">
+    <value>Nikdy</value>
+  </data>
+  <data name="UnlimitedRedemptions" xml:space="preserve">
+    <value>Bez omezení</value>
+  </data>
+  <data name="ExpiredBadge" xml:space="preserve">
+    <value>Expirovaný</value>
+  </data>
+  <data name="DepletedBadge" xml:space="preserve">
+    <value>Vyčerpaný</value>
+  </data>
+  <data name="UsageNotAvailable" xml:space="preserve">
+    <value>Neuvedeno</value>
+  </data>
+  <data name="UsagePercentageFormat" xml:space="preserve">
+    <value>{0:0.#} %</value>
+  </data>
+  <data name="VoucherType_Percentage" xml:space="preserve">
+    <value>Procentuální sleva</value>
+  </data>
+  <data name="VoucherType_FixedAmount" xml:space="preserve">
+    <value>Fixní částka</value>
+  </data>
+  <data name="PaginationAriaLabel" xml:space="preserve">
+    <value>Stránkování</value>
+  </data>
+  <data name="CreateNewButton" xml:space="preserve">
+    <value>Vytvořit nový</value>
+  </data>
+  <data name="EditLink" xml:space="preserve">
+    <value>Upravit</value>
+  </data>
+  <data name="DeleteLink" xml:space="preserve">
+    <value>Smazat</value>
+  </data>
 </root>
