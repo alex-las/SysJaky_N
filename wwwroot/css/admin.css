@@ -44,8 +44,8 @@ body.admin-shell {
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: var(--space-5);
-  padding: 1.25rem clamp(1.5rem, 1rem + 2vw, 2.5rem);
+  gap: var(--space-4);
+  padding: 1.25rem clamp(1.5rem, 1rem + 1.5vw, 2.25rem);
 }
 
 .admin-nav__brand {
@@ -67,24 +67,6 @@ body.admin-shell {
   display: flex;
   align-items: center;
   gap: var(--space-3);
-}
-
-.admin-nav__tabs .nav-link {
-  border-radius: var(--radius-lg);
-  color: var(--color-neutral-600);
-  transition: background var(--transition-snappy), color var(--transition-snappy);
-}
-
-.admin-nav__tabs .nav-link:hover,
-.admin-nav__tabs .nav-link:focus-visible {
-  background: rgba(var(--color-brand-rgb), 0.08);
-  color: var(--color-brand-600);
-}
-
-.admin-nav__tabs .nav-link.active {
-  background: rgba(var(--color-brand-rgb), 0.14);
-  color: var(--color-brand-700);
-  box-shadow: inset 0 0 0 1px rgba(var(--color-brand-rgb), 0.25);
 }
 
 .admin-nav__cta .btn-admin-ghost {
@@ -603,22 +585,6 @@ body.admin-shell {
 [data-theme="dark"] .admin-nav .btn-admin-ghost:focus-visible {
   border-color: rgba(var(--color-brand-rgb), 0.4);
   color: #fff;
-}
-
-[data-theme="dark"] .admin-nav__tabs .nav-link {
-  color: rgba(226, 232, 240, 0.7);
-}
-
-[data-theme="dark"] .admin-nav__tabs .nav-link:hover,
-[data-theme="dark"] .admin-nav__tabs .nav-link:focus-visible {
-  background: rgba(var(--color-brand-rgb), 0.18);
-  color: #fff;
-}
-
-[data-theme="dark"] .admin-nav__tabs .nav-link.active {
-  background: rgba(var(--color-brand-rgb), 0.28);
-  color: #fff;
-  box-shadow: inset 0 0 0 1px rgba(var(--color-brand-rgb), 0.4);
 }
 
 [data-theme="dark"] .admin-card,
