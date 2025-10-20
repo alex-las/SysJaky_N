@@ -273,11 +273,11 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .WithMany(c => c.Courses)
             .UsingEntity<CourseCourseCategory>(
                 j => j.HasOne(e => e.CourseCategory)
-                    .WithMany()
+                    .WithMany(c => c.CourseCourseCategories)
                     .HasForeignKey(e => e.CourseCategoryId)
                     .OnDelete(DeleteBehavior.Cascade),
                 j => j.HasOne(e => e.Course)
-                    .WithMany()
+                    .WithMany(c => c.CourseCourseCategories)
                     .HasForeignKey(e => e.CourseId)
                     .OnDelete(DeleteBehavior.Cascade),
                 j =>
