@@ -9,33 +9,46 @@
     ViewData["Title"] = Localizer["Title"];
 
     var serializerOptions = new JsonSerializerOptions(JsonSerializerDefaults.Web);
-    var courseSource = Model.Courses ?? Enumerable.Empty<SysJaky_N.Models.CourseCardViewModel>();
-    var courseItems = courseSource
-        .Where(course => course is not null)
-        .Select(course => new
-        {
-            id = course.Id,
-            title = course.Title,
-            description = course.Description,
-            level = course.Level,
-            mode = course.Mode,
-            dateDisplay = course.DateDisplay,
-            priceDisplay = course.PriceDisplay,
-            durationDisplay = course.DurationDisplay,
-            detailsUrl = course.DetailsUrl,
-            wishlistUrl = course.WishlistUrl,
-            isoStandard = course.IsoStandard,
-            norms = course.Norms,
-            cities = course.Cities,
-            categories = course.Categories.Select(category => new
-            {
-                id = category.Id,
-                name = category.Name,
-                slug = category.Slug
-            })
-        }).ToList();
+    var categoryGroups = Model.CategoryGroups
+        ?? Array.Empty<SysJaky_N.Pages.Courses.IndexModel.CourseCategoryGroupViewModel>();
 
-    var coursesJson = JsonSerializer.Serialize(courseItems, serializerOptions);
+    Func<CourseCardViewModel, object> projectCourse = course => new
+    {
+        id = course.Id,
+        title = course.Title,
+        description = course.Description,
+        level = course.Level,
+        mode = course.Mode,
+        dateDisplay = course.DateDisplay,
+        priceDisplay = course.PriceDisplay,
+        durationDisplay = course.DurationDisplay,
+        detailsUrl = course.DetailsUrl,
+        wishlistUrl = course.WishlistUrl,
+        isoStandard = course.IsoStandard,
+        norms = course.Norms,
+        cities = course.Cities,
+        categories = course.Categories.Select(category => new
+        {
+            id = category.Id,
+            name = category.Name,
+            slug = category.Slug
+        })
+    };
+
+    var categoryItems = categoryGroups
+        .Select(group => new
+        {
+            id = group.Id,
+            name = group.Name,
+            slug = group.Slug,
+            courseCount = group.CourseCount,
+            courses = (group.Courses ?? Array.Empty<CourseCardViewModel>())
+                .Where(course => course is not null)
+                .Select(projectCourse)
+        })
+        .ToList();
+
+    var categoriesJson = JsonSerializer.Serialize(categoryItems, serializerOptions);
     var formatAllLabelValue = Localizer["FiltersFormatAll"].Value ?? Localizer["FiltersButton"].Value ?? "Všechny formáty";
     var levelAllLabelValue = Localizer["FiltersLevelAll"].Value ?? Localizer["LevelsLabel"].Value ?? "Všechny úrovně";
     var normAllLabelValue = Localizer["FiltersNormAll"].Value ?? Localizer["NormsLabel"].Value ?? "Všechny normy";
@@ -151,7 +164,7 @@
         </div>
         <div class="mt-6 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
             <p class="text-sm text-slate-600">
-                <span x-text="formatResultCount(filterCourses().length)"></span>
+                <span x-text="formatResultCount(totalFilteredCount())"></span>
             </p>
             <div class="flex gap-2">
                 <button type="button"
@@ -163,62 +176,121 @@
         </div>
     </div>
 
-    <div class="grid gap-6 lg:grid-cols-2 xl:grid-cols-3" role="list">
-        <template x-for="course in filterCourses()" :key="course.id">
-            <article class="flex h-full flex-col justify-between rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md" role="listitem">
-                <div class="flex flex-col gap-4">
-                    <div class="flex items-start justify-between gap-3">
-                        <div class="flex flex-col gap-3">
-                            <h2 class="text-lg font-semibold text-slate-900" x-text="course.title"></h2>
-                            <div class="flex flex-wrap gap-2">
-                                <template x-if="course.isoStandard">
-                                    <span class="inline-flex items-center rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-700" x-text="course.isoStandard"></span>
-                                </template>
-                                <template x-for="norm in course.extraNorms" :key="norm">
-                                    <span class="inline-flex items-center rounded-full bg-blue-50 px-3 py-1 text-xs font-medium text-blue-700" x-text="norm"></span>
-                                </template>
-                            </div>
-                        </div>
-                        <span class="inline-flex items-center rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-700" x-text="modeLabel(course.mode)"></span>
+    <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm" x-show="categories.length > 0">
+        <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <div class="flex flex-col gap-1">
+                <span class="text-base font-semibold text-slate-900">@Localizer["CategoriesLabel"]</span>
+                <span class="text-sm text-slate-500">@Localizer["CategoryNavigationDescription"]</span>
+            </div>
+            <div class="flex flex-wrap gap-2" role="tablist" aria-label="@Localizer["CategoryNavigationLabel"]">
+                <button type="button"
+                        class="inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition"
+                        :class="activeCategory === 'all' ? 'border-transparent bg-slate-900 text-white shadow-sm' : 'border-slate-300 bg-white text-slate-600 hover:border-slate-400 hover:text-slate-900'"
+                        @@click="setCategory('all')"
+                        role="tab"
+                        :aria-selected="activeCategory === 'all'">
+                    <span>@Localizer["CategoryAllLabel"]</span>
+                    <span class="inline-flex items-center rounded-full bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-700"
+                          x-text="totalFilteredCount()"></span>
+                </button>
+                <template x-for="category in categories" :key="category.slug">
+                    <button type="button"
+                            class="inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition"
+                            :class="activeCategory === category.slug ? 'border-transparent bg-blue-600 text-white shadow-sm' : 'border-slate-300 bg-white text-slate-600 hover:border-blue-400 hover:text-blue-600'"
+                            @@click="setCategory(category.slug)"
+                            role="tab"
+                            :aria-selected="activeCategory === category.slug">
+                        <span x-text="category.name"></span>
+                        <span class="inline-flex items-center rounded-full bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-700"
+                              x-text="filteredCountForCategory(category.slug)"></span>
+                    </button>
+                </template>
+            </div>
+        </div>
+    </div>
+
+    <div class="space-y-6">
+        <template x-for="category in getVisibleCategories()" :key="category.slug || category.id">
+            <section class="rounded-2xl border border-slate-200 bg-white shadow-sm">
+                <header class="flex flex-col gap-3 border-b border-slate-100 p-6 md:flex-row md:items-center md:justify-between">
+                    <div class="flex flex-col gap-1">
+                        <h2 class="text-lg font-semibold text-slate-900" x-text="category.name"></h2>
+                        <p class="text-sm text-slate-500">
+                            <span x-text="formatResultCount(category.filteredCourses.length)"></span>
+                        </p>
                     </div>
-                    <p class="text-sm text-slate-600" x-show="course.description" x-text="course.description"></p>
-                    <div class="flex flex-wrap items-center gap-2">
-                        <span class="inline-flex items-center rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700" x-text="levelLabel(course.level)"></span>
-                        <span class="text-sm font-medium text-slate-700" x-text="course.dateDisplay"></span>
-                        <span class="text-sm font-semibold text-blue-600" x-text="course.priceDisplay"></span>
+                    <div class="inline-flex items-center gap-2 text-sm text-slate-500">
+                        <span>@Localizer["CategoryTotalLabel"]</span>
+                        <span class="inline-flex items-center rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700"
+                              x-text="category.totalCourses"></span>
                     </div>
-                    <div class="flex flex-wrap gap-2" x-show="course.cities && course.cities.length">
-                        <template x-for="cityName in course.cities" :key="cityName">
-                            <span class="inline-flex items-center rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600" x-text="cityName"></span>
+                </header>
+                <div class="p-6">
+                    <div class="grid gap-6 lg:grid-cols-2 xl:grid-cols-3" role="list" x-show="category.filteredCourses.length > 0">
+                        <template x-for="course in category.filteredCourses" :key="category.slug + '-' + course.id">
+                            <article class="flex h-full flex-col justify-between rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md" role="listitem">
+                                <div class="flex flex-col gap-4">
+                                    <div class="flex items-start justify-between gap-3">
+                                        <div class="flex flex-col gap-3">
+                                            <h3 class="text-lg font-semibold text-slate-900" x-text="course.title"></h3>
+                                            <div class="flex flex-wrap gap-2">
+                                                <template x-if="course.isoStandard">
+                                                    <span class="inline-flex items-center rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-700" x-text="course.isoStandard"></span>
+                                                </template>
+                                                <template x-for="norm in course.extraNorms" :key="norm">
+                                                    <span class="inline-flex items-center rounded-full bg-blue-50 px-3 py-1 text-xs font-medium text-blue-700" x-text="norm"></span>
+                                                </template>
+                                            </div>
+                                        </div>
+                                        <span class="inline-flex items-center rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-700" x-text="modeLabel(course.mode)"></span>
+                                    </div>
+                                    <p class="text-sm text-slate-600" x-show="course.description" x-text="course.description"></p>
+                                    <div class="flex flex-wrap items-center gap-2">
+                                        <span class="inline-flex items-center rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700" x-text="levelLabel(course.level)"></span>
+                                        <span class="text-sm font-medium text-slate-700" x-text="course.dateDisplay"></span>
+                                        <span class="text-sm font-semibold text-blue-600" x-text="course.priceDisplay"></span>
+                                    </div>
+                                    <div class="flex flex-wrap gap-2" x-show="course.cities && course.cities.length">
+                                        <template x-for="cityName in course.cities" :key="cityName">
+                                            <span class="inline-flex items-center rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600" x-text="cityName"></span>
+                                        </template>
+                                    </div>
+                                </div>
+                                <div class="mt-6 flex flex-col gap-3">
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-sm text-slate-500" x-text="course.durationDisplay"></span>
+                                        <a class="inline-flex items-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-500"
+                                           :href="course.detailsUrl"
+                                           x-text="detailsLabel"></a>
+                                    </div>
+                                    <form method="post" x-show="course.wishlistUrl" :action="course.wishlistUrl" class="inline-flex">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="inline-flex items-center gap-2 rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-600 transition hover:border-blue-500 hover:text-blue-600">
+                                            <i class="bi bi-heart" aria-hidden="true"></i>
+                                            <span x-text="wishlistLabel"></span>
+                                        </button>
+                                    </form>
+                                </div>
+                            </article>
                         </template>
                     </div>
+                    <div class="rounded-2xl border border-dashed border-slate-200 p-6 text-center text-sm text-slate-500"
+                         x-show="category.filteredCourses.length === 0"
+                         x-text="noResultsLabel"></div>
                 </div>
-                <div class="mt-6 flex flex-col gap-3">
-                    <div class="flex items-center justify-between">
-                        <span class="text-sm text-slate-500" x-text="course.durationDisplay"></span>
-                        <a class="inline-flex items-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-500"
-                           :href="course.detailsUrl"
-                           x-text="detailsLabel"></a>
-                    </div>
-                    <form method="post" x-show="course.wishlistUrl" :action="course.wishlistUrl" class="inline-flex">
-                        @Html.AntiForgeryToken()
-                        <button type="submit" class="inline-flex items-center gap-2 rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-600 transition hover:border-blue-500 hover:text-blue-600">
-                            <i class="bi bi-heart" aria-hidden="true"></i>
-                            <span x-text="wishlistLabel"></span>
-                        </button>
-                    </form>
-                </div>
-            </article>
+            </section>
         </template>
     </div>
 
-    <div class="rounded-2xl border border-dashed border-slate-300 p-8 text-center text-sm text-slate-500" x-show="filterCourses().length === 0" x-text="noResultsLabel"></div>
+    <div class="rounded-2xl border border-dashed border-slate-300 p-8 text-center text-sm text-slate-500"
+         x-show="totalFilteredCount() === 0"
+         x-text="noResultsLabel"></div>
 </div>
 
 @section Scripts {
     <script>
         // Globální data - s fallbacky pokud nejsou definována
-        window.coursesData = @Html.Raw(coursesJson);
+        window.courseCategoryData = @Html.Raw(categoriesJson);
         window.labelsData = @Html.Raw(labelsJson);
 
         function courseFilters() {
@@ -255,73 +327,71 @@
                 return a.localeCompare(b, undefined, { sensitivity: 'accent' }) === 0;
             }
 
-            var rawCourses = Array.isArray(window.coursesData) ? window.coursesData : [];
+            var rawCategories = Array.isArray(window.courseCategoryData) ? window.courseCategoryData : [];
             var labels = (typeof window.labelsData === 'object' && window.labelsData !== null) ? window.labelsData : {};
 
-            var normalizedCourses = [];
+            var normalizedCategories = [];
             var normSet = new Set();
             var citySet = new Set();
             var modeSet = new Set();
             var levelSet = new Set();
+            var courseCache = new Map();
+            var fallbackIdCounter = 0;
 
-            for (var i = 0; i < rawCourses.length; i++) {
-                var course = rawCourses[i];
-                if (!course || typeof course !== 'object') {
-                    continue;
+            function normalizeCourse(rawCourse) {
+                if (!rawCourse || typeof rawCourse !== 'object') {
+                    return null;
                 }
 
-                var id = course.id || course.Id || '';
+                var id = rawCourse.id || rawCourse.Id || '';
                 if (!id) {
-                    if (course.detailsUrl || course.DetailsUrl) {
-                        id = course.detailsUrl || course.DetailsUrl;
+                    if (rawCourse.detailsUrl || rawCourse.DetailsUrl) {
+                        id = rawCourse.detailsUrl || rawCourse.DetailsUrl;
                     } else {
-                        id = 'course-' + normalizedCourses.length;
+                        id = 'course-' + (fallbackIdCounter++);
                     }
                 }
 
-                var title = (course.title || course.Title || '').trim();
+                var title = (rawCourse.title || rawCourse.Title || '').trim();
                 if (!title) {
                     title = 'Bez názvu';
                 }
-                var description = (course.description || course.Description || '').trim();
-                var level = course.level || course.Level || '';
-                var mode = course.mode || course.Mode || '';
-                var detailsUrl = course.detailsUrl || course.DetailsUrl || '#';
-                var wishlistUrl = course.wishlistUrl || course.WishlistUrl || '';
-                var isoStandard = (course.isoStandard || course.IsoStandard || '').trim();
-                var norms = normalizeList(course.norms || course.Norms || []);
+                var description = (rawCourse.description || rawCourse.Description || '').trim();
+                var level = rawCourse.level || rawCourse.Level || '';
+                var mode = rawCourse.mode || rawCourse.Mode || '';
+                var detailsUrl = rawCourse.detailsUrl || rawCourse.DetailsUrl || '#';
+                var wishlistUrl = rawCourse.wishlistUrl || rawCourse.WishlistUrl || '';
+                var isoStandard = (rawCourse.isoStandard || rawCourse.IsoStandard || '').trim();
+                var norms = normalizeList(rawCourse.norms || rawCourse.Norms || []);
 
                 if (isoStandard && !norms.some(function (item) { return equalsIgnoreCase(item, isoStandard); })) {
                     norms.push(isoStandard);
                 }
 
-                var cities = normalizeList(course.cities || course.Cities || []);
+                var cities = normalizeList(rawCourse.cities || rawCourse.Cities || []);
 
-                var categoriesRaw = course.categories || course.Categories;
-                var categories = Array.isArray(categoriesRaw) ? categoriesRaw.filter(function (category) {
-                    return category && typeof category === 'object' && category.name;
-                }).map(function (category) {
-                    return {
-                        id: category.id || category.Id || null,
-                        name: (category.name || category.Name || '').trim(),
-                        slug: (category.slug || category.Slug || '').trim()
-                    };
-                }) : [];
+                var categoriesRaw = rawCourse.categories || rawCourse.Categories;
+                var categories = Array.isArray(categoriesRaw)
+                    ? categoriesRaw.filter(function (category) {
+                        return category && typeof category === 'object' && (category.name || category.Name);
+                    }).map(function (category) {
+                        return {
+                            id: category.id || category.Id || null,
+                            name: (category.name || category.Name || '').trim(),
+                            slug: (category.slug || category.Slug || '').trim()
+                        };
+                    })
+                    : [];
 
-                norms.forEach(function (norm) { normSet.add(norm); });
-                cities.forEach(function (city) { citySet.add(city); });
-                if (mode) { modeSet.add(mode); }
-                if (level) { levelSet.add(level); }
-
-                normalizedCourses.push({
+                return {
                     id: id,
                     title: title,
                     description: description,
                     level: level,
                     mode: mode,
-                    dateDisplay: course.dateDisplay || course.DateDisplay || '',
-                    priceDisplay: course.priceDisplay || course.PriceDisplay || '',
-                    durationDisplay: course.durationDisplay || course.DurationDisplay || '',
+                    dateDisplay: rawCourse.dateDisplay || rawCourse.DateDisplay || '',
+                    priceDisplay: rawCourse.priceDisplay || rawCourse.PriceDisplay || '',
+                    durationDisplay: rawCourse.durationDisplay || rawCourse.DurationDisplay || '',
                     detailsUrl: detailsUrl,
                     wishlistUrl: wishlistUrl,
                     isoStandard: isoStandard,
@@ -331,8 +401,59 @@
                         : norms.slice(),
                     cities: cities,
                     categories: categories
+                };
+            }
+
+            for (var categoryIndex = 0; categoryIndex < rawCategories.length; categoryIndex++) {
+                var rawCategory = rawCategories[categoryIndex];
+                if (!rawCategory || typeof rawCategory !== 'object') {
+                    continue;
+                }
+
+                var categoryId = rawCategory.id || rawCategory.Id || null;
+                var categoryName = (rawCategory.name || rawCategory.Name || '').trim();
+                var categorySlug = (rawCategory.slug || rawCategory.Slug || '').trim();
+                var courseCount = typeof rawCategory.courseCount === 'number'
+                    ? rawCategory.courseCount
+                    : (typeof rawCategory.CourseCount === 'number' ? rawCategory.CourseCount : 0);
+
+                var rawCourseList = rawCategory.courses || rawCategory.Courses;
+                if (!Array.isArray(rawCourseList)) {
+                    rawCourseList = [];
+                }
+
+                var normalizedCourseList = [];
+
+                for (var courseIndex = 0; courseIndex < rawCourseList.length; courseIndex++) {
+                    var rawCourse = rawCourseList[courseIndex];
+                    var normalizedCourse = normalizeCourse(rawCourse);
+                    if (!normalizedCourse) {
+                        continue;
+                    }
+
+                    var cachedCourse = courseCache.get(normalizedCourse.id);
+                    if (!cachedCourse) {
+                        courseCache.set(normalizedCourse.id, normalizedCourse);
+                        normalizedCourse.norms.forEach(function (norm) { normSet.add(norm); });
+                        normalizedCourse.cities.forEach(function (city) { citySet.add(city); });
+                        if (normalizedCourse.mode) { modeSet.add(normalizedCourse.mode); }
+                        if (normalizedCourse.level) { levelSet.add(normalizedCourse.level); }
+                        cachedCourse = normalizedCourse;
+                    }
+
+                    normalizedCourseList.push(cachedCourse);
+                }
+
+                normalizedCategories.push({
+                    id: categoryId,
+                    name: categoryName || ('Kategorie ' + (categoryIndex + 1)),
+                    slug: categorySlug || ('category-' + (categoryIndex + 1)),
+                    totalCourses: courseCount || normalizedCourseList.length,
+                    courses: normalizedCourseList
                 });
             }
+
+            var allCourses = Array.from(courseCache.values());
 
             var formatAllLabel = labels.formatAllLabel || 'Všechny formáty';
             var levelAllLabel = labels.levelAllLabel || 'Všechny úrovně';
@@ -351,7 +472,9 @@
                 mode: 'all',
                 level: 'all',
                 city: 'all',
-                courses: normalizedCourses,
+                activeCategory: 'all',
+                categories: normalizedCategories,
+                allCourses: allCourses,
                 normOptions: Array.from(normSet).sort(),
                 cityOptions: Array.from(citySet).sort(),
                 modeOptions: Array.from(modeSet).sort(),
@@ -383,8 +506,16 @@
                     return ['all'].concat(this.levelOptions);
                 },
 
-                filterCourses: function () {
-                    if (!Array.isArray(this.courses)) {
+                setCategory: function (slug) {
+                    if (!slug || slug === 'all') {
+                        this.activeCategory = 'all';
+                        return;
+                    }
+                    this.activeCategory = slug;
+                },
+
+                filterCoursesForCategory: function (courses) {
+                    if (!Array.isArray(courses)) {
                         return [];
                     }
 
@@ -396,8 +527,8 @@
 
                     var results = [];
 
-                    for (var i = 0; i < this.courses.length; i++) {
-                        var course = this.courses[i];
+                    for (var i = 0; i < courses.length; i++) {
+                        var course = courses[i];
                         if (!course) {
                             continue;
                         }
@@ -421,6 +552,65 @@
                     }
 
                     return results;
+                },
+
+                getFilteredCategories: function () {
+                    var results = [];
+                    for (var i = 0; i < this.categories.length; i++) {
+                        var category = this.categories[i];
+                        if (!category) {
+                            continue;
+                        }
+
+                        results.push({
+                            id: category.id,
+                            name: category.name,
+                            slug: category.slug,
+                            totalCourses: category.totalCourses,
+                            filteredCourses: this.filterCoursesForCategory(category.courses)
+                        });
+                    }
+                    return results;
+                },
+
+                getVisibleCategories: function () {
+                    var filtered = this.getFilteredCategories();
+                    if (this.activeCategory === 'all') {
+                        return filtered.filter(function (category) { return category.filteredCourses.length > 0; });
+                    }
+
+                    var active = this.activeCategory;
+                    return filtered.filter(function (category) { return equalsIgnoreCase(category.slug, active); });
+                },
+
+                filteredCountForCategory: function (slug) {
+                    var filtered = this.getFilteredCategories();
+                    var target = slug || '';
+                    for (var i = 0; i < filtered.length; i++) {
+                        if (equalsIgnoreCase(filtered[i].slug, target)) {
+                            return filtered[i].filteredCourses.length;
+                        }
+                    }
+                    return 0;
+                },
+
+                totalFilteredCount: function () {
+                    var filtered = this.getFilteredCategories();
+                    if (this.activeCategory === 'all') {
+                        var total = 0;
+                        for (var i = 0; i < filtered.length; i++) {
+                            total += filtered[i].filteredCourses.length;
+                        }
+                        return total;
+                    }
+
+                    var active = this.activeCategory;
+                    for (var j = 0; j < filtered.length; j++) {
+                        if (equalsIgnoreCase(filtered[j].slug, active)) {
+                            return filtered[j].filteredCourses.length;
+                        }
+                    }
+                    return 0;
                 },
 
                 modeLabel: function (option) {
@@ -453,6 +643,7 @@
                     this.level = 'all';
                     this.city = 'all';
                     this.search = '';
+                    this.activeCategory = 'all';
                 }
             };
         }
