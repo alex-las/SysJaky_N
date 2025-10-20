@@ -34,6 +34,60 @@
                 </button>
                 <a class="btn btn-admin-primary" asp-page="/Index">Zpět na web</a>
             </div>
+            <div class="admin-nav__tabs">
+                <nav>
+                    <ul class="nav nav-tabs flex-wrap" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link @ActiveClass("/Admin/Dashboard")" asp-page="/Admin/Dashboard/Index">Přehled</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link @ActiveClass("/Admin/Users")" asp-page="/Admin/Users/Index">Uživatelé</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link @ActiveClass("/Admin/Courses")" asp-page="/Admin/Courses/Index">Kurzy</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link @ActiveClass("/Admin/CourseGroups")" asp-page="/Admin/CourseGroups/Index">Skupiny kurzů</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link @ActiveClass("/Admin/CourseCategories")" asp-page="/Admin/CourseCategories/Index">Kategorie kurzů</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link @ActiveClass("/Admin/CourseTerms")" asp-page="/Admin/CourseTerms/Index">Termíny kurzů</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link @ActiveClass("/Admin/Instructors")" asp-page="/Admin/Instructors/Index">Lektoři</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link @ActiveClass("/Admin/CourseBlocks")" asp-page="/Admin/CourseBlocks/Index">Bloky kurzů</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link @ActiveClass("/Admin/PriceSchedules")" asp-page="/Admin/PriceSchedules/Index">Ceníky</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link @ActiveClass("/Admin/Vouchers")" asp-page="/Admin/Vouchers/Index">Poukázky</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link @ActiveClass("/Admin/Orders")" asp-page="/Admin/Orders/Index">Objednávky</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link @ActiveClass("/Admin/Companies")" asp-page="/Admin/Companies/Index">Firmy</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link @ActiveClass("/Admin/CourseReviews")" asp-page="/Admin/CourseReviews/Index">Hodnocení kurzů</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link @ActiveClass("/Admin/Testimonials")" asp-page="/Admin/Testimonials/Index">Reference</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link @ActiveClass("/Admin/Articles")" asp-page="/Admin/Articles/Index">Články</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link @ActiveClass("/Admin/AuditLogs")" asp-page="/Admin/AuditLogs/Index">Auditní záznamy</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
         </div>
     </header>
 

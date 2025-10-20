@@ -7,6 +7,7 @@ using SysJaky_N.Services;
 using SysJaky_N.Models;
 using SysJaky_N.Extensions;
 using System.Globalization;
+using System.Linq;
 
 namespace SysJaky_N.Pages.Courses;
 
@@ -52,7 +53,7 @@ public class IndexModel : PageModel
     public List<CourseType> SelectedTypes { get; set; } = new();
 
     [BindProperty(SupportsGet = true)]
-    public List<string> SelectedCategoryIds { get; set; } = new();
+    public List<int> SelectedCategoryIds { get; set; } = new();
 
     [BindProperty(SupportsGet = true)]
     public decimal? MinPrice { get; set; }
@@ -96,65 +97,6 @@ public class IndexModel : PageModel
 
     private const int PageSize = 10;
 
-    private static readonly CourseCategoryDefinition[] CourseCategories =
-    {
-        new("quality-management", "CategoryQualityManagement", new[]
-        {
-            "Úvod do systému managementu kvality",
-            "Manažer kvality (ISO 9001) - certifikační kurz",
-            "Interní auditor kvality (ISO 9001)",
-            "Procesní řízení v organizaci",
-            "Správce dokumentace",
-            "Nápravná opatření a 8D reporty"
-        }),
-        new("environmental-management", "CategoryEnvironmentalManagement", new[]
-        {
-            "Úvod do EMS",
-            "Interní auditor EMS (ISO 14001)",
-            "Environmentální aspekty a legislativa"
-        }),
-        new("integrated-systems", "CategoryIntegratedSystems", new[]
-        {
-            "Manažer integrovaného systému (ISO 9001, 14001, 45001)",
-            "Auditor integrovaného systému"
-        }),
-        new("laboratory-accreditation", "CategoryLaboratoryAccreditation", new[]
-        {
-            "Manažer kvality laboratoře - základní znalosti",
-            "Interní auditor zkušební laboratoře",
-            "Metrolog ve zkušební laboratoři",
-            "Manažer kvality zdravotnické laboratoře",
-            "Validace a verifikace metod"
-        }),
-        new("occupational-safety", "CategoryOccupationalSafety", new[]
-        {
-            "Úvod do systému managementu BOZP",
-            "Interní auditor BOZP (ISO 45001)",
-            "Management rizik BOZP"
-        }),
-        new("information-security", "CategoryInformationSecurity", new[]
-        {
-            "Úvod do ISMS",
-            "Interní auditor ISMS (ISO 27001)",
-            "GDPR a ISO 27001"
-        }),
-        new("automotive", "CategoryAutomotive", new[]
-        {
-            "Core Tools (APQP, PPAP, FMEA, MSA, SPC)",
-            "Manažer kvality v automotive"
-        }),
-        new("soft-skills", "CategorySoftSkills", new[]
-        {
-            "Vedení lidí a leadership",
-            "Time management",
-            "Efektivní komunikace",
-            "Prezentační dovednosti"
-        })
-    };
-
-    private static readonly IReadOnlyDictionary<string, CourseCategoryDefinition> CourseCategoryLookup =
-        CourseCategories.ToDictionary(c => c.Id, StringComparer.OrdinalIgnoreCase);
-
     public async Task OnGetAsync()
     {
         await InitializeFiltersAsync();
@@ -190,7 +132,7 @@ public class IndexModel : PageModel
         SelectedCityTagIds ??= new List<int>();
         SelectedLevels ??= new List<CourseLevel>();
         SelectedTypes ??= new List<CourseType>();
-        SelectedCategoryIds ??= new List<string>();
+        SelectedCategoryIds ??= new List<int>();
 
         var allTags = await _context.Tags
             .AsNoTracking()
@@ -241,27 +183,23 @@ public class IndexModel : PageModel
             .OrderBy(t => t)
             .ToList();
 
-        var activeCourseTitles = await _context.Courses
+        var categoryOptions = await _context.CourseCategories
             .AsNoTracking()
-            .Where(c => c.IsActive)
-            .Select(c => c.Title)
+            .OrderBy(category => category.Name)
+            .Select(category => new CategoryOption(
+                category.Id,
+                category.Name,
+                category.Courses.Count(course => course.IsActive)))
             .ToListAsync();
 
-        var activeTitleSet = new HashSet<string>(activeCourseTitles, StringComparer.OrdinalIgnoreCase);
+        CategoryOptions = categoryOptions;
 
-        CategoryOptions = CourseCategories
-            .Select(category =>
-            {
-                var count = category.TitleSet.Count(title => activeTitleSet.Contains(title));
-                return new CategoryOption(category.Id, _localizer[category.NameResourceKey].Value, count);
-            })
-            .ToList();
+        var validCategoryIds = new HashSet<int>(categoryOptions.Select(option => option.Id));
 
-        var selectedCategorySet = new HashSet<string>(SelectedCategoryIds, StringComparer.OrdinalIgnoreCase);
-
-        SelectedCategoryIds = CourseCategories
-            .Where(category => selectedCategorySet.Contains(category.Id))
-            .Select(category => category.Id)
+        SelectedCategoryIds = SelectedCategoryIds
+            .Where(id => validCategoryIds.Contains(id))
+            .Distinct()
+            .OrderBy(id => id)
             .ToList();
 
         var priceQuery = _context.Courses
@@ -311,7 +249,7 @@ public class IndexModel : PageModel
         var cityIds = SelectedCityTagIds?.Distinct().OrderBy(id => id).ToArray() ?? Array.Empty<int>();
         var levelValues = SelectedLevels?.Distinct().OrderBy(l => l).ToArray() ?? Array.Empty<CourseLevel>();
         var typeValues = SelectedTypes?.Distinct().OrderBy(t => t).ToArray() ?? Array.Empty<CourseType>();
-        var categoryIds = SelectedCategoryIds?.ToArray() ?? Array.Empty<string>();
+        var categoryIds = SelectedCategoryIds?.Distinct().OrderBy(id => id).ToArray() ?? Array.Empty<int>();
 
         var minPrice = MinPrice;
         var maxPrice = MaxPrice;
@@ -386,6 +324,7 @@ public class IndexModel : PageModel
                 .Include(c => c.CourseGroup)
                 .Include(c => c.CourseTags)
                     .ThenInclude(ct => ct.Tag)
+                .Include(c => c.Categories)
                 .Where(c => c.IsActive)
                 .AsQueryable();
 
@@ -409,27 +348,8 @@ public class IndexModel : PageModel
 
             if (filterContext.CategoryIds.Count > 0)
             {
-                var selectedTitles = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-                foreach (var categoryId in filterContext.CategoryIds)
-                {
-                    if (CourseCategoryLookup.TryGetValue(categoryId, out var definition))
-                    {
-                        foreach (var title in definition.TitleSet)
-                        {
-                            selectedTitles.Add(title);
-                        }
-                    }
-                }
-
-                if (selectedTitles.Count == 0)
-                {
-                    query = query.Where(static c => false);
-                }
-                else
-                {
-                    var titles = selectedTitles.ToArray();
-                    query = query.Where(c => titles.Contains(c.Title));
-                }
+                var categoryIds = filterContext.CategoryIds;
+                query = query.Where(c => c.Categories.Any(category => categoryIds.Contains(category.Id)));
             }
 
             if (filterContext.Levels.Count > 0)
@@ -516,7 +436,7 @@ public class IndexModel : PageModel
         IReadOnlyList<int> CityTagIds,
         IReadOnlyList<CourseLevel> Levels,
         IReadOnlyList<CourseType> Types,
-        IReadOnlyList<string> CategoryIds,
+        IReadOnlyList<int> CategoryIds,
         decimal? MinPrice,
         decimal? MaxPrice);
 
@@ -524,15 +444,7 @@ public class IndexModel : PageModel
 
     public record EnumOption(string Value, string Label);
 
-    public record CategoryOption(string Id, string Name, int Count);
-
-    private sealed record CourseCategoryDefinition(string Id, string NameResourceKey, IReadOnlyCollection<string> Titles)
-    {
-        public HashSet<string> TitleSet { get; } = Titles
-            .Where(title => !string.IsNullOrWhiteSpace(title))
-            .Select(title => title.Trim())
-            .ToHashSet(StringComparer.OrdinalIgnoreCase);
-    }
+    public record CategoryOption(int Id, string Name, int Count);
 
     private record CoursesResponse(
         PaginationMetadata Pagination,

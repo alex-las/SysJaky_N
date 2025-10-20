@@ -1,0 +1,18 @@
+@page "{id:int}"
+@model SysJaky_N.Pages.Admin.CourseCategories.EditModel
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+@{
+    ViewData["Title"] = ViewData["Title"] ?? Localizer["Title"].Value;
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<form method="post">
+    <input type="hidden" asp-for="Category.Id" />
+    <partial name="_CourseCategoryForm" for="Category" />
+    <partial name="~/Pages/Shared/_FormActions.cshtml" model='new SysJaky_N.Pages.Admin.Shared.FormActionsModel { SubmitText = Localizer["SaveSubmit"].Value ?? "Uložit", CancelText = Localizer["BackLink"].Value ?? "Zpět" }' />
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
