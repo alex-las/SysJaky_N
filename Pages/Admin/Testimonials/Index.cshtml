@@ -37,10 +37,13 @@
         <p class="text-muted mb-0">@Localizer["HeaderSubtitle"]</p>
     </div>
     <div class="admin-page-header__actions">
-        <a class="btn btn-admin-primary" asp-page="Create">
+        <button type="button"
+                class="btn btn-admin-primary"
+                data-admin-modal-target="#adminModal"
+                data-url="@Url.Page("Create")">
             <i class="bi bi-plus-lg me-1" aria-hidden="true"></i>
             @Localizer["CreateButton"]
-        </a>
+        </button>
     </div>
 </section>
 
@@ -203,8 +206,18 @@
                             <td class="text-end">
                                 <div class="admin-table-actions justify-content-end">
                                     <a class="btn btn-sm btn-admin-ghost" asp-page="Details" asp-route-id="@item.Id">@Localizer["DetailButton"]</a>
-                                    <a class="btn btn-sm btn-admin-ghost" asp-page="Edit" asp-route-id="@item.Id">@Localizer["EditButton"]</a>
-                                    <a class="btn btn-sm btn-admin-warning" asp-page="Delete" asp-route-id="@item.Id">@Localizer["DeleteButton"]</a>
+                                    <button type="button"
+                                            class="btn btn-sm btn-admin-ghost"
+                                            data-admin-modal-target="#adminModal"
+                                            data-url="@Url.Page("Edit", new { id = item.Id })">
+                                        @Localizer["EditButton"]
+                                    </button>
+                                    <button type="button"
+                                            class="btn btn-sm btn-admin-warning"
+                                            data-admin-modal-target="#adminModal"
+                                            data-url="@Url.Page("Delete", new { id = item.Id })">
+                                        @Localizer["DeleteButton"]
+                                    </button>
                                 </div>
                             </td>
                         </tr>

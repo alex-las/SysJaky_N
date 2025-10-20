@@ -1,4 +1,6 @@
+using System;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Localization;
@@ -33,6 +35,12 @@ public class EditModel : PageModel
         }
 
         Testimonial = testimonial;
+
+        if (IsAjaxRequest())
+        {
+            return Partial("_EditModal", this);
+        }
+
         return Page();
     }
 
@@ -52,6 +60,12 @@ public class EditModel : PageModel
         if (!ModelState.IsValid)
         {
             Testimonial.ConsentGrantedAtUtc = existing.ConsentGrantedAtUtc;
+            if (IsAjaxRequest())
+            {
+                Response.StatusCode = StatusCodes.Status400BadRequest;
+                return Partial("_EditModal", this);
+            }
+
             return Page();
         }
 
@@ -80,6 +94,16 @@ public class EditModel : PageModel
         existing.IsPublished = Testimonial.ConsentGranted && Testimonial.IsPublished;
 
         await _context.SaveChangesAsync();
+
+        if (IsAjaxRequest())
+        {
+            TempData["StatusMessage"] = $"Reference \"{existing.FullName}\" byla aktualizována.";
+            return new JsonResult(new { success = true });
+        }
+
+        TempData["StatusMessage"] = $"Reference \"{existing.FullName}\" byla aktualizována.";
         return RedirectToPage("Index");
     }
+
+    private bool IsAjaxRequest() => string.Equals(Request.Headers["X-Requested-With"], "XMLHttpRequest", StringComparison.OrdinalIgnoreCase);
 }

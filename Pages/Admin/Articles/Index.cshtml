@@ -10,7 +10,12 @@
         <h1>@Localizer["Header"]</h1>
     </div>
     <div class="admin-page-header__actions">
-        <a asp-page="Create" class="btn btn-admin-primary">@Localizer["CreateButton"]</a>
+        <button type="button"
+                class="btn btn-admin-primary"
+                data-admin-modal-target="#adminModal"
+                data-url="@Url.Page("Create")">
+            @Localizer["CreateButton"]
+        </button>
     </div>
 </section>
 
@@ -88,9 +93,19 @@
                 </td>
                 <td class="text-end">
                     <div class="admin-table-actions justify-content-end">
-                        <a asp-page="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-admin-ghost">@Localizer["ActionEdit"]</a>
+                        <button type="button"
+                                class="btn btn-sm btn-admin-ghost"
+                                data-admin-modal-target="#adminModal"
+                                data-url="@Url.Page("Edit", new { id = item.Id })">
+                            @Localizer["ActionEdit"]
+                        </button>
                         <a asp-page="Details" asp-route-id="@item.Id" class="btn btn-sm btn-admin-ghost">@Localizer["ActionDetail"]</a>
-                        <a asp-page="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-admin-warning">@Localizer["ActionDelete"]</a>
+                        <button type="button"
+                                class="btn btn-sm btn-admin-warning"
+                                data-admin-modal-target="#adminModal"
+                                data-url="@Url.Page("Delete", new { id = item.Id })">
+                            @Localizer["ActionDelete"]
+                        </button>
                     </div>
                 </td>
             </tr>

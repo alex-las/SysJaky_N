@@ -1,0 +1,22 @@
+@model SysJaky_N.Pages.Admin.CourseCategories.EditModel
+@{
+    Layout = null;
+    var title = ViewData["Title"]?.ToString() ?? "Upravit kategorii";
+}
+
+<div data-admin-modal-slot="header">
+    <h5 class="modal-title">@title</h5>
+    <button type="button" class="btn-close" data-admin-modal-dismiss aria-label="Zavřít"></button>
+</div>
+<div data-admin-modal-slot="body">
+    <form method="post" class="needs-validation" novalidate id="adminModalForm">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="Editor.Category.Id" />
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+        <partial name="_CourseCategoryForm" for="Editor" />
+    </form>
+</div>
+<div data-admin-modal-slot="actions">
+    <button type="submit" class="btn btn-admin-primary" form="adminModalForm">Uložit</button>
+    <button type="button" class="btn btn-admin-ghost" data-admin-modal-dismiss>Zrušit</button>
+</div>

@@ -1,3 +1,4 @@
+using System;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -30,6 +31,12 @@ public class DeleteModel : PageModel
         {
             return NotFound();
         }
+
+        if (IsAjaxRequest())
+        {
+            return Partial("_DeleteModal", this);
+        }
+
         return Page();
     }
 
@@ -40,7 +47,16 @@ public class DeleteModel : PageModel
         {
             _context.Articles.Remove(article);
             await _context.SaveChangesAsync();
+            TempData["StatusMessage"] = $"Článek \"{article.Title}\" byl smazán.";
         }
+
+        if (IsAjaxRequest())
+        {
+            return new JsonResult(new { success = true });
+        }
+
         return RedirectToPage("Index");
     }
+
+    private bool IsAjaxRequest() => string.Equals(Request.Headers["X-Requested-With"], "XMLHttpRequest", StringComparison.OrdinalIgnoreCase);
 }

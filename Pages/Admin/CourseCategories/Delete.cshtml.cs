@@ -1,11 +1,13 @@
+using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Localization;
 using SysJaky_N.Data;
 using SysJaky_N.Models;
 using SysJaky_N.Services;
-using System.Threading.Tasks;
 
 namespace SysJaky_N.Pages.Admin.CourseCategories;
 
@@ -37,6 +39,12 @@ public class DeleteModel : PageModel
         }
 
         Category = category;
+
+        if (IsAjaxRequest())
+        {
+            return Partial("_DeleteModal", this);
+        }
+
         return Page();
     }
 
@@ -50,8 +58,17 @@ public class DeleteModel : PageModel
             _context.CourseCategories.Remove(category);
             await _context.SaveChangesAsync();
             _cacheService.InvalidateCourseList();
+            if (IsAjaxRequest())
+            {
+                TempData["StatusMessage"] = $"Kategorie \"{category.Name}\" byla odstraněna.";
+                return new JsonResult(new { success = true });
+            }
+
+            TempData["StatusMessage"] = $"Kategorie \"{category.Name}\" byla odstraněna.";
         }
 
         return RedirectToPage("Index");
     }
+
+    private bool IsAjaxRequest() => string.Equals(Request.Headers["X-Requested-With"], "XMLHttpRequest", StringComparison.OrdinalIgnoreCase);
 }

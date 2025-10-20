@@ -6,15 +6,24 @@
         toggle: '[data-editor-preview-toggle]'
     };
 
-    function initializeEditor(textarea) {
-        const container = document.querySelector(selectors.container);
-        if (!container || typeof Quill === 'undefined') {
+    function initializeEditor(root) {
+        if (typeof Quill === 'undefined') {
+            return;
+        }
+
+        const textarea = root.querySelector(selectors.textarea);
+        const container = root.querySelector(selectors.container);
+        if (!textarea || !container) {
+            return;
+        }
+
+        if (textarea.dataset.editorInitialized === 'true') {
             return;
         }
 
         const form = textarea.closest('form');
-        const preview = document.querySelector(selectors.preview);
-        const toggleButton = document.querySelector(selectors.toggle);
+        const preview = root.querySelector(selectors.preview);
+        const toggleButton = root.querySelector(selectors.toggle);
 
         const quill = new Quill(container, {
             theme: 'snow',
@@ -68,12 +77,24 @@
         }
 
         syncContent();
+        textarea.dataset.editorInitialized = 'true';
+    }
+
+    function initializeEditors(root = document) {
+        const contexts = root.querySelectorAll('[data-editor-container]');
+        contexts.forEach(container => {
+            const wrapper = container.closest('form') || container.parentElement || root;
+            initializeEditor(wrapper);
+        });
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-        const textarea = document.querySelector(selectors.textarea);
-        if (textarea) {
-            initializeEditor(textarea);
+        initializeEditors(document);
+    });
+
+    document.addEventListener('adminModal:contentLoaded', (event) => {
+        if (event.detail?.body) {
+            initializeEditors(event.detail.body);
         }
     });
 })();

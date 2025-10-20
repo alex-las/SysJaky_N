@@ -1,4 +1,6 @@
+using System;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Localization;
@@ -37,6 +39,12 @@ public class EditModel : PageModel
         {
             Article.PublishedAtUtc = DateTime.SpecifyKind(Article.PublishedAtUtc.Value, DateTimeKind.Utc).ToLocalTime();
         }
+
+        if (IsAjaxRequest())
+        {
+            return Partial("_EditModal", this);
+        }
+
         return Page();
     }
 
@@ -47,6 +55,12 @@ public class EditModel : PageModel
         if (!ModelState.IsValid)
         {
             RestoreLocalPublicationTime();
+            if (IsAjaxRequest())
+            {
+                Response.StatusCode = StatusCodes.Status400BadRequest;
+                return Partial("_EditModal", this);
+            }
+
             return Page();
         }
 
@@ -62,6 +76,14 @@ public class EditModel : PageModel
         article.PublishedAtUtc = Article.PublishedAtUtc;
         article.UpdatedAtUtc = Article.UpdatedAtUtc;
         await _context.SaveChangesAsync();
+
+        if (IsAjaxRequest())
+        {
+            TempData["StatusMessage"] = $"Článek \"{Article.Title}\" byl aktualizován.";
+            return new JsonResult(new { success = true });
+        }
+
+        TempData["StatusMessage"] = $"Článek \"{Article.Title}\" byl aktualizován.";
         return RedirectToPage("Index");
     }
 
@@ -96,4 +118,6 @@ public class EditModel : PageModel
             Article.PublishedAtUtc = DateTime.SpecifyKind(Article.PublishedAtUtc.Value, DateTimeKind.Utc).ToLocalTime();
         }
     }
+
+    private bool IsAjaxRequest() => string.Equals(Request.Headers["X-Requested-With"], "XMLHttpRequest", StringComparison.OrdinalIgnoreCase);
 }
