@@ -19,16 +19,16 @@
     <value>Identifier (slug)</value>
   </data>
   <data name="SlugHelp" xml:space="preserve">
-    <value>A short unique value used in URLs or filters (e.g. quality, safety).</value>
+    <value>A short unique name for URLs or filters (e.g. quality, hse).</value>
   </data>
   <data name="DescriptionLabel" xml:space="preserve">
     <value>Description</value>
   </data>
   <data name="DescriptionHelp" xml:space="preserve">
-    <value>Optionally provide a short description of the category.</value>
+    <value>Optionally provide a short category description.</value>
   </data>
   <data name="SortOrderLabel" xml:space="preserve">
-    <value>Display order</value>
+    <value>Order</value>
   </data>
   <data name="SortOrderHelp" xml:space="preserve">
     <value>Lower numbers appear first in category listings.</value>
@@ -37,6 +37,36 @@
     <value>Category is active</value>
   </data>
   <data name="IsActiveHelp" xml:space="preserve">
-    <value>Inactive categories are hidden from the public catalog and filters.</value>
+    <value>Inactive categories are hidden on the site and in filters.</value>
+  </data>
+  <data name="TranslationsHeading" xml:space="preserve">
+    <value>Translations</value>
+  </data>
+  <data name="TranslationsHelp" xml:space="preserve">
+    <value>Provide names, identifiers and descriptions for each supported language.</value>
+  </data>
+  <data name="Locale_cs" xml:space="preserve">
+    <value>Czech</value>
+  </data>
+  <data name="Locale_en" xml:space="preserve">
+    <value>English</value>
+  </data>
+  <data name="TranslationLegend" xml:space="preserve">
+    <value>Translation ({0})</value>
+  </data>
+  <data name="TranslationNameLabel" xml:space="preserve">
+    <value>Name ({0})</value>
+  </data>
+  <data name="TranslationSlugLabel" xml:space="preserve">
+    <value>Identifier ({0})</value>
+  </data>
+  <data name="TranslationSlugHelp" xml:space="preserve">
+    <value>A short unique identifier used in {0}.</value>
+  </data>
+  <data name="TranslationDescriptionLabel" xml:space="preserve">
+    <value>Description ({0})</value>
+  </data>
+  <data name="TranslationDescriptionHelp" xml:space="preserve">
+    <value>Optionally provide the category description in {0}.</value>
   </data>
 </root>

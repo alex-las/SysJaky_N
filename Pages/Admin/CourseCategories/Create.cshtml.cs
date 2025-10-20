@@ -1,3 +1,5 @@
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -5,7 +7,6 @@ using Microsoft.Extensions.Localization;
 using SysJaky_N.Data;
 using SysJaky_N.Models;
 using SysJaky_N.Services;
-using System.Threading.Tasks;
 
 namespace SysJaky_N.Pages.Admin.CourseCategories;
 
@@ -24,35 +25,106 @@ public class CreateModel : PageModel
     }
 
     [BindProperty]
-    public CourseCategory Category { get; set; } = new();
+    public CourseCategoryEditorModel Editor { get; set; } = new();
 
     public void OnGet()
     {
         ViewData["Title"] = _localizer["Title"];
+        Editor.EnsureLocales();
     }
 
     public async Task<IActionResult> OnPostAsync()
     {
         ViewData["Title"] = _localizer["Title"];
 
+        Editor.EnsureLocales();
+        NormalizeCategory(Editor.Category);
+        ValidateTranslations();
+
         if (!ModelState.IsValid)
         {
             return Page();
         }
 
-        Category.Name = Category.Name?.Trim() ?? string.Empty;
-        Category.Slug = string.IsNullOrWhiteSpace(Category.Slug)
-            ? string.Empty
-            : Category.Slug.Trim().ToLowerInvariant();
-        Category.Description = string.IsNullOrWhiteSpace(Category.Description)
-            ? null
-            : Category.Description.Trim();
-        Category.SortOrder = Category.SortOrder < 0 ? 0 : Category.SortOrder;
+        var category = Editor.Category;
 
-        _context.CourseCategories.Add(Category);
+        _context.CourseCategories.Add(category);
+
+        foreach (var translation in Editor.Translations)
+        {
+            category.Translations.Add(new CourseCategoryTranslation
+            {
+                Locale = translation.Locale,
+                Name = translation.Name,
+                Slug = translation.Slug,
+                Description = translation.Description
+            });
+        }
+
         await _context.SaveChangesAsync();
         _cacheService.InvalidateCourseList();
 
         return RedirectToPage("Index");
+    }
+
+    private static void NormalizeCategory(CourseCategory category)
+    {
+        category.Name = category.Name?.Trim() ?? string.Empty;
+        category.Slug = string.IsNullOrWhiteSpace(category.Slug)
+            ? string.Empty
+            : category.Slug.Trim().ToLowerInvariant();
+        category.Description = string.IsNullOrWhiteSpace(category.Description)
+            ? null
+            : category.Description.Trim();
+        category.SortOrder = category.SortOrder < 0 ? 0 : category.SortOrder;
+    }
+
+    private void ValidateTranslations()
+    {
+        for (int i = 0; i < Editor.Translations.Count; i++)
+        {
+            var translation = Editor.Translations[i];
+            var prefix = $"{nameof(Editor)}.{nameof(Editor.Translations)}[{i}]";
+
+            translation.Locale = translation.Locale?.Trim().ToLowerInvariant() ?? string.Empty;
+            translation.Name = translation.Name?.Trim() ?? string.Empty;
+            translation.Slug = translation.Slug?.Trim().ToLowerInvariant() ?? string.Empty;
+            translation.Description = string.IsNullOrWhiteSpace(translation.Description)
+                ? null
+                : translation.Description.Trim();
+
+            if (!CourseCategoryEditorModel.SupportedLocales.Contains(translation.Locale))
+            {
+                if (ModelState.ContainsKey($"{prefix}.{nameof(translation.Locale)}"))
+                {
+                    ModelState[$"{prefix}.{nameof(translation.Locale)}"].Errors.Clear();
+                }
+
+                ModelState.AddModelError($"{prefix}.{nameof(translation.Locale)}", _localizer["TranslationLocaleInvalid"]);
+                continue;
+            }
+
+            var localeDisplayName = _localizer[$"Locale_{translation.Locale}"].Value ?? translation.Locale;
+
+            if (string.IsNullOrWhiteSpace(translation.Name))
+            {
+                if (ModelState.ContainsKey($"{prefix}.{nameof(translation.Name)}"))
+                {
+                    ModelState[$"{prefix}.{nameof(translation.Name)}"].Errors.Clear();
+                }
+
+                ModelState.AddModelError($"{prefix}.{nameof(translation.Name)}", _localizer["TranslationNameRequired", localeDisplayName]);
+            }
+
+            if (string.IsNullOrWhiteSpace(translation.Slug))
+            {
+                if (ModelState.ContainsKey($"{prefix}.{nameof(translation.Slug)}"))
+                {
+                    ModelState[$"{prefix}.{nameof(translation.Slug)}"].Errors.Clear();
+                }
+
+                ModelState.AddModelError($"{prefix}.{nameof(translation.Slug)}", _localizer["TranslationSlugRequired", localeDisplayName]);
+            }
+        }
     }
 }
