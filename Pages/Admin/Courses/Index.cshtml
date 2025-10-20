@@ -1,3 +1,5 @@
+@using System.Linq
+
 @page
 @model SysJaky_N.Pages.Admin.Courses.IndexModel
 @{
@@ -20,9 +22,9 @@
             <input id="searchString" type="text" asp-for="SearchString" placeholder="Hledat..." class="form-control" aria-label="Hledat kurzy" />
         </div>
         <div>
-            <label class="form-label visually-hidden" for="courseGroup">Filtrovat podle skupiny</label>
-            <select id="courseGroup" asp-for="CourseGroupId" asp-items="Model.CourseGroups" class="form-select" aria-label="Filtrovat podle skupiny">
-                <option value="">Všechny skupiny</option>
+            <label class="form-label visually-hidden" for="courseCategory">Filtrovat podle kategorie</label>
+            <select id="courseCategory" asp-for="CategoryId" asp-items="Model.CourseCategories" class="form-select" aria-label="Filtrovat podle kategorie">
+                <option value="">Všechny kategorie</option>
             </select>
         </div>
     </div>
@@ -37,7 +39,7 @@
         <thead>
             <tr>
                 <th scope="col">Název</th>
-                <th scope="col">Skupina</th>
+                <th scope="col">Kategorie</th>
                 <th scope="col">Cena</th>
                 <th scope="col">Datum</th>
                 <th scope="col" class="text-end"></th>
@@ -48,7 +50,16 @@
         {
             <tr>
                 <td>@item.Title</td>
-                <td>@item.CourseGroup?.Name</td>
+                <td>
+                    @if (item.Categories?.Count > 0)
+                    {
+                        var categories = item.Categories
+                            .OrderBy(category => category.SortOrder)
+                            .ThenBy(category => category.Name)
+                            .Select(category => category.Name);
+                        <span>@string.Join(", ", categories)</span>
+                    }
+                </td>
                 <td>@item.Price</td>
                 <td>@item.Date.ToString("d")</td>
                 <td class="text-end">
@@ -68,10 +79,10 @@
     <nav aria-label="Stránkování kurzů" class="admin-pagination">
         <ul class="pagination admin-pagination">
             <li class="page-item @(Model.PageNumber <= 1 ? "disabled" : "")">
-                <a class="page-link" asp-route-PageNumber="@(Model.PageNumber - 1)" asp-route-CourseGroupId="@Model.CourseGroupId" asp-route-SearchString="@Model.SearchString">Předchozí</a>
+                <a class="page-link" asp-route-PageNumber="@(Model.PageNumber - 1)" asp-route-CategoryId="@Model.CategoryId" asp-route-SearchString="@Model.SearchString">Předchozí</a>
             </li>
             <li class="page-item @(Model.PageNumber >= Model.TotalPages ? "disabled" : "")">
-                <a class="page-link" asp-route-PageNumber="@(Model.PageNumber + 1)" asp-route-CourseGroupId="@Model.CourseGroupId" asp-route-SearchString="@Model.SearchString">Další</a>
+                <a class="page-link" asp-route-PageNumber="@(Model.PageNumber + 1)" asp-route-CategoryId="@Model.CategoryId" asp-route-SearchString="@Model.SearchString">Další</a>
             </li>
         </ul>
     </nav>

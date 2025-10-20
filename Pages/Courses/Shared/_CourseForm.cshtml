@@ -29,14 +29,9 @@
     <input asp-for="Course.OpenGraphImage" class="form-control" placeholder="@Localizer["OpenGraphImagePlaceholder"]" />
     <span asp-validation-for="Course.OpenGraphImage" class="text-danger"></span>
 </div>
+<input type="hidden" asp-for="Course.CourseGroupId" />
+
 <div class="row g-3">
-    <div class="col-md-6">
-        <label asp-for="Course.CourseGroupId" class="form-label">@Localizer["CourseGroupLabel"]</label>
-        <select asp-for="Course.CourseGroupId" asp-items="Model.CourseGroups" class="form-select">
-            <option value="">@Localizer["SelectGroup"]</option>
-        </select>
-        <span asp-validation-for="Course.CourseGroupId" class="text-danger"></span>
-    </div>
     <div class="col-md-6">
         <label asp-for="SelectedCategoryIds" class="form-label">@Localizer["CourseCategoriesLabel"]</label>
         <select asp-for="SelectedCategoryIds"
