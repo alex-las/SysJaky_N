@@ -129,7 +129,7 @@ else
                             @localExpiry.Value.ToString("g")
                             if (isExpired)
                             {
-                                <span class="badge bg-danger ms-2">@Localizer["ExpiredBadge"]</span>
+                                <span class="badge badge-admin badge-admin-warning ms-2">@Localizer["ExpiredBadge"]</span>
                             }
                         }
                         else
@@ -145,7 +145,7 @@ else
                             @Localizer["UsagePercentageFormat", usagePercentage.Value]
                             if (isDepleted)
                             {
-                                <span class="badge bg-warning text-dark ms-2">@Localizer["DepletedBadge"]</span>
+                                <span class="badge badge-admin badge-admin-warning ms-2">@Localizer["DepletedBadge"]</span>
                             }
                         }
                         else
