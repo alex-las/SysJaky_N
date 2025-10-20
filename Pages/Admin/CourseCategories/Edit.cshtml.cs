@@ -40,7 +40,7 @@ public class EditModel : PageModel
             return NotFound();
         }
 
-        var translations = await _context.CourseCategoryTranslations
+        var translations = await _context.coursecategory_translations
             .AsNoTracking()
             .Where(t => t.CategoryId == id)
             .ToListAsync();
@@ -120,7 +120,7 @@ public class EditModel : PageModel
 
         foreach (var translation in existingTranslations.Values)
         {
-            _context.CourseCategoryTranslations.Remove(translation);
+            _context.coursecategory_translations.Remove(translation);
         }
 
         await _context.SaveChangesAsync();
