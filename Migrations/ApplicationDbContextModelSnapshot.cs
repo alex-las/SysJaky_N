@@ -1914,8 +1914,6 @@ namespace SysJaky_N.Migrations
 
             modelBuilder.Entity("SysJaky_N.Models.CourseGroup", b =>
                 {
-                    b.Navigation("CourseCourseCategories");
-
                     b.Navigation("Courses");
                 });
 
