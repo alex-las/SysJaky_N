@@ -33,6 +33,21 @@
   <data name="FilterAuthorLabel" xml:space="preserve">
     <value>Autor</value>
   </data>
+  <data name="FilterPublicationAllOption" xml:space="preserve">
+    <value>Všechny stavy</value>
+  </data>
+  <data name="FilterPublicationDraftOption" xml:space="preserve">
+    <value>Koncepty</value>
+  </data>
+  <data name="FilterPublicationLabel" xml:space="preserve">
+    <value>Stav</value>
+  </data>
+  <data name="FilterPublicationPublishedOption" xml:space="preserve">
+    <value>Publikované</value>
+  </data>
+  <data name="FilterPublicationScheduledOption" xml:space="preserve">
+    <value>Naplánované</value>
+  </data>
   <data name="FilterFromLabel" xml:space="preserve">
     <value>Od</value>
   </data>
@@ -60,6 +75,9 @@
   <data name="TableHeaderAuthor" xml:space="preserve">
     <value>Autor</value>
   </data>
+  <data name="TableHeaderStatus" xml:space="preserve">
+    <value>Stav</value>
+  </data>
   <data name="TableHeaderCreated" xml:space="preserve">
     <value>Vytvořeno</value>
   </data>
@@ -71,5 +89,14 @@
   </data>
   <data name="UnknownAuthor" xml:space="preserve">
     <value>Neznámý autor</value>
+  </data>
+  <data name="StatusDraft" xml:space="preserve">
+    <value>Koncept</value>
+  </data>
+  <data name="StatusPublished" xml:space="preserve">
+    <value>Publikováno {0}</value>
+  </data>
+  <data name="StatusScheduled" xml:space="preserve">
+    <value>Naplánováno na {0}</value>
   </data>
 </root>

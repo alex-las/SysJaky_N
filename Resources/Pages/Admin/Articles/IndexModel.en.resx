@@ -33,6 +33,21 @@
   <data name="FilterAuthorLabel" xml:space="preserve">
     <value>Author</value>
   </data>
+  <data name="FilterPublicationAllOption" xml:space="preserve">
+    <value>All statuses</value>
+  </data>
+  <data name="FilterPublicationDraftOption" xml:space="preserve">
+    <value>Drafts</value>
+  </data>
+  <data name="FilterPublicationLabel" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="FilterPublicationPublishedOption" xml:space="preserve">
+    <value>Published</value>
+  </data>
+  <data name="FilterPublicationScheduledOption" xml:space="preserve">
+    <value>Scheduled</value>
+  </data>
   <data name="FilterFromLabel" xml:space="preserve">
     <value>From</value>
   </data>
@@ -60,6 +75,9 @@
   <data name="TableHeaderAuthor" xml:space="preserve">
     <value>Author</value>
   </data>
+  <data name="TableHeaderStatus" xml:space="preserve">
+    <value>Status</value>
+  </data>
   <data name="TableHeaderCreated" xml:space="preserve">
     <value>Created</value>
   </data>
@@ -71,5 +89,14 @@
   </data>
   <data name="UnknownAuthor" xml:space="preserve">
     <value>Unknown author</value>
+  </data>
+  <data name="StatusDraft" xml:space="preserve">
+    <value>Draft</value>
+  </data>
+  <data name="StatusPublished" xml:space="preserve">
+    <value>Published {0}</value>
+  </data>
+  <data name="StatusScheduled" xml:space="preserve">
+    <value>Scheduled for {0}</value>
   </data>
 </root>

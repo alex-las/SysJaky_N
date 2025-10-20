@@ -25,18 +25,28 @@ public class EditModel : PageModel
 
     public async Task<IActionResult> OnGetAsync(int id)
     {
-        Article = await _context.Articles.FindAsync(id);
-        if (Article == null)
+        var article = await _context.Articles.AsNoTracking().FirstOrDefaultAsync(a => a.Id == id);
+        if (article == null)
         {
             return NotFound();
+        }
+
+        Article = article;
+
+        if (Article.PublishedAtUtc.HasValue)
+        {
+            Article.PublishedAtUtc = DateTime.SpecifyKind(Article.PublishedAtUtc.Value, DateTimeKind.Utc).ToLocalTime();
         }
         return Page();
     }
 
     public async Task<IActionResult> OnPostAsync()
     {
+        NormalizePublicationFields();
+
         if (!ModelState.IsValid)
         {
+            RestoreLocalPublicationTime();
             return Page();
         }
 
@@ -48,7 +58,42 @@ public class EditModel : PageModel
 
         article.Title = Article.Title;
         article.Content = Article.Content;
+        article.IsPublished = Article.IsPublished;
+        article.PublishedAtUtc = Article.PublishedAtUtc;
+        article.UpdatedAtUtc = Article.UpdatedAtUtc;
         await _context.SaveChangesAsync();
         return RedirectToPage("Index");
+    }
+
+    private void NormalizePublicationFields()
+    {
+        var now = DateTime.UtcNow;
+
+        if (Article.IsPublished)
+        {
+            if (Article.PublishedAtUtc.HasValue)
+            {
+                var publishedAt = Article.PublishedAtUtc.Value;
+                Article.PublishedAtUtc = DateTime.SpecifyKind(publishedAt, DateTimeKind.Local).ToUniversalTime();
+            }
+            else
+            {
+                Article.PublishedAtUtc = now;
+            }
+        }
+        else
+        {
+            Article.PublishedAtUtc = null;
+        }
+
+        Article.UpdatedAtUtc = now;
+    }
+
+    private void RestoreLocalPublicationTime()
+    {
+        if (Article.PublishedAtUtc.HasValue)
+        {
+            Article.PublishedAtUtc = DateTime.SpecifyKind(Article.PublishedAtUtc.Value, DateTimeKind.Utc).ToLocalTime();
+        }
     }
 }

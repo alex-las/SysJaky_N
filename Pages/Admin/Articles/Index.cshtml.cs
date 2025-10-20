@@ -33,6 +33,20 @@ public class IndexModel : PageModel
 
     public IEnumerable<SelectListItem> AuthorOptions { get; set; } = Enumerable.Empty<SelectListItem>();
 
+    public IEnumerable<SelectListItem> PublicationOptions { get; set; } = Enumerable.Empty<SelectListItem>();
+
+    [BindProperty(SupportsGet = true)]
+    public PublicationFilterOption? PublicationFilter { get; set; }
+
+    public DateTime NowUtc { get; private set; }
+
+    public enum PublicationFilterOption
+    {
+        Draft,
+        Published,
+        Scheduled
+    }
+
     public IndexModel(ApplicationDbContext context, IStringLocalizer<IndexModel> localizer)
     {
         _context = context;
@@ -69,6 +83,37 @@ public class IndexModel : PageModel
             })
             .ToListAsync();
 
+        PublicationOptions = new List<SelectListItem>
+        {
+            new()
+            {
+                Value = string.Empty,
+                Text = _localizer["FilterPublicationAllOption"],
+                Selected = PublicationFilter == null
+            },
+            new()
+            {
+                Value = PublicationFilterOption.Published.ToString(),
+                Text = _localizer["FilterPublicationPublishedOption"],
+                Selected = PublicationFilter == PublicationFilterOption.Published
+            },
+            new()
+            {
+                Value = PublicationFilterOption.Draft.ToString(),
+                Text = _localizer["FilterPublicationDraftOption"],
+                Selected = PublicationFilter == PublicationFilterOption.Draft
+            },
+            new()
+            {
+                Value = PublicationFilterOption.Scheduled.ToString(),
+                Text = _localizer["FilterPublicationScheduledOption"],
+                Selected = PublicationFilter == PublicationFilterOption.Scheduled
+            }
+        };
+
+        NowUtc = DateTime.UtcNow;
+        var now = NowUtc;
+
         var query = _context.Articles
             .Include(a => a.Author)
             .AsQueryable();
@@ -95,8 +140,21 @@ public class IndexModel : PageModel
             query = query.Where(a => a.CreatedAt < toExclusive);
         }
 
+        if (PublicationFilter == PublicationFilterOption.Published)
+        {
+            query = query.Where(a => a.IsPublished && a.PublishedAtUtc <= now);
+        }
+        else if (PublicationFilter == PublicationFilterOption.Draft)
+        {
+            query = query.Where(a => !a.IsPublished);
+        }
+        else if (PublicationFilter == PublicationFilterOption.Scheduled)
+        {
+            query = query.Where(a => a.IsPublished && (!a.PublishedAtUtc.HasValue || a.PublishedAtUtc > now));
+        }
+
         Articles = await query
-            .OrderByDescending(a => a.CreatedAt)
+            .OrderByDescending(a => a.UpdatedAtUtc)
             .AsNoTracking()
             .ToListAsync();
     }

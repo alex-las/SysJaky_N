@@ -30,10 +30,14 @@ public class CreateModel : PageModel
 
     public void OnGet()
     {
+        Article.IsPublished = false;
+        Article.PublishedAtUtc = null;
     }
 
     public async Task<IActionResult> OnPostAsync()
     {
+        NormalizePublicationFields();
+
         if (!ModelState.IsValid)
         {
             return Page();
@@ -45,5 +49,29 @@ public class CreateModel : PageModel
         _context.Articles.Add(Article);
         await _context.SaveChangesAsync();
         return RedirectToPage("Index");
+    }
+
+    private void NormalizePublicationFields()
+    {
+        var now = DateTime.UtcNow;
+
+        if (Article.IsPublished)
+        {
+            if (Article.PublishedAtUtc.HasValue)
+            {
+                var publishedAt = Article.PublishedAtUtc.Value;
+                Article.PublishedAtUtc = DateTime.SpecifyKind(publishedAt, DateTimeKind.Local).ToUniversalTime();
+            }
+            else
+            {
+                Article.PublishedAtUtc = now;
+            }
+        }
+        else
+        {
+            Article.PublishedAtUtc = null;
+        }
+
+        Article.UpdatedAtUtc = now;
     }
 }
