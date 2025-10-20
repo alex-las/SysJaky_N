@@ -1,0 +1,50 @@
+/* Admin-specific overrides to disable gradients and ensure solid color surfaces */
+body.admin-shell {
+  --surface-page-gradient: var(--surface-page);
+  --gradient-brand: var(--color-brand-600);
+  --gradient-brand-horizontal: var(--color-brand-600);
+  --gradient-primary: var(--color-brand-600);
+  --gradient-blue: var(--color-brand-600);
+  --gradient-hero: var(--color-brand-600);
+  --gradient-overlay: rgba(15, 23, 42, 0.12);
+}
+
+body.admin-shell .badge-admin-active {
+  background-color: #d9e6ff;
+  background-image: none;
+}
+
+body.admin-shell .badge-admin-inactive {
+  background-color: #e8edfb;
+  background-image: none;
+}
+
+body.admin-shell .badge-admin-warning {
+  background-color: #fff3c4;
+  background-image: none;
+}
+
+body.admin-shell .text-admin-highlight {
+  background-color: #ffe08f;
+  background-image: none;
+}
+
+body.admin-shell .admin-card--metric-blue {
+  background-color: #e6f0ff;
+  background-image: none;
+}
+
+body.admin-shell .admin-card--metric-blue-soft {
+  background-color: #edf4ff;
+  background-image: none;
+}
+
+body.admin-shell .admin-card--metric-yellow {
+  background-color: #fff3c4;
+  background-image: none;
+}
+
+body.admin-shell .admin-card--metric-yellow-soft {
+  background-color: #fff6d6;
+  background-image: none;
+}
