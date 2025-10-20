@@ -130,6 +130,8 @@ public class DetailsModel : PageModel
         NewReview.CourseId = id;
         NewReview.UserId = _userManager.GetUserId(User)!;
         NewReview.CreatedAt = DateTime.UtcNow;
+        NewReview.IsPublic = false;
+        NewReview.PublishedAtUtc = null;
         _context.CourseReviews.Add(NewReview);
         await _context.SaveChangesAsync();
 

@@ -15,4 +15,28 @@
   <data name="CourseReviewNotFound" xml:space="preserve">
     <value>Požadovanou recenzi se nepodařilo najít.</value>
   </data>
+  <data name="CourseReviewDeleted" xml:space="preserve">
+    <value>Recenze byla úspěšně smazána.</value>
+  </data>
+  <data name="CourseReviewPublished" xml:space="preserve">
+    <value>Recenze byla zveřejněna.</value>
+  </data>
+  <data name="CourseReviewUnpublished" xml:space="preserve">
+    <value>Recenze byla stažena z publikace.</value>
+  </data>
+  <data name="CourseReviewsDeleted" xml:space="preserve">
+    <value>{0} recenzí bylo smazáno.</value>
+  </data>
+  <data name="CourseReviewsPublished" xml:space="preserve">
+    <value>{0} recenzí bylo zveřejněno.</value>
+  </data>
+  <data name="CourseReviewsUnpublished" xml:space="preserve">
+    <value>{0} recenzí bylo staženo z publikace.</value>
+  </data>
+  <data name="NoReviewsMatchedSelection" xml:space="preserve">
+    <value>Vybrané recenze už neexistují.</value>
+  </data>
+  <data name="NoReviewsSelected" xml:space="preserve">
+    <value>Nebyly vybrány žádné recenze.</value>
+  </data>
 </root>
