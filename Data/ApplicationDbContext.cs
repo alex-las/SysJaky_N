@@ -46,6 +46,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Tag> Tags { get; set; } = default!;
     public DbSet<CourseTag> CourseTags { get; set; } = default!;
     public DbSet<CourseCategory> CourseCategories { get; set; } = default!;
+    public DbSet<CourseCategoryTranslation> CourseCategoryTranslations { get; set; } = default!;
     public DbSet<NewsletterSubscriber> NewsletterSubscribers { get; set; } = default!;
 
 
@@ -228,6 +229,44 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 
         builder.Entity<CourseCategory>()
             .HasIndex(c => c.Slug)
+            .IsUnique();
+
+        builder.Entity<CourseCategory>()
+            .Property(c => c.SortOrder)
+            .HasDefaultValue(0);
+
+        builder.Entity<CourseCategory>()
+            .Property(c => c.IsActive)
+            .HasDefaultValue(true);
+
+        builder.Entity<CourseCategory>()
+            .HasMany(c => c.Translations)
+            .WithOne(t => t.Category)
+            .HasForeignKey(t => t.CategoryId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<CourseCategoryTranslation>()
+            .HasKey(t => new { t.CategoryId, t.Locale });
+
+        builder.Entity<CourseCategoryTranslation>()
+            .Property(t => t.Locale)
+            .HasMaxLength(10);
+
+        builder.Entity<CourseCategoryTranslation>()
+            .Property(t => t.Name)
+            .HasMaxLength(100);
+
+        builder.Entity<CourseCategoryTranslation>()
+            .Property(t => t.Slug)
+            .HasMaxLength(100);
+
+        builder.Entity<CourseCategoryTranslation>()
+            .Property(t => t.Description)
+            .HasMaxLength(500)
+            .IsRequired(false);
+
+        builder.Entity<CourseCategoryTranslation>()
+            .HasIndex(t => new { t.Locale, t.Slug })
             .IsUnique();
 
         builder.Entity<Course>()

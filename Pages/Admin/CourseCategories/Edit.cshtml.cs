@@ -63,6 +63,8 @@ public class EditModel : PageModel
         categoryToUpdate.Description = string.IsNullOrWhiteSpace(Category.Description)
             ? null
             : Category.Description.Trim();
+        categoryToUpdate.SortOrder = Category.SortOrder < 0 ? 0 : Category.SortOrder;
+        categoryToUpdate.IsActive = Category.IsActive;
 
         await _context.SaveChangesAsync();
         _cacheService.InvalidateCourseList();

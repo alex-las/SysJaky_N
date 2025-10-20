@@ -121,7 +121,9 @@ public class CreateModel : PageModel
 
         var categories = await _context.CourseCategories
             .AsNoTracking()
-            .OrderBy(category => category.Name)
+            .Where(category => category.IsActive)
+            .OrderBy(category => category.SortOrder)
+            .ThenBy(category => category.Name)
             .Select(category => new { category.Id, category.Name })
             .ToListAsync();
 

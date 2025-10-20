@@ -331,8 +331,6 @@ try
             await context.Database.MigrateAsync();
         }
 
-        await CourseCategorySeeder.SeedAsync(services);
-
         var seeder = new AdminSeeder(services);
         await seeder.SeedAsync();
     }

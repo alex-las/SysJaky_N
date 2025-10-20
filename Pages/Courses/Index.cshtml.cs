@@ -187,15 +187,88 @@ public class IndexModel : PageModel
             .OrderBy(t => t)
             .ToList();
 
-        var categoryOptions = await _context.CourseCategories
+        var localeCandidates = new[]
+            {
+                CultureInfo.CurrentUICulture.Name,
+                CultureInfo.CurrentUICulture.TwoLetterISOLanguageName
+            }
+            .Where(locale => !string.IsNullOrWhiteSpace(locale))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+
+        var categories = await _context.CourseCategories
             .AsNoTracking()
-            .OrderBy(category => category.Name)
-            .Select(category => new CategoryOption(
+            .Where(category => category.IsActive)
+            .Select(category => new
+            {
                 category.Id,
                 category.Name,
                 category.Slug,
-                category.Courses.Count(course => course.IsActive)))
+                category.SortOrder,
+                ActiveCourseCount = category.Courses.Count(course => course.IsActive)
+            })
             .ToListAsync();
+
+        var categoryIds = categories.Select(category => category.Id).ToList();
+        var translationPriority = localeCandidates
+            .Select((locale, index) => new { locale, index })
+            .ToDictionary(item => item.locale, item => item.index, StringComparer.OrdinalIgnoreCase);
+
+        Dictionary<int, CourseCategoryTranslation> translationsByCategory = new();
+
+        if (categoryIds.Count > 0 && localeCandidates.Length > 0)
+        {
+            var translations = await _context.CourseCategoryTranslations
+                .AsNoTracking()
+                .Where(translation => categoryIds.Contains(translation.CategoryId)
+                    && localeCandidates.Contains(translation.Locale))
+                .ToListAsync();
+
+            foreach (var grouping in translations.GroupBy(translation => translation.CategoryId))
+            {
+                var ordered = grouping
+                    .OrderBy(translation => translationPriority.TryGetValue(translation.Locale, out var priority)
+                        ? priority
+                        : int.MaxValue)
+                    .FirstOrDefault();
+
+                if (ordered is not null)
+                {
+                    translationsByCategory[grouping.Key] = ordered;
+                }
+            }
+        }
+
+        var categoryOptions = categories
+            .Select(category =>
+            {
+                if (translationsByCategory.TryGetValue(category.Id, out var translation))
+                {
+                    var translatedName = string.IsNullOrWhiteSpace(translation.Name)
+                        ? category.Name
+                        : translation.Name;
+                    var translatedSlug = string.IsNullOrWhiteSpace(translation.Slug)
+                        ? category.Slug
+                        : translation.Slug;
+
+                    return new CategoryOption(
+                        category.Id,
+                        translatedName,
+                        translatedSlug,
+                        category.SortOrder,
+                        category.ActiveCourseCount);
+                }
+
+                return new CategoryOption(
+                    category.Id,
+                    category.Name,
+                    category.Slug,
+                    category.SortOrder,
+                    category.ActiveCourseCount);
+            })
+            .OrderBy(option => option.SortOrder)
+            .ThenBy(option => option.Name, StringComparer.CurrentCultureIgnoreCase)
+            .ToList();
 
         CategoryOptions = categoryOptions;
 
@@ -429,7 +502,8 @@ public class IndexModel : PageModel
         if (activeCourses.Count == 0)
         {
             return CategoryOptions
-                .OrderBy(option => option.Name, StringComparer.CurrentCultureIgnoreCase)
+                .OrderBy(option => option.SortOrder)
+                .ThenBy(option => option.Name, StringComparer.CurrentCultureIgnoreCase)
                 .Select(option => new CourseCategoryGroupViewModel(
                     option.Id,
                     option.Name,
@@ -494,7 +568,8 @@ public class IndexModel : PageModel
         }
 
         var groups = CategoryOptions
-            .OrderBy(option => option.Name, StringComparer.CurrentCultureIgnoreCase)
+            .OrderBy(option => option.SortOrder)
+            .ThenBy(option => option.Name, StringComparer.CurrentCultureIgnoreCase)
             .Select(option =>
             {
                 coursesByCategoryId.TryGetValue(option.Id, out var list);
@@ -557,7 +632,7 @@ public class IndexModel : PageModel
 
     public record EnumOption(string Value, string Label);
 
-    public record CategoryOption(int Id, string Name, string Slug, int Count);
+    public record CategoryOption(int Id, string Name, string Slug, int SortOrder, int Count);
 
     public record CourseCategoryGroupViewModel(
         int Id,
