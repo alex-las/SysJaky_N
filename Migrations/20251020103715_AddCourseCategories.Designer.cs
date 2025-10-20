@@ -25,7 +25,7 @@ namespace SysJaky_N.Migrations
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
-            modelBuilder.Entity("CourseCourseCategory", b =>
+            modelBuilder.Entity("SysJaky_N.Models.CourseCourseCategory", b =>
                 {
                     b.Property<int>("CourseId")
                         .HasColumnType("int");
@@ -646,6 +646,26 @@ namespace SysJaky_N.Migrations
                     b.HasIndex("IsActive");
 
                     b.ToTable("Courses");
+
+                    b.HasMany("SysJaky_N.Models.CourseCategory", "Categories")
+                        .WithMany("Courses")
+                        .UsingEntity("SysJaky_N.Models.CourseCourseCategory",
+                            r => r.HasOne("SysJaky_N.Models.CourseCategory", "CourseCategory")
+                                .WithMany("CourseCourseCategories")
+                                .HasForeignKey("CourseCategoryId")
+                                .OnDelete(DeleteBehavior.Cascade)
+                                .IsRequired(),
+                            l => l.HasOne("SysJaky_N.Models.Course", "Course")
+                                .WithMany("CourseCourseCategories")
+                                .HasForeignKey("CourseId")
+                                .OnDelete(DeleteBehavior.Cascade)
+                                .IsRequired(),
+                            j =>
+                            {
+                                j.HasKey("CourseId", "CourseCategoryId");
+                                j.ToTable("CourseCourseCategories");
+                                j.HasIndex(new[] { "CourseCategoryId" });
+                            });
                 });
 
             modelBuilder.Entity("SysJaky_N.Models.CourseBlock", b =>
@@ -1428,19 +1448,23 @@ namespace SysJaky_N.Migrations
                     b.ToTable("WishlistItems");
                 });
 
-            modelBuilder.Entity("CourseCourseCategory", b =>
+            modelBuilder.Entity("SysJaky_N.Models.CourseCourseCategory", b =>
                 {
-                    b.HasOne("SysJaky_N.Models.CourseCategory", null)
-                        .WithMany()
+                    b.HasOne("SysJaky_N.Models.CourseCategory", "CourseCategory")
+                        .WithMany("CourseCourseCategories")
                         .HasForeignKey("CourseCategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SysJaky_N.Models.Course", null)
-                        .WithMany()
+                    b.HasOne("SysJaky_N.Models.Course", "Course")
+                        .WithMany("CourseCourseCategories")
                         .HasForeignKey("CourseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("CourseCategory");
+
+                    b.Navigation("Course");
                 });
 
             modelBuilder.Entity("SysJaky_N.Models.CourseCategoryTranslation", b =>
@@ -1827,6 +1851,10 @@ namespace SysJaky_N.Migrations
 
             modelBuilder.Entity("SysJaky_N.Models.Course", b =>
                 {
+                    b.Navigation("Categories");
+
+                    b.Navigation("CourseCourseCategories");
+
                     b.Navigation("CourseTags");
 
                     b.Navigation("Lessons");
@@ -1844,6 +1872,8 @@ namespace SysJaky_N.Migrations
 
             modelBuilder.Entity("SysJaky_N.Models.CourseCategory", b =>
                 {
+                    b.Navigation("CourseCourseCategories");
+
                     b.Navigation("Courses");
 
                     b.Navigation("Translations");
