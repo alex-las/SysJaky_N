@@ -1,43 +1,158 @@
 @page
 @model SysJaky_N.Pages.Admin.Orders.IndexModel
-@using SysJaky_N.Models
+@using System.Linq
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<SysJaky_N.Pages.Admin.Orders.IndexModel> Localizer
 @{
-    ViewData["Title"] = "Objednávky";
+    ViewData["Title"] = Localizer["Title"];
+    var statusMap = Model.Overview.StatusSummaries.ToDictionary(s => s.Status, s => s.Name);
 }
 
-<h1>Objednávky</h1>
+<h1 class="mb-4">@Localizer["Title"]</h1>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Id</th>
-            <th>Datum</th>
-            <th>Stav</th>
-            <th>Celkem</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-    @foreach (var order in Model.Orders)
+<form method="get" class="row g-3 mb-4">
+    <div class="col-md-3">
+        <label asp-for="Search" class="form-label">@Localizer["SearchLabel"]</label>
+        <input asp-for="Search" class="form-control" placeholder="@Localizer["SearchPlaceholder"]" />
+    </div>
+    <div class="col-md-3">
+        <label asp-for="Status" class="form-label">@Localizer["StatusLabel"]</label>
+        <select asp-for="Status" class="form-select">
+            <option value="">@Localizer["StatusAllOption"]</option>
+            @foreach (var status in Model.Overview.StatusSummaries)
+            {
+                <option value="@status.Value">@status.Name</option>
+            }
+        </select>
+    </div>
+    <div class="col-md-3">
+        <label asp-for="From" class="form-label">@Localizer["FromLabel"]</label>
+        <input asp-for="From" type="date" class="form-control" />
+    </div>
+    <div class="col-md-3">
+        <label asp-for="To" class="form-label">@Localizer["ToLabel"]</label>
+        <input asp-for="To" type="date" class="form-control" />
+    </div>
+    <div class="col-12 d-flex gap-2">
+        <button type="submit" class="btn btn-primary">@Localizer["FilterButton"]</button>
+        <a class="btn btn-outline-secondary" asp-page="./Index">@Localizer["ResetButton"]</a>
+    </div>
+</form>
+
+<div class="row g-3 mb-4">
+    <div class="col-sm-6 col-lg-3">
+        <div class="card h-100">
+            <div class="card-body">
+                <p class="text-uppercase text-muted small mb-1">@Localizer["SummaryTotalOrders"]</p>
+                <p class="fs-4 fw-semibold mb-0">@Model.Overview.TotalOrders</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+        <div class="card h-100">
+            <div class="card-body">
+                <p class="text-uppercase text-muted small mb-1">@Localizer["SummaryTotalRevenue"]</p>
+                <p class="fs-4 fw-semibold mb-0">@Model.Overview.TotalRevenue.ToString("C")</p>
+            </div>
+        </div>
+    </div>
+    @foreach (var status in Model.Overview.StatusSummaries)
     {
-        <tr>
-            <td>@order.Id</td>
-            <td>@order.CreatedAt.ToString("g")</td>
-            <td>@(order.Status switch
-                {
-                    OrderStatus.Pending => "Čeká na platbu",
-                    OrderStatus.Paid => "Zaplaceno",
-                    OrderStatus.Cancelled => "Zrušeno",
-                    OrderStatus.Refunded => "Vráceno",
-                    _ => order.Status.ToString()
-                })</td>
-            <td>@order.Total</td>
-            <td>
-                <a asp-page="Details" asp-route-id="@order.Id">Detail</a> |
-                <a asp-page="Edit" asp-route-id="@order.Id">Změnit stav</a>
-            </td>
-        </tr>
+        <div class="col-sm-6 col-lg-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <p class="text-uppercase text-muted small mb-1">@status.Name</p>
+                    <p class="fs-4 fw-semibold mb-0">@status.Count</p>
+                </div>
+            </div>
+        </div>
     }
-    </tbody>
-</table>
+</div>
+
+<div class="table-responsive">
+    <table class="table align-middle">
+        <thead>
+            <tr>
+                <th>@Localizer["TableId"]</th>
+                <th>@Localizer["TableDate"]</th>
+                <th>@Localizer["TableCustomer"]</th>
+                <th>@Localizer["TableStatus"]</th>
+                <th>@Localizer["TableTotal"]</th>
+                <th>@Localizer["TableItems"]</th>
+                <th class="text-end">@Localizer["TableActions"]</th>
+            </tr>
+        </thead>
+        <tbody>
+        @if (Model.Orders.Count == 0)
+        {
+            <tr>
+                <td colspan="7" class="text-center text-muted py-5">@Localizer["TableEmpty"]</td>
+            </tr>
+        }
+        else
+        {
+            foreach (var order in Model.Orders)
+            {
+                <tr>
+                    <td>@order.Id</td>
+                    <td>@order.CreatedAt.ToString("g")</td>
+                    <td>@(order.Customer?.Email ?? Localizer["CustomerUnknown"])</td>
+                    <td>@statusMap[order.Status]</td>
+                    <td>@order.Total.ToString("C")</td>
+                    <td>@order.Items.Count</td>
+                    <td class="text-end">
+                        <a class="btn btn-sm btn-outline-secondary" asp-page="Details" asp-route-id="@order.Id">@Localizer["ActionDetails"]</a>
+                        <a class="btn btn-sm btn-primary ms-2" asp-page="Edit" asp-route-id="@order.Id">@Localizer["ActionChangeStatus"]</a>
+                    </td>
+                </tr>
+            }
+        }
+        </tbody>
+    </table>
+</div>
+
+@if (Model.TotalPages > 1)
+{
+    <nav aria-label="@Localizer["PaginationAriaLabel"]">
+        <ul class="pagination">
+            <li class="page-item @(Model.PageIndex <= 1 ? "disabled" : string.Empty)">
+                <a class="page-link"
+                   asp-page="./Index"
+                   asp-route-Search="@Model.Search"
+                   asp-route-Status="@Model.Status"
+                   asp-route-From="@(Model.From?.ToString("yyyy-MM-dd"))"
+                   asp-route-To="@(Model.To?.ToString("yyyy-MM-dd"))"
+                   asp-route-PageIndex="@(Model.PageIndex > 1 ? Model.PageIndex - 1 : 1)">
+                    @Localizer["PaginationPrevious"]
+                </a>
+            </li>
+            @for (var pageNumber = 1; pageNumber <= Model.TotalPages; pageNumber++)
+            {
+                <li class="page-item @(pageNumber == Model.PageIndex ? "active" : string.Empty)">
+                    <a class="page-link"
+                       asp-page="./Index"
+                       asp-route-Search="@Model.Search"
+                       asp-route-Status="@Model.Status"
+                       asp-route-From="@(Model.From?.ToString("yyyy-MM-dd"))"
+                       asp-route-To="@(Model.To?.ToString("yyyy-MM-dd"))"
+                       asp-route-PageIndex="@pageNumber">
+                        @pageNumber
+                    </a>
+                </li>
+            }
+            <li class="page-item @(Model.PageIndex >= Model.TotalPages ? "disabled" : string.Empty)">
+                <a class="page-link"
+                   asp-page="./Index"
+                   asp-route-Search="@Model.Search"
+                   asp-route-Status="@Model.Status"
+                   asp-route-From="@(Model.From?.ToString("yyyy-MM-dd"))"
+                   asp-route-To="@(Model.To?.ToString("yyyy-MM-dd"))"
+                   asp-route-PageIndex="@(Model.PageIndex < Model.TotalPages ? Model.PageIndex + 1 : Model.TotalPages)">
+                    @Localizer["PaginationNext"]
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <p class="text-muted">@Localizer["PaginationInfo", Model.PageIndex, Model.TotalPages]</p>
+}
 
