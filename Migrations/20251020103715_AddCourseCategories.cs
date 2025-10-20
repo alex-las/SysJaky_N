@@ -33,7 +33,7 @@ namespace SysJaky_N.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "CourseCategoryTranslations",
+                name: "CourseCategory_Translations",
                 columns: table => new
                 {
                     CategoryId = table.Column<int>(type: "int", nullable: false),
@@ -48,9 +48,9 @@ namespace SysJaky_N.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CourseCategoryTranslations", x => new { x.CategoryId, x.Locale });
+                    table.PrimaryKey("PK_CourseCategory_Translations", x => new { x.CategoryId, x.Locale });
                     table.ForeignKey(
-                        name: "FK_CourseCategoryTranslations_CourseCategories_CategoryId",
+                        name: "FK_CourseCategory_Translations_CourseCategories_CategoryId",
                         column: x => x.CategoryId,
                         principalTable: "CourseCategories",
                         principalColumn: "Id",
@@ -90,8 +90,8 @@ namespace SysJaky_N.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_CourseCategoryTranslations_Locale_Slug",
-                table: "CourseCategoryTranslations",
+                name: "IX_CourseCategory_Translations_Locale_Slug",
+                table: "CourseCategory_Translations",
                 columns: new[] { "Locale", "Slug" },
                 unique: true);
 
@@ -105,7 +105,7 @@ namespace SysJaky_N.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "CourseCategoryTranslations");
+                name: "CourseCategory_Translations");
 
             migrationBuilder.DropTable(
                 name: "CourseCourseCategories");

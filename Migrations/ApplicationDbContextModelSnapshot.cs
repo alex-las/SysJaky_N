@@ -710,7 +710,7 @@ namespace SysJaky_N.Migrations
                     b.ToTable("CourseCategories");
                 });
 
-            modelBuilder.Entity("SysJaky_N.Models.CourseCategoryTranslation", b =>
+            modelBuilder.Entity("SysJaky_N.Models.CourseCategory_Translation", b =>
                 {
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
@@ -738,7 +738,7 @@ namespace SysJaky_N.Migrations
                     b.HasIndex("Locale", "Slug")
                         .IsUnique();
 
-                    b.ToTable("CourseCategoryTranslations");
+                    b.ToTable("CourseCategory_Translations");
                 });
 
             modelBuilder.Entity("SysJaky_N.Models.CourseGroup", b =>
