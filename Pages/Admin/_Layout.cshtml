@@ -28,58 +28,60 @@
                 <span class="h4 mb-0">Administrace</span>
             </a>
             <div class="admin-nav__cta">
-                <button class="btn btn-admin-ghost admin-nav__toggle d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#adminSidebar" aria-controls="adminSidebar" aria-expanded="false" aria-label="Přepnout navigaci">
+                <button class="btn btn-admin-ghost d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#adminSidebar"
+                        aria-controls="adminSidebar" aria-expanded="false" aria-label="Přepnout navigaci">
                     <i class="bi bi-list"></i>
-                    Navigace
                 </button>
                 <a class="btn btn-admin-primary" asp-page="/Index">Zpět na web</a>
             </div>
         </div>
     </header>
 
-    <div class="admin-shell__body">
-        <aside id="adminSidebar" class="admin-shell__sidebar collapse d-lg-block">
-            <nav class="admin-sidebar" aria-label="Navigace administrace">
-                <div class="admin-sidebar__section">
-                    <h2 class="admin-sidebar__heading">Obsah</h2>
-                    <ul class="admin-sidebar__list">
-                        <li><a class="admin-sidebar__link @ActiveClass("/Admin/Dashboard")" asp-page="/Admin/Dashboard/Index">Přehled</a></li>
-                        <li><a class="admin-sidebar__link @ActiveClass("/Admin/Articles")" asp-page="/Admin/Articles/Index">Články</a></li>
-                        <li><a class="admin-sidebar__link @ActiveClass("/Admin/Testimonials")" asp-page="/Admin/Testimonials/Index">Reference</a></li>
-                        <li><a class="admin-sidebar__link @ActiveClass("/Admin/CourseReviews")" asp-page="/Admin/CourseReviews/Index">Hodnocení kurzů</a></li>
+    <div class="admin-shell__layout container-fluid">
+        <aside class="admin-shell__sidebar">
+            <nav id="adminSidebar" class="admin-sidebar collapse show d-lg-block" role="navigation" aria-label="Navigace administrace">
+                <div class="admin-sidebar__group">
+                    <span class="admin-sidebar__heading">Obsah</span>
+                    <ul class="admin-sidebar__list nav flex-column">
+                        <li class="nav-item"><a class="nav-link @ActiveClass("/Admin/Dashboard")" asp-page="/Admin/Dashboard/Index">Přehled</a></li>
+                        <li class="nav-item"><a class="nav-link @ActiveClass("/Admin/Articles")" asp-page="/Admin/Articles/Index">Články</a></li>
+                        <li class="nav-item"><a class="nav-link @ActiveClass("/Admin/Testimonials")" asp-page="/Admin/Testimonials/Index">Reference</a></li>
+                        <li class="nav-item"><a class="nav-link @ActiveClass("/Admin/CourseReviews")" asp-page="/Admin/CourseReviews/Index">Hodnocení kurzů</a></li>
                     </ul>
                 </div>
-                <div class="admin-sidebar__section">
-                    <h2 class="admin-sidebar__heading">Kurzy</h2>
-                    <ul class="admin-sidebar__list">
-                        <li><a class="admin-sidebar__link @ActiveClass("/Admin/Courses")" asp-page="/Admin/Courses/Index">Kurzy</a></li>
-                        <li><a class="admin-sidebar__link @ActiveClass("/Admin/CourseGroups")" asp-page="/Admin/CourseGroups/Index">Skupiny kurzů</a></li>
-                        <li><a class="admin-sidebar__link @ActiveClass("/Admin/CourseTerms")" asp-page="/Admin/CourseTerms/Index">Termíny kurzů</a></li>
-                        <li><a class="admin-sidebar__link @ActiveClass("/Admin/CourseBlocks")" asp-page="/Admin/CourseBlocks/Index">Bloky kurzů</a></li>
-                        <li><a class="admin-sidebar__link @ActiveClass("/Admin/Instructors")" asp-page="/Admin/Instructors/Index">Lektoři</a></li>
+                <div class="admin-sidebar__group">
+                    <span class="admin-sidebar__heading">Kurzy</span>
+                    <ul class="admin-sidebar__list nav flex-column">
+                        <li class="nav-item"><a class="nav-link @ActiveClass("/Admin/Courses")" asp-page="/Admin/Courses/Index">Kurzy</a></li>
+                        <li class="nav-item"><a class="nav-link @ActiveClass("/Admin/CourseGroups")" asp-page="/Admin/CourseGroups/Index">Skupiny kurzů</a></li>
+                        <li class="nav-item"><a class="nav-link @ActiveClass("/Admin/CourseTerms")" asp-page="/Admin/CourseTerms/Index">Termíny kurzů</a></li>
+                        <li class="nav-item"><a class="nav-link @ActiveClass("/Admin/CourseBlocks")" asp-page="/Admin/CourseBlocks/Index">Bloky kurzů</a></li>
+                        <li class="nav-item"><a class="nav-link @ActiveClass("/Admin/Instructors")" asp-page="/Admin/Instructors/Index">Lektoři</a></li>
                     </ul>
                 </div>
-                <div class="admin-sidebar__section">
-                    <h2 class="admin-sidebar__heading">Prodej</h2>
-                    <ul class="admin-sidebar__list">
-                        <li><a class="admin-sidebar__link @ActiveClass("/Admin/PriceSchedules")" asp-page="/Admin/PriceSchedules/Index">Ceníky</a></li>
-                        <li><a class="admin-sidebar__link @ActiveClass("/Admin/Vouchers")" asp-page="/Admin/Vouchers/Index">Poukázky</a></li>
-                        <li><a class="admin-sidebar__link @ActiveClass("/Admin/Orders")" asp-page="/Admin/Orders/Index">Objednávky</a></li>
-                        <li><a class="admin-sidebar__link @ActiveClass("/Admin/Companies")" asp-page="/Admin/Companies/Index">Firmy</a></li>
+                <div class="admin-sidebar__group">
+                    <span class="admin-sidebar__heading">Prodej</span>
+                    <ul class="admin-sidebar__list nav flex-column">
+                        <li class="nav-item"><a class="nav-link @ActiveClass("/Admin/PriceSchedules")" asp-page="/Admin/PriceSchedules/Index">Ceníky</a></li>
+                        <li class="nav-item"><a class="nav-link @ActiveClass("/Admin/Vouchers")" asp-page="/Admin/Vouchers/Index">Poukázky</a></li>
+                        <li class="nav-item"><a class="nav-link @ActiveClass("/Admin/Orders")" asp-page="/Admin/Orders/Index">Objednávky</a></li>
+                        <li class="nav-item"><a class="nav-link @ActiveClass("/Admin/Companies")" asp-page="/Admin/Companies/Index">Firmy</a></li>
                     </ul>
                 </div>
-                <div class="admin-sidebar__section">
-                    <h2 class="admin-sidebar__heading">Systém</h2>
-                    <ul class="admin-sidebar__list">
-                        <li><a class="admin-sidebar__link @ActiveClass("/Admin/Users")" asp-page="/Admin/Users/Index">Uživatelé</a></li>
-                        <li><a class="admin-sidebar__link @ActiveClass("/Admin/AuditLogs")" asp-page="/Admin/AuditLogs/Index">Auditní záznamy</a></li>
+                <div class="admin-sidebar__group">
+                    <span class="admin-sidebar__heading">Systém</span>
+                    <ul class="admin-sidebar__list nav flex-column">
+                        <li class="nav-item"><a class="nav-link @ActiveClass("/Admin/Users")" asp-page="/Admin/Users/Index">Uživatelé</a></li>
+                        <li class="nav-item"><a class="nav-link @ActiveClass("/Admin/AuditLogs")" asp-page="/Admin/AuditLogs/Index">Auditní záznamy</a></li>
                     </ul>
                 </div>
             </nav>
         </aside>
-        <main role="main" class="admin-shell__content admin-main container-fluid">
-            @RenderBody()
-        </main>
+        <div class="admin-shell__content">
+            <main role="main" class="admin-main">
+                @RenderBody()
+            </main>
+        </div>
     </div>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
