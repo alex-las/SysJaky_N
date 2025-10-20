@@ -254,6 +254,24 @@ main.admin-main {
   margin-top: 1.5rem;
 }
 
+.admin-article-editor [data-editor-container] {
+  min-height: 320px;
+}
+
+.admin-article-editor [data-editor-container] .ql-editor {
+  min-height: 280px;
+  padding: 1rem;
+}
+
+.admin-article-editor [data-editor-preview] {
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  background-color: rgba(0, 0, 0, 0.03);
+  max-height: 400px;
+  overflow: auto;
+}
+
 .admin-table-wrapper {
   overflow: hidden;
 }

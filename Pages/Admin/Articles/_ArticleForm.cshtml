@@ -1,12 +1,27 @@
 @model SysJaky_N.Models.Article
 
-<div class="form-group">
+<div class="form-group admin-article-editor">
     <label asp-for="Title"></label>
     <input asp-for="Title" class="form-control" />
     <span asp-validation-for="Title" class="text-danger"></span>
 </div>
 <div class="form-group">
     <label asp-for="Content"></label>
-    <textarea asp-for="Content" class="form-control"></textarea>
+    <div class="editor-toolbar d-flex justify-content-between align-items-center mb-2">
+        <small class="text-muted">Použijte nástrojovou lištu pro formátování obsahu.</small>
+        <button type="button"
+                class="btn btn-outline-secondary btn-sm"
+                data-editor-preview-toggle
+                data-label-show="Zobrazit náhled"
+                data-label-hide="Skrýt náhled"
+                aria-expanded="false">
+            Zobrazit náhled
+        </button>
+    </div>
+    <div class="border rounded" data-editor-container></div>
+    <textarea asp-for="Content"
+              class="form-control"
+              data-editor-textarea></textarea>
+    <div class="mt-3" data-editor-preview hidden aria-live="polite"></div>
     <span asp-validation-for="Content" class="text-danger"></span>
 </div>

@@ -11,6 +11,13 @@
     <partial name="~/Pages/Shared/_FormActions.cshtml" model='new SysJaky_N.Pages.Admin.Shared.FormActionsModel { SubmitText = "Vytvořit", CancelText = "Zpět na přehled" }' />
 </form>
 
+@section Styles {
+    <link rel="stylesheet" href="~/lib/quill/quill.core.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/lib/quill/quill.snow.css" asp-append-version="true" />
+}
+
 @section Scripts {
+    <script src="~/lib/quill/quill.min.js" asp-append-version="true"></script>
+    <script src="~/js/admin-article-editor.js" asp-append-version="true"></script>
     <partial name="_ValidationScriptsPartial" />
 }
