@@ -15,4 +15,28 @@
   <data name="CourseReviewNotFound" xml:space="preserve">
     <value>The requested course review could not be found.</value>
   </data>
+  <data name="CourseReviewDeleted" xml:space="preserve">
+    <value>The review has been deleted.</value>
+  </data>
+  <data name="CourseReviewPublished" xml:space="preserve">
+    <value>The review has been published.</value>
+  </data>
+  <data name="CourseReviewUnpublished" xml:space="preserve">
+    <value>The review has been unpublished.</value>
+  </data>
+  <data name="CourseReviewsDeleted" xml:space="preserve">
+    <value>{0} reviews have been deleted.</value>
+  </data>
+  <data name="CourseReviewsPublished" xml:space="preserve">
+    <value>{0} reviews have been published.</value>
+  </data>
+  <data name="CourseReviewsUnpublished" xml:space="preserve">
+    <value>{0} reviews have been unpublished.</value>
+  </data>
+  <data name="NoReviewsMatchedSelection" xml:space="preserve">
+    <value>The selected reviews no longer exist.</value>
+  </data>
+  <data name="NoReviewsSelected" xml:space="preserve">
+    <value>No reviews were selected.</value>
+  </data>
 </root>
