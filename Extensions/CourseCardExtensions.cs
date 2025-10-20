@@ -54,7 +54,7 @@ public static class CourseCardExtensions
             IsoBadges = ExtractIsoBadges(course),
             Norms = BuildNorms(course),
             Cities = ExtractCities(course),
-            Categories = BuildCategories(course),
+            Categories = BuildCategories(course, culture),
             DaysUntilStart = daysUntilStart,
             Capacity = capacity,
             SeatsTaken = seatsTaken,
@@ -196,7 +196,9 @@ public static class CourseCardExtensions
             ct.Tag.Name.Contains("certifik", StringComparison.OrdinalIgnoreCase));
     }
 
-    private static IReadOnlyList<CourseCategoryViewModel> BuildCategories(Course course)
+    private static IReadOnlyList<CourseCategoryViewModel> BuildCategories(
+        Course course,
+        CultureInfo culture)
     {
         if (course.Categories == null || course.Categories.Count == 0)
         {
@@ -205,10 +207,12 @@ public static class CourseCardExtensions
 
         var localeCandidates = new[]
         {
-            CultureInfo.CurrentUICulture.Name,
-            CultureInfo.CurrentUICulture.TwoLetterISOLanguageName
+            culture.Name,
+            culture.Parent?.Name,
+            culture.TwoLetterISOLanguageName
         }
         .Where(locale => !string.IsNullOrWhiteSpace(locale))
+        .Select(locale => locale!.Trim())
         .Distinct(StringComparer.OrdinalIgnoreCase)
         .ToArray();
 
