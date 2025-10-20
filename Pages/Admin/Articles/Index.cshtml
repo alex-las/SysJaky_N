@@ -1,38 +1,54 @@
 @page
 @model SysJaky_N.Pages.Admin.Articles.IndexModel
+@inject IStringLocalizer<SysJaky_N.Pages.Admin.Articles.IndexModel> Localizer
 @{
-    ViewData["Title"] = "Správa článků";
+    ViewData["Title"] = Localizer["Title"];
 }
 
 <section class="admin-page-header">
     <div class="admin-page-header__title">
-        <h1>Správa článků</h1>
+        <h1>@Localizer["Header"]</h1>
     </div>
     <div class="admin-page-header__actions">
-        <a asp-page="Create" class="btn btn-admin-primary">Vytvořit nový</a>
+        <a asp-page="Create" class="btn btn-admin-primary">@Localizer["CreateButton"]</a>
     </div>
 </section>
 
-<form method="get" class="mb-4">
-    <div class="row g-2 align-items-end">
-        <div class="col-auto">
-            <label asp-for="PublicationFilter" class="form-label">Filtr publikace</label>
-            <select asp-for="PublicationFilter" asp-items="Model.PublicationFilterOptions" class="form-select"></select>
+<form method="get" class="admin-card" role="search" aria-label='@Localizer["FilterAriaLabel"]'>
+    <div class="admin-filters">
+        <div class="flex-grow-1">
+            <label class="form-label visually-hidden" asp-for="SearchTitle">@Localizer["FilterSearchLabel"]</label>
+            <input asp-for="SearchTitle" class="form-control" placeholder='@Localizer["FilterSearchPlaceholder"]' aria-label='@Localizer["FilterSearchLabel"]' />
         </div>
-        <div class="col-auto">
-            <button type="submit" class="btn btn-admin-primary">Filtrovat</button>
+        <div>
+            <label class="form-label visually-hidden" asp-for="SelectedAuthorId">@Localizer["FilterAuthorLabel"]</label>
+            <select asp-for="SelectedAuthorId" asp-items="Model.AuthorOptions" class="form-select" aria-label='@Localizer["FilterAuthorLabel"]'>
+                <option value="">@Localizer["FilterAuthorAllOption"]</option>
+            </select>
         </div>
+        <div>
+            <label class="form-label" asp-for="CreatedFrom">@Localizer["FilterFromLabel"]</label>
+            <input asp-for="CreatedFrom" type="date" class="form-control" />
+        </div>
+        <div>
+            <label class="form-label" asp-for="CreatedTo">@Localizer["FilterToLabel"]</label>
+            <input asp-for="CreatedTo" type="date" class="form-control" />
+        </div>
+    </div>
+    <div class="admin-form-actions">
+        <button type="submit" class="btn btn-admin-primary">@Localizer["FilterSubmit"]</button>
+        <a class="btn btn-admin-ghost" asp-page="/Admin/Articles/Index">@Localizer["FilterReset"]</a>
     </div>
 </form>
 
-<div class="admin-table-wrapper table-responsive">
+<div class="admin-table-wrapper table-responsive mt-4">
     <table class="table admin-table align-middle mb-0">
         <thead>
             <tr>
-                <th scope="col">Název</th>
-                <th scope="col">Vytvořeno</th>
-                <th scope="col">Stav</th>
-                <th scope="col" class="text-end">Akce</th>
+                <th scope="col">@Localizer["TableHeaderTitle"]</th>
+                <th scope="col">@Localizer["TableHeaderAuthor"]</th>
+                <th scope="col">@Localizer["TableHeaderCreated"]</th>
+                <th scope="col" class="text-end">@Localizer["TableHeaderActions"]</th>
             </tr>
         </thead>
         <tbody>
@@ -41,6 +57,7 @@
         {
             <tr>
                 <td>@item.Title</td>
+                <td>@(item.Author?.UserName ?? item.Author?.Email ?? Localizer["UnknownAuthor"])</td>
                 <td>@item.CreatedAt.ToString("g")</td>
                 <td>
                     @{
@@ -67,9 +84,9 @@
                 </td>
                 <td class="text-end">
                     <div class="admin-table-actions justify-content-end">
-                        <a asp-page="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-admin-ghost">Upravit</a>
-                        <a asp-page="Details" asp-route-id="@item.Id" class="btn btn-sm btn-admin-ghost">Detail</a>
-                        <a asp-page="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-admin-warning">Smazat</a>
+                        <a asp-page="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-admin-ghost">@Localizer["ActionEdit"]</a>
+                        <a asp-page="Details" asp-route-id="@item.Id" class="btn btn-sm btn-admin-ghost">@Localizer["ActionDetail"]</a>
+                        <a asp-page="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-admin-warning">@Localizer["ActionDelete"]</a>
                     </div>
                 </td>
             </tr>
