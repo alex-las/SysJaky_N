@@ -416,7 +416,28 @@
 
         if (shouldAutoInit) {
             initialize();
+            return;
         }
+
+        const toggle = root.querySelector(selectors.toggle);
+        const panel = root.querySelector(selectors.panel);
+        const messagesContainer = root.querySelector(selectors.messages);
+
+        if (!toggle || !panel || !messagesContainer) {
+            return;
+        }
+
+        const deferredInitHandler = () => {
+            initialize();
+
+            if (!state.initialized) {
+                return;
+            }
+
+            handleToggle(panel, toggle, messagesContainer);
+        };
+
+        toggle.addEventListener('click', deferredInitHandler, { once: true });
     }
 
     if (document.readyState === 'loading') {

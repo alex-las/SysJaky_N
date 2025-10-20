@@ -1,6 +1,22 @@
-/* FORMS.CSS - Opraven· verze pro SystÈmy jakosti */
+    border: 2px solid var(--border-contrast);
+    background-color: var(--surface-elevated);
+.form-check-input:not(:checked):hover {
+    border-color: var(--color-neutral-700);
+    background-color: color-mix(in oklab, var(--surface-elevated) 75%, var(--color-neutral-200) 25%);
+}
 
-.form-label {
+.form-check-input:focus,
+.form-check-input:focus-visible {
+.form-switch .form-check-input {
+    background-color: var(--surface-elevated);
+    border-color: var(--border-contrast);
+}
+
+.form-switch .form-check-input:not(:checked):hover {
+    background-color: color-mix(in oklab, var(--surface-elevated) 65%, var(--color-neutral-200) 35%);
+    border-color: var(--color-neutral-700);
+}
+
     display: inline-flex;
     align-items: center;
     gap: 0.35rem;
@@ -95,7 +111,7 @@ textarea.form-control {
 }
 
 /* ========================================
-   LOGIN DROPDOWN - OPRAVEN… STYLY
+   LOGIN DROPDOWN - OPRAVEN√â STYLY
    ======================================== */
 
 .login-dropdown {
@@ -123,7 +139,7 @@ textarea.form-control {
         color: white;
     }
 
-/* OPRAVA: äiröÌ dropdown s !important pro p¯eps·nÌ Bootstrap */
+/* OPRAVA: ≈†ir≈°√≠ dropdown s !important pro p√∏eps√°n√≠ Bootstrap */
 .login-dropdown-menu {
     margin-top: 0.75rem;
     padding: 0;
@@ -135,7 +151,7 @@ textarea.form-control {
     animation: login-dropdown-fade 0.18s ease;
     z-index: 1080;
     --bs-dropdown-min-width: min(30rem, calc(100vw - 2rem));
-    /* Oprava artefakt˘ */
+    /* Oprava artefakt√π */
     overflow: visible;
     will-change: transform, opacity;
 }
@@ -168,9 +184,9 @@ textarea.form-control {
     }
 }
 
-/* OPRAVA: O odstÌn tmavöÌ modr· - zlat· st¯ednÌ cesta */
+/* OPRAVA: O odst√≠n tmav≈°√≠ modr√° - zlat√° st√∏edn√≠ cesta */
 .login-dropdown-card {
-    /* TmavöÌ, ale p¯ÌjemnÏjöÌ neû p˘vodnÌ */
+    /* Tmav≈°√≠, ale p√∏√≠jemn√¨j≈°√≠ ne≈æ p√πvodn√≠ */
     background: linear-gradient(135deg, #2563EB 0%, #3B82F6 50%, #60A5FA 100%);
     border-radius: var(--radius-2xl);
     padding: clamp(1.5rem, 1.15rem + 1.75vw, 2.5rem);
@@ -178,7 +194,7 @@ textarea.form-control {
     color: #fff;
     border: none;
     width: 100%;
-    /* Oprava artefakt˘ */
+    /* Oprava artefakt√π */
     isolation: isolate;
     transform: translateZ(0);
     -webkit-font-smoothing: antialiased;
@@ -199,7 +215,7 @@ textarea.form-control {
     width: clamp(3rem, 2.4rem + 1.5vw, 3.5rem);
     aspect-ratio: 1 / 1;
     border-radius: var(--radius-xl);
-    /* SvÏtlejöÌ pozadÌ pro kontrast */
+    /* Sv√¨tlej≈°√≠ pozad√≠ pro kontrast */
     background: rgba(255, 255, 255, 0.2);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     font-size: clamp(1.75rem, 1.5rem + 0.75vw, 2rem);
@@ -228,7 +244,7 @@ textarea.form-control {
 
 .login-dropdown-body {
     padding-top: 0;
-    /* Oprava artefakt˘ */
+    /* Oprava artefakt√π */
     isolation: isolate;
     position: relative;
 }
@@ -236,7 +252,7 @@ textarea.form-control {
 .login-dropdown-form {
     display: grid;
     gap: 1rem;
-    /* Oprava artefakt˘ */
+    /* Oprava artefakt√π */
     position: relative;
     z-index: 1;
 }
@@ -249,7 +265,7 @@ textarea.form-control {
         padding: 0;
     }
 
-        /* Zajistit, ûe û·dnÈ dÌtÏ nem· modrÈ pozadÌ */
+        /* Zajistit, ≈æe ≈æ√°dn√© d√≠t√¨ nem√° modr√© pozad√≠ */
         .login-dropdown-form .mb-3 > * {
             background-clip: padding-box;
         }
@@ -259,7 +275,7 @@ textarea.form-control {
         padding: 0.75rem 2rem;
         font-weight: 600;
         letter-spacing: 0.04em;
-        /* SvÏtlejöÌ ûlutÈ tlaËÌtko */
+        /* Sv√¨tlej≈°√≠ ≈ælut√© tla√®√≠tko */
         background-color: #FFC107;
         border: none;
         color: #1C1F26;
@@ -277,7 +293,7 @@ textarea.form-control {
 
 @media (min-width: 992px) {
     .login-dropdown-form {
-        /* OPRAVA: Jeden sloupec - email a heslo stejnÏ öirokÈ */
+        /* OPRAVA: Jeden sloupec - email a heslo stejn√¨ ≈°irok√© */
         grid-template-columns: 1fr;
         column-gap: 0;
     }
@@ -310,7 +326,7 @@ textarea.form-control {
         }
 }
 
-/* OPRAVA: BÌlÈ inputy pro lepöÌ Ëitelnost */
+/* OPRAVA: B√≠l√© inputy pro lep≈°√≠ √®itelnost */
 .login-dropdown-card .form-label {
     color: rgba(255, 255, 255, 0.95);
     font-weight: 600;
@@ -363,7 +379,7 @@ textarea.form-control {
     font-weight: 500;
 }
 
-/* Oprava artefakt˘ - vöechny elementy ve formul·¯i */
+/* Oprava artefakt√π - v≈°echny elementy ve formul√°√∏i */
 .login-dropdown-form > * {
     position: relative;
     z-index: 1;
@@ -379,7 +395,7 @@ textarea.form-control {
     z-index: 2;
 }
 
-/* Zajistit, ûe validation summary nem· modrÈ pozadÌ */
+/* Zajistit, ≈æe validation summary nem√° modr√© pozad√≠ */
 .login-dropdown-form .text-danger,
 .login-dropdown-form .validation-summary-errors {
     background: transparent !important;
