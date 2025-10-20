@@ -15,4 +15,139 @@
   <data name="Title" xml:space="preserve">
     <value>Vouchers</value>
   </data>
+  <data name="SearchFormAriaLabel" xml:space="preserve">
+    <value>Voucher filters</value>
+  </data>
+  <data name="FiltersTitle" xml:space="preserve">
+    <value>Filters</value>
+  </data>
+  <data name="FiltersDescription" xml:space="preserve">
+    <value>Narrow the voucher list using search and filters.</value>
+  </data>
+  <data name="SearchLabel" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="SearchPlaceholder" xml:space="preserve">
+    <value>Search by code</value>
+  </data>
+  <data name="TypeFilterLabel" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="TypeAllOption" xml:space="preserve">
+    <value>All types</value>
+  </data>
+  <data name="TypePercentageOption" xml:space="preserve">
+    <value>Percentage discount</value>
+  </data>
+  <data name="TypeFixedAmountOption" xml:space="preserve">
+    <value>Fixed amount</value>
+  </data>
+  <data name="StateFilterLabel" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="StateAllOption" xml:space="preserve">
+    <value>All statuses</value>
+  </data>
+  <data name="StateActiveOption" xml:space="preserve">
+    <value>Active</value>
+  </data>
+  <data name="StateExpiredOption" xml:space="preserve">
+    <value>Expired</value>
+  </data>
+  <data name="StateDepletedOption" xml:space="preserve">
+    <value>Depleted</value>
+  </data>
+  <data name="CourseFilterLabel" xml:space="preserve">
+    <value>Course</value>
+  </data>
+  <data name="CourseAllOption" xml:space="preserve">
+    <value>All courses</value>
+  </data>
+  <data name="ApplyFiltersButton" xml:space="preserve">
+    <value>Apply filters</value>
+  </data>
+  <data name="TotalVouchersStatLabel" xml:space="preserve">
+    <value>Total</value>
+  </data>
+  <data name="ActiveVouchersStatLabel" xml:space="preserve">
+    <value>Active</value>
+  </data>
+  <data name="ExpiredVouchersStatLabel" xml:space="preserve">
+    <value>Expired</value>
+  </data>
+  <data name="DepletedVouchersStatLabel" xml:space="preserve">
+    <value>Depleted</value>
+  </data>
+  <data name="AvailableCodesStatLabel" xml:space="preserve">
+    <value>Available codes</value>
+  </data>
+  <data name="NoVouchersMessage" xml:space="preserve">
+    <value>No vouchers were found.</value>
+  </data>
+  <data name="CodeColumn" xml:space="preserve">
+    <value>Code</value>
+  </data>
+  <data name="TypeColumn" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="ValueColumn" xml:space="preserve">
+    <value>Value</value>
+  </data>
+  <data name="ValidityColumn" xml:space="preserve">
+    <value>Validity</value>
+  </data>
+  <data name="MaxRedemptionsColumn" xml:space="preserve">
+    <value>Max redemptions</value>
+  </data>
+  <data name="UsedColumn" xml:space="preserve">
+    <value>Redeemed</value>
+  </data>
+  <data name="UsageColumn" xml:space="preserve">
+    <value>Usage</value>
+  </data>
+  <data name="CourseColumn" xml:space="preserve">
+    <value>Applies to</value>
+  </data>
+  <data name="ActionsColumn" xml:space="preserve">
+    <value>Actions</value>
+  </data>
+  <data name="PercentageValueFormat" xml:space="preserve">
+    <value>{0:0.##}%</value>
+  </data>
+  <data name="NeverExpires" xml:space="preserve">
+    <value>Never</value>
+  </data>
+  <data name="UnlimitedRedemptions" xml:space="preserve">
+    <value>Unlimited</value>
+  </data>
+  <data name="ExpiredBadge" xml:space="preserve">
+    <value>Expired</value>
+  </data>
+  <data name="DepletedBadge" xml:space="preserve">
+    <value>Depleted</value>
+  </data>
+  <data name="UsageNotAvailable" xml:space="preserve">
+    <value>N/A</value>
+  </data>
+  <data name="UsagePercentageFormat" xml:space="preserve">
+    <value>{0:0.#}%</value>
+  </data>
+  <data name="VoucherType_Percentage" xml:space="preserve">
+    <value>Percentage discount</value>
+  </data>
+  <data name="VoucherType_FixedAmount" xml:space="preserve">
+    <value>Fixed amount</value>
+  </data>
+  <data name="PaginationAriaLabel" xml:space="preserve">
+    <value>Pagination</value>
+  </data>
+  <data name="CreateNewButton" xml:space="preserve">
+    <value>Create new</value>
+  </data>
+  <data name="EditLink" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="DeleteLink" xml:space="preserve">
+    <value>Delete</value>
+  </data>
 </root>

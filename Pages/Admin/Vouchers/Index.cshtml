@@ -1,78 +1,192 @@
 @page
-@using System.Linq
 @model SysJaky_N.Pages.Admin.Vouchers.IndexModel
 @using SysJaky_N.Models
+@inject IStringLocalizer<SysJaky_N.Pages.Admin.Vouchers.IndexModel> Localizer
 @{
-    ViewData["Title"] = "Vouchery";
+    ViewData["Title"] = Localizer["Title"];
+    var nowUtc = DateTime.UtcNow;
 }
 
-<h1>Vouchery</h1>
+<section class="admin-page-header">
+    <div class="admin-page-header__title">
+        <h1>@Localizer["Title"]</h1>
+    </div>
+    <div class="admin-page-header__actions">
+        <a class="btn btn-admin-primary" asp-page="Create">@Localizer["CreateNewButton"]</a>
+    </div>
+</section>
 
-<p>
-    <a class="btn btn-primary" asp-page="Create">Vytvořit nový</a>
-</p>
+<form method="get" class="admin-card admin-form mt-4" role="search" aria-label="@Localizer["SearchFormAriaLabel"]">
+    <div class="admin-card__header">
+        <div class="admin-card__title">@Localizer["FiltersTitle"]</div>
+        <p class="admin-card__description">@Localizer["FiltersDescription"]</p>
+    </div>
+    <div class="admin-filters">
+        <div>
+            <label class="form-label" asp-for="Search">@Localizer["SearchLabel"]</label>
+            <input class="form-control" asp-for="Search" type="search" placeholder="@Localizer["SearchPlaceholder"]" />
+        </div>
+        <div>
+            <label class="form-label" asp-for="Type">@Localizer["TypeFilterLabel"]</label>
+            <select class="form-select" asp-for="Type" asp-items="Model.TypeOptions"></select>
+        </div>
+        <div>
+            <label class="form-label" asp-for="State">@Localizer["StateFilterLabel"]</label>
+            <select class="form-select" asp-for="State" asp-items="Model.StateOptions"></select>
+        </div>
+        <div>
+            <label class="form-label" asp-for="CourseId">@Localizer["CourseFilterLabel"]</label>
+            <select class="form-select" asp-for="CourseId" asp-items="Model.CourseOptions"></select>
+        </div>
+    </div>
+    <div class="admin-form-actions">
+        <button type="submit" class="btn btn-admin-primary">@Localizer["ApplyFiltersButton"]</button>
+    </div>
+</form>
+
+<div class="row g-3 mt-4">
+    <div class="col-sm-6 col-xl-3">
+        <div class="admin-card h-100">
+            <div class="admin-card__title">@Localizer["TotalVouchersStatLabel"]</div>
+            <p class="display-6 mb-0">@Model.Statistics.Total</p>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="admin-card h-100">
+            <div class="admin-card__title">@Localizer["ActiveVouchersStatLabel"]</div>
+            <p class="display-6 mb-0">@Model.Statistics.Active</p>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="admin-card h-100">
+            <div class="admin-card__title">@Localizer["ExpiredVouchersStatLabel"]</div>
+            <p class="display-6 mb-0">@Model.Statistics.Expired</p>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="admin-card h-100">
+            <div class="admin-card__title">@Localizer["DepletedVouchersStatLabel"]</div>
+            <p class="display-6 mb-0">@Model.Statistics.Depleted</p>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="admin-card h-100">
+            <div class="admin-card__title">@Localizer["AvailableCodesStatLabel"]</div>
+            <p class="display-6 mb-0">@Model.Statistics.AvailableCodes</p>
+        </div>
+    </div>
+</div>
 
 @if (!Model.Vouchers.Any())
 {
-    <div class="alert alert-info" role="status">Žádné vouchery nejsou k dispozici.</div>
+    <div class="admin-card mt-4">
+        <p class="mb-0">@Localizer["NoVouchersMessage"]</p>
+    </div>
 }
 else
 {
-    <div class="table-responsive">
-        <table class="table table-striped align-middle">
-    <thead>
-        <tr>
-            <th>Kód</th>
-            <th>Typ</th>
-            <th>Hodnota</th>
-            <th>Platnost</th>
-            <th>Max. uplatnění</th>
-            <th>Využito</th>
-            <th>Platí pro</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-    @foreach (var item in Model.Vouchers)
-    {
-        <tr>
-            <td>@item.Code</td>
-            <td>@(item.Type switch
-                {
-                    VoucherType.Percentage => "Procentuální sleva",
-                    VoucherType.FixedAmount => "Fixní částka",
-                    _ => item.Type.ToString()
-                })</td>
-            <td>
-                @if (item.Type == VoucherType.Percentage)
-                {
-                    @string.Format("{0:0.##}%", item.Value)
-                }
-                else
-                {
-                    @item.Value.ToString("C")
-                }
-            </td>
-            <td>
-                @if (item.ExpiresUtc.HasValue)
-                {
-                    @DateTime.SpecifyKind(item.ExpiresUtc.Value, DateTimeKind.Utc).ToLocalTime().ToString("g")
-                }
-                else
-                {
-                    @:Nikdy
-                }
-            </td>
-            <td>@(item.MaxRedemptions?.ToString() ?? "Bez omezení")</td>
-            <td>@item.UsedCount</td>
-            <td>@item.AppliesToCourse?.Title ?? "Všechny kurzy"</td>
-            <td>
-                <a class="btn btn-sm btn-outline-secondary" asp-page="Edit" asp-route-id="@item.Id">Upravit</a>
-                <a class="btn btn-sm btn-admin-warning" asp-page="Delete" asp-route-id="@item.Id">Smazat</a>
-            </td>
-        </tr>
-    }
-    </tbody>
+    <div class="admin-table-wrapper mt-4">
+        <table class="table admin-table mb-0 align-middle">
+            <thead>
+                <tr>
+                    <th scope="col">@Localizer["CodeColumn"]</th>
+                    <th scope="col">@Localizer["TypeColumn"]</th>
+                    <th scope="col">@Localizer["ValueColumn"]</th>
+                    <th scope="col">@Localizer["ValidityColumn"]</th>
+                    <th scope="col">@Localizer["MaxRedemptionsColumn"]</th>
+                    <th scope="col">@Localizer["UsedColumn"]</th>
+                    <th scope="col">@Localizer["UsageColumn"]</th>
+                    <th scope="col">@Localizer["CourseColumn"]</th>
+                    <th scope="col" class="text-end">@Localizer["ActionsColumn"]</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var item in Model.Vouchers)
+            {
+                var expires = item.ExpiresUtc;
+                var localExpiry = expires.HasValue ? DateTime.SpecifyKind(expires.Value, DateTimeKind.Utc).ToLocalTime() : (DateTime?)null;
+                var isExpired = expires.HasValue && expires.Value <= nowUtc;
+                var isDepleted = item.MaxRedemptions.HasValue && item.UsedCount >= item.MaxRedemptions.Value;
+                var usagePercentage = item.MaxRedemptions.HasValue && item.MaxRedemptions.Value > 0
+                    ? (decimal)item.UsedCount / item.MaxRedemptions.Value * 100m
+                    : (decimal?)null;
+                <tr>
+                    <td class="fw-semibold">@item.Code</td>
+                    <td>@Localizer[$"VoucherType_{item.Type}"]</td>
+                    <td>
+                        @if (item.Type == VoucherType.Percentage)
+                        {
+                            @Localizer["PercentageValueFormat", item.Value]
+                        }
+                        else
+                        {
+                            @item.Value.ToString("C")
+                        }
+                    </td>
+                    <td>
+                        @if (localExpiry.HasValue)
+                        {
+                            @localExpiry.Value.ToString("g")
+                            if (isExpired)
+                            {
+                                <span class="badge bg-danger ms-2">@Localizer["ExpiredBadge"]</span>
+                            }
+                        }
+                        else
+                        {
+                            <span class="text-muted">@Localizer["NeverExpires"]</span>
+                        }
+                    </td>
+                    <td>@(item.MaxRedemptions?.ToString() ?? Localizer["UnlimitedRedemptions"])</td>
+                    <td>@item.UsedCount</td>
+                    <td>
+                        @if (usagePercentage.HasValue)
+                        {
+                            @Localizer["UsagePercentageFormat", usagePercentage.Value]
+                            if (isDepleted)
+                            {
+                                <span class="badge bg-warning text-dark ms-2">@Localizer["DepletedBadge"]</span>
+                            }
+                        }
+                        else
+                        {
+                            <span class="text-muted">@Localizer["UsageNotAvailable"]</span>
+                        }
+                    </td>
+                    <td>@(item.AppliesToCourse?.Title ?? Localizer["CourseAllOption"])</td>
+                    <td class="text-end">
+                        <div class="admin-table-actions justify-content-end">
+                            <a class="btn btn-sm btn-admin-ghost" asp-page="Edit" asp-route-id="@item.Id">@Localizer["EditLink"]</a>
+                            <a class="btn btn-sm btn-admin-warning" asp-page="Delete" asp-route-id="@item.Id">@Localizer["DeleteLink"]</a>
+                        </div>
+                    </td>
+                </tr>
+            }
+            </tbody>
         </table>
     </div>
+
+    @if (Model.TotalPages > 1)
+    {
+        <nav class="admin-pagination mt-4" aria-label="@Localizer["PaginationAriaLabel"]">
+            @for (var i = 1; i <= Model.TotalPages; i++)
+            {
+                if (i == Model.Page)
+                {
+                    <span>@i</span>
+                }
+                else
+                {
+                    <a asp-page="./Index"
+                       asp-route-page="@i"
+                       asp-route-search="@Model.Search"
+                       asp-route-type="@Model.Type"
+                       asp-route-state="@Model.State"
+                       asp-route-courseId="@Model.CourseId">
+                        @i
+                    </a>
+                }
+            }
+        </nav>
+    }
 }
