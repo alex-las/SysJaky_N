@@ -227,6 +227,9 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.Entity<CourseCategory>()
+            .ToTable("coursecategories");
+
+        builder.Entity<CourseCategory>()
             .HasIndex(c => c.Slug)
             .IsUnique();
 
@@ -245,7 +248,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.Entity<CourseCategoryTranslation>()
-            .HasKey(t => new { t.CategoryId, t.Locale });
+            .ToTable("coursecategory_translations");
 
         builder.Entity<CourseCategoryTranslation>()
             .Property(t => t.Locale)
@@ -265,7 +268,13 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .IsRequired(false);
 
         builder.Entity<CourseCategoryTranslation>()
+            .HasIndex(t => new { t.CategoryId, t.Locale })
+            .HasDatabaseName("uq_category_locale")
+            .IsUnique();
+
+        builder.Entity<CourseCategoryTranslation>()
             .HasIndex(t => new { t.Locale, t.Slug })
+            .HasDatabaseName("uq_locale_slug")
             .IsUnique();
 
         builder.Entity<Course>()
@@ -283,7 +292,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
                 j =>
                 {
                     j.HasKey(e => new { e.CourseId, e.CourseCategoryId });
-                    j.ToTable("CourseCourseCategories");
+                    j.ToTable("course_coursecategories");
+                    j.HasIndex(e => e.CourseCategoryId);
                 });
 
         builder.Entity<ChatbotSettings>()

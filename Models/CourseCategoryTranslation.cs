@@ -4,6 +4,8 @@ using System.ComponentModel.DataAnnotations;
 
 public class CourseCategoryTranslation
 {
+    public int Id { get; set; }
+
     [Required]
     public int CategoryId { get; set; }
 

@@ -37,7 +37,7 @@ namespace SysJaky_N.Migrations
 
                     b.HasIndex("CourseCategoryId");
 
-                    b.ToTable("CourseCourseCategories", (string)null);
+                    b.ToTable("course_coursecategories", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -663,7 +663,7 @@ namespace SysJaky_N.Migrations
                             j =>
                             {
                                 j.HasKey("CourseId", "CourseCategoryId");
-                                j.ToTable("CourseCourseCategories");
+                                j.ToTable("course_coursecategories");
                                 j.HasIndex(new[] { "CourseCategoryId" });
                             });
                 });
@@ -730,11 +730,17 @@ namespace SysJaky_N.Migrations
                     b.HasIndex("Slug")
                         .IsUnique();
 
-                    b.ToTable("CourseCategories");
+                    b.ToTable("coursecategories", (string)null);
                 });
 
             modelBuilder.Entity("SysJaky_N.Models.CourseCategoryTranslation", b =>
                 {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
@@ -756,12 +762,19 @@ namespace SysJaky_N.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("varchar(100)");
 
-                    b.HasKey("CategoryId", "Locale");
+                    b.HasKey("Id");
 
-                    b.HasIndex("Locale", "Slug")
+                    b.HasIndex("CategoryId");
+
+                    b.HasIndex("CategoryId", "Locale")
+                        .HasDatabaseName("uq_category_locale")
                         .IsUnique();
 
-                    b.ToTable("CourseCategory_Translations");
+                    b.HasIndex("Locale", "Slug")
+                        .HasDatabaseName("uq_locale_slug")
+                        .IsUnique();
+
+                    b.ToTable("coursecategory_translations", (string)null);
                 });
 
             modelBuilder.Entity("SysJaky_N.Models.CourseGroup", b =>
