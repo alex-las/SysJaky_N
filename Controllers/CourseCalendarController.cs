@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Mvc;
@@ -61,6 +62,9 @@ public class CourseCalendarController : ControllerBase
                     .ThenInclude(ct => ct.Tag)
             .Include(t => t.Course)!
                 .ThenInclude(c => c.CourseGroup)
+            .Include(t => t.Course)!
+                .ThenInclude(c => c.Categories)!
+                    .ThenInclude(category => category.Translations)
             .ToListAsync();
 
         var normFilter = BuildStringSet(query.Norms);
@@ -115,7 +119,7 @@ public class CourseCalendarController : ControllerBase
             }
 
             var category = normTags.FirstOrDefault()
-                ?? term.Course.CourseGroup?.Name
+                ?? ResolvePrimaryCategoryName(term.Course)
                 ?? term.Course.Type.ToString();
 
             var color = CategoryColors.TryGetValue(category, out var mapped)
@@ -147,6 +151,69 @@ public class CourseCalendarController : ControllerBase
         }
 
         return Ok(new CourseCalendarResponse(events));
+    }
+
+    private static string? ResolvePrimaryCategoryName(Course course)
+    {
+        if (course.Categories == null || course.Categories.Count == 0)
+        {
+            return null;
+        }
+
+        var culture = CultureInfo.CurrentCulture;
+        var localeCandidates = new[]
+        {
+            culture.Name,
+            culture.Parent?.Name,
+            culture.TwoLetterISOLanguageName
+        }
+        .Where(locale => !string.IsNullOrWhiteSpace(locale))
+        .Select(locale => locale!.Trim())
+        .Distinct(StringComparer.OrdinalIgnoreCase)
+        .ToArray();
+
+        var orderedCategories = course.Categories
+            .Where(category => category != null)
+            .OrderBy(category => category.SortOrder)
+            .ThenBy(category => category.Name, StringComparer.CurrentCultureIgnoreCase)
+            .ToList();
+
+        foreach (var category in orderedCategories)
+        {
+            var name = ResolveCategoryName(category, localeCandidates);
+            if (!string.IsNullOrWhiteSpace(name))
+            {
+                return name;
+            }
+        }
+
+        return orderedCategories
+            .Select(category => category?.Name)
+            .FirstOrDefault(name => !string.IsNullOrWhiteSpace(name))
+            ?.Trim();
+    }
+
+    private static string? ResolveCategoryName(
+        CourseCategory category,
+        IReadOnlyList<string> localeCandidates)
+    {
+        var baseName = category.Name?.Trim();
+
+        if (category.Translations != null && category.Translations.Count > 0)
+        {
+            foreach (var locale in localeCandidates)
+            {
+                var translation = category.Translations
+                    .FirstOrDefault(t => string.Equals(t.Locale, locale, StringComparison.OrdinalIgnoreCase));
+
+                if (translation != null && !string.IsNullOrWhiteSpace(translation.Name))
+                {
+                    return translation.Name.Trim();
+                }
+            }
+        }
+
+        return baseName;
     }
 
     private static HashSet<string>? BuildStringSet(IEnumerable<string>? values)

@@ -43,8 +43,6 @@ public class CreateModel : PageModel
     [BindProperty]
     public IFormFile? CoverImage { get; set; }
 
-    public SelectList CourseGroups { get; set; } = default!;
-
     public IEnumerable<SelectListItem> CategoryOptions { get; set; } = Enumerable.Empty<SelectListItem>();
 
     [BindProperty]
@@ -110,13 +108,6 @@ public class CreateModel : PageModel
 
     private async Task LoadSelectionsAsync()
     {
-        var groups = await _context.CourseGroups
-            .AsNoTracking()
-            .OrderBy(group => group.Name)
-            .ToListAsync();
-
-        CourseGroups = new SelectList(groups, "Id", "Name", Course.CourseGroupId);
-
         SelectedCategoryIds ??= new List<int>();
         var selectedSet = new HashSet<int>(SelectedCategoryIds);
 

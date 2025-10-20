@@ -11,8 +11,6 @@ public class CourseFormModel
 {
     public Course Course { get; set; } = new();
 
-    public SelectList CourseGroups { get; set; } = default!;
-
     public IFormFile? CoverImage { get; set; }
 
     public IEnumerable<SelectListItem> CategoryOptions { get; set; } = Enumerable.Empty<SelectListItem>();

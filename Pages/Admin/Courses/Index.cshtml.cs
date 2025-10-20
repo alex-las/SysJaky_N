@@ -27,12 +27,12 @@ public class IndexModel : PageModel
     public int PageNumber { get; set; } = 1;
 
     [BindProperty(SupportsGet = true)]
-    public int? CourseGroupId { get; set; }
+    public int? CategoryId { get; set; }
 
     [BindProperty(SupportsGet = true)]
     public string? SearchString { get; set; }
 
-    public SelectList CourseGroups { get; set; } = default!;
+    public SelectList CourseCategories { get; set; } = default!;
 
     public int TotalPages { get; set; }
 
@@ -40,14 +40,23 @@ public class IndexModel : PageModel
     {
         ViewData["Title"] = _localizer["Title"];
         const int pageSize = 10;
-        CourseGroups = new SelectList(_context.CourseGroups, "Id", "Name");
+        CourseCategories = new SelectList(
+            await _context.CourseCategories
+                .AsNoTracking()
+                .OrderBy(category => category.SortOrder)
+                .ThenBy(category => category.Name)
+                .Select(category => new { category.Id, category.Name })
+                .ToListAsync(),
+            "Id",
+            "Name");
+
         var query = _context.Courses
-            .Include(c => c.CourseGroup)
+            .Include(c => c.Categories)
             .AsQueryable();
 
-        if (CourseGroupId.HasValue)
+        if (CategoryId.HasValue)
         {
-            query = query.Where(c => c.CourseGroupId == CourseGroupId);
+            query = query.Where(c => c.Categories.Any(category => category.Id == CategoryId));
         }
 
         if (!string.IsNullOrWhiteSpace(SearchString))
@@ -56,11 +65,14 @@ public class IndexModel : PageModel
             query = query.Where(c => EF.Functions.Like(c.Title, pattern));
         }
 
-        query = query.OrderBy(c => c.Date);
+        var orderedQuery = query.OrderBy(c => c.Date);
 
-        var count = await query.CountAsync();
+        var count = await orderedQuery.CountAsync();
         TotalPages = (int)Math.Ceiling(count / (double)pageSize);
-        Courses = await query.Skip((PageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
+        Courses = await orderedQuery
+            .Skip((PageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
     }
 }
 

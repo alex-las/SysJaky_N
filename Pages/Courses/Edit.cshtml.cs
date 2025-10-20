@@ -43,8 +43,6 @@ public class EditModel : PageModel
     [BindProperty]
     public IFormFile? CoverImage { get; set; }
 
-    public SelectList CourseGroups { get; set; } = default!;
-
     public IEnumerable<SelectListItem> CategoryOptions { get; set; } = Enumerable.Empty<SelectListItem>();
 
     [BindProperty]
@@ -90,7 +88,6 @@ public class EditModel : PageModel
         courseToUpdate.MetaTitle = Course.MetaTitle;
         courseToUpdate.MetaDescription = Course.MetaDescription;
         courseToUpdate.OpenGraphImage = Course.OpenGraphImage;
-        courseToUpdate.CourseGroupId = Course.CourseGroupId;
         courseToUpdate.Price = Course.Price;
         courseToUpdate.Date = Course.Date;
         courseToUpdate.Level = Course.Level;
@@ -151,13 +148,6 @@ public class EditModel : PageModel
 
     private async Task LoadSelectionsAsync()
     {
-        var groups = await _context.CourseGroups
-            .AsNoTracking()
-            .OrderBy(group => group.Name)
-            .ToListAsync();
-
-        CourseGroups = new SelectList(groups, "Id", "Name", Course.CourseGroupId);
-
         SelectedCategoryIds ??= new List<int>();
         var selectedSet = new HashSet<int>(SelectedCategoryIds);
 
