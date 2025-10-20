@@ -17,4 +17,6 @@ public class Article
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
     public string? AuthorId { get; set; }
+
+    public ApplicationUser? Author { get; set; }
 }
