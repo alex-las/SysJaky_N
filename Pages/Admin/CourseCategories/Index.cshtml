@@ -39,7 +39,7 @@
                 <td>@category.Slug</td>
                 <td>@category.SortOrder</td>
                 <td>
-                    <span class="badge @(category.IsActive ? "bg-success" : "bg-secondary")">
+                    <span class="badge badge-admin @(category.IsActive ? "badge-admin-active" : "badge-admin-inactive")">
                         @Localizer[category.IsActive ? "StatusActive" : "StatusInactive"]
                     </span>
                 </td>

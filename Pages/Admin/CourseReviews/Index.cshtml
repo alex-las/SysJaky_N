@@ -19,23 +19,19 @@
 
 <div class="row g-3 mb-4">
     <div class="col-md-4">
-        <div class="card h-100">
-            <div class="card-body">
-                <h5 class="card-title">Průměrné hodnocení</h5>
-                <p class="display-6 mb-0">
-                    @(Model.AverageRating.HasValue ? Model.AverageRating.Value.ToString("0.0") : "–")
-                </p>
-                <small class="text-muted">Z @Model.TotalReviewsCount recenzí</small>
+        <div class="admin-card admin-card--metric admin-card--metric-blue h-100">
+            <div class="admin-card__metric-label">Průměrné hodnocení</div>
+            <div class="admin-card__metric-value">
+                @(Model.AverageRating.HasValue ? Model.AverageRating.Value.ToString("0.0") : "–")
             </div>
+            <div class="admin-card__metric-note">Z @Model.TotalReviewsCount recenzí</div>
         </div>
     </div>
     <div class="col-md-4">
-        <div class="card h-100">
-            <div class="card-body">
-                <h5 class="card-title">Čeká na schválení</h5>
-                <p class="display-6 mb-0">@Model.PendingReviewsCount</p>
-                <small class="text-muted">Nezveřejněné recenze</small>
-            </div>
+        <div class="admin-card admin-card--metric admin-card--metric-yellow h-100">
+            <div class="admin-card__metric-label">Čeká na schválení</div>
+            <div class="admin-card__metric-value">@Model.PendingReviewsCount</div>
+            <div class="admin-card__metric-note">Nezveřejněné recenze</div>
         </div>
     </div>
 </div>
@@ -68,10 +64,10 @@
         </select>
     </div>
     <div class="col-auto">
-        <button type="submit" class="btn btn-primary">Filtrovat</button>
+        <button type="submit" class="btn btn-admin-primary">Filtrovat</button>
     </div>
     <div class="col-auto">
-        <a asp-page="Index" class="btn btn-outline-secondary">Vymazat</a>
+        <a asp-page="Index" class="btn btn-admin-ghost">Vymazat</a>
     </div>
 </form>
 
@@ -128,11 +124,11 @@ else
                         <td>
                             @if (review.IsPublic)
                             {
-                                <span class="badge bg-success">Zveřejněno</span>
+                                <span class="badge badge-admin badge-admin-active">Zveřejněno</span>
                             }
                             else
                             {
-                                <span class="badge bg-secondary">Skryto</span>
+                                <span class="badge badge-admin badge-admin-inactive">Skryto</span>
                             }
                         </td>
                         <td>
@@ -140,9 +136,9 @@ else
                         </td>
                         <td class="text-end">
                             <div class="btn-group" role="group">
-                                <button type="submit" class="btn btn-outline-success btn-sm" name="id" value="@review.Id" formaction="@Url.Page(null, new { handler = "TogglePublish", publish = true })">Schválit</button>
-                                <button type="submit" class="btn btn-outline-secondary btn-sm" name="id" value="@review.Id" formaction="@Url.Page(null, new { handler = "TogglePublish", publish = false })">Skrýt</button>
-                                <button type="submit" class="btn btn-outline-danger btn-sm" name="id" value="@review.Id" formaction="@Url.Page(null, new { handler = "Delete" })" onclick="return confirm('Opravdu chcete smazat tuto recenzi?');">Smazat</button>
+                                <button type="submit" class="btn btn-admin-primary btn-sm" name="id" value="@review.Id" formaction="@Url.Page(null, new { handler = "TogglePublish", publish = true })">Schválit</button>
+                                <button type="submit" class="btn btn-admin-ghost btn-sm" name="id" value="@review.Id" formaction="@Url.Page(null, new { handler = "TogglePublish", publish = false })">Skrýt</button>
+                                <button type="submit" class="btn btn-admin-warning btn-sm" name="id" value="@review.Id" formaction="@Url.Page(null, new { handler = "Delete" })" onclick="return confirm('Opravdu chcete smazat tuto recenzi?');">Smazat</button>
                             </div>
                         </td>
                     </tr>
@@ -152,9 +148,9 @@ else
         </div>
 
         <div class="d-flex flex-wrap gap-2 mt-3">
-            <button type="submit" class="btn btn-success" formaction="@Url.Page(null, new { handler = "BulkSetPublication", publish = true })">Hromadně schválit</button>
-            <button type="submit" class="btn btn-outline-secondary" formaction="@Url.Page(null, new { handler = "BulkSetPublication", publish = false })">Hromadně skrýt</button>
-            <button type="submit" class="btn btn-outline-danger" formaction="@Url.Page(null, new { handler = "BulkDelete" })" onclick="return confirm('Opravdu chcete smazat vybrané recenze?');">Smazat vybrané</button>
+            <button type="submit" class="btn btn-admin-primary" formaction="@Url.Page(null, new { handler = "BulkSetPublication", publish = true })">Hromadně schválit</button>
+            <button type="submit" class="btn btn-admin-ghost" formaction="@Url.Page(null, new { handler = "BulkSetPublication", publish = false })">Hromadně skrýt</button>
+            <button type="submit" class="btn btn-admin-warning" formaction="@Url.Page(null, new { handler = "BulkDelete" })" onclick="return confirm('Opravdu chcete smazat vybrané recenze?');">Smazat vybrané</button>
         </div>
     </form>
 }

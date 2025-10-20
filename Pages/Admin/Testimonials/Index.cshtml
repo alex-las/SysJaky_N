@@ -183,10 +183,10 @@
                             <td>@item.Company</td>
                             <td class="text-center">@Localizer["RatingFormat", item.Rating]</td>
                             <td class="text-center">
-                                <span class="badge @(item.IsPublished ? "bg-success" : "bg-secondary")">@Localizer[$"PublicationState_{item.PublicationState}"]</span>
+                                <span class="badge badge-admin @(item.IsPublished ? "badge-admin-active" : "badge-admin-inactive")">@Localizer[$"PublicationState_{item.PublicationState}"]</span>
                             </td>
                             <td class="text-center">
-                                <span class="badge @(item.ConsentGranted ? "bg-success" : "bg-warning text-dark")">@Localizer[$"ConsentStatus_{item.ConsentState}"]</span>
+                                <span class="badge badge-admin @(item.ConsentGranted ? "badge-admin-active" : "badge-admin-warning")">@Localizer[$"ConsentStatus_{item.ConsentState}"]</span>
                             </td>
                             <td class="text-center">
                                 @if (item.ConsentGranted && item.ConsentGrantedAtLocal.HasValue)

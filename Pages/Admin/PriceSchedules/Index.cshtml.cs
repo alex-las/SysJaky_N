@@ -48,10 +48,10 @@ public class IndexModel : PageModel
 
         public string StatusBadgeCssClass => Status switch
         {
-            PriceScheduleStatus.Active => "bg-success",
-            PriceScheduleStatus.Upcoming => "bg-info text-dark",
-            PriceScheduleStatus.Expired => "bg-secondary",
-            _ => "bg-light text-dark"
+            PriceScheduleStatus.Active => "badge-admin badge-admin-active",
+            PriceScheduleStatus.Upcoming => "badge-admin badge-admin-warning",
+            PriceScheduleStatus.Expired => "badge-admin badge-admin-inactive",
+            _ => "badge-admin badge-admin-inactive"
         };
 
         public void AddConflict(PriceSchedule conflictingSchedule)
