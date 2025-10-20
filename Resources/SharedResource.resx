@@ -375,6 +375,30 @@
   <data name="Pages.Api.Newsletter.Input.Email.DisplayName" xml:space="preserve">
     <value>E-mail</value>
   </data>
+  <data name="Pages.Api.Newsletter.Input.Categories.DisplayName" xml:space="preserve">
+    <value>Kategorie</value>
+  </data>
+  <data name="Validation.Categories.Invalid" xml:space="preserve">
+    <value>Jedna nebo více vybraných kategorií není platná.</value>
+  </data>
+  <data name="Validation.Categories.Required" xml:space="preserve">
+    <value>Vyberte alespoň jednu kategorii.</value>
+  </data>
+  <data name="NewsletterCategoriesLabel" xml:space="preserve">
+    <value>Vyberte oblasti, které vás zajímají</value>
+  </data>
+  <data name="NewsletterCategoriesHint" xml:space="preserve">
+    <value>Můžete vybrat jednu nebo více kategorií. Pokud nic nezvolíte, přihlásíme vás ke všem.</value>
+  </data>
+  <data name="NewsletterCategoriesEmpty" xml:space="preserve">
+    <value>Momentálně nejsou k dispozici žádné kategorie.</value>
+  </data>
+  <data name="NewsletterCategoriesError" xml:space="preserve">
+    <value>Kategorie se nepodařilo načíst. Zkuste to prosím znovu později.</value>
+  </data>
+  <data name="NewsletterCategoriesLoading" xml:space="preserve">
+    <value>Načítáme kategorie…</value>
+  </data>
   <data name="BrandName" xml:space="preserve">
     <value>Systémy Jakosti</value>
   </data>

@@ -1,4 +1,7 @@
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Globalization;
+using System.Linq;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -40,9 +43,14 @@ public class NewsletterModel : PageModel
 
     public string ConfirmationMessage { get; private set; } = string.Empty;
 
-    public IActionResult OnGet()
+    public async Task<IActionResult> OnGetAsync(CancellationToken cancellationToken)
     {
-        return NotFound();
+        var categories = await LoadCategoryOptionsAsync(cancellationToken);
+
+        return new JsonResult(new
+        {
+            categories
+        });
     }
 
     public async Task<IActionResult> OnPostAsync(CancellationToken cancellationToken)
@@ -59,6 +67,9 @@ public class NewsletterModel : PageModel
             ModelState.AddModelError(nameof(Input.Consent), _localizer["Validation.Consent.Required"]);
         }
 
+        var availableCategories = await LoadCategoryOptionsAsync(cancellationToken);
+        var selectedCategoryIds = ResolveSelectedCategoryIds(Input.CategoryIds, availableCategories);
+
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
@@ -67,12 +78,14 @@ public class NewsletterModel : PageModel
         normalizedEmail = normalizedEmail.ToLowerInvariant();
 
         var subscriber = await _context.NewsletterSubscribers
+            .Include(s => s.PreferredCategories)
             .SingleOrDefaultAsync(s => s.Email == normalizedEmail, cancellationToken);
 
         if (subscriber is not null && subscriber.ConfirmedAtUtc.HasValue)
         {
             subscriber.ConsentGiven = Input.Consent;
             subscriber.ConsentGivenAtUtc = Input.Consent ? DateTime.UtcNow : subscriber.ConsentGivenAtUtc;
+            SynchronizePreferredCategories(subscriber, selectedCategoryIds);
             await _context.SaveChangesAsync(cancellationToken);
 
             return new JsonResult(new
@@ -103,6 +116,8 @@ public class NewsletterModel : PageModel
             subscriber.ConfirmationToken = Guid.NewGuid().ToString("N");
             subscriber.ConfirmedAtUtc = null;
         }
+
+        SynchronizePreferredCategories(subscriber, selectedCategoryIds);
 
         await _context.SaveChangesAsync(cancellationToken);
 
@@ -137,6 +152,7 @@ public class NewsletterModel : PageModel
         }
 
         var subscriber = await _context.NewsletterSubscribers
+            .Include(s => s.PreferredCategories)
             .SingleOrDefaultAsync(s => s.ConfirmationToken == token, cancellationToken);
 
         if (subscriber is null)
@@ -155,6 +171,13 @@ public class NewsletterModel : PageModel
         }
 
         subscriber.ConfirmedAtUtc = DateTime.UtcNow;
+
+        var availableCategories = await LoadCategoryOptionsAsync(cancellationToken);
+        if ((subscriber.PreferredCategories == null || subscriber.PreferredCategories.Count == 0) && availableCategories.Count > 0)
+        {
+            SynchronizePreferredCategories(subscriber, availableCategories.Select(category => category.Id).ToList());
+        }
+
         await _context.SaveChangesAsync(cancellationToken);
 
         ConfirmationTitle = _localizer["Confirmation.CompletedTitle"];
@@ -171,5 +194,178 @@ public class NewsletterModel : PageModel
 
         [Display(Name = "Pages.Api.Newsletter.Input.Consent.DisplayName")]
         public bool Consent { get; set; }
+
+        [Display(Name = "Pages.Api.Newsletter.Input.Categories.DisplayName")]
+        public List<int> CategoryIds { get; set; } = new();
     }
+
+    private async Task<IReadOnlyList<NewsletterCategoryOption>> LoadCategoryOptionsAsync(CancellationToken cancellationToken)
+    {
+        var culture = CultureInfo.CurrentUICulture;
+        var localeCandidates = new[]
+        {
+            culture.Name,
+            culture.Parent?.Name,
+            culture.TwoLetterISOLanguageName
+        }
+        .Where(locale => !string.IsNullOrWhiteSpace(locale))
+        .Select(locale => locale!.Trim())
+        .Distinct(StringComparer.OrdinalIgnoreCase)
+        .ToArray();
+
+        var categories = await _context.CourseCategories
+            .AsNoTracking()
+            .Where(category => category.IsActive)
+            .OrderBy(category => category.SortOrder)
+            .ThenBy(category => category.Name)
+            .Select(category => new
+            {
+                category.Id,
+                category.Name,
+                category.Slug,
+                Translations = category.Translations
+                    .Select(translation => new
+                    {
+                        translation.Locale,
+                        translation.Name,
+                        translation.Slug
+                    })
+                    .ToList()
+            })
+            .ToListAsync(cancellationToken);
+
+        return categories
+            .Select(category =>
+            {
+                var displayName = category.Name?.Trim() ?? string.Empty;
+                var displaySlug = string.IsNullOrWhiteSpace(category.Slug)
+                    ? string.Empty
+                    : category.Slug.Trim();
+
+                foreach (var locale in localeCandidates)
+                {
+                    if (string.IsNullOrWhiteSpace(locale))
+                    {
+                        continue;
+                    }
+
+                    var translation = category.Translations
+                        .FirstOrDefault(t => string.Equals(t.Locale, locale, StringComparison.OrdinalIgnoreCase));
+
+                    if (translation == null)
+                    {
+                        continue;
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(translation.Name))
+                    {
+                        displayName = translation.Name.Trim();
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(translation.Slug))
+                    {
+                        displaySlug = translation.Slug.Trim();
+                    }
+
+                    break;
+                }
+
+                if (string.IsNullOrWhiteSpace(displayName))
+                {
+                    return null;
+                }
+
+                return new NewsletterCategoryOption(category.Id, displayName, displaySlug);
+            })
+            .Where(option => option != null)
+            .Select(option => option!)
+            .ToList();
+    }
+
+    private List<int> ResolveSelectedCategoryIds(
+        IReadOnlyCollection<int>? requestedCategoryIds,
+        IReadOnlyCollection<NewsletterCategoryOption> availableCategories)
+    {
+        var availableIds = availableCategories
+            .Select(category => category.Id)
+            .ToHashSet();
+
+        var selectedIds = new List<int>();
+
+        if (requestedCategoryIds is not null)
+        {
+            foreach (var categoryId in requestedCategoryIds)
+            {
+                if (!availableIds.Contains(categoryId))
+                {
+                    ModelState.AddModelError(nameof(Input.CategoryIds), _localizer["Validation.Categories.Invalid"]);
+                    continue;
+                }
+
+                if (!selectedIds.Contains(categoryId))
+                {
+                    selectedIds.Add(categoryId);
+                }
+            }
+        }
+
+        if (selectedIds.Count == 0)
+        {
+            selectedIds = availableIds.ToList();
+        }
+
+        if (selectedIds.Count == 0)
+        {
+            ModelState.AddModelError(nameof(Input.CategoryIds), _localizer["Validation.Categories.Required"]);
+        }
+
+        return selectedIds;
+    }
+
+    private void SynchronizePreferredCategories(
+        NewsletterSubscriber subscriber,
+        IReadOnlyCollection<int> selectedCategoryIds)
+    {
+        if (subscriber.PreferredCategories == null)
+        {
+            subscriber.PreferredCategories = new List<NewsletterSubscriberCategory>();
+        }
+
+        var preferredCategories = subscriber.PreferredCategories;
+        var selectedSet = new HashSet<int>(selectedCategoryIds);
+
+        var toRemove = preferredCategories
+            .Where(link => !selectedSet.Contains(link.CourseCategoryId))
+            .ToList();
+
+        if (toRemove.Count > 0)
+        {
+            _context.NewsletterSubscriberCategories.RemoveRange(toRemove);
+
+            foreach (var item in toRemove)
+            {
+                preferredCategories.Remove(item);
+            }
+        }
+
+        var existingIds = preferredCategories
+            .Select(link => link.CourseCategoryId)
+            .ToHashSet();
+
+        foreach (var categoryId in selectedSet)
+        {
+            if (existingIds.Contains(categoryId))
+            {
+                continue;
+            }
+
+            preferredCategories.Add(new NewsletterSubscriberCategory
+            {
+                CourseCategoryId = categoryId,
+                NewsletterSubscriber = subscriber
+            });
+        }
+    }
+
+    public record NewsletterCategoryOption(int Id, string Name, string Slug);
 }
