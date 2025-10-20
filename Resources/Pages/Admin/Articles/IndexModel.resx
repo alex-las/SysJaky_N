@@ -12,4 +12,64 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ActionDelete" xml:space="preserve">
+    <value>Smazat</value>
+  </data>
+  <data name="ActionDetail" xml:space="preserve">
+    <value>Detail</value>
+  </data>
+  <data name="ActionEdit" xml:space="preserve">
+    <value>Upravit</value>
+  </data>
+  <data name="CreateButton" xml:space="preserve">
+    <value>Vytvořit nový</value>
+  </data>
+  <data name="FilterAriaLabel" xml:space="preserve">
+    <value>Filtr článků</value>
+  </data>
+  <data name="FilterAuthorAllOption" xml:space="preserve">
+    <value>Všichni autoři</value>
+  </data>
+  <data name="FilterAuthorLabel" xml:space="preserve">
+    <value>Autor</value>
+  </data>
+  <data name="FilterFromLabel" xml:space="preserve">
+    <value>Od</value>
+  </data>
+  <data name="FilterReset" xml:space="preserve">
+    <value>Resetovat</value>
+  </data>
+  <data name="FilterSearchLabel" xml:space="preserve">
+    <value>Hledat v názvu</value>
+  </data>
+  <data name="FilterSearchPlaceholder" xml:space="preserve">
+    <value>Hledat v názvu…</value>
+  </data>
+  <data name="FilterSubmit" xml:space="preserve">
+    <value>Filtrovat</value>
+  </data>
+  <data name="FilterToLabel" xml:space="preserve">
+    <value>Do</value>
+  </data>
+  <data name="Header" xml:space="preserve">
+    <value>Správa článků</value>
+  </data>
+  <data name="TableHeaderActions" xml:space="preserve">
+    <value>Akce</value>
+  </data>
+  <data name="TableHeaderAuthor" xml:space="preserve">
+    <value>Autor</value>
+  </data>
+  <data name="TableHeaderCreated" xml:space="preserve">
+    <value>Vytvořeno</value>
+  </data>
+  <data name="TableHeaderTitle" xml:space="preserve">
+    <value>Název</value>
+  </data>
+  <data name="Title" xml:space="preserve">
+    <value>Správa článků</value>
+  </data>
+  <data name="UnknownAuthor" xml:space="preserve">
+    <value>Neznámý autor</value>
+  </data>
 </root>
