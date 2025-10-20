@@ -375,4 +375,28 @@
   <data name="Pages.Api.Newsletter.Input.Email.DisplayName" xml:space="preserve">
     <value>Email</value>
   </data>
+  <data name="Pages.Api.Newsletter.Input.Categories.DisplayName" xml:space="preserve">
+    <value>Categories</value>
+  </data>
+  <data name="Validation.Categories.Invalid" xml:space="preserve">
+    <value>One or more selected categories is not valid.</value>
+  </data>
+  <data name="Validation.Categories.Required" xml:space="preserve">
+    <value>Select at least one category.</value>
+  </data>
+  <data name="NewsletterCategoriesLabel" xml:space="preserve">
+    <value>Choose the topics you're interested in</value>
+  </data>
+  <data name="NewsletterCategoriesHint" xml:space="preserve">
+    <value>Select one or more categories. If you leave everything unchecked, we'll subscribe you to all of them.</value>
+  </data>
+  <data name="NewsletterCategoriesEmpty" xml:space="preserve">
+    <value>There are no categories available right now.</value>
+  </data>
+  <data name="NewsletterCategoriesError" xml:space="preserve">
+    <value>We couldn't load the categories. Please try again later.</value>
+  </data>
+  <data name="NewsletterCategoriesLoading" xml:space="preserve">
+    <value>Loading categories…</value>
+  </data>
 </root>

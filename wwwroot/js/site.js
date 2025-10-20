@@ -421,6 +421,124 @@ document.addEventListener('DOMContentLoaded', () => {
         const errorMessage = newsletterForm.dataset.errorMessage ?? '';
         const loadingText = newsletterForm.dataset.loadingText ?? '';
         const defaultButtonText = submitButton ? submitButton.textContent : '';
+        const categoriesContainer = newsletterForm.querySelector('[data-newsletter-categories]');
+
+        if (categoriesContainer) {
+            const categoriesEmptyText = categoriesContainer.dataset.emptyText ?? '';
+            const categoriesErrorText = categoriesContainer.dataset.errorText ?? '';
+            const categoriesLoadingText = categoriesContainer.dataset.loadingText ?? '';
+
+            const setCategoriesMessage = (text, type) => {
+                categoriesContainer.innerHTML = '';
+
+                if (!text) {
+                    return;
+                }
+
+                const message = document.createElement('p');
+                message.className = 'small mb-0';
+
+                if (type === 'error') {
+                    message.classList.add('text-danger');
+                } else {
+                    message.classList.add('text-muted');
+                }
+
+                message.textContent = text;
+                categoriesContainer.appendChild(message);
+            };
+
+            const renderCategories = (categories) => {
+                categoriesContainer.innerHTML = '';
+
+                const fragment = document.createDocumentFragment();
+                let appended = 0;
+
+                categories.forEach((category, index) => {
+                    if (!category || typeof category.id !== 'number') {
+                        return;
+                    }
+
+                    const name = typeof category.name === 'string' && category.name.trim()
+                        ? category.name.trim()
+                        : '';
+
+                    if (!name) {
+                        return;
+                    }
+
+                    const wrapper = document.createElement('div');
+                    wrapper.classList.add('form-check');
+
+                    const input = document.createElement('input');
+                    input.type = 'checkbox';
+                    input.classList.add('form-check-input');
+                    input.name = 'Input.CategoryIds';
+                    input.value = String(category.id);
+                    input.id = `newsletter-category-${category.id}-${index}`;
+                    input.checked = true;
+                    input.defaultChecked = true;
+
+                    const label = document.createElement('label');
+                    label.classList.add('form-check-label');
+                    label.setAttribute('for', input.id);
+                    label.textContent = name;
+
+                    wrapper.appendChild(input);
+                    wrapper.appendChild(label);
+                    fragment.appendChild(wrapper);
+                    appended += 1;
+                });
+
+                if (!appended) {
+                    setCategoriesMessage(categoriesEmptyText, 'info');
+                    return;
+                }
+
+                categoriesContainer.appendChild(fragment);
+            };
+
+            const loadNewsletterCategories = async () => {
+                if (categoriesLoadingText) {
+                    setCategoriesMessage(categoriesLoadingText, 'info');
+                } else {
+                    categoriesContainer.innerHTML = '';
+                }
+
+                try {
+                    const response = await fetch(newsletterForm.dataset.categoriesEndpoint || newsletterForm.action || '/Api/Newsletter', {
+                        method: 'GET',
+                        headers: { Accept: 'application/json' }
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`Failed to load categories: ${response.status}`);
+                    }
+
+                    const data = await response.json().catch(() => null);
+                    const categories = Array.isArray(data?.categories) ? data.categories : [];
+
+                    if (!categories.length) {
+                        setCategoriesMessage(categoriesEmptyText, 'info');
+                        return;
+                    }
+
+                    renderCategories(categories);
+                } catch (error) {
+                    console.warn('Unable to load newsletter categories', error);
+                    if (categoriesErrorText) {
+                        setCategoriesMessage(categoriesErrorText, 'error');
+                    }
+                }
+            };
+
+            loadNewsletterCategories().catch((error) => {
+                console.warn('Unhandled error while loading newsletter categories', error);
+                if (categoriesErrorText) {
+                    setCategoriesMessage(categoriesErrorText, 'error');
+                }
+            });
+        }
 
         const resetStatus = () => {
             if (!statusEl) {
