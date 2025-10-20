@@ -259,7 +259,7 @@ namespace SysJaky_N.Migrations
 
                     b.HasIndex("AuthorId");
 
-                    b.ToTable("Articles");
+                    b.ToTable("Articles", (string)null);
                 });
 
             modelBuilder.Entity("SysJaky_N.Models.Attendance", b =>
@@ -281,7 +281,7 @@ namespace SysJaky_N.Migrations
                     b.HasIndex("EnrollmentId")
                         .IsUnique();
 
-                    b.ToTable("Attendances");
+                    b.ToTable("Attendances", (string)null);
                 });
 
             modelBuilder.Entity("SysJaky_N.Models.AuditLog", b =>
@@ -307,7 +307,7 @@ namespace SysJaky_N.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AuditLogs");
+                    b.ToTable("AuditLogs", (string)null);
                 });
 
             modelBuilder.Entity("SysJaky_N.Models.Certificate", b =>
@@ -352,7 +352,7 @@ namespace SysJaky_N.Migrations
                     b.HasIndex("Number")
                         .IsUnique();
 
-                    b.ToTable("Certificates");
+                    b.ToTable("Certificates", (string)null);
                 });
 
             modelBuilder.Entity("SysJaky_N.Models.ChatbotSettings", b =>
@@ -378,7 +378,7 @@ namespace SysJaky_N.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ChatbotSettings");
+                    b.ToTable("ChatbotSettings", (string)null);
                 });
 
             modelBuilder.Entity("SysJaky_N.Models.Company", b =>
@@ -404,7 +404,7 @@ namespace SysJaky_N.Migrations
                     b.HasIndex("ReferralCode")
                         .IsUnique();
 
-                    b.ToTable("Companies");
+                    b.ToTable("Companies", (string)null);
                 });
 
             modelBuilder.Entity("SysJaky_N.Models.CompanyProfile", b =>
@@ -435,7 +435,7 @@ namespace SysJaky_N.Migrations
                     b.HasIndex("ReferenceCode")
                         .IsUnique();
 
-                    b.ToTable("CompanyProfiles");
+                    b.ToTable("CompanyProfiles", (string)null);
                 });
 
             modelBuilder.Entity("SysJaky_N.Models.CompanyUser", b =>
@@ -463,7 +463,7 @@ namespace SysJaky_N.Migrations
                     b.HasIndex("CompanyId", "UserId")
                         .IsUnique();
 
-                    b.ToTable("CompanyUsers");
+                    b.ToTable("CompanyUsers", (string)null);
                 });
 
             modelBuilder.Entity("SysJaky_N.Models.ContactMessage", b =>
@@ -493,7 +493,7 @@ namespace SysJaky_N.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ContactMessages");
+                    b.ToTable("ContactMessages", (string)null);
                 });
 
             modelBuilder.Entity("SysJaky_N.Models.Course", b =>
@@ -627,7 +627,7 @@ namespace SysJaky_N.Migrations
 
                     b.HasIndex("IsActive");
 
-                    b.ToTable("Courses");
+                    b.ToTable("Courses", (string)null);
                 });
 
             modelBuilder.Entity("SysJaky_N.Models.CourseBlock", b =>
@@ -652,7 +652,7 @@ namespace SysJaky_N.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("CourseBlocks");
+                    b.ToTable("CourseBlocks", (string)null);
                 });
 
             modelBuilder.Entity("SysJaky_N.Models.CourseCategory", b =>
@@ -711,7 +711,6 @@ namespace SysJaky_N.Migrations
                         .HasColumnType("varchar(500)");
 
                     b.Property<string>("Locale")
-                        .IsRequired()
                         .HasMaxLength(10)
                         .HasColumnType("varchar(10)");
 
@@ -726,6 +725,8 @@ namespace SysJaky_N.Migrations
                         .HasColumnType("varchar(100)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
 
                     b.HasIndex("CategoryId", "Locale")
                         .IsUnique()
@@ -768,7 +769,7 @@ namespace SysJaky_N.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("CourseGroups");
+                    b.ToTable("CourseGroups", (string)null);
                 });
 
             modelBuilder.Entity("SysJaky_N.Models.CourseReview", b =>
@@ -808,7 +809,7 @@ namespace SysJaky_N.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("CourseReviews");
+                    b.ToTable("CourseReviews", (string)null);
                 });
 
             modelBuilder.Entity("SysJaky_N.Models.CourseTag", b =>
@@ -823,7 +824,7 @@ namespace SysJaky_N.Migrations
 
                     b.HasIndex("TagId");
 
-                    b.ToTable("CourseTags");
+                    b.ToTable("CourseTags", (string)null);
                 });
 
             modelBuilder.Entity("SysJaky_N.Models.CourseTerm", b =>
@@ -864,7 +865,7 @@ namespace SysJaky_N.Migrations
 
                     b.HasIndex("CourseId", "StartUtc");
 
-                    b.ToTable("CourseTerms");
+                    b.ToTable("CourseTerms", (string)null);
                 });
 
             modelBuilder.Entity("SysJaky_N.Models.EmailLog", b =>
@@ -900,7 +901,7 @@ namespace SysJaky_N.Migrations
 
                     b.HasIndex("SentUtc");
 
-                    b.ToTable("EmailLogs");
+                    b.ToTable("EmailLogs", (string)null);
                 });
 
             modelBuilder.Entity("SysJaky_N.Models.Enrollment", b =>
@@ -927,7 +928,7 @@ namespace SysJaky_N.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Enrollments");
+                    b.ToTable("Enrollments", (string)null);
                 });
 
             modelBuilder.Entity("SysJaky_N.Models.Instructor", b =>
@@ -957,7 +958,7 @@ namespace SysJaky_N.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Instructors");
+                    b.ToTable("Instructors", (string)null);
                 });
 
             modelBuilder.Entity("SysJaky_N.Models.Lesson", b =>
@@ -988,7 +989,7 @@ namespace SysJaky_N.Migrations
 
                     b.HasIndex("CourseId", "Order");
 
-                    b.ToTable("Lessons");
+                    b.ToTable("Lessons", (string)null);
                 });
 
             modelBuilder.Entity("SysJaky_N.Models.LessonProgress", b =>
@@ -1009,7 +1010,7 @@ namespace SysJaky_N.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("LessonProgresses");
+                    b.ToTable("LessonProgresses", (string)null);
                 });
 
             modelBuilder.Entity("SysJaky_N.Models.LogEntry", b =>
@@ -1050,7 +1051,7 @@ namespace SysJaky_N.Migrations
 
                     b.HasIndex("Timestamp");
 
-                    b.ToTable("LogEntries");
+                    b.ToTable("LogEntries", (string)null);
                 });
 
             modelBuilder.Entity("SysJaky_N.Models.NewsletterSubscriber", b =>
@@ -1091,7 +1092,7 @@ namespace SysJaky_N.Migrations
                     b.HasIndex("Email")
                         .IsUnique();
 
-                    b.ToTable("NewsletterSubscribers");
+                    b.ToTable("NewsletterSubscribers", (string)null);
                 });
 
             modelBuilder.Entity("SysJaky_N.Models.Order", b =>
@@ -1138,7 +1139,7 @@ namespace SysJaky_N.Migrations
 
                     b.HasIndex("VoucherId");
 
-                    b.ToTable("Orders");
+                    b.ToTable("Orders", (string)null);
                 });
 
             modelBuilder.Entity("SysJaky_N.Models.OrderItem", b =>
@@ -1173,7 +1174,7 @@ namespace SysJaky_N.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("OrderItems");
+                    b.ToTable("OrderItems", (string)null);
                 });
 
             modelBuilder.Entity("SysJaky_N.Models.PaymentId", b =>
@@ -1187,7 +1188,7 @@ namespace SysJaky_N.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("PaymentIds");
+                    b.ToTable("PaymentIds", (string)null);
                 });
 
             modelBuilder.Entity("SysJaky_N.Models.PriceSchedule", b =>
@@ -1214,7 +1215,7 @@ namespace SysJaky_N.Migrations
 
                     b.HasIndex("CourseId", "FromUtc", "ToUtc");
 
-                    b.ToTable("PriceSchedules");
+                    b.ToTable("PriceSchedules", (string)null);
                 });
 
             modelBuilder.Entity("SysJaky_N.Models.SalesStat", b =>
@@ -1233,7 +1234,7 @@ namespace SysJaky_N.Migrations
 
                     b.HasKey("Date");
 
-                    b.ToTable("SalesStats");
+                    b.ToTable("SalesStats", (string)null);
                 });
 
             modelBuilder.Entity("SysJaky_N.Models.SeatToken", b =>
@@ -1267,7 +1268,7 @@ namespace SysJaky_N.Migrations
                     b.HasIndex("Token")
                         .IsUnique();
 
-                    b.ToTable("SeatTokens");
+                    b.ToTable("SeatTokens", (string)null);
                 });
 
             modelBuilder.Entity("SysJaky_N.Models.Tag", b =>
@@ -1288,7 +1289,7 @@ namespace SysJaky_N.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("Tags");
+                    b.ToTable("Tags", (string)null);
                 });
 
             modelBuilder.Entity("SysJaky_N.Models.Testimonial", b =>
@@ -1341,7 +1342,7 @@ namespace SysJaky_N.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Testimonials");
+                    b.ToTable("Testimonials", (string)null);
                 });
 
             modelBuilder.Entity("SysJaky_N.Models.Voucher", b =>
@@ -1382,7 +1383,7 @@ namespace SysJaky_N.Migrations
                     b.HasIndex("Code")
                         .IsUnique();
 
-                    b.ToTable("Vouchers");
+                    b.ToTable("Vouchers", (string)null);
                 });
 
             modelBuilder.Entity("SysJaky_N.Models.WaitlistEntry", b =>
@@ -1419,7 +1420,7 @@ namespace SysJaky_N.Migrations
                     b.HasIndex("UserId", "CourseTermId")
                         .IsUnique();
 
-                    b.ToTable("WaitlistEntries");
+                    b.ToTable("WaitlistEntries", (string)null);
                 });
 
             modelBuilder.Entity("SysJaky_N.Models.WishlistItem", b =>
@@ -1434,7 +1435,7 @@ namespace SysJaky_N.Migrations
 
                     b.HasIndex("CourseId");
 
-                    b.ToTable("WishlistItems");
+                    b.ToTable("WishlistItems", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
