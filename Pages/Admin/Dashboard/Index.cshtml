@@ -66,7 +66,7 @@
                             <button id="exportReport" type="button" class="btn btn-admin-ghost">
                                 <i class="bi bi-file-earmark-excel"></i> @Localizer["ExportReportButton"]
                             </button>
-                            <div id="filtersStatus" class="d-flex align-items-center text-muted small gap-2">
+                            <div id="filtersStatus" class="d-flex align-items-center text-admin-secondary small gap-2">
                                 <span class="spinner-border spinner-border-sm d-none" id="filtersSpinner" role="status" aria-hidden="true"></span>
                                 <span id="filtersStatusText">@Localizer["FiltersStatusReady"]</span>
                             </div>
@@ -79,30 +79,30 @@
         <div class="row g-3 mb-4" id="summaryCards">
             <div class="col-sm-6 col-xl-3">
                 <div class="admin-card h-100">
-                    <p class="text-muted text-uppercase fw-semibold mb-1">@Localizer["SummaryRevenue"]</p>
+                    <p class="text-admin-secondary text-uppercase fw-semibold mb-1">@Localizer["SummaryRevenue"]</p>
                     <p class="display-6 mb-0" id="summaryRevenue">—</p>
                     <p class="text-success small mb-0" id="summaryRevenueChange"></p>
                 </div>
             </div>
             <div class="col-sm-6 col-xl-3">
                 <div class="admin-card h-100">
-                    <p class="text-muted text-uppercase fw-semibold mb-1">@Localizer["SummaryOrders"]</p>
+                    <p class="text-admin-secondary text-uppercase fw-semibold mb-1">@Localizer["SummaryOrders"]</p>
                     <p class="display-6 mb-0" id="summaryOrders">—</p>
-                    <p class="text-muted small mb-0" id="summaryAverageOrder">—</p>
+                    <p class="text-admin-secondary small mb-0" id="summaryAverageOrder">—</p>
                 </div>
             </div>
             <div class="col-sm-6 col-xl-3">
                 <div class="admin-card h-100">
-                    <p class="text-muted text-uppercase fw-semibold mb-1">@Localizer["SummarySeats"]</p>
+                    <p class="text-admin-secondary text-uppercase fw-semibold mb-1">@Localizer["SummarySeats"]</p>
                     <p class="display-6 mb-0" id="summarySeats">—</p>
-                    <p class="text-muted small mb-0" id="summaryOccupancy">—</p>
+                    <p class="text-admin-secondary small mb-0" id="summaryOccupancy">—</p>
                 </div>
             </div>
             <div class="col-sm-6 col-xl-3">
                 <div class="admin-card h-100">
-                    <p class="text-muted text-uppercase fw-semibold mb-1">@Localizer["SummaryCustomers"]</p>
+                    <p class="text-admin-secondary text-uppercase fw-semibold mb-1">@Localizer["SummaryCustomers"]</p>
                     <p class="display-6 mb-0" id="summaryCustomers">—</p>
-                    <p class="text-muted small mb-0" id="summaryNewCustomers">—</p>
+                    <p class="text-admin-secondary small mb-0" id="summaryNewCustomers">—</p>
                 </div>
             </div>
         </div>
@@ -111,13 +111,13 @@
             <div class="admin-card__header">
                 <div>
                     <h2 class="admin-card__title mb-0">@Localizer["SalesTrendTitle"]</h2>
-                    <small class="text-muted" id="salesRangeLabel">—</small>
+                    <small class="text-admin-secondary" id="salesRangeLabel">—</small>
                 </div>
-                <div class="text-muted small" id="salesAggregateLabel"></div>
+                <div class="text-admin-secondary small" id="salesAggregateLabel"></div>
             </div>
             <div class="admin-card__body">
                 <canvas id="salesTrendChart" height="280" role="img" aria-label="@Localizer["SalesTrendChartLabel"]"></canvas>
-                <p class="text-muted small mb-0" id="salesEmpty" hidden>
+                <p class="text-admin-secondary small mb-0" id="salesEmpty" hidden>
                     @Localizer["SalesTrendEmpty"]
                 </p>
             </div>
@@ -126,7 +126,7 @@
         <div class="admin-card mb-4">
             <div class="admin-card__header">
                 <h2 class="admin-card__title mb-0">@Localizer["TopCoursesTitle"]</h2>
-                <small class="text-muted" id="topCoursesTotal">—</small>
+                <small class="text-admin-secondary" id="topCoursesTotal">—</small>
             </div>
             <div class="admin-card__body">
                 <canvas id="topCoursesChart" height="240" role="img" aria-label="@Localizer["TopCoursesChartLabel"]"></canvas>
@@ -140,7 +140,7 @@
                             </tr>
                         </thead>
                         <tbody id="topCoursesTable">
-                            <tr><td colspan="3" class="text-center text-muted py-3">@Localizer["Loading"]</td></tr>
+                            <tr><td colspan="3" class="text-center text-admin-secondary py-3">@Localizer["Loading"]</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -152,12 +152,12 @@
                 <div class="admin-card h-100">
                     <div class="admin-card__header">
                         <h2 class="admin-card__title mb-0">@Localizer["ConversionFunnelTitle"]</h2>
-                        <small class="text-muted" id="conversionRates">—</small>
+                        <small class="text-admin-secondary" id="conversionRates">—</small>
                     </div>
                     <div class="admin-card__body">
                         <canvas id="conversionChart" height="240" role="img" aria-label="@Localizer["ConversionChartLabel"]"></canvas>
                         <ul class="list-unstyled mb-0" id="conversionDetails">
-                            <li class="text-muted">@Localizer["Loading"]</li>
+                            <li class="text-admin-secondary">@Localizer["Loading"]</li>
                         </ul>
                     </div>
                 </div>
@@ -169,7 +169,7 @@
                     </div>
                     <div class="admin-card__body">
                         <canvas id="heatmapChart" height="260" role="img" aria-label="@Localizer["TermPopularityChartLabel"]"></canvas>
-                        <p class="text-muted small mb-0" id="heatmapEmpty" hidden>
+                        <p class="text-admin-secondary small mb-0" id="heatmapEmpty" hidden>
                             @Localizer["TermPopularityEmpty"]
                         </p>
                     </div>
@@ -184,18 +184,18 @@
             </div>
             <div class="admin-card__body">
                 <p class="mb-2">
-                    <span class="text-muted d-block">@Localizer["RealtimeUsersLabel"]</span>
+                    <span class="text-admin-secondary d-block">@Localizer["RealtimeUsersLabel"]</span>
                     <span class="fs-3 fw-semibold" id="realtimeUsers">—</span>
                 </p>
                 <p class="mb-2">
-                    <span class="text-muted d-block">@Localizer["RealtimeCartsLabel"]</span>
+                    <span class="text-admin-secondary d-block">@Localizer["RealtimeCartsLabel"]</span>
                     <span class="fs-3 fw-semibold" id="realtimeCarts">—</span>
                 </p>
                 <p class="mb-0">
-                    <span class="text-muted d-block">@Localizer["RealtimeCartValueLabel"]</span>
+                    <span class="text-admin-secondary d-block">@Localizer["RealtimeCartValueLabel"]</span>
                     <span class="fs-5" id="realtimeCartValue">—</span>
                 </p>
-                <p class="text-muted small mt-3 mb-0" id="realtimeUpdated">Čekám na připojení…</p>
+                <p class="text-admin-secondary small mt-3 mb-0" id="realtimeUpdated">Čekám na připojení…</p>
             </div>
         </div>
 
@@ -203,7 +203,7 @@
             <div class="admin-card__header justify-content-between align-items-start">
                 <div>
                     <h2 class="admin-card__title mb-1">Nastavení chatbota</h2>
-                    <small class="text-muted">Spravujte zobrazení virtuálního poradce.</small>
+                    <small class="text-admin-secondary">Spravujte zobrazení virtuálního poradce.</small>
                 </div>
                 @if (TempData["ChatbotSettingsSaved"] is bool badgeSaved && badgeSaved)
                 {

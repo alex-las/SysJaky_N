@@ -34,7 +34,7 @@
 <section class="admin-page-header">
     <div class="admin-page-header__title">
         <h1>@Localizer["HeaderTitle"]</h1>
-        <p class="text-muted mb-0">@Localizer["HeaderSubtitle"]</p>
+        <p class="text-admin-secondary mb-0">@Localizer["HeaderSubtitle"]</p>
     </div>
     <div class="admin-page-header__actions">
         <button type="button"
@@ -98,31 +98,31 @@
     <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-5 g-3">
         <div class="col">
             <div class="admin-stat">
-                <div class="admin-stat__label text-muted">@Localizer["SummaryTotal"]</div>
+                <div class="admin-stat__label text-admin-secondary">@Localizer["SummaryTotal"]</div>
                 <div class="admin-stat__value h4 mb-0">@Model.Statistics.Total</div>
             </div>
         </div>
         <div class="col">
             <div class="admin-stat">
-                <div class="admin-stat__label text-muted">@Localizer["SummaryPublished"]</div>
+                <div class="admin-stat__label text-admin-secondary">@Localizer["SummaryPublished"]</div>
                 <div class="admin-stat__value h4 mb-0">@Model.Statistics.Published</div>
             </div>
         </div>
         <div class="col">
             <div class="admin-stat">
-                <div class="admin-stat__label text-muted">@Localizer["SummaryAwaitingPublication"]</div>
+                <div class="admin-stat__label text-admin-secondary">@Localizer["SummaryAwaitingPublication"]</div>
                 <div class="admin-stat__value h4 mb-0">@Model.Statistics.AwaitingPublication</div>
             </div>
         </div>
         <div class="col">
             <div class="admin-stat">
-                <div class="admin-stat__label text-muted">@Localizer["SummaryWithConsent"]</div>
+                <div class="admin-stat__label text-admin-secondary">@Localizer["SummaryWithConsent"]</div>
                 <div class="admin-stat__value h4 mb-0">@Model.Statistics.WithConsent</div>
             </div>
         </div>
         <div class="col">
             <div class="admin-stat">
-                <div class="admin-stat__label text-muted">@Localizer["SummaryWithoutConsent"]</div>
+                <div class="admin-stat__label text-admin-secondary">@Localizer["SummaryWithoutConsent"]</div>
                 <div class="admin-stat__value h4 mb-0">@Model.Statistics.WithoutConsent</div>
             </div>
         </div>
@@ -140,7 +140,7 @@
     <div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3 mb-3">
         <div>
             <h2 class="h5 mb-1">@Localizer["BulkActionsHeading"]</h2>
-            <p class="text-muted mb-0">@Localizer["BulkActionsHint"]</p>
+            <p class="text-admin-secondary mb-0">@Localizer["BulkActionsHint"]</p>
         </div>
         <div class="d-flex gap-2">
             <button type="submit" class="btn btn-admin-primary" asp-page-handler="GrantConsent">@Localizer["BulkGrantConsentButton"]</button>
@@ -177,7 +177,7 @@
                             </td>
                             <td>
                                 <div class="fw-semibold">@item.FullName</div>
-                                <div class="small text-muted text-wrap">@item.Quote</div>
+                                <div class="small text-admin-secondary text-wrap">@item.Quote</div>
                             </td>
                             <td>@item.Position</td>
                             <td>@item.Company</td>
@@ -192,15 +192,15 @@
                                 @if (item.ConsentGranted && item.ConsentGrantedAtLocal.HasValue)
                                 {
                                     var consentDate = item.ConsentGrantedAtLocal.Value.ToString("g", CultureInfo.CurrentCulture);
-                                    <div class="small text-muted">@Localizer["ConsentGrantedAt", consentDate]</div>
+                                    <div class="small text-admin-secondary">@Localizer["ConsentGrantedAt", consentDate]</div>
                                     if (item.ConsentGrantedAge.HasValue)
                                     {
-                                        <div class="small text-muted">@Localizer["ConsentGrantedAgo", FormatRelativeTime(item.ConsentGrantedAge.Value)]</div>
+                                        <div class="small text-admin-secondary">@Localizer["ConsentGrantedAgo", FormatRelativeTime(item.ConsentGrantedAge.Value)]</div>
                                     }
                                 }
                                 else
                                 {
-                                    <span class="text-muted">—</span>
+                                    <span class="text-admin-secondary">—</span>
                                 }
                             </td>
                             <td class="text-end">
@@ -226,7 +226,7 @@
                 else
                 {
                     <tr>
-                        <td colspan="9" class="text-center py-4 text-muted">@Localizer["EmptyState"]</td>
+                        <td colspan="9" class="text-center py-4 text-admin-secondary">@Localizer["EmptyState"]</td>
                     </tr>
                 }
             </tbody>
