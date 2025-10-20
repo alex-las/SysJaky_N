@@ -54,7 +54,7 @@ public static class CourseCardExtensions
             IsoBadges = ExtractIsoBadges(course),
             Norms = BuildNorms(course),
             Cities = ExtractCities(course),
-            Categories = BuildCategories(course),
+            Categories = BuildCategories(course, culture),
             DaysUntilStart = daysUntilStart,
             Capacity = capacity,
             SeatsTaken = seatsTaken,
@@ -196,25 +196,95 @@ public static class CourseCardExtensions
             ct.Tag.Name.Contains("certifik", StringComparison.OrdinalIgnoreCase));
     }
 
-    private static IReadOnlyList<CourseCategoryViewModel> BuildCategories(Course course)
+    private static IReadOnlyList<CourseCategoryViewModel> BuildCategories(
+        Course course,
+        CultureInfo culture)
     {
         if (course.Categories == null || course.Categories.Count == 0)
         {
             return Array.Empty<CourseCategoryViewModel>();
         }
 
+        var localeCandidates = new[]
+        {
+            culture.Name,
+            culture.Parent?.Name,
+            culture.TwoLetterISOLanguageName
+        }
+        .Where(locale => !string.IsNullOrWhiteSpace(locale))
+        .Select(locale => locale!.Trim())
+        .Distinct(StringComparer.OrdinalIgnoreCase)
+        .ToArray();
+
         var categories = course.Categories
-            .Where(category => category != null && !string.IsNullOrWhiteSpace(category.Name))
-            .Select(category => new CourseCategoryViewModel(
-                category!.Id,
-                category.Name.Trim(),
-                string.IsNullOrWhiteSpace(category.Slug) ? string.Empty : category.Slug.Trim()))
-            .OrderBy(category => category.Name, StringComparer.CurrentCultureIgnoreCase)
+            .Where(category => category != null)
+            .Select(category =>
+            {
+                if (category == null)
+                {
+                    return null;
+                }
+
+                var (name, slug) = ResolveCategoryDisplay(category, localeCandidates);
+
+                if (string.IsNullOrWhiteSpace(name))
+                {
+                    return null;
+                }
+
+                return new CourseCategoryViewModel(
+                    category.Id,
+                    name,
+                    slug);
+            })
+            .Where(model => model != null)
+            .Select(model => model!)
+            .OrderBy(model => model.Name, StringComparer.CurrentCultureIgnoreCase)
             .ToList();
 
         return categories.Count == 0
             ? Array.Empty<CourseCategoryViewModel>()
             : categories;
+    }
+
+    private static (string Name, string Slug) ResolveCategoryDisplay(
+        CourseCategory category,
+        IReadOnlyList<string> localeCandidates)
+    {
+        var baseName = category.Name?.Trim() ?? string.Empty;
+        var baseSlug = string.IsNullOrWhiteSpace(category.Slug)
+            ? string.Empty
+            : category.Slug.Trim();
+
+        if (category.Translations != null && category.Translations.Count > 0)
+        {
+            foreach (var locale in localeCandidates)
+            {
+                if (string.IsNullOrWhiteSpace(locale))
+                {
+                    continue;
+                }
+
+                var translation = category.Translations
+                    .FirstOrDefault(t => string.Equals(t.Locale, locale, StringComparison.OrdinalIgnoreCase));
+
+                if (translation == null)
+                {
+                    continue;
+                }
+
+                var name = string.IsNullOrWhiteSpace(translation.Name)
+                    ? baseName
+                    : translation.Name.Trim();
+                var slug = string.IsNullOrWhiteSpace(translation.Slug)
+                    ? baseSlug
+                    : translation.Slug.Trim();
+
+                return (name, slug);
+            }
+        }
+
+        return (baseName, baseSlug);
     }
 
     private static string BuildPreview(string? description)

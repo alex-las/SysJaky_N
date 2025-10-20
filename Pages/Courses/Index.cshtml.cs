@@ -403,6 +403,7 @@ public class IndexModel : PageModel
                 .Include(c => c.CourseTags)
                     .ThenInclude(ct => ct.Tag)
                 .Include(c => c.Categories)
+                    .ThenInclude(category => category.Translations)
                 .Where(c => c.IsActive)
                 .AsQueryable();
 
@@ -496,6 +497,7 @@ public class IndexModel : PageModel
             .Include(course => course.CourseTags)
                 .ThenInclude(courseTag => courseTag.Tag)
             .Include(course => course.Categories)
+                .ThenInclude(category => category.Translations)
             .Where(course => course.IsActive)
             .ToListAsync();
 
