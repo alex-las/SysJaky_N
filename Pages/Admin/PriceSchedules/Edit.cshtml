@@ -6,6 +6,25 @@
 
 <h1>Upravit cenový plán</h1>
 
+@if (Model.ConflictingSchedules.Count > 0)
+{
+    <div class="alert alert-warning mt-3">
+        <h2 class="h5">Detekované konflikty</h2>
+        <p>Aktualizovaný interval se překrývá s následujícími plány. Nastavte jejich <strong>Platí do</strong> na @Model.PriceSchedule.FromUtc.ToString("g") nebo zvolte jiný interval.</p>
+        <ul class="mb-0">
+        @foreach (var conflict in Model.ConflictingSchedules)
+        {
+            var fromLocal = DateTime.SpecifyKind(conflict.FromUtc, DateTimeKind.Utc).ToLocalTime();
+            var toLocal = DateTime.SpecifyKind(conflict.ToUtc, DateTimeKind.Utc).ToLocalTime();
+            <li>
+                <strong>@conflict.Course?.Title</strong>: @fromLocal.ToString("g") – @toLocal.ToString("g")
+                <a class="btn btn-sm btn-outline-warning ms-2" asp-page="Edit" asp-route-id="@conflict.Id">Otevřít plán</a>
+            </li>
+        }
+        </ul>
+    </div>
+}
+
 <form method="post" class="mt-4">
     <input type="hidden" asp-for="PriceSchedule.Id" />
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>

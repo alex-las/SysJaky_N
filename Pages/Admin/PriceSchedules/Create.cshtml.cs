@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -29,6 +30,8 @@ public class CreateModel : PageModel
 
     public List<SelectListItem> Courses { get; set; } = new();
 
+    public List<PriceSchedule> ConflictingSchedules { get; private set; } = new();
+
     public async Task OnGetAsync()
     {
         PriceSchedule.FromUtc = DateTime.UtcNow.ToLocalTime();
@@ -47,6 +50,8 @@ public class CreateModel : PageModel
         {
             ModelState.AddModelError("PriceSchedule.ToUtc", _localizer["EndTimeMustFollowStart"]);
         }
+
+        await DetectConflictsAsync(fromUtc, toUtc);
 
         if (!ModelState.IsValid)
         {
@@ -68,5 +73,25 @@ public class CreateModel : PageModel
             .OrderBy(c => c.Title)
             .Select(c => new SelectListItem(c.Title, c.Id.ToString(), c.Id == PriceSchedule.CourseId))
             .ToListAsync();
+    }
+
+    private async Task DetectConflictsAsync(DateTime fromUtc, DateTime toUtc)
+    {
+        ConflictingSchedules = await _context.PriceSchedules
+            .AsNoTracking()
+            .Include(p => p.Course)
+            .Where(p => p.CourseId == PriceSchedule.CourseId)
+            .Where(p => p.FromUtc < toUtc && fromUtc < p.ToUtc)
+            .OrderBy(p => p.FromUtc)
+            .ToListAsync();
+
+        if (ConflictingSchedules.Count == 0)
+        {
+            return;
+        }
+
+        var suggestedEnd = DateTime.SpecifyKind(fromUtc, DateTimeKind.Utc).ToLocalTime();
+        ModelState.AddModelError(nameof(PriceSchedule.FromUtc),
+            $"Nový interval se překrývá s {ConflictingSchedules.Count} existujícími plány. Upravte jejich konec nejpozději na {suggestedEnd:g} nebo změňte termín.");
     }
 }
