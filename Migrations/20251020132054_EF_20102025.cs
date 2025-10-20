@@ -27,6 +27,11 @@ namespace SysJaky_N.Migrations
                 table: "coursecategory_translations",
                 newName: "IX_coursecategory_translations_Locale_Slug");
 
+            migrationBuilder.RenameIndex(
+                name: "IX_CourseCategory_Translations_CategoryId",
+                table: "coursecategory_translations",
+                newName: "IX_coursecategory_translations_CategoryId");
+
             migrationBuilder.AddPrimaryKey(
                 name: "PK_coursecategory_translations",
                 table: "coursecategory_translations",
@@ -60,6 +65,11 @@ namespace SysJaky_N.Migrations
                 name: "IX_coursecategory_translations_Locale_Slug",
                 table: "CourseCategory_Translations",
                 newName: "IX_CourseCategory_Translations_Locale_Slug");
+
+            migrationBuilder.RenameIndex(
+                name: "IX_coursecategory_translations_CategoryId",
+                table: "CourseCategory_Translations",
+                newName: "IX_CourseCategory_Translations_CategoryId");
 
             migrationBuilder.AddPrimaryKey(
                 name: "PK_CourseCategory_Translations",
