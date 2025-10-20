@@ -18,5 +18,11 @@ public class CourseCategory
     [StringLength(500)]
     public string? Description { get; set; }
 
+    public int SortOrder { get; set; }
+
+    public bool IsActive { get; set; } = true;
+
     public ICollection<Course> Courses { get; set; } = new List<Course>();
+
+    public ICollection<CourseCategoryTranslation> Translations { get; set; } = new List<CourseCategoryTranslation>();
 }

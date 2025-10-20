@@ -24,6 +24,12 @@
   <data name="SlugHeader" xml:space="preserve">
     <value>Identifikátor</value>
   </data>
+  <data name="OrderHeader" xml:space="preserve">
+    <value>Pořadí</value>
+  </data>
+  <data name="StatusHeader" xml:space="preserve">
+    <value>Stav</value>
+  </data>
   <data name="CourseCountHeader" xml:space="preserve">
     <value>Počet kurzů</value>
   </data>
@@ -35,5 +41,11 @@
   </data>
   <data name="DeleteLink" xml:space="preserve">
     <value>Odstranit</value>
+  </data>
+  <data name="StatusActive" xml:space="preserve">
+    <value>Aktivní</value>
+  </data>
+  <data name="StatusInactive" xml:space="preserve">
+    <value>Skrytá</value>
   </data>
 </root>

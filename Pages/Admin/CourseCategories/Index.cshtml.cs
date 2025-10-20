@@ -28,14 +28,17 @@ public class IndexModel : PageModel
 
         Categories = await _context.CourseCategories
             .AsNoTracking()
-            .OrderBy(category => category.Name)
+            .OrderBy(category => category.SortOrder)
+            .ThenBy(category => category.Name)
             .Select(category => new CourseCategoryListItem(
                 category.Id,
                 category.Name,
                 category.Slug,
+                category.SortOrder,
+                category.IsActive,
                 category.Courses.Count(course => course.IsActive)))
             .ToListAsync();
     }
 
-    public record CourseCategoryListItem(int Id, string Name, string Slug, int CourseCount);
+    public record CourseCategoryListItem(int Id, string Name, string Slug, int SortOrder, bool IsActive, int CourseCount);
 }

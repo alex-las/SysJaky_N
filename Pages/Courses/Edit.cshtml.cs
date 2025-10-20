@@ -162,12 +162,25 @@ public class EditModel : PageModel
 
         var categories = await _context.CourseCategories
             .AsNoTracking()
-            .OrderBy(category => category.Name)
-            .Select(category => new { category.Id, category.Name })
+            .Where(category => category.IsActive || selectedSet.Contains(category.Id))
+            .OrderBy(category => category.SortOrder)
+            .ThenBy(category => category.Name)
+            .Select(category => new { category.Id, category.Name, category.IsActive })
             .ToListAsync();
 
+        var inactiveSuffix = _localizer["InactiveCategorySuffix"].Value ?? " (inactive)";
+
         CategoryOptions = categories
-            .Select(category => new SelectListItem(category.Name, category.Id.ToString(), selectedSet.Contains(category.Id)))
+            .Select(category =>
+            {
+                var text = category.Name;
+                if (!category.IsActive)
+                {
+                    text += inactiveSuffix;
+                }
+
+                return new SelectListItem(text, category.Id.ToString(), selectedSet.Contains(category.Id));
+            })
             .ToList();
     }
 }

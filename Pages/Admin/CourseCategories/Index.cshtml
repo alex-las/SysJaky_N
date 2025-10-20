@@ -20,6 +20,8 @@
             <tr>
                 <th scope="col">@Localizer["NameHeader"]</th>
                 <th scope="col">@Localizer["SlugHeader"]</th>
+                <th scope="col">@Localizer["OrderHeader"]</th>
+                <th scope="col">@Localizer["StatusHeader"]</th>
                 <th scope="col">@Localizer["CourseCountHeader"]</th>
                 <th scope="col" class="text-end">@Localizer["ActionsHeader"]</th>
             </tr>
@@ -30,6 +32,12 @@
             <tr>
                 <td>@category.Name</td>
                 <td>@category.Slug</td>
+                <td>@category.SortOrder</td>
+                <td>
+                    <span class="badge @(category.IsActive ? "bg-success" : "bg-secondary")">
+                        @Localizer[category.IsActive ? "StatusActive" : "StatusInactive"]
+                    </span>
+                </td>
                 <td>@category.CourseCount</td>
                 <td class="text-end">
                     <div class="admin-table-actions justify-content-end">

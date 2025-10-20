@@ -47,6 +47,7 @@ public class CreateModel : PageModel
         Category.Description = string.IsNullOrWhiteSpace(Category.Description)
             ? null
             : Category.Description.Trim();
+        Category.SortOrder = Category.SortOrder < 0 ? 0 : Category.SortOrder;
 
         _context.CourseCategories.Add(Category);
         await _context.SaveChangesAsync();

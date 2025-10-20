@@ -24,6 +24,12 @@
   <data name="SlugHeader" xml:space="preserve">
     <value>Identifier</value>
   </data>
+  <data name="OrderHeader" xml:space="preserve">
+    <value>Order</value>
+  </data>
+  <data name="StatusHeader" xml:space="preserve">
+    <value>Status</value>
+  </data>
   <data name="CourseCountHeader" xml:space="preserve">
     <value>Course count</value>
   </data>
@@ -35,5 +41,11 @@
   </data>
   <data name="DeleteLink" xml:space="preserve">
     <value>Delete</value>
+  </data>
+  <data name="StatusActive" xml:space="preserve">
+    <value>Active</value>
+  </data>
+  <data name="StatusInactive" xml:space="preserve">
+    <value>Hidden</value>
   </data>
 </root>
