@@ -1,0 +1,29 @@
+@page "{id:int}"
+@model SysJaky_N.Pages.Admin.Companies.DeleteModel
+@inject IStringLocalizer<SysJaky_N.Pages.Admin.Companies.DeleteModel> Localizer
+@{
+    ViewData["Title"] = Localizer["PageTitle"];
+}
+
+<h1>@Localizer["PageTitle"]</h1>
+
+@if (Model.Company is not null)
+{
+    <div class="alert alert-warning" role="alert">
+        @Localizer["ConfirmationMessage", Model.Company.Name]
+    </div>
+
+    <dl class="row">
+        <dt class="col-sm-3">@Localizer["NameLabel"]</dt>
+        <dd class="col-sm-9">@Model.Company.Name</dd>
+        <dt class="col-sm-3">@Localizer["ReferenceCodeLabel"]</dt>
+        <dd class="col-sm-9">@Model.Company.ReferenceCode</dd>
+        <dt class="col-sm-3">@Localizer["ManagerLabel"]</dt>
+        <dd class="col-sm-9">@Model.Company.Manager?.Email</dd>
+    </dl>
+}
+
+<form method="post">
+    <button type="submit" class="btn btn-danger">@Localizer["DeleteButton"]</button>
+    <a asp-page="Index" class="btn btn-secondary">@Localizer["CancelButton"]</a>
+</form>

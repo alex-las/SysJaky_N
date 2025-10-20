@@ -1,8 +1,11 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
+using System.Collections.Generic;
+using System.Linq;
 using SysJaky_N.Data;
 using SysJaky_N.Models;
 
@@ -23,25 +26,62 @@ public class IndexModel : PageModel
     public List<CompanyProfile> Companies { get; set; } = new();
 
     [BindProperty]
-    public CompanyProfile NewCompany { get; set; } = new();
+    public CompanyFormModel NewCompany { get; set; } = new();
 
     public async Task OnGetAsync()
     {
-        Companies = await _context.CompanyProfiles.Include(c => c.Manager).ToListAsync();
+        await LoadPageDataAsync();
     }
 
     public async Task<IActionResult> OnPostAsync()
     {
         if (!ModelState.IsValid)
         {
-            Companies = await _context.CompanyProfiles.Include(c => c.Manager).ToListAsync();
+            await LoadPageDataAsync();
             return Page();
         }
-        _context.CompanyProfiles.Add(NewCompany);
+
+        var company = new CompanyProfile
+        {
+            Name = NewCompany.Name,
+            ReferenceCode = NewCompany.ReferenceCode,
+            ManagerId = NewCompany.ManagerId
+        };
+
+        _context.CompanyProfiles.Add(company);
         await _context.SaveChangesAsync();
 
-        TempData["StatusMessage"] = _localizer["CompanyCreated", NewCompany.Name].Value;
+        TempData["StatusMessage"] = _localizer["CompanyCreated", company.Name].Value;
 
         return RedirectToPage();
+    }
+
+    private async Task LoadPageDataAsync()
+    {
+        Companies = await _context.CompanyProfiles
+            .Include(c => c.Manager)
+            .OrderBy(c => c.Name)
+            .ToListAsync();
+
+        NewCompany.ManagerOptions = await GetManagerOptionsAsync();
+    }
+
+    private async Task<IEnumerable<SelectListItem>> GetManagerOptionsAsync()
+    {
+        var users = await _context.Users
+            .OrderBy(u => u.Email)
+            .Select(u => new
+            {
+                u.Id,
+                u.Email,
+                u.UserName
+            })
+            .ToListAsync();
+
+        return users.Select(u => new SelectListItem
+        {
+            Value = u.Id,
+            Text = string.IsNullOrEmpty(u.Email) ? (u.UserName ?? u.Id) : u.Email
+        });
     }
 }

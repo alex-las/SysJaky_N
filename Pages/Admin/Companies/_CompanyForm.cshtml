@@ -1,0 +1,25 @@
+@model SysJaky_N.Pages.Admin.Companies.CompanyFormModel
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+
+@if (Model.Id.HasValue)
+{
+    <input type="hidden" asp-for="Id" />
+}
+
+<div class="mb-3">
+    <label asp-for="Name" class="form-label"></label>
+    <input asp-for="Name" class="form-control" />
+    <span asp-validation-for="Name" class="text-danger"></span>
+</div>
+<div class="mb-3">
+    <label asp-for="ReferenceCode" class="form-label"></label>
+    <input asp-for="ReferenceCode" class="form-control" />
+    <span asp-validation-for="ReferenceCode" class="text-danger"></span>
+</div>
+<div class="mb-3">
+    <label asp-for="ManagerId" class="form-label"></label>
+    <select asp-for="ManagerId" class="form-select" asp-items="Model.ManagerOptions">
+        <option value="">@Localizer["ManagerPlaceholder"]</option>
+    </select>
+    <span asp-validation-for="ManagerId" class="text-danger"></span>
+</div>
