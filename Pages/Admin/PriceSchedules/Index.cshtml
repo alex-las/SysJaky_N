@@ -6,11 +6,81 @@
 
 <h1>Cenové plány</h1>
 
-<p>
-    <a class="btn btn-primary" asp-page="Create">Vytvořit nový</a>
-</p>
+<div class="row g-3 mb-4">
+    <div class="col-sm-6 col-lg-3">
+        <div class="card h-100 border-primary">
+            <div class="card-body">
+                <div class="text-uppercase text-muted small">Celkem</div>
+                <div class="display-6">@Model.Summary.Total</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+        <div class="card h-100 border-success">
+            <div class="card-body">
+                <div class="text-uppercase text-muted small">Aktivní</div>
+                <div class="display-6 text-success">@Model.Summary.Active</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+        <div class="card h-100 border-info">
+            <div class="card-body">
+                <div class="text-uppercase text-muted small">Plánované</div>
+                <div class="display-6 text-info">@Model.Summary.Upcoming</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+        <div class="card h-100 border-secondary">
+            <div class="card-body">
+                <div class="text-uppercase text-muted small">Expirované</div>
+                <div class="display-6 text-secondary">@Model.Summary.Expired</div>
+            </div>
+        </div>
+    </div>
+</div>
 
-@if (Model.PriceSchedules.Count == 0)
+<div class="d-flex justify-content-between flex-wrap gap-2 mb-3">
+    <a class="btn btn-primary" asp-page="Create">Vytvořit nový</a>
+    <form method="get" class="card shadow-sm flex-grow-1">
+        <div class="card-body">
+            <div class="row g-3 align-items-end">
+                <div class="col-md-4">
+                    <label asp-for="CourseId" class="form-label">Kurz</label>
+                    <select asp-for="CourseId" class="form-select" asp-items="Model.CourseOptions"></select>
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="StatusFilter" class="form-label">Stav</label>
+                    <select asp-for="StatusFilter" class="form-select" asp-items="Model.StatusOptions"></select>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" asp-for="FutureOnly" id="futureOnly" />
+                        <label class="form-check-label" for="futureOnly">Pouze budoucí</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" asp-for="HideExpired" id="hideExpired" />
+                        <label class="form-check-label" for="hideExpired">Skrýt expirované</label>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-3 d-flex gap-2">
+                <button type="submit" class="btn btn-outline-primary">Filtrovat</button>
+                <a class="btn btn-link" asp-page="./Index">Vyčistit</a>
+            </div>
+        </div>
+    </form>
+</div>
+
+@if (Model.HasConflicts)
+{
+    <div class="alert alert-warning">
+        <strong>Upozornění:</strong> Některé cenové plány se překrývají. Zkontrolujte zvýrazněné řádky.
+    </div>
+}
+
+@if (!Model.Groups.SelectMany(g => g.Schedules).Any())
 {
     <p>Nebyly nalezeny žádné cenové plány.</p>
 }
@@ -18,30 +88,59 @@ else
 {
     <div class="table-responsive">
         <table class="table table-striped align-middle">
-        <thead>
-            <tr>
-                <th>Kurz</th>
-                <th>Platí od</th>
-                <th>Platí do</th>
-                <th>Nová cena (bez DPH)</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-        @foreach (var schedule in Model.PriceSchedules)
-        {
-            <tr>
-                <td>@schedule.Course?.Title</td>
-                <td>@DateTime.SpecifyKind(schedule.FromUtc, DateTimeKind.Utc).ToLocalTime().ToString("g")</td>
-                <td>@DateTime.SpecifyKind(schedule.ToUtc, DateTimeKind.Utc).ToLocalTime().ToString("g")</td>
-                <td>@schedule.NewPriceExcl.ToString("C")</td>
-                <td>
-                    <a class="btn btn-sm btn-secondary" asp-page="Edit" asp-route-id="@schedule.Id">Upravit</a>
-                    <a class="btn btn-sm btn-admin-warning" asp-page="Delete" asp-route-id="@schedule.Id">Smazat</a>
-                </td>
-            </tr>
-        }
-        </tbody>
+            <thead>
+                <tr>
+                    <th>Kurz</th>
+                    <th>Platí od</th>
+                    <th>Platí do</th>
+                    <th>Nová cena (bez DPH)</th>
+                    <th>Stav</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var group in Model.Groups)
+                {
+                    foreach (var schedule in group.Schedules)
+                    {
+                        var fromLocal = DateTime.SpecifyKind(schedule.Schedule.FromUtc, DateTimeKind.Utc).ToLocalTime();
+                        var toLocal = DateTime.SpecifyKind(schedule.Schedule.ToUtc, DateTimeKind.Utc).ToLocalTime();
+                        var rowClass = schedule.HasConflicts ? "table-warning" : string.Empty;
+                        <tr class="@rowClass">
+                            <td>@group.Course?.Title</td>
+                            <td>@fromLocal.ToString("g")</td>
+                            <td>@toLocal.ToString("g")</td>
+                            <td>@schedule.Schedule.NewPriceExcl.ToString("C")</td>
+                            <td>
+                                <span class="badge @schedule.StatusBadgeCssClass">@schedule.StatusDisplay</span>
+                            </td>
+                            <td>
+                                <a class="btn btn-sm btn-secondary" asp-page="Edit" asp-route-id="@schedule.Schedule.Id">Upravit</a>
+                                <a class="btn btn-sm btn-admin-warning" asp-page="Delete" asp-route-id="@schedule.Schedule.Id">Smazat</a>
+                            </td>
+                        </tr>
+                        if (schedule.HasConflicts)
+                        {
+                            <tr class="table-warning small">
+                                <td colspan="6">
+                                    <strong>Překryv s:</strong>
+                                    <ul class="mb-0">
+                                        @foreach (var conflict in schedule.Conflicts.OrderBy(c => c.FromUtc))
+                                        {
+                                            var conflictFrom = DateTime.SpecifyKind(conflict.FromUtc, DateTimeKind.Utc).ToLocalTime();
+                                            var conflictTo = DateTime.SpecifyKind(conflict.ToUtc, DateTimeKind.Utc).ToLocalTime();
+                                            <li>
+                                                <a asp-page="Edit" asp-route-id="@conflict.Id">#@conflict.Id</a>
+                                                (@conflictFrom.ToString("g") – @conflictTo.ToString("g"))
+                                            </li>
+                                        }
+                                    </ul>
+                                </td>
+                            </tr>
+                        }
+                    }
+                }
+            </tbody>
         </table>
     </div>
 }
