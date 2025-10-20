@@ -48,6 +48,25 @@ public class EditModel : PageModel
 
         article.Title = Article.Title;
         article.Content = Article.Content;
+        article.IsPublished = Article.IsPublished;
+        article.UpdatedAtUtc = DateTime.UtcNow;
+
+        if (Article.IsPublished)
+        {
+            if (!Article.PublishedAtUtc.HasValue)
+            {
+                article.PublishedAtUtc = DateTime.UtcNow;
+            }
+            else
+            {
+                article.PublishedAtUtc = DateTime.SpecifyKind(Article.PublishedAtUtc.Value, DateTimeKind.Utc);
+            }
+        }
+        else
+        {
+            article.PublishedAtUtc = null;
+        }
+
         await _context.SaveChangesAsync();
         return RedirectToPage("Index");
     }

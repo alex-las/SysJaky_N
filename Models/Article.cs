@@ -16,5 +16,17 @@ public class Article
     [DataType(DataType.DateTime)]
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
+    [DataType(DataType.DateTime)]
+    public DateTime UpdatedAtUtc { get; set; } = DateTime.UtcNow;
+
+    [Display(Name = "Publikováno")]
+    public bool IsPublished { get; set; }
+
+    [DataType(DataType.DateTime)]
+    [Display(Name = "Datum publikace (UTC)")]
+    public DateTime? PublishedAtUtc { get; set; }
+
     public string? AuthorId { get; set; }
+
+    public ApplicationUser? Author { get; set; }
 }

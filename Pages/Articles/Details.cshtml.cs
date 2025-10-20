@@ -22,7 +22,10 @@ public class DetailsModel : PageModel
 
     public async Task<IActionResult> OnGetAsync(int id)
     {
-        Article = await _context.Articles.FirstOrDefaultAsync(a => a.Id == id);
+        var now = DateTime.UtcNow;
+        Article = await _context.Articles
+            .AsNoTracking()
+            .FirstOrDefaultAsync(a => a.Id == id && a.IsPublished && (a.PublishedAtUtc ?? a.CreatedAt) <= now);
 
         if (Article == null)
         {

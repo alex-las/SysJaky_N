@@ -30,6 +30,8 @@ public class CreateModel : PageModel
 
     public void OnGet()
     {
+        Article.IsPublished = false;
+        Article.PublishedAtUtc = null;
     }
 
     public async Task<IActionResult> OnPostAsync()
@@ -41,6 +43,23 @@ public class CreateModel : PageModel
 
         Article.AuthorId = _userManager.GetUserId(User);
         Article.CreatedAt = DateTime.UtcNow;
+        Article.UpdatedAtUtc = DateTime.UtcNow;
+
+        if (Article.IsPublished)
+        {
+            if (!Article.PublishedAtUtc.HasValue)
+            {
+                Article.PublishedAtUtc = DateTime.UtcNow;
+            }
+            else
+            {
+                Article.PublishedAtUtc = DateTime.SpecifyKind(Article.PublishedAtUtc.Value, DateTimeKind.Utc);
+            }
+        }
+        else
+        {
+            Article.PublishedAtUtc = null;
+        }
 
         _context.Articles.Add(Article);
         await _context.SaveChangesAsync();

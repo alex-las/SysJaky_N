@@ -13,21 +13,58 @@
     </div>
 </section>
 
+<form method="get" class="mb-4">
+    <div class="row g-2 align-items-end">
+        <div class="col-auto">
+            <label asp-for="PublicationFilter" class="form-label">Filtr publikace</label>
+            <select asp-for="PublicationFilter" asp-items="Model.PublicationFilterOptions" class="form-select"></select>
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-admin-primary">Filtrovat</button>
+        </div>
+    </div>
+</form>
+
 <div class="admin-table-wrapper table-responsive">
     <table class="table admin-table align-middle mb-0">
         <thead>
             <tr>
                 <th scope="col">Název</th>
                 <th scope="col">Vytvořeno</th>
+                <th scope="col">Stav</th>
                 <th scope="col" class="text-end">Akce</th>
             </tr>
         </thead>
         <tbody>
+        @{ var now = DateTime.UtcNow; }
         @foreach (var item in Model.Articles)
         {
             <tr>
                 <td>@item.Title</td>
                 <td>@item.CreatedAt.ToString("g")</td>
+                <td>
+                    @{
+                        var status = "Koncept";
+                        if (item.IsPublished)
+                        {
+                            if (item.PublishedAtUtc.HasValue && item.PublishedAtUtc.Value > now)
+                            {
+                                var scheduledAt = DateTime.SpecifyKind(item.PublishedAtUtc.Value, DateTimeKind.Utc).ToLocalTime();
+                                status = $"Naplánováno ({scheduledAt:g})";
+                            }
+                            else if (item.PublishedAtUtc.HasValue)
+                            {
+                                var publishedAt = DateTime.SpecifyKind(item.PublishedAtUtc.Value, DateTimeKind.Utc).ToLocalTime();
+                                status = $"Publikováno ({publishedAt:g})";
+                            }
+                            else
+                            {
+                                status = "Publikováno";
+                            }
+                        }
+                    }
+                    @status
+                </td>
                 <td class="text-end">
                     <div class="admin-table-actions justify-content-end">
                         <a asp-page="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-admin-ghost">Upravit</a>

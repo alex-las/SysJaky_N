@@ -31,7 +31,10 @@ public class IndexModel : PageModel
     public async Task OnGetAsync()
     {
         const int pageSize = 10;
-        var query = _context.Articles.AsQueryable();
+        var now = DateTime.UtcNow;
+        var query = _context.Articles
+            .Where(a => a.IsPublished && (a.PublishedAtUtc ?? a.CreatedAt) <= now)
+            .AsNoTracking();
 
         if (!string.IsNullOrWhiteSpace(SearchString))
         {
@@ -39,7 +42,7 @@ public class IndexModel : PageModel
             query = query.Where(a => EF.Functions.Like(a.Title, pattern));
         }
 
-        query = query.OrderByDescending(a => a.CreatedAt);
+        query = query.OrderByDescending(a => a.PublishedAtUtc ?? a.CreatedAt);
 
         var count = await query.CountAsync();
         TotalPages = (int)Math.Ceiling(count / (double)pageSize);

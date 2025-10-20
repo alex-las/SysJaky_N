@@ -10,3 +10,14 @@
     <textarea asp-for="Content" class="form-control"></textarea>
     <span asp-validation-for="Content" class="text-danger"></span>
 </div>
+<div class="form-check form-switch mb-3">
+    <input asp-for="IsPublished" class="form-check-input" role="switch" />
+    <label class="form-check-label" asp-for="IsPublished"></label>
+    <span asp-validation-for="IsPublished" class="text-danger"></span>
+</div>
+<div class="form-group">
+    <label asp-for="PublishedAtUtc"></label>
+    <input asp-for="PublishedAtUtc" type="datetime-local" class="form-control" />
+    <span class="form-text text-muted">Zadejte datum publikace (UTC). Pokud ponecháte prázdné, použije se aktuální čas při publikaci.</span>
+    <span asp-validation-for="PublishedAtUtc" class="text-danger"></span>
+</div>

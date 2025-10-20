@@ -110,9 +110,11 @@ namespace SysJaky_N.Pages
                 })
                 .ToList();
 
+            var now = DateTime.UtcNow;
             FreshNews = await _context.Articles
                 .AsNoTracking()
-                .OrderByDescending(a => a.CreatedAt)
+                .Where(a => a.IsPublished && (a.PublishedAtUtc ?? a.CreatedAt) <= now)
+                .OrderByDescending(a => a.PublishedAtUtc ?? a.CreatedAt)
                 .Take(6)
                 .ToListAsync();
 

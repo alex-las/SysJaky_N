@@ -10,4 +10,5 @@ public class ApplicationUser : IdentityUser
     public ICollection<WaitlistEntry> WaitlistEntries { get; set; } = new List<WaitlistEntry>();
     public ICollection<CompanyUser> CompanyMemberships { get; set; } = new List<CompanyUser>();
     public ICollection<LessonProgress> LessonProgresses { get; set; } = new List<LessonProgress>();
+    public ICollection<Article> Articles { get; set; } = new List<Article>();
 }
