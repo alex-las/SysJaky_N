@@ -15,4 +15,19 @@
   <data name="Title" xml:space="preserve">
     <value>New category</value>
   </data>
+  <data name="TranslationLocaleInvalid" xml:space="preserve">
+    <value>Unknown translation locale.</value>
+  </data>
+  <data name="Locale_cs" xml:space="preserve">
+    <value>Czech</value>
+  </data>
+  <data name="Locale_en" xml:space="preserve">
+    <value>English</value>
+  </data>
+  <data name="TranslationNameRequired" xml:space="preserve">
+    <value>The {0} translation name is required.</value>
+  </data>
+  <data name="TranslationSlugRequired" xml:space="preserve">
+    <value>The {0} translation identifier is required.</value>
+  </data>
 </root>

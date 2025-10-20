@@ -39,4 +39,34 @@
   <data name="IsActiveHelp" xml:space="preserve">
     <value>Neaktivní kategorie se na webu ani ve filtrech nezobrazí.</value>
   </data>
+  <data name="TranslationsHeading" xml:space="preserve">
+    <value>Překlady</value>
+  </data>
+  <data name="TranslationsHelp" xml:space="preserve">
+    <value>Vyplňte názvy, identifikátory a popisy pro jednotlivé podporované jazyky.</value>
+  </data>
+  <data name="Locale_cs" xml:space="preserve">
+    <value>Čeština</value>
+  </data>
+  <data name="Locale_en" xml:space="preserve">
+    <value>Angličtina</value>
+  </data>
+  <data name="TranslationLegend" xml:space="preserve">
+    <value>Překlad ({0})</value>
+  </data>
+  <data name="TranslationNameLabel" xml:space="preserve">
+    <value>Název ({0})</value>
+  </data>
+  <data name="TranslationSlugLabel" xml:space="preserve">
+    <value>Identifikátor ({0})</value>
+  </data>
+  <data name="TranslationSlugHelp" xml:space="preserve">
+    <value>Krátký jedinečný identifikátor používaný v jazyce {0}.</value>
+  </data>
+  <data name="TranslationDescriptionLabel" xml:space="preserve">
+    <value>Popis ({0})</value>
+  </data>
+  <data name="TranslationDescriptionHelp" xml:space="preserve">
+    <value>Volitelně doplňte popis kategorie v jazyce {0}.</value>
+  </data>
 </root>
