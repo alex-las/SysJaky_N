@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="NameLabel" xml:space="preserve">
+    <value>Category name</value>
+  </data>
+  <data name="SlugLabel" xml:space="preserve">
+    <value>Identifier (slug)</value>
+  </data>
+  <data name="SlugHelp" xml:space="preserve">
+    <value>A short unique value used in URLs or filters (e.g. quality, safety).</value>
+  </data>
+  <data name="DescriptionLabel" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="DescriptionHelp" xml:space="preserve">
+    <value>Optionally provide a short description of the category.</value>
+  </data>
+  <data name="SortOrderLabel" xml:space="preserve">
+    <value>Display order</value>
+  </data>
+  <data name="SortOrderHelp" xml:space="preserve">
+    <value>Lower numbers appear first in category listings.</value>
+  </data>
+  <data name="IsActiveLabel" xml:space="preserve">
+    <value>Category is active</value>
+  </data>
+  <data name="IsActiveHelp" xml:space="preserve">
+    <value>Inactive categories are hidden from the public catalog and filters.</value>
+  </data>
+</root>

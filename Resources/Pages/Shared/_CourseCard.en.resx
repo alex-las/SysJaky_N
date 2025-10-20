@@ -45,6 +45,9 @@
   <data name="IsoBadgeListAria" xml:space="preserve">
     <value>ISO certifications</value>
   </data>
+  <data name="CategoriesAriaLabel" xml:space="preserve">
+    <value>Course categories</value>
+  </data>
   <data name="WishlistAdd" xml:space="preserve">
     <value>Add to wishlist</value>
   </data>

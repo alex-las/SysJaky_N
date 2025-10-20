@@ -132,6 +132,16 @@
       }
     </header>
 
+    @if (Model.Categories.Any())
+    {
+        <div class="d-flex flex-wrap gap-2" aria-label="@Localizer["CategoriesAriaLabel"].Value">
+        @foreach (var category in Model.Categories)
+        {
+            <span class="badge rounded-pill text-bg-light">@category.Name</span>
+        }
+        </div>
+    }
+
     <div class="course-card__meta d-flex flex-wrap gap-2" aria-label="@Localizer["MetaInformation"].Value">
       <span class="course-card__meta-item" aria-label="@string.Format(Localizer["TypeAria", Model.Type].Value ?? "Typ: {0}", Model.Type)">
         <i class="bi bi-geo-alt" aria-hidden="true"></i>

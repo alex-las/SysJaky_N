@@ -1,0 +1,32 @@
+@model SysJaky_N.Models.CourseCategory
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+
+<div class="mb-3">
+    <label asp-for="Name" class="form-label">@Localizer["NameLabel"]</label>
+    <input asp-for="Name" class="form-control" />
+    <span asp-validation-for="Name" class="text-danger"></span>
+</div>
+<div class="mb-3">
+    <label asp-for="Slug" class="form-label">@Localizer["SlugLabel"]</label>
+    <input asp-for="Slug" class="form-control" />
+    <div class="form-text">@Localizer["SlugHelp"]</div>
+    <span asp-validation-for="Slug" class="text-danger"></span>
+</div>
+<div class="mb-3">
+    <label asp-for="Description" class="form-label">@Localizer["DescriptionLabel"]</label>
+    <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+    <div class="form-text">@Localizer["DescriptionHelp"]</div>
+    <span asp-validation-for="Description" class="text-danger"></span>
+</div>
+<div class="mb-3">
+    <label asp-for="SortOrder" class="form-label">@Localizer["SortOrderLabel"]</label>
+    <input asp-for="SortOrder" type="number" class="form-control" min="0" step="1" />
+    <div class="form-text">@Localizer["SortOrderHelp"]</div>
+    <span asp-validation-for="SortOrder" class="text-danger"></span>
+</div>
+<div class="form-check mb-3">
+    <input asp-for="IsActive" class="form-check-input" />
+    <label asp-for="IsActive" class="form-check-label">@Localizer["IsActiveLabel"]</label>
+    <div class="form-text">@Localizer["IsActiveHelp"]</div>
+    <span asp-validation-for="IsActive" class="text-danger"></span>
+</div>

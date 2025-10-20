@@ -320,22 +320,24 @@ try
     app.UseRequestLocalization(locOptions.Value);
 
     // DB migrate + seed (bez rekurze – sink používá tichou továrnu ApplicationDbContext)
-    if (!useInMemoryDatabase)
+    try
     {
-        try
+        using var scope = app.Services.CreateScope();
+        var services = scope.ServiceProvider;
+        var context = services.GetRequiredService<ApplicationDbContext>();
+
+        if (!useInMemoryDatabase)
         {
-            using var scope = app.Services.CreateScope();
-            var services = scope.ServiceProvider;
-            var context = services.GetRequiredService<ApplicationDbContext>();
             await context.Database.MigrateAsync();
-            var seeder = new AdminSeeder(services);
-            await seeder.SeedAsync();
         }
-        catch (Exception ex)
-        {
-            app.Logger.LogError(ex,
-                "Database migration or seeding failed during startup. Ensure the database is reachable and configured correctly.");
-        }
+
+        var seeder = new AdminSeeder(services);
+        await seeder.SeedAsync();
+    }
+    catch (Exception ex)
+    {
+        app.Logger.LogError(ex,
+            "Database migration or seeding failed during startup. Ensure the database is reachable and configured correctly.");
     }
 
     app.UseForwardedHeaders();

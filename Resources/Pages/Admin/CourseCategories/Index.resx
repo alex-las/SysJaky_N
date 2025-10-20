@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Title" xml:space="preserve">
+    <value>Kategorie kurzů</value>
+  </data>
+  <data name="CreateButton" xml:space="preserve">
+    <value>Přidat kategorii</value>
+  </data>
+  <data name="NameHeader" xml:space="preserve">
+    <value>Název</value>
+  </data>
+  <data name="SlugHeader" xml:space="preserve">
+    <value>Identifikátor</value>
+  </data>
+  <data name="OrderHeader" xml:space="preserve">
+    <value>Pořadí</value>
+  </data>
+  <data name="StatusHeader" xml:space="preserve">
+    <value>Stav</value>
+  </data>
+  <data name="CourseCountHeader" xml:space="preserve">
+    <value>Počet kurzů</value>
+  </data>
+  <data name="ActionsHeader" xml:space="preserve">
+    <value>Akce</value>
+  </data>
+  <data name="EditLink" xml:space="preserve">
+    <value>Upravit</value>
+  </data>
+  <data name="DeleteLink" xml:space="preserve">
+    <value>Odstranit</value>
+  </data>
+  <data name="StatusActive" xml:space="preserve">
+    <value>Aktivní</value>
+  </data>
+  <data name="StatusInactive" xml:space="preserve">
+    <value>Skrytá</value>
+  </data>
+</root>

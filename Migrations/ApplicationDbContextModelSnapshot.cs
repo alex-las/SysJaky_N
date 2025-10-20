@@ -22,6 +22,21 @@ namespace SysJaky_N.Migrations
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
+            modelBuilder.Entity("CourseCourseCategory", b =>
+                {
+                    b.Property<int>("CourseId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CourseCategoryId")
+                        .HasColumnType("int");
+
+                    b.HasKey("CourseId", "CourseCategoryId");
+
+                    b.HasIndex("CourseCategoryId");
+
+                    b.ToTable("CourseCourseCategories", (string)null);
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -653,6 +668,77 @@ namespace SysJaky_N.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("CourseBlocks");
+                });
+
+            modelBuilder.Entity("SysJaky_N.Models.CourseCategory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500)");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(true);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<int>("SortOrder")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
+
+                    b.Property<string>("Slug")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Slug")
+                        .IsUnique();
+
+                    b.ToTable("CourseCategories");
+                });
+
+            modelBuilder.Entity("SysJaky_N.Models.CourseCategoryTranslation", b =>
+                {
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Locale")
+                        .HasMaxLength(10)
+                        .HasColumnType("varchar(10)");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<string>("Slug")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.HasKey("CategoryId", "Locale");
+
+                    b.HasIndex("Locale", "Slug")
+                        .IsUnique();
+
+                    b.ToTable("CourseCategoryTranslations");
                 });
 
             modelBuilder.Entity("SysJaky_N.Models.CourseGroup", b =>
@@ -1339,6 +1425,32 @@ namespace SysJaky_N.Migrations
                     b.ToTable("WishlistItems");
                 });
 
+            modelBuilder.Entity("CourseCourseCategory", b =>
+                {
+                    b.HasOne("SysJaky_N.Models.CourseCategory", null)
+                        .WithMany()
+                        .HasForeignKey("CourseCategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SysJaky_N.Models.Course", null)
+                        .WithMany()
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("SysJaky_N.Models.CourseCategoryTranslation", b =>
+                {
+                    b.HasOne("SysJaky_N.Models.CourseCategory", "Category")
+                        .WithMany("Translations")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -1725,6 +1837,13 @@ namespace SysJaky_N.Migrations
             modelBuilder.Entity("SysJaky_N.Models.CourseGroup", b =>
                 {
                     b.Navigation("Courses");
+                });
+
+            modelBuilder.Entity("SysJaky_N.Models.CourseCategory", b =>
+                {
+                    b.Navigation("Courses");
+
+                    b.Navigation("Translations");
                 });
 
             modelBuilder.Entity("SysJaky_N.Models.CourseTerm", b =>

@@ -48,6 +48,12 @@
   <data name="CourseGroupLabel" xml:space="preserve">
     <value>Group</value>
   </data>
+  <data name="CourseCategoriesLabel" xml:space="preserve">
+    <value>Categories</value>
+  </data>
+  <data name="CourseCategoriesHelp" xml:space="preserve">
+    <value>Select every category that applies to this course.</value>
+  </data>
   <data name="PricePlaceholder" xml:space="preserve">
     <value>Enter the price</value>
   </data>

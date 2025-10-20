@@ -66,10 +66,10 @@
     <value>Professional quality management training for your organization</value>
   </data>
   <data name="HeroMainHeading" xml:space="preserve">
-    <value>Empower your team with expert ISO trainings and courses.</value>
+    <value>Strengthen your team's ISO and accreditation capabilities.</value>
   </data>
   <data name="HeroSubheading" xml:space="preserve">
-    <value>Choose from public dates or in-company workshops led by lead auditors. When you need to move on to certification or accreditation, we follow up with consulting and documentation.</value>
+    <value>Choose from public dates or in-company workshops led by lead auditors. We act as consultants who guide you through certification or accreditation preparation alongside your chosen certification body.</value>
   </data>
   <data name="HeroUSP1" xml:space="preserve">
     <value>Seasoned auditors and consultants with years of experience</value>
@@ -78,7 +78,7 @@
     <value>Trainers with auditing experience</value>
   </data>
   <data name="HeroUSP1Description" xml:space="preserve">
-    <value>Every session is delivered by experts who prepare companies for certifications and understand the expectations of authorities firsthand.</value>
+    <value>Every session is delivered by experts who prepare companies for certification audits and understand the expectations of authorities firsthand.</value>
   </data>
   <data name="HeroUSP2" xml:space="preserve">
     <value>Practical know-how drawn from real-world audits</value>
@@ -96,7 +96,7 @@
     <value>Support from training to accreditation</value>
   </data>
   <data name="HeroUSP3Description" xml:space="preserve">
-    <value>Start with a course and rely on us for internal audits, documentation, and successful certification when you need it.</value>
+    <value>Start with a course and rely on us for internal audits, documentation, and readiness for meetings with the certification body.</value>
   </data>
   <data name="HeroCorporateCardTitle" xml:space="preserve">
     <value>Accreditation &amp; certification advisory</value>
@@ -138,46 +138,7 @@
     <value>300+ successful audits delivered</value>
   </data>
   <data name="TrustedClientsMetricAccreditations" xml:space="preserve">
-    <value>Accreditations from CIA and leading bodies</value>
-  </data>
-  <data name="TrustedClientsLogosLabel" xml:space="preserve">
-    <value>Logotypes of key clients</value>
-  </data>
-  <data name="TrustedClientsLogoSkoda" xml:space="preserve">
-    <value>Škoda Auto</value>
-  </data>
-  <data name="TrustedClientsLogoCez" xml:space="preserve">
-    <value>ČEZ</value>
-  </data>
-  <data name="TrustedClientsLogoContinental" xml:space="preserve">
-    <value>Continental Automotive</value>
-  </data>
-  <data name="TrustedClientsLogoPilsner" xml:space="preserve">
-    <value>Pilsner Urquell</value>
-  </data>
-  <data name="TrustedClientsLogoHoneywell" xml:space="preserve">
-    <value>Honeywell</value>
-  </data>
-  <data name="TrustedClientsReferenceNote" xml:space="preserve">
-    <value>References available upon request as part of the procurement process.</value>
-  </data>
-  <data name="TrustedClientsHeading" xml:space="preserve">
-    <value>Trusted across industries</value>
-  </data>
-  <data name="TrustedClientsSubtitle" xml:space="preserve">
-    <value>Our experts empower manufacturing, technology and public organizations to achieve measurable improvements.</value>
-  </data>
-  <data name="TrustedClientsMetricParticipants" xml:space="preserve">
-    <value>1,200+ trained participants</value>
-  </data>
-  <data name="TrustedClientsMetricRating" xml:space="preserve">
-    <value>4.9/5 average course rating</value>
-  </data>
-  <data name="TrustedClientsMetricAudits" xml:space="preserve">
-    <value>300+ successful audits delivered</value>
-  </data>
-  <data name="TrustedClientsMetricAccreditations" xml:space="preserve">
-    <value>Accreditations from CIA and leading bodies</value>
+    <value>Experience with CIA and other authority requirements</value>
   </data>
   <data name="TrustedClientsLogosLabel" xml:space="preserve">
     <value>Logotypes of key clients</value>
@@ -231,10 +192,10 @@
     <value>Build a training plan for your team, schedule the internal audit and assign responsibilities.</value>
   </data>
   <data name="StepPayTitle" xml:space="preserve">
-    <value>Achieve certification with confidence</value>
+    <value>Prepare for certification with confidence</value>
   </data>
   <data name="StepPayDescription" xml:space="preserve">
-    <value>Prepare the documentation, coordinate the certification audit and guide everyone through the process stress-free.</value>
+    <value>Prepare the documentation, align with your chosen certification body and guide everyone through the process with our support.</value>
   </data>
   <data name="CalendarButton" xml:space="preserve">
     <value>Course calendar</value>
@@ -273,10 +234,10 @@
     <value>We deliver comprehensive consulting and training for the following standards.</value>
   </data>
   <data name="IsoStandardsHeading" xml:space="preserve">
-    <value>Certification standards we support end-to-end</value>
+    <value>Certification standards we help you prepare for</value>
   </data>
   <data name="IsoStandardsDescription" xml:space="preserve">
-    <value>Select a standard and we will plan every step to certification – from discovery to training and the external audit.</value>
+    <value>Select a standard and we will plan every step toward a successful certification audit—from discovery and training to collaboration with the certification authority.</value>
   </data>
   <data name="Iso9001Description" xml:space="preserve">
     <value>Stabilise processes, raise quality, and demonstrate compliance in every certification audit.</value>
@@ -297,10 +258,10 @@
     <value>Safeguard critical data, satisfy customer requirements, and prepare for ISMS audits.</value>
   </data>
   <data name="ProcessHeading" xml:space="preserve">
-    <value>How we guide you to successful certification</value>
+    <value>How we guide you throughout certification preparation</value>
   </data>
   <data name="ProcessDescription" xml:space="preserve">
-    <value>We lead you through every milestone – from the initial gap analysis to implementation and the final certification audit.</value>
+    <value>We lead you through every milestone of preparation – from the initial gap analysis to implementation and coordination of the final certification audit delivered by an independent body.</value>
   </data>
   <data name="ProcessStep1Title" xml:space="preserve">
     <value>Kick-off analysis and roadmap</value>
@@ -318,13 +279,13 @@
     <value>Support during the certification audit</value>
   </data>
   <data name="ProcessStep3Description" xml:space="preserve">
-    <value>We prepare you for the certification visit, accompany the auditor, and assist with corrective actions if needed.</value>
+    <value>We prepare you for the certification visit, support communication with the certification body, and assist with corrective actions if needed.</value>
   </data>
   <data name="CtaHeading" xml:space="preserve">
-    <value>Need help preparing for certification?</value>
+    <value>Need a guide through certification preparation?</value>
   </data>
   <data name="CtaDescription" xml:space="preserve">
-    <value>Contact us to design the right mix of training, consulting, and internal audits tailored to your organization.</value>
+    <value>Contact us to design the right mix of training, consulting, and internal audits tailored to your organization. Certification itself is delivered by the independent body you appoint.</value>
   </data>
   <data name="CtaButton" xml:space="preserve">
     <value>Request services</value>
@@ -342,13 +303,13 @@
     <value>Starting soon</value>
   </data>
   <data name="TrustCertificate" xml:space="preserve">
-    <value>Certificates included with selected courses. Graduates receive official confirmation as auditors / internal auditors.</value>
+    <value>Certificates included with selected courses. Graduates receive official confirmation of completion recognized by relevant authorities.</value>
   </data>
   <data name="TrustGraduates" xml:space="preserve">
     <value>Trusted by {0} graduates</value>
   </data>
   <data name="TrustGuarantee" xml:space="preserve">
-    <value>We guarantee successful certification or refund your tuition</value>
+    <value>We support your team from first contact through the certification audit carried out by an independent body</value>
   </data>
   <data name="TrustRating" xml:space="preserve">
     <value>Rated {0} by course participants</value>
@@ -376,10 +337,10 @@
     <value>Your trusted partner for ISO and HACCP management systems</value>
   </data>
   <data name="AboutDescription" xml:space="preserve">
-    <value>For more than 20 years, we have been helping manufacturing companies, laboratories, and healthcare facilities design, implement, and maintain certified management systems. Our consultants combine the practice of lead auditors with hands-on experience from dozens of industries.</value>
+    <value>For more than 20 years, we have been helping manufacturing companies, laboratories, and healthcare facilities design, implement, and maintain management systems that meet the requirements of the standards. Our consultants combine the practice of lead auditors with hands-on experience from dozens of industries.</value>
   </data>
   <data name="AboutBulletConsulting" xml:space="preserve">
-    <value>End-to-end support from the first gap analysis to a successful certification audit.</value>
+    <value>End-to-end support from the first gap analysis to readiness for the certification audit.</value>
   </data>
   <data name="AboutBulletTraining" xml:space="preserve">
     <value>Accredited training for quality managers, auditors, and technical teams.</value>

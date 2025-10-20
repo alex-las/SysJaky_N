@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using SysJaky_N.Models;
+using System.Collections.Generic;
 
 namespace SysJaky_N.Data;
 
@@ -44,6 +45,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<EmailLog> EmailLogs { get; set; } = default!;
     public DbSet<Tag> Tags { get; set; } = default!;
     public DbSet<CourseTag> CourseTags { get; set; } = default!;
+    public DbSet<CourseCategory> CourseCategories { get; set; } = default!;
+    public DbSet<CourseCategoryTranslation> CourseCategoryTranslations { get; set; } = default!;
     public DbSet<NewsletterSubscriber> NewsletterSubscribers { get; set; } = default!;
 
 
@@ -223,6 +226,67 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .WithMany(t => t.CourseTags)
             .HasForeignKey(ct => ct.TagId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<CourseCategory>()
+            .HasIndex(c => c.Slug)
+            .IsUnique();
+
+        builder.Entity<CourseCategory>()
+            .Property(c => c.SortOrder)
+            .HasDefaultValue(0);
+
+        builder.Entity<CourseCategory>()
+            .Property(c => c.IsActive)
+            .HasDefaultValue(true);
+
+        builder.Entity<CourseCategory>()
+            .HasMany(c => c.Translations)
+            .WithOne(t => t.Category)
+            .HasForeignKey(t => t.CategoryId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<CourseCategoryTranslation>()
+            .HasKey(t => new { t.CategoryId, t.Locale });
+
+        builder.Entity<CourseCategoryTranslation>()
+            .Property(t => t.Locale)
+            .HasMaxLength(10);
+
+        builder.Entity<CourseCategoryTranslation>()
+            .Property(t => t.Name)
+            .HasMaxLength(100);
+
+        builder.Entity<CourseCategoryTranslation>()
+            .Property(t => t.Slug)
+            .HasMaxLength(100);
+
+        builder.Entity<CourseCategoryTranslation>()
+            .Property(t => t.Description)
+            .HasMaxLength(500)
+            .IsRequired(false);
+
+        builder.Entity<CourseCategoryTranslation>()
+            .HasIndex(t => new { t.Locale, t.Slug })
+            .IsUnique();
+
+        builder.Entity<Course>()
+            .HasMany(c => c.Categories)
+            .WithMany(c => c.Courses)
+            .UsingEntity<Dictionary<string, object>>(
+                "CourseCourseCategory",
+                j => j.HasOne<CourseCategory>()
+                    .WithMany()
+                    .HasForeignKey("CourseCategoryId")
+                    .OnDelete(DeleteBehavior.Cascade),
+                j => j.HasOne<Course>()
+                    .WithMany()
+                    .HasForeignKey("CourseId")
+                    .OnDelete(DeleteBehavior.Cascade),
+                j =>
+                {
+                    j.HasKey("CourseId", "CourseCategoryId");
+                    j.ToTable("CourseCourseCategories");
+                });
 
         builder.Entity<ChatbotSettings>()
             .Property(s => s.IsEnabled)
