@@ -388,7 +388,10 @@
     <value>Vyberte oblasti, které vás zajímají</value>
   </data>
   <data name="NewsletterCategoriesHint" xml:space="preserve">
-    <value>Můžete vybrat jednu nebo více kategorií. Pokud nic nezvolíte, přihlásíme vás ke všem.</value>
+    <value>Všechny kategorie jsou vybrané automaticky. Odškrtněte ty, které nechcete sledovat.</value>
+  </data>
+  <data name="NewsletterCategoriesSelectAll" xml:space="preserve">
+    <value>Vybrat všechny kategorie</value>
   </data>
   <data name="NewsletterCategoriesEmpty" xml:space="preserve">
     <value>Momentálně nejsou k dispozici žádné kategorie.</value>

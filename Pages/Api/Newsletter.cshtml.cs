@@ -24,12 +24,18 @@ public class NewsletterModel : PageModel
     private readonly ApplicationDbContext _context;
     private readonly IEmailSender _emailSender;
     private readonly IStringLocalizer<NewsletterModel> _localizer;
+    private readonly INewsletterCategoryProvider _categoryProvider;
 
-    public NewsletterModel(ApplicationDbContext context, IEmailSender emailSender, IStringLocalizer<NewsletterModel> localizer)
+    public NewsletterModel(
+        ApplicationDbContext context,
+        IEmailSender emailSender,
+        IStringLocalizer<NewsletterModel> localizer,
+        INewsletterCategoryProvider categoryProvider)
     {
         _context = context;
         _emailSender = emailSender;
         _localizer = localizer;
+        _categoryProvider = categoryProvider;
     }
 
     [BindProperty]
@@ -45,7 +51,8 @@ public class NewsletterModel : PageModel
 
     public async Task<IActionResult> OnGetAsync(CancellationToken cancellationToken)
     {
-        var categories = await LoadCategoryOptionsAsync(cancellationToken);
+        var categories = await _categoryProvider
+            .GetLocalizedCategoriesAsync(CultureInfo.CurrentUICulture, cancellationToken);
 
         return new JsonResult(new
         {
@@ -67,7 +74,8 @@ public class NewsletterModel : PageModel
             ModelState.AddModelError(nameof(Input.Consent), _localizer["Validation.Consent.Required"]);
         }
 
-        var availableCategories = await LoadCategoryOptionsAsync(cancellationToken);
+        var availableCategories = await _categoryProvider
+            .GetLocalizedCategoriesAsync(CultureInfo.CurrentUICulture, cancellationToken);
         var selectedCategoryIds = ResolveSelectedCategoryIds(Input.CategoryIds, availableCategories);
 
         if (!ModelState.IsValid)
@@ -172,7 +180,8 @@ public class NewsletterModel : PageModel
 
         subscriber.ConfirmedAtUtc = DateTime.UtcNow;
 
-        var availableCategories = await LoadCategoryOptionsAsync(cancellationToken);
+        var availableCategories = await _categoryProvider
+            .GetLocalizedCategoriesAsync(CultureInfo.CurrentUICulture, cancellationToken);
         if ((subscriber.PreferredCategories == null || subscriber.PreferredCategories.Count == 0) && availableCategories.Count > 0)
         {
             SynchronizePreferredCategories(subscriber, availableCategories.Select(category => category.Id).ToList());
@@ -197,89 +206,6 @@ public class NewsletterModel : PageModel
 
         [Display(Name = "Pages.Api.Newsletter.Input.Categories.DisplayName")]
         public List<int> CategoryIds { get; set; } = new();
-    }
-
-    private async Task<IReadOnlyList<NewsletterCategoryOption>> LoadCategoryOptionsAsync(CancellationToken cancellationToken)
-    {
-        var culture = CultureInfo.CurrentUICulture;
-        var localeCandidates = new[]
-        {
-            culture.Name,
-            culture.Parent?.Name,
-            culture.TwoLetterISOLanguageName
-        }
-        .Where(locale => !string.IsNullOrWhiteSpace(locale))
-        .Select(locale => locale!.Trim())
-        .Distinct(StringComparer.OrdinalIgnoreCase)
-        .ToArray();
-
-        var categories = await _context.CourseCategories
-            .AsNoTracking()
-            .Where(category => category.IsActive)
-            .OrderBy(category => category.SortOrder)
-            .ThenBy(category => category.Name)
-            .Select(category => new
-            {
-                category.Id,
-                category.Name,
-                category.Slug,
-                Translations = category.Translations
-                    .Select(translation => new
-                    {
-                        translation.Locale,
-                        translation.Name,
-                        translation.Slug
-                    })
-                    .ToList()
-            })
-            .ToListAsync(cancellationToken);
-
-        return categories
-            .Select(category =>
-            {
-                var displayName = category.Name?.Trim() ?? string.Empty;
-                var displaySlug = string.IsNullOrWhiteSpace(category.Slug)
-                    ? string.Empty
-                    : category.Slug.Trim();
-
-                foreach (var locale in localeCandidates)
-                {
-                    if (string.IsNullOrWhiteSpace(locale))
-                    {
-                        continue;
-                    }
-
-                    var translation = category.Translations
-                        .FirstOrDefault(t => string.Equals(t.Locale, locale, StringComparison.OrdinalIgnoreCase));
-
-                    if (translation == null)
-                    {
-                        continue;
-                    }
-
-                    if (!string.IsNullOrWhiteSpace(translation.Name))
-                    {
-                        displayName = translation.Name.Trim();
-                    }
-
-                    if (!string.IsNullOrWhiteSpace(translation.Slug))
-                    {
-                        displaySlug = translation.Slug.Trim();
-                    }
-
-                    break;
-                }
-
-                if (string.IsNullOrWhiteSpace(displayName))
-                {
-                    return null;
-                }
-
-                return new NewsletterCategoryOption(category.Id, displayName, displaySlug);
-            })
-            .Where(option => option != null)
-            .Select(option => option!)
-            .ToList();
     }
 
     private List<int> ResolveSelectedCategoryIds(
@@ -367,5 +293,4 @@ public class NewsletterModel : PageModel
         }
     }
 
-    public record NewsletterCategoryOption(int Id, string Name, string Slug);
 }

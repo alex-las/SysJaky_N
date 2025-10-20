@@ -422,122 +422,101 @@ document.addEventListener('DOMContentLoaded', () => {
         const loadingText = newsletterForm.dataset.loadingText ?? '';
         const defaultButtonText = submitButton ? submitButton.textContent : '';
         const categoriesContainer = newsletterForm.querySelector('[data-newsletter-categories]');
+        const categoriesErrorEl = newsletterForm.querySelector('[data-newsletter-category-error]');
+        const categoriesRequiredText = categoriesContainer?.dataset.requiredText ?? '';
+        const categoryInputs = categoriesContainer
+            ? Array.from(categoriesContainer.querySelectorAll('[data-newsletter-category-input]'))
+            : [];
+        const selectAllCheckbox = categoriesContainer?.querySelector('[data-newsletter-category-select-all]') ?? null;
+        let categoryValidationActive = false;
+        let categoryErrorSticky = false;
+
+        const renderCategoryError = (message, options = {}) => {
+            categoryErrorSticky = Boolean(options.sticky);
+
+            if (!categoriesErrorEl) {
+                return;
+            }
+
+            if (message) {
+                categoriesErrorEl.textContent = message;
+                categoriesErrorEl.classList.remove('d-none');
+            } else {
+                categoriesErrorEl.textContent = '';
+                categoriesErrorEl.classList.add('d-none');
+            }
+        };
+
+        const updateCategoryState = () => {
+            if (!categoriesContainer) {
+                return;
+            }
+
+            const totalInputs = categoryInputs.length;
+
+            if (selectAllCheckbox) {
+                selectAllCheckbox.disabled = totalInputs === 0;
+            }
+
+            if (totalInputs === 0) {
+                if (categoryValidationActive && categoriesRequiredText) {
+                    renderCategoryError(categoriesRequiredText);
+                }
+                return;
+            }
+
+            const checkedCount = categoryInputs.reduce((count, input) => count + (input.checked ? 1 : 0), 0);
+
+            if (selectAllCheckbox) {
+                if (checkedCount === totalInputs) {
+                    selectAllCheckbox.checked = true;
+                    selectAllCheckbox.indeterminate = false;
+                } else if (checkedCount === 0) {
+                    selectAllCheckbox.checked = false;
+                    selectAllCheckbox.indeterminate = false;
+                } else {
+                    selectAllCheckbox.checked = false;
+                    selectAllCheckbox.indeterminate = true;
+                }
+            }
+
+            const firstInput = categoryInputs[0];
+            if (firstInput) {
+                firstInput.required = checkedCount === 0;
+                if (typeof firstInput.setCustomValidity === 'function') {
+                    firstInput.setCustomValidity(checkedCount === 0 && categoriesRequiredText ? categoriesRequiredText : '');
+                }
+            }
+
+            if (categoryValidationActive && !categoryErrorSticky) {
+                if (checkedCount === 0 && categoriesRequiredText) {
+                    renderCategoryError(categoriesRequiredText);
+                } else {
+                    renderCategoryError('');
+                }
+            }
+        };
 
         if (categoriesContainer) {
-            const categoriesEmptyText = categoriesContainer.dataset.emptyText ?? '';
-            const categoriesErrorText = categoriesContainer.dataset.errorText ?? '';
-            const categoriesLoadingText = categoriesContainer.dataset.loadingText ?? '';
-
-            const setCategoriesMessage = (text, type) => {
-                categoriesContainer.innerHTML = '';
-
-                if (!text) {
-                    return;
-                }
-
-                const message = document.createElement('p');
-                message.className = 'small mb-0';
-
-                if (type === 'error') {
-                    message.classList.add('text-danger');
-                } else {
-                    message.classList.add('text-muted');
-                }
-
-                message.textContent = text;
-                categoriesContainer.appendChild(message);
-            };
-
-            const renderCategories = (categories) => {
-                categoriesContainer.innerHTML = '';
-
-                const fragment = document.createDocumentFragment();
-                let appended = 0;
-
-                categories.forEach((category, index) => {
-                    if (!category || typeof category.id !== 'number') {
-                        return;
-                    }
-
-                    const name = typeof category.name === 'string' && category.name.trim()
-                        ? category.name.trim()
-                        : '';
-
-                    if (!name) {
-                        return;
-                    }
-
-                    const wrapper = document.createElement('div');
-                    wrapper.classList.add('form-check');
-
-                    const input = document.createElement('input');
-                    input.type = 'checkbox';
-                    input.classList.add('form-check-input');
-                    input.name = 'Input.CategoryIds';
-                    input.value = String(category.id);
-                    input.id = `newsletter-category-${category.id}-${index}`;
-                    input.checked = true;
-                    input.defaultChecked = true;
-
-                    const label = document.createElement('label');
-                    label.classList.add('form-check-label');
-                    label.setAttribute('for', input.id);
-                    label.textContent = name;
-
-                    wrapper.appendChild(input);
-                    wrapper.appendChild(label);
-                    fragment.appendChild(wrapper);
-                    appended += 1;
+            categoryInputs.forEach((input) => {
+                input.addEventListener('change', () => {
+                    categoryErrorSticky = false;
+                    updateCategoryState();
                 });
-
-                if (!appended) {
-                    setCategoriesMessage(categoriesEmptyText, 'info');
-                    return;
-                }
-
-                categoriesContainer.appendChild(fragment);
-            };
-
-            const loadNewsletterCategories = async () => {
-                if (categoriesLoadingText) {
-                    setCategoriesMessage(categoriesLoadingText, 'info');
-                } else {
-                    categoriesContainer.innerHTML = '';
-                }
-
-                try {
-                    const response = await fetch(newsletterForm.dataset.categoriesEndpoint || newsletterForm.action || '/Api/Newsletter', {
-                        method: 'GET',
-                        headers: { Accept: 'application/json' }
-                    });
-
-                    if (!response.ok) {
-                        throw new Error(`Failed to load categories: ${response.status}`);
-                    }
-
-                    const data = await response.json().catch(() => null);
-                    const categories = Array.isArray(data?.categories) ? data.categories : [];
-
-                    if (!categories.length) {
-                        setCategoriesMessage(categoriesEmptyText, 'info');
-                        return;
-                    }
-
-                    renderCategories(categories);
-                } catch (error) {
-                    console.warn('Unable to load newsletter categories', error);
-                    if (categoriesErrorText) {
-                        setCategoriesMessage(categoriesErrorText, 'error');
-                    }
-                }
-            };
-
-            loadNewsletterCategories().catch((error) => {
-                console.warn('Unhandled error while loading newsletter categories', error);
-                if (categoriesErrorText) {
-                    setCategoriesMessage(categoriesErrorText, 'error');
-                }
             });
+
+            if (selectAllCheckbox) {
+                selectAllCheckbox.addEventListener('change', () => {
+                    const targetState = Boolean(selectAllCheckbox.checked);
+                    categoryInputs.forEach((input) => {
+                        input.checked = targetState;
+                    });
+                    categoryErrorSticky = false;
+                    updateCategoryState();
+                });
+            }
+
+            updateCategoryState();
         }
 
         const resetStatus = () => {
@@ -588,11 +567,52 @@ document.addEventListener('DOMContentLoaded', () => {
             return '';
         };
 
+        const extractCategoryError = (errors) => {
+            if (!errors || typeof errors !== 'object') {
+                return '';
+            }
+
+            const candidateKeys = [
+                'Input.CategoryIds',
+                'Input.SelectedCategories',
+                'CategoryIds',
+                'SelectedCategories'
+            ];
+
+            for (const key of candidateKeys) {
+                if (!Object.prototype.hasOwnProperty.call(errors, key)) {
+                    continue;
+                }
+
+                const value = errors[key];
+                if (!value) {
+                    continue;
+                }
+
+                if (Array.isArray(value) && value.length) {
+                    return value[0];
+                }
+
+                if (typeof value === 'string' && value) {
+                    return value;
+                }
+            }
+
+            return '';
+        };
+
         newsletterForm.addEventListener('submit', async (event) => {
             event.preventDefault();
 
+            categoryValidationActive = true;
+            categoryErrorSticky = false;
+            updateCategoryState();
+
             if (!newsletterForm.checkValidity()) {
                 newsletterForm.reportValidity?.();
+                if (categoryInputs.length && !categoryInputs.some((input) => input.checked) && categoriesRequiredText) {
+                    renderCategoryError(categoriesRequiredText);
+                }
                 return;
             }
 
@@ -635,7 +655,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (response.ok && data && data.success) {
                     applyStatus(data.message || successMessage, 'success');
                     newsletterForm.reset();
+                    categoryValidationActive = false;
+                    categoryErrorSticky = false;
+                    renderCategoryError('');
+                    updateCategoryState();
                 } else {
+                    const categoryError = extractCategoryError(data?.errors);
+                    if (categoryError) {
+                        categoryValidationActive = true;
+                        renderCategoryError(categoryError, { sticky: true });
+                        if (categoryInputs.length) {
+                            categoryInputs[0].focus({ preventScroll: true });
+                        }
+                    }
+
                     const message = (data && (data.message || extractFirstError(data.errors))) || errorMessage;
                     applyStatus(message, 'error');
                 }

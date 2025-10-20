@@ -177,6 +177,7 @@ try
     });
 
     builder.Services.AddHttpContextAccessor();
+    builder.Services.AddScoped<INewsletterCategoryProvider, NewsletterCategoryProvider>();
     builder.Services.AddSingleton<IIsoSpecializationMetadataProvider, IsoSpecializationMetadataProvider>();
     builder.Services.AddResponseCompression(options =>
     {
