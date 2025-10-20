@@ -49,6 +49,8 @@ namespace SysJaky_N.Pages
                 .AsNoTracking()
                 .Include(c => c.CourseTags)
                     .ThenInclude(ct => ct.Tag)
+                .Include(c => c.Categories)
+                    .ThenInclude(category => category.Translations)
                 .Where(c => c.IsActive);
 
             if (!string.IsNullOrWhiteSpace(persona))

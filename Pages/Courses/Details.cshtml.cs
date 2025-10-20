@@ -187,6 +187,8 @@ public class DetailsModel : PageModel
                 .Include(c => c.CourseGroup)
                 .Include(c => c.CourseTags)
                     .ThenInclude(ct => ct.Tag)
+                .Include(c => c.Categories)
+                    .ThenInclude(category => category.Translations)
                 .FirstOrDefaultAsync(c => c.Id == courseId);
 
             if (course == null)
