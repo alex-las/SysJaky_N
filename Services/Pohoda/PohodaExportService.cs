@@ -299,26 +299,12 @@ public sealed class PohodaExportService : IPohodaExportService
             directory = "temp";
         }
 
-        if (directory.StartsWith("/", StringComparison.Ordinal) || directory.StartsWith("\\", StringComparison.Ordinal))
-        {
-            var trimmed = directory.TrimStart('/', '\\');
-            var hasAdditionalSeparator = trimmed.Contains('/', StringComparison.Ordinal)
-                || trimmed.Contains('\\', StringComparison.Ordinal);
-
-            if (!hasAdditionalSeparator)
-            {
-                return Path.Combine(_contentRootPath, trimmed);
-            }
-
-            return directory;
-        }
-
         if (Path.IsPathRooted(directory))
         {
-            return directory;
+            return Path.GetFullPath(directory);
         }
 
-        return Path.Combine(_contentRootPath, directory);
+        return Path.GetFullPath(Path.Combine(_contentRootPath, directory));
     }
 
     private static Encoding CreateEncoding(string encodingName)

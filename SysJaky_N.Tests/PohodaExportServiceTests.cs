@@ -199,7 +199,7 @@ public class PohodaExportServiceTests
         var options = new PohodaXmlOptions
         {
             Enabled = false,
-            ExportDirectory = "/temp",
+            ExportDirectory = "temp",
             Application = "SysJaky_N"
         };
 
@@ -239,6 +239,44 @@ public class PohodaExportServiceTests
                 Directory.Delete(contentRoot, recursive: true);
             }
         }
+    }
+
+    [Fact]
+    public void ResolveExportDirectory_WhenRootedPathStartsWithSeparator_UsesAbsolutePath()
+    {
+        var handler = new TestHttpMessageHandler();
+        var httpClient = new HttpClient(handler);
+
+        var options = new PohodaXmlOptions
+        {
+            Enabled = false,
+            ExportDirectory = "/pohoda-test-root",
+            Application = "SysJaky_N"
+        };
+
+        var context = CreateDbContext();
+        var builder = CreateBuilder();
+        var client = new PohodaXmlClient(httpClient, Options.Create(options), builder, NullLogger<PohodaXmlClient>.Instance);
+        var environment = CreateHostEnvironment();
+        var service = new PohodaExportService(
+            client,
+            builder,
+            context,
+            TimeProvider.System,
+            Options.Create(options),
+            new NoopAuditService(),
+            environment,
+            NullLogger<PohodaExportService>.Instance);
+
+        var method = typeof(PohodaExportService).GetMethod(
+            "ResolveExportDirectory",
+            System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+
+        Assert.NotNull(method);
+
+        var resolved = (string)method!.Invoke(service, null)!;
+
+        Assert.Equal(Path.GetFullPath(options.ExportDirectory), resolved);
     }
 
     private static ApplicationDbContext CreateDbContext()
