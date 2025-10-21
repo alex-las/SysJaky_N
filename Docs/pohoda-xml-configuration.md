@@ -30,7 +30,7 @@ background export worker:
 - `MaxRetryAttempts` – Maximum number of retries per job.
 - `RetryBaseDelay` / `RetryMaxDelay` – Exponential backoff configuration for retries.
 - `ExportDirectory` – Target directory for locally generated exports when the integration is disabled
-  (defaults to `/temp`).
+  (defaults to `/temp`, which resolves to `temp/` under the application root).
 
 ## Local development
 
@@ -50,7 +50,9 @@ when the values are omitted or invalid.
 
 When `PohodaXml:Enabled` is set to `false` no HTTP calls are made to the Pohoda mServer. Instead,
 the background worker saves the XML data packs for each processed order to the directory specified
-by `PohodaXml:ExportDirectory` (default `/temp`). This allows testing the export pipeline without
+by `PohodaXml:ExportDirectory`. Relative paths (including values that start with `/` or `\`) are
+resolved against the application content root, so the default value `/temp` produces files in
+`<app-root>/temp`. This allows testing the export pipeline without
 valid credentials. The files use the Windows-1250 encoding and are named using the pattern
 `pohoda-order-<orderId>-<timestamp>.xml`.
 

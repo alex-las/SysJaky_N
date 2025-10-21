@@ -4,6 +4,7 @@ using System.IO;
 using System.Text;
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using SysJaky_N.Data;
@@ -21,6 +22,7 @@ public sealed class PohodaExportService : IPohodaExportService
     private readonly TimeProvider _timeProvider;
     private readonly PohodaXmlOptions _options;
     private readonly IAuditService _auditService;
+    private readonly string _contentRootPath;
 
     private static readonly JsonSerializerOptions AuditSerializerOptions = new(JsonSerializerDefaults.Web);
 
@@ -30,6 +32,7 @@ public sealed class PohodaExportService : IPohodaExportService
         TimeProvider timeProvider,
         IOptions<PohodaXmlOptions> options,
         IAuditService auditService,
+        IHostEnvironment hostEnvironment,
         ILogger<PohodaExportService> logger)
     {
         _xmlClient = xmlClient ?? throw new ArgumentNullException(nameof(xmlClient));
@@ -37,6 +40,10 @@ public sealed class PohodaExportService : IPohodaExportService
         _timeProvider = timeProvider ?? throw new ArgumentNullException(nameof(timeProvider));
         _options = (options ?? throw new ArgumentNullException(nameof(options))).Value;
         _auditService = auditService ?? throw new ArgumentNullException(nameof(auditService));
+        var environment = hostEnvironment ?? throw new ArgumentNullException(nameof(hostEnvironment));
+        _contentRootPath = string.IsNullOrWhiteSpace(environment.ContentRootPath)
+            ? AppContext.BaseDirectory
+            : environment.ContentRootPath;
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
@@ -140,8 +147,7 @@ public sealed class PohodaExportService : IPohodaExportService
 
         await _dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
-        var invoice = OrderToInvoiceMapper.Map(order);
-        var payload = PohodaOrderPayload.CreateInvoiceDataPack(invoice, _options.Application);
+        var payload = PohodaOrderPayload.CreateInvoiceDataPack(order, _options.Application);
 
         if (!_options.Enabled)
         {
@@ -252,9 +258,7 @@ public sealed class PohodaExportService : IPohodaExportService
 
     private async Task<string> SaveExportToFileAsync(Order order, string payload, CancellationToken cancellationToken)
     {
-        var directory = string.IsNullOrWhiteSpace(_options.ExportDirectory)
-            ? "/temp"
-            : _options.ExportDirectory;
+        var directory = ResolveExportDirectory();
 
         string targetDirectory;
         try
@@ -277,6 +281,31 @@ public sealed class PohodaExportService : IPohodaExportService
         await File.WriteAllBytesAsync(filePath, data, cancellationToken).ConfigureAwait(false);
 
         return filePath;
+    }
+
+    private string ResolveExportDirectory()
+    {
+        var directory = string.IsNullOrWhiteSpace(_options.ExportDirectory)
+            ? "temp"
+            : _options.ExportDirectory.Trim();
+
+        if (string.IsNullOrEmpty(directory))
+        {
+            directory = "temp";
+        }
+
+        if (directory.StartsWith('/', StringComparison.Ordinal) || directory.StartsWith('\\', StringComparison.Ordinal))
+        {
+            directory = directory.TrimStart('/', '\\');
+            return Path.Combine(_contentRootPath, directory);
+        }
+
+        if (Path.IsPathRooted(directory))
+        {
+            return directory;
+        }
+
+        return Path.Combine(_contentRootPath, directory);
     }
 
     private static Encoding CreateEncoding(string encodingName)
