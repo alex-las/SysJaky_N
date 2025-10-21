@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
@@ -52,8 +53,9 @@ public class PohodaExportServiceTests
         context.PohodaExportJobs.Add(job);
         await context.SaveChangesAsync();
 
-        var client = new PohodaXmlClient(httpClient, Options.Create(options), NullLogger<PohodaXmlClient>.Instance);
-        var service = new PohodaExportService(client, context, TimeProvider.System, Options.Create(options), new NoopAuditService(), CreateHostEnvironment(), NullLogger<PohodaExportService>.Instance);
+        var builder = CreateBuilder();
+        var client = new PohodaXmlClient(httpClient, Options.Create(options), builder, NullLogger<PohodaXmlClient>.Instance);
+        var service = new PohodaExportService(client, builder, context, TimeProvider.System, Options.Create(options), new NoopAuditService(), CreateHostEnvironment(), NullLogger<PohodaExportService>.Instance);
 
         await service.ExportOrderAsync(job);
 
@@ -77,7 +79,7 @@ public class PohodaExportServiceTests
             TimeoutSeconds = 30
         };
 
-        var client = new PohodaXmlClient(httpClient, Options.Create(options), NullLogger<PohodaXmlClient>.Instance);
+        var client = new PohodaXmlClient(httpClient, Options.Create(options), CreateBuilder(), NullLogger<PohodaXmlClient>.Instance);
 
         await client.CheckStatusAsync();
 
@@ -112,8 +114,9 @@ public class PohodaExportServiceTests
         context.PohodaExportJobs.Add(new PohodaExportJob { OrderId = order.Id, Order = order });
         await context.SaveChangesAsync();
 
-        var client = new PohodaXmlClient(httpClient, Options.Create(options), NullLogger<PohodaXmlClient>.Instance);
-        var service = new PohodaExportService(client, context, TimeProvider.System, Options.Create(options), new NoopAuditService(), CreateHostEnvironment(), NullLogger<PohodaExportService>.Instance);
+        var builder = CreateBuilder();
+        var client = new PohodaXmlClient(httpClient, Options.Create(options), builder, NullLogger<PohodaXmlClient>.Instance);
+        var service = new PohodaExportService(client, builder, context, TimeProvider.System, Options.Create(options), new NoopAuditService(), CreateHostEnvironment(), NullLogger<PohodaExportService>.Instance);
 
         var services = new Microsoft.Extensions.DependencyInjection.ServiceCollection();
         services.AddSingleton(context);
@@ -155,8 +158,9 @@ public class PohodaExportServiceTests
         context.PohodaExportJobs.Add(job);
         await context.SaveChangesAsync();
 
-        var client = new PohodaXmlClient(httpClient, Options.Create(options), NullLogger<PohodaXmlClient>.Instance);
-        var service = new PohodaExportService(client, context, TimeProvider.System, Options.Create(options), new NoopAuditService(), CreateHostEnvironment(), NullLogger<PohodaExportService>.Instance);
+        var builder = CreateBuilder();
+        var client = new PohodaXmlClient(httpClient, Options.Create(options), builder, NullLogger<PohodaXmlClient>.Instance);
+        var service = new PohodaExportService(client, builder, context, TimeProvider.System, Options.Create(options), new NoopAuditService(), CreateHostEnvironment(), NullLogger<PohodaExportService>.Instance);
 
         try
         {
@@ -172,7 +176,7 @@ public class PohodaExportServiceTests
             var encoding = Encoding.GetEncoding(options.EncodingName);
             var content = await File.ReadAllTextAsync(filePath, encoding);
 
-            Assert.Contains($"Order-{order.Id}", content);
+            Assert.Contains($"Invoice-{order.Id}", content);
         }
         finally
         {
@@ -195,7 +199,7 @@ public class PohodaExportServiceTests
         var options = new PohodaXmlOptions
         {
             Enabled = false,
-            ExportDirectory = "/temp",
+            ExportDirectory = "temp",
             Application = "SysJaky_N"
         };
 
@@ -206,9 +210,10 @@ public class PohodaExportServiceTests
         context.PohodaExportJobs.Add(job);
         await context.SaveChangesAsync();
 
-        var client = new PohodaXmlClient(httpClient, Options.Create(options), NullLogger<PohodaXmlClient>.Instance);
+        var builder = CreateBuilder();
+        var client = new PohodaXmlClient(httpClient, Options.Create(options), builder, NullLogger<PohodaXmlClient>.Instance);
         var environment = CreateHostEnvironment(contentRoot);
-        var service = new PohodaExportService(client, context, TimeProvider.System, Options.Create(options), new NoopAuditService(), environment, NullLogger<PohodaExportService>.Instance);
+        var service = new PohodaExportService(client, builder, context, TimeProvider.System, Options.Create(options), new NoopAuditService(), environment, NullLogger<PohodaExportService>.Instance);
 
         try
         {
@@ -225,7 +230,7 @@ public class PohodaExportServiceTests
             var encoding = Encoding.GetEncoding(options.EncodingName);
             var content = await File.ReadAllTextAsync(filePath, encoding);
 
-            Assert.Contains($"Order-{order.Id}", content);
+            Assert.Contains($"Invoice-{order.Id}", content);
         }
         finally
         {
@@ -236,6 +241,44 @@ public class PohodaExportServiceTests
         }
     }
 
+    [Fact]
+    public void ResolveExportDirectory_WhenRootedPathStartsWithSeparator_UsesAbsolutePath()
+    {
+        var handler = new TestHttpMessageHandler();
+        var httpClient = new HttpClient(handler);
+
+        var options = new PohodaXmlOptions
+        {
+            Enabled = false,
+            ExportDirectory = "/pohoda-test-root",
+            Application = "SysJaky_N"
+        };
+
+        var context = CreateDbContext();
+        var builder = CreateBuilder();
+        var client = new PohodaXmlClient(httpClient, Options.Create(options), builder, NullLogger<PohodaXmlClient>.Instance);
+        var environment = CreateHostEnvironment();
+        var service = new PohodaExportService(
+            client,
+            builder,
+            context,
+            TimeProvider.System,
+            Options.Create(options),
+            new NoopAuditService(),
+            environment,
+            NullLogger<PohodaExportService>.Instance);
+
+        var method = typeof(PohodaExportService).GetMethod(
+            "ResolveExportDirectory",
+            System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+
+        Assert.NotNull(method);
+
+        var resolved = (string)method!.Invoke(service, null)!;
+
+        Assert.Equal(Path.GetFullPath(options.ExportDirectory), resolved);
+    }
+
     private static ApplicationDbContext CreateDbContext()
     {
         var options = new DbContextOptionsBuilder<ApplicationDbContext>()
@@ -244,6 +287,9 @@ public class PohodaExportServiceTests
 
         return new ApplicationDbContext(options);
     }
+
+    private static PohodaXmlBuilder CreateBuilder()
+        => new(PohodaXmlSchemaProvider.DefaultSchemas);
 
     private static Order CreateOrder()
     {
@@ -326,5 +372,6 @@ public class PohodaExportServiceTests
         public string EnvironmentName { get; set; } = Environments.Development;
         public string ApplicationName { get; set; } = "SysJaky_N";
         public string ContentRootPath { get; set; } = Directory.GetCurrentDirectory();
+        public IFileProvider ContentRootFileProvider { get; set; } = new NullFileProvider();
     }
 }

@@ -8,7 +8,7 @@ public sealed class PohodaXmlOptions
 
     public bool Enabled { get; set; } = true;
 
-    public string ExportDirectory { get; set; } = "/temp";
+    public string ExportDirectory { get; set; } = "temp";
 
     [Url]
     public string BaseUrl { get; set; } = string.Empty;

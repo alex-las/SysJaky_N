@@ -18,6 +18,7 @@ namespace SysJaky_N.Services.Pohoda;
 public sealed class PohodaExportService : IPohodaExportService
 {
     private readonly PohodaXmlClient _xmlClient;
+    private readonly PohodaXmlBuilder _xmlBuilder;
     private readonly ILogger<PohodaExportService> _logger;
     private readonly ApplicationDbContext _dbContext;
     private readonly TimeProvider _timeProvider;
@@ -29,6 +30,7 @@ public sealed class PohodaExportService : IPohodaExportService
 
     public PohodaExportService(
         PohodaXmlClient xmlClient,
+        PohodaXmlBuilder xmlBuilder,
         ApplicationDbContext dbContext,
         TimeProvider timeProvider,
         IOptions<PohodaXmlOptions> options,
@@ -37,6 +39,7 @@ public sealed class PohodaExportService : IPohodaExportService
         ILogger<PohodaExportService> logger)
     {
         _xmlClient = xmlClient ?? throw new ArgumentNullException(nameof(xmlClient));
+        _xmlBuilder = xmlBuilder ?? throw new ArgumentNullException(nameof(xmlBuilder));
         _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         _timeProvider = timeProvider ?? throw new ArgumentNullException(nameof(timeProvider));
         _options = (options ?? throw new ArgumentNullException(nameof(options))).Value;
@@ -148,35 +151,8 @@ public sealed class PohodaExportService : IPohodaExportService
 
         await _dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
-        string payload;
-        try
-        {
-            var invoice = OrderToInvoiceMapper.Map(order);
-            payload = PohodaOrderPayload.CreateInvoiceDataPack(invoice, _options.Application);
-        }
-        catch (ValidationException ex)
-        {
-            MarkJobAsFailed(job, ex.Message);
-            await _dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
-
-            using (BeginPohodaExportScope(job, order))
-            {
-                _logger.LogWarning(
-                    ex,
-                    "Failed to map order {OrderId} to Pohoda invoice (job {JobId}).",
-                    order.Id,
-                    job.Id);
-            }
-
-            await LogAuditEventAsync(
-                action: "PohodaExportFailed",
-                job: job,
-                order: order,
-                result: "Failed",
-                error: ex.Message).ConfigureAwait(false);
-
-            return;
-        }
+        var invoice = OrderToInvoiceMapper.Map(order);
+        var payload = _xmlBuilder.BuildIssuedInvoiceXml(invoice, _options.Application);
 
         if (!_options.Enabled)
         {
@@ -323,18 +299,12 @@ public sealed class PohodaExportService : IPohodaExportService
             directory = "temp";
         }
 
-        if (directory.StartsWith("/", StringComparison.Ordinal) || directory.StartsWith("\\", StringComparison.Ordinal))
-        {
-            directory = directory.TrimStart('/', '\\');
-            return Path.Combine(_contentRootPath, directory);
-        }
-
         if (Path.IsPathRooted(directory))
         {
-            return directory;
+            return Path.GetFullPath(directory);
         }
 
-        return Path.Combine(_contentRootPath, directory);
+        return Path.GetFullPath(Path.Combine(_contentRootPath, directory));
     }
 
     private static Encoding CreateEncoding(string encodingName)

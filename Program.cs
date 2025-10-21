@@ -36,6 +36,7 @@ using CompressionLevel = System.IO.Compression.CompressionLevel;
 using System.Globalization;
 using SysJaky_N.Services.Pohoda;
 using SysJaky_N.HealthChecks;
+using System.Xml.Schema;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
@@ -212,6 +213,8 @@ try
         .ValidateDataAnnotations()
         .ValidateOnStart();
     builder.Services.AddSingleton(sp => sp.GetRequiredService<IOptions<PohodaXmlOptions>>().Value);
+    builder.Services.AddSingleton<IReadOnlyCollection<XmlSchema>>(_ => PohodaXmlSchemaProvider.DefaultSchemas);
+    builder.Services.AddSingleton<PohodaXmlBuilder>();
     builder.Services.AddHttpClient<PohodaXmlClient>((sp, client) =>
     {
         var options = sp.GetRequiredService<IOptions<PohodaXmlOptions>>().Value;

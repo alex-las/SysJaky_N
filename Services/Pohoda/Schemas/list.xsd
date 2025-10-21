@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://www.stormware.cz/schema/version_2/list.xsd"
+           xmlns:lst="http://www.stormware.cz/schema/version_2/list.xsd"
+           xmlns:ftr="http://www.stormware.cz/schema/version_2/filter.xsd"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified">
+  <xs:import namespace="http://www.stormware.cz/schema/version_2/filter.xsd" />
+
+  <xs:element name="listInvoiceRequest">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="lst:requestInvoice" minOccurs="0" />
+        <xs:element ref="ftr:filter" />
+      </xs:sequence>
+      <xs:attribute name="version" type="xs:string" use="required" />
+      <xs:attribute name="invoiceType" type="xs:string" use="required" />
+      <xs:attribute name="invoiceVersion" type="xs:string" use="required" />
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="requestInvoice">
+    <xs:complexType />
+  </xs:element>
+</xs:schema>
