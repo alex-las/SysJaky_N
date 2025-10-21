@@ -9,13 +9,7 @@ public class PohodaResponseParserTests
     [Fact]
     public void Parse_ReturnsDocumentInfo_ForOkResponse()
     {
-        const string xml =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
-            "<rsp:responsePack xmlns:rsp=\"http://www.stormware.cz/schema/version_2/response.xsd\" state=\"ok\">" +
-            "<rsp:responsePackItem id=\"Invoice\" state=\"ok\" documentNumber=\"INV-42\" documentId=\"12345\">" +
-            "<rsp:invoiceResponse><inv:invoice xmlns:inv=\"http://www.stormware.cz/schema/version_2/invoice.xsd\">" +
-            "<inv:invoiceHeader><inv:number><typ:numberAssigned xmlns:typ=\"http://www.stormware.cz/schema/version_2/type.xsd\">INV-42</typ:numberAssigned></inv:number></inv:invoiceHeader>" +
-            "</inv:invoice></rsp:invoiceResponse></rsp:responsePackItem></rsp:responsePack>";
+        var xml = XmlTestHelper.LoadPohodaSample("response_success.xml");
 
         var parser = new PohodaResponseParser();
 
@@ -53,12 +47,7 @@ public class PohodaResponseParserTests
     [Fact]
     public void Parse_ReturnsErrors_ForValidationFailure()
     {
-        const string xml =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
-            "<rsp:responsePack xmlns:rsp=\"http://www.stormware.cz/schema/version_2/response.xsd\" state=\"error\" stateDetail=\"Validation failed\">" +
-            "<rsp:responsePackItem id=\"Invoice\" state=\"error\">" +
-            "<rsp:message>Chyba: Povinné pole není vyplněno.</rsp:message>" +
-            "</rsp:responsePackItem></rsp:responsePack>";
+        var xml = XmlTestHelper.LoadPohodaSample("response_error.xml");
 
         var parser = new PohodaResponseParser();
 

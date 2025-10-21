@@ -1,6 +1,6 @@
+using System;
 using System.Globalization;
 using System.Linq;
-using System.Xml.Linq;
 using SysJaky_N.Models;
 using SysJaky_N.Services.Pohoda;
 
@@ -10,12 +10,20 @@ public class PohodaXmlBuilderTests
 {
     private static readonly PohodaXmlBuilder Builder = new(PohodaXmlSchemaProvider.DefaultSchemas);
 
-    private static readonly XNamespace Dat = "http://www.stormware.cz/schema/version_2/data.xsd";
-    private static readonly XNamespace Inv = "http://www.stormware.cz/schema/version_2/invoice.xsd";
-    private static readonly XNamespace Typ = "http://www.stormware.cz/schema/version_2/type.xsd";
+    [Fact]
+    public void BuildIssuedInvoiceXml_BuildsMinimalInvoiceMatchingGoldenFile()
+    {
+        var order = CreateMinimalOrder();
+        var mappedInvoice = OrderToInvoiceMapper.Map(order);
+
+        var xml = Builder.BuildIssuedInvoiceXml(mappedInvoice, "SysJaky_N");
+
+        XmlTestHelper.AssertValidAgainstSchemas(xml);
+        XmlTestHelper.AssertEqualIgnoringWhitespace(XmlTestHelper.LoadPohodaSample("invoice_minimal.xml"), xml);
+    }
 
     [Fact]
-    public void BuildIssuedInvoiceXml_BuildsInvoiceWithDetailAndSummary()
+    public void BuildIssuedInvoiceXml_BuildsFullInvoiceMatchingGoldenFile()
     {
         var order = CreateSampleOrder();
         var mappedInvoice = OrderToInvoiceMapper.Map(order);
@@ -24,36 +32,8 @@ public class PohodaXmlBuilderTests
 
         Assert.Contains("encoding=\"windows-1250\"", xml, StringComparison.OrdinalIgnoreCase);
 
-        var document = XDocument.Parse(xml);
-        var root = document.Root;
-        Assert.NotNull(root);
-        Assert.Equal("dataPack", root!.Name.LocalName);
-        Assert.Equal("2.0", root.Attribute("version")?.Value);
-
-        var invoiceElement = root.Element(Dat + "dataPackItem")?.Element(Inv + "invoice");
-        Assert.NotNull(invoiceElement);
-
-        var header = invoiceElement!.Element(Inv + "invoiceHeader");
-        Assert.NotNull(header);
-        Assert.Equal($"Objednávka {order.Id}", header!.Element(Inv + "text")?.Value);
-        Assert.Equal(order.PaymentConfirmation, header.Element(Inv + "symSpec")?.Value);
-        Assert.Equal(order.InvoicePath, header.Element(Inv + "note")?.Value);
-
-        var detail = invoiceElement.Element(Inv + "invoiceDetail");
-        Assert.NotNull(detail);
-        var items = detail!.Elements(Inv + "invoiceItem").ToList();
-        Assert.Equal(order.Items.Count, items.Count);
-
-        var firstItem = items.First();
-        Assert.Equal(order.Items[0].Course!.Title, firstItem.Element(Inv + "text")?.Value);
-        Assert.Equal(order.Items[0].Quantity.ToString(CultureInfo.InvariantCulture), firstItem.Element(Inv + "quantity")?.Value);
-
-        var currency = firstItem.Element(Inv + "homeCurrency");
-        Assert.Equal(order.Items[0].UnitPriceExclVat.ToString("0.##", CultureInfo.InvariantCulture), currency?.Element(Typ + "unitPrice")?.Value);
-
-        var summary = invoiceElement.Element(Inv + "invoiceSummary");
-        Assert.NotNull(summary);
-        Assert.Equal(order.Total.ToString("0.##", CultureInfo.InvariantCulture), summary!.Descendants(Typ + "priceSum").Single().Value);
+        XmlTestHelper.AssertValidAgainstSchemas(xml);
+        XmlTestHelper.AssertEqualIgnoringWhitespace(XmlTestHelper.LoadPohodaSample("invoice_full.xml"), xml);
     }
 
     [Fact]
@@ -65,21 +45,51 @@ public class PohodaXmlBuilderTests
 
         var mappedInvoice = OrderToInvoiceMapper.Map(order);
         var xml = Builder.BuildIssuedInvoiceXml(mappedInvoice, "SysJaky_N");
-        var document = XDocument.Parse(xml);
+
+        XmlTestHelper.AssertValidAgainstSchemas(xml);
+
+        var document = System.Xml.Linq.XDocument.Parse(xml);
         var detail = document.Root!
-            .Element(Dat + "dataPackItem")!
-            .Element(Inv + "invoice")!
-            .Element(Inv + "invoiceDetail");
+            .Element("{http://www.stormware.cz/schema/version_2/data.xsd}dataPackItem")!
+            .Element("{http://www.stormware.cz/schema/version_2/invoice.xsd}invoice")!
+            .Element("{http://www.stormware.cz/schema/version_2/invoice.xsd}invoiceDetail");
 
         var discountElements = detail!
-            .Elements(Inv + "invoiceItem")
-            .Select(item => item.Element(Inv + "discountPercentage")?.Value)
+            .Elements("{http://www.stormware.cz/schema/version_2/invoice.xsd}invoiceItem")
+            .Select(item => item.Element("{http://www.stormware.cz/schema/version_2/invoice.xsd}discountPercentage")?.Value)
             .Where(value => value is not null)
             .Select(value => decimal.Parse(value!, CultureInfo.InvariantCulture))
             .ToList();
 
         Assert.NotEmpty(discountElements);
         Assert.True(discountElements.Sum() > 0m);
+    }
+
+    private static Order CreateMinimalOrder()
+    {
+        var order = new Order
+        {
+            Id = 1,
+            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+            PriceExclVat = 100m,
+            Vat = 21m,
+            Total = 121m,
+            TotalPrice = 121m
+        };
+
+        order.Items.Add(new OrderItem
+        {
+            Id = 1,
+            OrderId = 1,
+            CourseId = 10,
+            Course = new Course { Id = 10, Title = "Minimal Course" },
+            Quantity = 1,
+            UnitPriceExclVat = 100m,
+            Vat = 21m,
+            Total = 121m
+        });
+
+        return order;
     }
 
     private static Order CreateSampleOrder()

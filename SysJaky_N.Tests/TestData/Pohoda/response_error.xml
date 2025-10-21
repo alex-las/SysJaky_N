@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rsp:responsePack xmlns:rsp="http://www.stormware.cz/schema/version_2/response.xsd" state="error" stateDetail="Validation failed">
+  <rsp:responsePackItem id="Invoice" state="error">
+    <rsp:message>Chyba: Povinné pole není vyplněno.</rsp:message>
+  </rsp:responsePackItem>
+</rsp:responsePack>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="windows-1250"?>
+<dat:dataPack xmlns:dat="http://www.stormware.cz/schema/version_2/data.xsd" xmlns:inv="http://www.stormware.cz/schema/version_2/invoice.xsd" xmlns:typ="http://www.stormware.cz/schema/version_2/type.xsd" id="Invoice-42" version="2.0" application="SysJaky_N">
+  <dat:dataPackItem id="Invoice-42" version="2.0">
+    <inv:invoice>
+      <inv:invoiceHeader>
+        <inv:invoiceType>issuedInvoice</inv:invoiceType>
+        <inv:numberOrder>42</inv:numberOrder>
+        <inv:text>Objednávka 42</inv:text>
+        <inv:date>2024-05-15</inv:date>
+        <inv:dateTax>2024-05-15</inv:dateTax>
+        <inv:dateDue>2024-05-29</inv:dateDue>
+        <inv:symVar>42</inv:symVar>
+        <inv:symSpec>CONF123</inv:symSpec>
+        <inv:partnerIdentity>
+          <typ:address>
+            <typ:company>user-1</typ:company>
+          </typ:address>
+        </inv:partnerIdentity>
+        <inv:note>INV-2024-001</inv:note>
+      </inv:invoiceHeader>
+      <inv:invoiceDetail>
+        <inv:invoiceItem>
+          <inv:text>Course A</inv:text>
+          <inv:quantity>1</inv:quantity>
+          <inv:rateVAT>high</inv:rateVAT>
+          <inv:homeCurrency>
+            <typ:unitPrice>150</typ:unitPrice>
+            <typ:price>150</typ:price>
+            <typ:priceVAT>31.5</typ:priceVAT>
+            <typ:priceSum>181.5</typ:priceSum>
+          </inv:homeCurrency>
+        </inv:invoiceItem>
+        <inv:invoiceItem>
+          <inv:text>Course B</inv:text>
+          <inv:quantity>2</inv:quantity>
+          <inv:rateVAT>high</inv:rateVAT>
+          <inv:homeCurrency>
+            <typ:unitPrice>75</typ:unitPrice>
+            <typ:price>150</typ:price>
+            <typ:priceVAT>31.5</typ:priceVAT>
+            <typ:priceSum>181.5</typ:priceSum>
+          </inv:homeCurrency>
+        </inv:invoiceItem>
+      </inv:invoiceDetail>
+      <inv:invoiceSummary>
+        <inv:round>none</inv:round>
+        <inv:homeCurrency>
+          <typ:priceHigh>300</typ:priceHigh>
+          <typ:priceHighVAT>63</typ:priceHighVAT>
+          <typ:priceSum>363</typ:priceSum>
+        </inv:homeCurrency>
+      </inv:invoiceSummary>
+    </inv:invoice>
+  </dat:dataPackItem>
+</dat:dataPack>

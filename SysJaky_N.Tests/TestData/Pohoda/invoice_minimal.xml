@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="windows-1250"?>
+<dat:dataPack xmlns:dat="http://www.stormware.cz/schema/version_2/data.xsd" xmlns:inv="http://www.stormware.cz/schema/version_2/invoice.xsd" xmlns:typ="http://www.stormware.cz/schema/version_2/type.xsd" id="Invoice-1" version="2.0" application="SysJaky_N">
+  <dat:dataPackItem id="Invoice-1" version="2.0">
+    <inv:invoice>
+      <inv:invoiceHeader>
+        <inv:invoiceType>issuedInvoice</inv:invoiceType>
+        <inv:numberOrder>1</inv:numberOrder>
+        <inv:text>Objednávka 1</inv:text>
+        <inv:date>2024-01-01</inv:date>
+        <inv:dateTax>2024-01-01</inv:dateTax>
+        <inv:dateDue>2024-01-15</inv:dateDue>
+        <inv:symVar>1</inv:symVar>
+      </inv:invoiceHeader>
+      <inv:invoiceDetail>
+        <inv:invoiceItem>
+          <inv:text>Minimal Course</inv:text>
+          <inv:quantity>1</inv:quantity>
+          <inv:rateVAT>high</inv:rateVAT>
+          <inv:homeCurrency>
+            <typ:unitPrice>100</typ:unitPrice>
+            <typ:price>100</typ:price>
+            <typ:priceVAT>21</typ:priceVAT>
+            <typ:priceSum>121</typ:priceSum>
+          </inv:homeCurrency>
+        </inv:invoiceItem>
+      </inv:invoiceDetail>
+      <inv:invoiceSummary>
+        <inv:round>none</inv:round>
+        <inv:homeCurrency>
+          <typ:priceHigh>100</typ:priceHigh>
+          <typ:priceHighVAT>21</typ:priceHighVAT>
+          <typ:priceSum>121</typ:priceSum>
+        </inv:homeCurrency>
+      </inv:invoiceSummary>
+    </inv:invoice>
+  </dat:dataPackItem>
+</dat:dataPack>
