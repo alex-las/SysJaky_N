@@ -1,0 +1,123 @@
+@page "{id:int}"
+@model SysJaky_N.Pages.Admin.Newsletters.Templates.EditModel
+
+<h1 class="mb-4">Úprava šablony</h1>
+
+@if (!string.IsNullOrWhiteSpace(Model.StatusMessage))
+{
+    <div class="alert alert-success">@Model.StatusMessage</div>
+}
+
+<form method="post" class="card card-body mb-4">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="Input.Id" />
+    <div class="row g-3">
+        <div class="col-md-6">
+            <label asp-for="Input.Name" class="form-label"></label>
+            <input asp-for="Input.Name" class="form-control" />
+            <span asp-validation-for="Input.Name" class="text-danger"></span>
+        </div>
+        <div class="col-md-6">
+            <label asp-for="Input.PrimaryColor" class="form-label"></label>
+            <input asp-for="Input.PrimaryColor" class="form-control" />
+            <span asp-validation-for="Input.PrimaryColor" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="row g-3 mt-0 mt-md-3">
+        <div class="col-md-6">
+            <label asp-for="Input.SecondaryColor" class="form-label"></label>
+            <input asp-for="Input.SecondaryColor" class="form-control" />
+            <span asp-validation-for="Input.SecondaryColor" class="text-danger"></span>
+        </div>
+        <div class="col-md-6">
+            <label asp-for="Input.BackgroundColor" class="form-label"></label>
+            <input asp-for="Input.BackgroundColor" class="form-control" />
+            <span asp-validation-for="Input.BackgroundColor" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="mt-3">
+        <label asp-for="Input.BaseLayoutHtml" class="form-label"></label>
+        <textarea asp-for="Input.BaseLayoutHtml" class="form-control" rows="12"></textarea>
+        <div class="form-text">Šablona by měla obsahovat zástupný text <code>{{BODY}}</code>, který bude nahrazen obsahem newsletteru.</div>
+        <span asp-validation-for="Input.BaseLayoutHtml" class="text-danger"></span>
+    </div>
+    <div class="mt-3">
+        <button type="submit" class="btn btn-primary">Uložit změny</button>
+        <a asp-page="Index" class="btn btn-outline-secondary">Zpět</a>
+    </div>
+</form>
+
+<section class="mb-4">
+    <h2 class="h5">Přidat novou oblast</h2>
+    <form method="post" asp-page-handler="AddRegion" class="card card-body">
+        <input type="hidden" name="templateId" value="@Model.Template!.Id" />
+        <div class="row g-3">
+            <div class="col-md-4">
+                <label class="form-label" for="NewRegionName">Název</label>
+                <input class="form-control" id="NewRegionName" name="RegionInput.Name" maxlength="128" required />
+            </div>
+            <div class="col-md-4">
+                <label class="form-label" for="NewRegionCategory">Kategorie sekcí</label>
+                <select class="form-select" id="NewRegionCategory" name="RegionInput.NewsletterSectionCategoryId" required>
+                    <option value="">Vyberte kategorii</option>
+                    @foreach (var option in Model.CategoryOptions)
+                    {
+                        <option value="@option.Value">@option.Text</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label" for="NewRegionSortOrder">Pořadí</label>
+                <input type="number" class="form-control" id="NewRegionSortOrder" name="RegionInput.SortOrder" value="0" min="0" />
+            </div>
+        </div>
+        <div class="mt-3">
+            <button type="submit" class="btn btn-outline-primary">Přidat oblast</button>
+        </div>
+    </form>
+</section>
+
+<section>
+    <h2 class="h5">Oblasti šablony</h2>
+    @if (Model.Template.Regions.Count == 0)
+    {
+        <p class="text-muted">Tato šablona zatím neobsahuje žádné oblasti.</p>
+    }
+    else
+    {
+        foreach (var region in Model.Template!.Regions.OrderBy(r => r.SortOrder).ThenBy(r => r.Name))
+        {
+            <form method="post" asp-page-handler="UpdateRegion" class="card card-body mb-3">
+                <input type="hidden" name="templateId" value="@Model.Template!.Id" />
+                <input type="hidden" name="RegionInput.Id" value="@region.Id" />
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label class="form-label" for="RegionName_@region.Id">Název</label>
+                        <input class="form-control" id="RegionName_@region.Id" name="RegionInput.Name" value="@region.Name" maxlength="128" required />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label" for="RegionCategory_@region.Id">Kategorie sekcí</label>
+                        <select class="form-select" id="RegionCategory_@region.Id" name="RegionInput.NewsletterSectionCategoryId" required>
+                            @foreach (var option in Model.CategoryOptions)
+                            {
+                                <option value="@option.Value" selected="@(option.Value == region.NewsletterSectionCategoryId.ToString() ? "selected" : null)">@option.Text</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label" for="RegionSortOrder_@region.Id">Pořadí</label>
+                        <input type="number" class="form-control" id="RegionSortOrder_@region.Id" name="RegionInput.SortOrder" value="@region.SortOrder" min="0" />
+                    </div>
+                </div>
+                <div class="mt-3 d-flex gap-2">
+                    <button type="submit" class="btn btn-primary">Uložit</button>
+                    <button type="submit" class="btn btn-outline-danger" asp-page-handler="DeleteRegion" name="id" value="@region.Id" asp-route-templateId="@Model.Template!.Id" onclick="return confirm('Opravdu chcete oblast odstranit?');">Smazat</button>
+                </div>
+            </form>
+        }
+    }
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

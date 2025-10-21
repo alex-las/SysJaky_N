@@ -1,58 +1,119 @@
 @model SysJaky_N.EmailTemplates.Models.NewsletterIssueEmailModel
+@using System.Net
+@using System.Text
+@using System.Text.RegularExpressions
 @{
     Layout = null;
-    var sections = Model.Sections ?? Array.Empty<SysJaky_N.EmailTemplates.Models.NewsletterIssueEmailSectionModel>();
-}
-<!DOCTYPE html>
+    var template = Model.Template;
+    var defaultLayout = @"<!DOCTYPE html>
 <html>
-<body style="font-family: Arial, sans-serif; color: #111; background-color: #f9fafb;">
-    <table width="100%" cellpadding="0" cellspacing="0" role="presentation">
+<body style=""font-family: Arial, sans-serif; color: #111827; background-color: {BACKGROUND}; margin: 0; padding: 0;"">
+    <table width=""100%"" cellpadding=""0"" cellspacing=""0"" role=""presentation"">
         <tr>
-            <td align="center" style="padding: 24px 0;">
-                <table width="600" cellpadding="0" cellspacing="0" role="presentation" style="background-color: #ffffff; border-radius: 16px; overflow: hidden;">
+            <td align=""center"" style=""padding: 24px 0;"">
+                <table width=""600"" cellpadding=""0"" cellspacing=""0"" role=""presentation"" style=""background-color: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 30px rgba(15, 23, 42, 0.1);"">
                     <tr>
-                        <td style="padding: 32px 40px;">
-                            <p style="margin: 0 0 12px 0; color: #6b7280; font-size: 14px;">@Model.Preheader</p>
-                            <h1 style="margin: 0 0 24px 0; font-size: 28px; color: #111827;">@Model.Subject</h1>
-                            @if (!string.IsNullOrWhiteSpace(Model.IntroHtml))
-                            {
-                                <div style="margin-bottom: 24px; color: #374151; line-height: 1.6;">
-                                    @Html.Raw(Model.IntroHtml)
-                                </div>
-                            }
-
-@foreach (var contentSection in sections)
-{
-    if (string.IsNullOrWhiteSpace(contentSection.HtmlContent))
-    {
-        continue;
-    }
-
-    <section style="margin-bottom: 32px; border-bottom: 1px solid #e5e7eb; padding-bottom: 24px;">
-        @if (!string.IsNullOrWhiteSpace(contentSection.CategoryName))
-        {
-            <p style="margin: 0 0 8px 0; color: #2563eb; font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em;">@contentSection.CategoryName</p>
-        }
-        <h2 style="margin: 0 0 16px 0; font-size: 22px; color: #111827;">@contentSection.Title</h2>
-        <div style="color: #374151; line-height: 1.7;">
-            @Html.Raw(contentSection.HtmlContent)
-        </div>
-    </section>
-}
-
-                            @if (!string.IsNullOrWhiteSpace(Model.OutroHtml))
-                            {
-                                <div style="margin-top: 32px; color: #374151; line-height: 1.6;">
-                                    @Html.Raw(Model.OutroHtml)
-                                </div>
-                            }
-
-                            <p style="margin-top: 32px; font-size: 12px; color: #9ca3af;">Tento e-mail jste obdrželi na základě vašeho souhlasu s odběrem novinek. Pokud si nepřejete dostávat další newslettery, odpovězte na tuto zprávu a my se postaráme o odhlášení.</p>
-                        </td>
+                        <td style=""padding: 32px 40px;"">{{BODY}}</td>
                     </tr>
                 </table>
             </td>
         </tr>
     </table>
 </body>
-</html>
+</html>".Replace("{BACKGROUND}", string.IsNullOrWhiteSpace(template.BackgroundColor) ? "#f9fafb" : template.BackgroundColor);
+
+    var layoutHtml = string.IsNullOrWhiteSpace(template.BaseLayoutHtml)
+        ? defaultLayout
+        : template.BaseLayoutHtml;
+
+    var primaryColor = string.IsNullOrWhiteSpace(template.PrimaryColor) ? "#2563eb" : template.PrimaryColor;
+    var secondaryColor = string.IsNullOrWhiteSpace(template.SecondaryColor) ? "#facc15" : template.SecondaryColor;
+    var contentBuilder = new StringBuilder();
+
+    if (!string.IsNullOrWhiteSpace(Model.Preheader))
+    {
+        contentBuilder.Append("<p style=\"margin:0 0 12px 0; color:#6b7280; font-size:14px;\">");
+        contentBuilder.Append(WebUtility.HtmlEncode(Model.Preheader));
+        contentBuilder.Append("</p>");
+    }
+
+    contentBuilder.AppendFormat("<h1 style=\"margin:0 0 24px 0; font-size:28px; color:{0};\">{1}</h1>",
+        primaryColor,
+        WebUtility.HtmlEncode(Model.Subject));
+
+    if (!string.IsNullOrWhiteSpace(Model.IntroHtml))
+    {
+        contentBuilder.Append("<div style=\"margin-bottom:24px; color:#374151; line-height:1.6;\">");
+        contentBuilder.Append(Model.IntroHtml);
+        contentBuilder.Append("</div>");
+    }
+
+    foreach (var region in Model.Regions)
+    {
+        if (region.Sections.Count == 0)
+        {
+            continue;
+        }
+
+        contentBuilder.Append("<section style=\"margin-bottom:32px; border-bottom:1px solid #e5e7eb; padding-bottom:24px;\">");
+
+        if (!string.IsNullOrWhiteSpace(region.Name))
+        {
+            contentBuilder.AppendFormat("<h2 style=\"margin:0 0 16px 0; font-size:20px; color:{0}; text-transform:uppercase; letter-spacing:0.08em;\">{1}</h2>",
+                secondaryColor,
+                WebUtility.HtmlEncode(region.Name));
+        }
+
+        if (!string.IsNullOrWhiteSpace(region.CategoryName))
+        {
+            contentBuilder.AppendFormat("<p style=\"margin:0 0 12px 0; color:{0}; font-size:14px;\">{1}</p>",
+                primaryColor,
+                WebUtility.HtmlEncode(region.CategoryName));
+        }
+
+        foreach (var section in region.Sections)
+        {
+            if (string.IsNullOrWhiteSpace(section.HtmlContent))
+            {
+                continue;
+            }
+
+            contentBuilder.Append("<article style=\"margin-bottom:24px;\">");
+            contentBuilder.AppendFormat("<h3 style=\"margin:0 0 12px 0; font-size:18px; color:#111827;\">{0}</h3>",
+                WebUtility.HtmlEncode(section.Title));
+            contentBuilder.Append("<div style=\"color:#374151; line-height:1.7;\">");
+            contentBuilder.Append(section.HtmlContent);
+            contentBuilder.Append("</div>");
+            contentBuilder.Append("</article>");
+        }
+
+        contentBuilder.Append("</section>");
+    }
+
+    if (!string.IsNullOrWhiteSpace(Model.OutroHtml))
+    {
+        contentBuilder.Append("<div style=\"margin-top:32px; color:#374151; line-height:1.6;\">");
+        contentBuilder.Append(Model.OutroHtml);
+        contentBuilder.Append("</div>");
+    }
+
+    contentBuilder.Append("<p style=\"margin-top:32px; font-size:12px; color:#9ca3af;\">Tento e-mail jste obdrželi na základě vašeho souhlasu s odběrem novinek. Pokud si nepřejete dostávat další newslettery, odpovězte na tuto zprávu a my se postaráme o odhlášení.</p>");
+
+    var bodyHtml = contentBuilder.ToString();
+    var replaced = false;
+    var finalHtml = Regex.Replace(
+        layoutHtml,
+        "{{\\s*BODY\\s*}}",
+        _ =>
+        {
+            replaced = true;
+            return bodyHtml;
+        },
+        RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+
+    if (!replaced)
+    {
+        finalHtml += bodyHtml;
+    }
+}
+@Html.Raw(finalHtml)

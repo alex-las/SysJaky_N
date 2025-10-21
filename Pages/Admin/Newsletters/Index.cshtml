@@ -21,74 +21,178 @@
 }
 
 <section class="mb-5">
-    <h2 class="h4">Nová kategorie sekcí</h2>
-    <form method="post" asp-page-handler="SaveCategory" class="card card-body mb-4">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-3">
+        <h2 class="h4 mb-0">Nový newsletter</h2>
+        <a class="btn btn-outline-secondary btn-sm" asp-page="Templates/Index">Spravovat šablony</a>
+    </div>
+    <form method="post" asp-page-handler="CreateIssue" class="card card-body mb-4">
         <div class="row g-3">
-            <div class="col-md-4">
-                <label class="form-label" for="NewCategoryName">Název</label>
-                <input class="form-control" id="NewCategoryName" name="Name" maxlength="128" required />
+            <div class="col-md-6">
+                <label class="form-label" for="IssueSubject">Předmět</label>
+                <input class="form-control" id="IssueSubject" name="Subject" maxlength="180" value="@Model.IssueForm.Subject" required />
             </div>
-            <div class="col-md-4">
-                <label class="form-label" for="NewCategoryDescription">Popis</label>
-                <input class="form-control" id="NewCategoryDescription" name="Description" maxlength="256" />
-            </div>
-            <div class="col-md-4">
-                <label class="form-label" for="NewCategoryCourseCategoryId">Přiřazená kategorie kurzů</label>
-                <select class="form-select" id="NewCategoryCourseCategoryId" name="CourseCategoryId">
-                    <option value="">Bez vazby</option>
-                    @foreach (var option in Model.CourseCategoryOptions)
-                    {
-                        <option value="@option.Value">@option.Text</option>
-                    }
-                </select>
+            <div class="col-md-6">
+                <label class="form-label" for="IssuePreheader">Preheader</label>
+                <input class="form-control" id="IssuePreheader" name="Preheader" maxlength="180" value="@Model.IssueForm.Preheader" />
             </div>
         </div>
         <div class="mt-3">
-            <button type="submit" class="btn btn-primary">Vytvořit kategorii</button>
+            <label class="form-label" for="IssueIntro">Úvodní text</label>
+            <div class="admin-newsletter-editor" data-editor-root>
+                <div class="admin-newsletter-editor__toolbar d-flex justify-content-between align-items-center mb-2">
+                    <small class="text-muted">Použijte nástrojovou lištu pro formátování obsahu.</small>
+                    <button type="button"
+                            class="btn btn-outline-secondary btn-sm"
+                            data-editor-preview-toggle
+                            data-label-show="Zobrazit náhled"
+                            data-label-hide="Skrýt náhled"
+                            aria-expanded="false">
+                        Zobrazit náhled
+                    </button>
+                </div>
+                <div class="admin-newsletter-editor__surface" data-editor-container></div>
+                <textarea class="form-control" id="IssueIntro" name="IntroHtml" rows="4" data-editor-textarea>@Model.IssueForm.IntroHtml</textarea>
+                <div class="admin-newsletter-editor__preview" data-editor-preview hidden aria-live="polite"></div>
+            </div>
+        </div>
+        <div class="mt-3">
+            <label class="form-label" for="IssueOutro">Závěrečný text</label>
+            <div class="admin-newsletter-editor" data-editor-root>
+                <div class="admin-newsletter-editor__toolbar d-flex justify-content-between align-items-center mb-2">
+                    <small class="text-muted">Použijte nástrojovou lištu pro formátování obsahu.</small>
+                    <button type="button"
+                            class="btn btn-outline-secondary btn-sm"
+                            data-editor-preview-toggle
+                            data-label-show="Zobrazit náhled"
+                            data-label-hide="Skrýt náhled"
+                            aria-expanded="false">
+                        Zobrazit náhled
+                    </button>
+                </div>
+                <div class="admin-newsletter-editor__surface" data-editor-container></div>
+                <textarea class="form-control" id="IssueOutro" name="OutroHtml" rows="4" data-editor-textarea>@Model.IssueForm.OutroHtml</textarea>
+                <div class="admin-newsletter-editor__preview" data-editor-preview hidden aria-live="polite"></div>
+            </div>
+        </div>
+        <div class="mt-3">
+            <label class="form-label" for="IssueTemplate">Šablona</label>
+            <select class="form-select" id="IssueTemplate" name="NewsletterTemplateId" required>
+                <option value="">Vyberte šablonu</option>
+                @foreach (var template in Model.Templates)
+                {
+                    <option value="@template.Id" selected="@(Model.IssueForm.NewsletterTemplateId == template.Id ? "selected" : null)">@template.Name</option>
+                }
+            </select>
+            <small class="text-muted">Zvolte vzhled a rozložení newsletteru.</small>
+        </div>
+        <div class="mt-3" id="IssueTemplateRegions"
+             data-templates='@Html.Raw(Model.TemplateClientDataJson)'
+             data-sections='@Html.Raw(Model.PublishedSectionsClientJson)'
+             data-selections='@Html.Raw(Model.IssueRegionSelectionsJson)'>
+            <p class="text-muted mb-0">Vyberte šablonu pro zobrazení dostupných oblastí.</p>
+        </div>
+        <div class="mt-3">
+            <label class="form-label" for="IssueScheduledForUtc">Plánované odeslání (UTC)</label>
+            <input type="datetime-local"
+                   class="form-control"
+                   id="IssueScheduledForUtc"
+                   name="ScheduledForUtc"
+                   value="@(Model.IssueForm.ScheduledForUtc.HasValue ? Model.IssueForm.ScheduledForUtc.Value.ToString("yyyy-MM-ddTHH:mm") : null)" />
+        </div>
+        <div class="mt-3">
+            <button type="submit" class="btn btn-primary">Vytvořit newsletter</button>
         </div>
     </form>
 
-    <h3 class="h5">Existující kategorie</h3>
-    @if (Model.Categories.Count == 0)
+    <h3 class="h5">Připravené newslettery</h3>
+    @if (Model.Issues.Count == 0)
     {
-        <p class="text-muted">Zatím nebyly vytvořeny žádné kategorie.</p>
+        <p class="text-muted">Zatím nebyly vytvořeny žádné newslettery.</p>
     }
     else
     {
-        <div class="list-group">
-            @foreach (var category in Model.Categories)
-            {
-                <div class="list-group-item">
-                    <form method="post" asp-page-handler="SaveCategory" class="row g-3 align-items-end">
-                        <input type="hidden" name="Id" value="@category.Id" />
-                        <div class="col-md-3">
-                            <label class="form-label" for="CategoryName_@category.Id">Název</label>
-                            <input class="form-control" id="CategoryName_@category.Id" name="Name" value="@category.Name" maxlength="128" required />
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label" for="CategoryDescription_@category.Id">Popis</label>
-                            <input class="form-control" id="CategoryDescription_@category.Id" name="Description" value="@category.Description" maxlength="256" />
-                        </div>
-                        <div class="col-md-3">
-                            <label class="form-label" for="CategoryCourseCategoryId_@category.Id">Kategorie kurzů</label>
-                            <select class="form-select" id="CategoryCourseCategoryId_@category.Id" name="CourseCategoryId">
-                                <option value="">Bez vazby</option>
-                                @foreach (var option in Model.CourseCategoryOptions)
+        <div class="table-responsive">
+            <table class="table table-striped align-middle">
+                <thead>
+                    <tr>
+                        <th>Předmět</th>
+                        <th>Vytvořeno</th>
+                        <th>Odesláno</th>
+                        <th>Šablona</th>
+                        <th>Kategorie</th>
+                        <th>Obsah</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var issue in Model.Issues)
+                    {
+                        <tr>
+                            <td>@issue.Subject</td>
+                            <td>@issue.CreatedAtUtc.ToLocalTime().ToString("g")</td>
+                            <td>
+                                @if (issue.SentAtUtc.HasValue)
                                 {
-                                    <option value="@option.Value" selected="@(option.Value == category.CourseCategoryId?.ToString() ? "selected" : null)">@option.Text</option>
+                                    @issue.SentAtUtc.Value.ToLocalTime().ToString("g")
                                 }
-                            </select>
-                        </div>
-                        <div class="col-md-2 d-flex gap-2">
-                            <button type="submit" class="btn btn-primary">Uložit</button>
-                            <button type="submit" class="btn btn-outline-danger" formaction="?handler=DeleteCategory" formmethod="post" name="id" value="@category.Id" onclick="return confirm('Opravdu chcete kategorii odstranit?');">Smazat</button>
-                        </div>
-                    </form>
-                </div>
-            }
+                                else if (issue.ScheduledForUtc.HasValue)
+                                {
+                                    <span class="text-muted">Naplánováno na @issue.ScheduledForUtc.Value.ToLocalTime().ToString("g")</span>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">Neodesláno</span>
+                                }
+                            </td>
+                            <td>@(issue.NewsletterTemplate?.Name ?? "")</td>
+                            <td>
+                                @if (issue.Categories.Count == 0)
+                                {
+                                    <span class="text-muted">Bez kategorií</span>
+                                }
+                                else
+                                {
+                                    foreach (var category in issue.Categories)
+                                    {
+                                        <span class="badge bg-secondary me-1">@category.NewsletterSectionCategory?.Name</span>
+                                    }
+                                }
+                            </td>
+                            <td>
+                                @if (issue.Sections.Count == 0)
+                                {
+                                    <span class="text-muted">Bez obsahu</span>
+                                }
+                                else
+                                {
+                                    var groupedSections = issue.Sections
+                                        .OrderBy(s => s.SortOrder)
+                                        .GroupBy(s => s.TemplateRegion?.Name ?? s.NewsletterSection.Category?.Name ?? "Obsah");
+                                    <ul class="mb-0 list-unstyled">
+                                        @foreach (var group in groupedSections)
+                                        {
+                                            <li class="mb-1">
+                                                <strong>@group.Key:</strong>
+                                                @string.Join(", ", group.Select(s => s.NewsletterSection.Title))
+                                            </li>
+                                        }
+                                    </ul>
+                                }
+                            </td>
+                            <td class="text-end">
+                                <form method="post" asp-page-handler="SendIssue" class="d-inline">
+                                    <input type="hidden" name="id" value="@issue.Id" />
+                                    <button type="submit" class="btn btn-outline-primary btn-sm">Odeslat</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
         </div>
     }
 </section>
+
 
 <section class="mb-5">
     <h2 class="h4">Nová sekce</h2>
@@ -217,16 +321,19 @@
 </section>
 
 <section class="mb-5">
-    <h2 class="h4">Nový newsletter</h2>
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-3">
+        <h2 class="h4 mb-0">Nový newsletter</h2>
+        <a class="btn btn-outline-secondary btn-sm" asp-page="Templates/Index">Spravovat šablony</a>
+    </div>
     <form method="post" asp-page-handler="CreateIssue" class="card card-body mb-4">
         <div class="row g-3">
             <div class="col-md-6">
                 <label class="form-label" for="IssueSubject">Předmět</label>
-                <input class="form-control" id="IssueSubject" name="Subject" maxlength="180" required />
+                <input class="form-control" id="IssueSubject" name="Subject" maxlength="180" value="@Model.IssueForm.Subject" required />
             </div>
             <div class="col-md-6">
                 <label class="form-label" for="IssuePreheader">Preheader</label>
-                <input class="form-control" id="IssuePreheader" name="Preheader" maxlength="180" />
+                <input class="form-control" id="IssuePreheader" name="Preheader" maxlength="180" value="@Model.IssueForm.Preheader" />
             </div>
         </div>
         <div class="mt-3">
@@ -244,7 +351,7 @@
                     </button>
                 </div>
                 <div class="admin-newsletter-editor__surface" data-editor-container></div>
-                <textarea class="form-control" id="IssueIntro" name="IntroHtml" rows="4" data-editor-textarea></textarea>
+                <textarea class="form-control" id="IssueIntro" name="IntroHtml" rows="4" data-editor-textarea>@Model.IssueForm.IntroHtml</textarea>
                 <div class="admin-newsletter-editor__preview" data-editor-preview hidden aria-live="polite"></div>
             </div>
         </div>
@@ -263,35 +370,34 @@
                     </button>
                 </div>
                 <div class="admin-newsletter-editor__surface" data-editor-container></div>
-                <textarea class="form-control" id="IssueOutro" name="OutroHtml" rows="4" data-editor-textarea></textarea>
+                <textarea class="form-control" id="IssueOutro" name="OutroHtml" rows="4" data-editor-textarea>@Model.IssueForm.OutroHtml</textarea>
                 <div class="admin-newsletter-editor__preview" data-editor-preview hidden aria-live="polite"></div>
             </div>
         </div>
-        <div class="row g-3 mt-3">
-            <div class="col-md-6">
-                <label class="form-label" for="IssueCategories">Kategorie v newsletteru</label>
-                <select class="form-select" id="IssueCategories" name="SelectedCategoryIds" multiple size="6" required>
-                    @foreach (var option in Model.SectionCategoryOptions)
-                    {
-                        <option value="@option.Value">@option.Text</option>
-                    }
-                </select>
-                <small class="text-muted">Vyberte kategorie, pro které má být newsletter připraven.</small>
-            </div>
-            <div class="col-md-6">
-                <label class="form-label" for="IssueSections">Sekce</label>
-                <select class="form-select" id="IssueSections" name="SelectedSectionIds" multiple size="6" required>
-                    @foreach (var option in Model.SectionOptions)
-                    {
-                        <option value="@option.Value">@option.Text</option>
-                    }
-                </select>
-                <small class="text-muted">Vyberte publikované sekce, které se mají do newsletteru zařadit.</small>
-            </div>
+        <div class="mt-3">
+            <label class="form-label" for="IssueTemplate">Šablona</label>
+            <select class="form-select" id="IssueTemplate" name="NewsletterTemplateId" required>
+                <option value="">Vyberte šablonu</option>
+                @foreach (var template in Model.Templates)
+                {
+                    <option value="@template.Id" selected="@(Model.IssueForm.NewsletterTemplateId == template.Id ? "selected" : null)">@template.Name</option>
+                }
+            </select>
+            <small class="text-muted">Zvolte vzhled a rozložení newsletteru.</small>
+        </div>
+        <div class="mt-3" id="IssueTemplateRegions"
+             data-templates='@Html.Raw(Model.TemplateClientDataJson)'
+             data-sections='@Html.Raw(Model.PublishedSectionsClientJson)'
+             data-selections='@Html.Raw(Model.IssueRegionSelectionsJson)'>
+            <p class="text-muted mb-0">Vyberte šablonu pro zobrazení dostupných oblastí.</p>
         </div>
         <div class="mt-3">
             <label class="form-label" for="IssueScheduledForUtc">Plánované odeslání (UTC)</label>
-            <input type="datetime-local" class="form-control" id="IssueScheduledForUtc" name="ScheduledForUtc" />
+            <input type="datetime-local"
+                   class="form-control"
+                   id="IssueScheduledForUtc"
+                   name="ScheduledForUtc"
+                   value="@(Model.IssueForm.ScheduledForUtc.HasValue ? Model.IssueForm.ScheduledForUtc.Value.ToString("yyyy-MM-ddTHH:mm") : null)" />
         </div>
         <div class="mt-3">
             <button type="submit" class="btn btn-primary">Vytvořit newsletter</button>
@@ -312,8 +418,9 @@
                         <th>Předmět</th>
                         <th>Vytvořeno</th>
                         <th>Odesláno</th>
+                        <th>Šablona</th>
                         <th>Kategorie</th>
-                        <th>Sekce</th>
+                        <th>Obsah</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -337,32 +444,37 @@
                                     <span class="text-muted">Neodesláno</span>
                                 }
                             </td>
+                            <td>@(issue.NewsletterTemplate?.Name ?? "")</td>
                             <td>
                                 @if (issue.Categories.Count == 0)
                                 {
-                                    <span class="text-muted">Žádné</span>
+                                    <span class="text-muted">Bez kategorií</span>
                                 }
                                 else
                                 {
-                                    <ul class="mb-0">
-                                        @foreach (var category in issue.Categories)
-                                        {
-                                            <li>@category.NewsletterSectionCategory.Name</li>
-                                        }
-                                    </ul>
+                                    foreach (var category in issue.Categories)
+                                    {
+                                        <span class="badge bg-secondary me-1">@category.NewsletterSectionCategory?.Name</span>
+                                    }
                                 }
                             </td>
                             <td>
                                 @if (issue.Sections.Count == 0)
                                 {
-                                    <span class="text-muted">Žádné</span>
+                                    <span class="text-muted">Bez obsahu</span>
                                 }
                                 else
                                 {
-                                    <ul class="mb-0">
-                                        @foreach (var issueSection in issue.Sections.OrderBy(s => s.SortOrder))
+                                    var groupedSections = issue.Sections
+                                        .OrderBy(s => s.SortOrder)
+                                        .GroupBy(s => s.TemplateRegion?.Name ?? s.NewsletterSection.Category?.Name ?? "Obsah");
+                                    <ul class="mb-0 list-unstyled">
+                                        @foreach (var group in groupedSections)
                                         {
-                                            <li>@issueSection.NewsletterSection.Title</li>
+                                            <li class="mb-1">
+                                                <strong>@group.Key:</strong>
+                                                @string.Join(", ", group.Select(s => s.NewsletterSection.Title))
+                                            </li>
                                         }
                                     </ul>
                                 }
@@ -383,4 +495,103 @@
 
 @section Scripts {
     <script src="~/js/admin-newsletter-editor.js" asp-append-version="true"></script>
+    <script>
+        (function () {
+            const container = document.getElementById('IssueTemplateRegions');
+            const templateSelect = document.getElementById('IssueTemplate');
+            if (!container || !templateSelect) {
+                return;
+            }
+
+            const templates = JSON.parse(container.dataset.templates ?? '[]');
+            const sectionsByCategory = JSON.parse(container.dataset.sections ?? '{}');
+            const initialSelections = JSON.parse(container.dataset.selections ?? '[]');
+            const selectionMap = new Map(initialSelections.map(item => [item.templateRegionId, new Set(item.selectedSectionIds ?? [])]));
+
+            function renderRegions() {
+                const templateId = Number(templateSelect.value);
+                container.innerHTML = '';
+
+                if (!templateId) {
+                    const message = document.createElement('p');
+                    message.className = 'text-muted mb-0';
+                    message.textContent = 'Vyberte šablonu pro zobrazení dostupných oblastí.';
+                    container.appendChild(message);
+                    return;
+                }
+
+                const template = templates.find(t => t.id === templateId);
+                if (!template) {
+                    return;
+                }
+
+                template.regions.forEach((region, index) => {
+                    const card = document.createElement('div');
+                    card.className = 'card card-body mb-3';
+
+                    const title = document.createElement('h3');
+                    title.className = 'h6 card-title';
+                    title.textContent = region.name + (region.categoryName ? ` (${region.categoryName})` : '');
+                    card.appendChild(title);
+
+                    const hidden = document.createElement('input');
+                    hidden.type = 'hidden';
+                    hidden.name = `Regions[${index}].TemplateRegionId`;
+                    hidden.value = region.id;
+                    card.appendChild(hidden);
+
+                    const label = document.createElement('label');
+                    label.className = 'form-label';
+                    label.setAttribute('for', `Region_${region.id}_Sections`);
+                    label.textContent = 'Sekce';
+                    card.appendChild(label);
+
+                    const select = document.createElement('select');
+                    select.className = 'form-select';
+                    select.id = `Region_${region.id}_Sections`;
+                    select.name = `Regions[${index}].SelectedSectionIds`;
+                    select.multiple = true;
+                    select.size = 6;
+
+                    const sections = sectionsByCategory[region.categoryId]?.sections ?? [];
+                    const selectedIds = selectionMap.get(region.id) ?? new Set();
+
+                    sections.forEach(section => {
+                        const option = document.createElement('option');
+                        option.value = section.id;
+                        option.textContent = section.title;
+                        if (selectedIds.has(section.id)) {
+                            option.selected = true;
+                        }
+                        select.appendChild(option);
+                    });
+
+                    card.appendChild(select);
+
+                    const hint = document.createElement('small');
+                    hint.className = 'text-muted';
+                    hint.textContent = sections.length === 0
+                        ? 'Pro tuto oblast nejsou dostupné žádné publikované sekce.'
+                        : 'Vyberte sekce, které chcete do newsletteru zahrnout, nebo oblast ponechte prázdnou.';
+                    card.appendChild(hint);
+
+                    container.appendChild(card);
+                });
+
+                if (template.regions.length === 0) {
+                    const message = document.createElement('p');
+                    message.className = 'text-muted mb-0';
+                    message.textContent = 'Vybraná šablona zatím neobsahuje žádné oblasti.';
+                    container.appendChild(message);
+                }
+            }
+
+            templateSelect.addEventListener('change', () => {
+                selectionMap.clear();
+                renderRegions();
+            });
+
+            renderRegions();
+        })();
+    </script>
 }
