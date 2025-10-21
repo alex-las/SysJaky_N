@@ -10,6 +10,7 @@ using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using SysJaky_N.EmailTemplates.Models;
+using SysJaky_N.Models;
 using SysJaky_N.Services;
 using Xunit;
 
@@ -120,10 +121,25 @@ public class LocalizationFallbackTests
 
         public IReadOnlyList<SentEmail> SentMessages => _messages;
 
-        public Task SendEmailAsync<TModel>(string to, EmailTemplate template, TModel model, CancellationToken cancellationToken = default)
+        public Task<EmailLog> SendEmailAsync<TModel>(
+            string to,
+            EmailTemplate template,
+            TModel model,
+            CancellationToken cancellationToken = default,
+            string? renderedHtml = null)
         {
             _messages.Add(new SentEmail(to, template, model!));
-            return Task.CompletedTask;
+            var log = new EmailLog
+            {
+                To = to,
+                Template = template.ToString(),
+                PayloadJson = string.Empty,
+                RenderedHtml = renderedHtml,
+                SentUtc = DateTime.UtcNow,
+                Status = "Sent"
+            };
+
+            return Task.FromResult(log);
         }
     }
 

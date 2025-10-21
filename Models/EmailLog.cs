@@ -15,6 +15,8 @@ public class EmailLog
 
     public string? PayloadJson { get; set; }
 
+    public string? RenderedHtml { get; set; }
+
     public DateTime SentUtc { get; set; }
 
     [MaxLength(256)]

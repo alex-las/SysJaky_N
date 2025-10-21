@@ -42,6 +42,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Certificate> Certificates { get; set; } = default!;
     public DbSet<Attendance> Attendances { get; set; } = default!;
     public DbSet<EmailLog> EmailLogs { get; set; } = default!;
+    public DbSet<NewsletterIssueDelivery> NewsletterIssueDeliveries { get; set; } = default!;
     public DbSet<Tag> Tags { get; set; } = default!;
     public DbSet<CourseTag> CourseTags { get; set; } = default!;
     public DbSet<CourseCategory> CourseCategories { get; set; } = default!;
@@ -182,6 +183,27 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 
         builder.Entity<EmailLog>()
             .HasIndex(e => e.SentUtc);
+
+        builder.Entity<NewsletterIssueDelivery>()
+            .HasIndex(d => d.SentUtc);
+
+        builder.Entity<NewsletterIssueDelivery>()
+            .HasOne(d => d.NewsletterIssue)
+            .WithMany(issue => issue.Deliveries)
+            .HasForeignKey(d => d.NewsletterIssueId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<NewsletterIssueDelivery>()
+            .HasOne(d => d.NewsletterSubscriber)
+            .WithMany(subscriber => subscriber.Deliveries)
+            .HasForeignKey(d => d.NewsletterSubscriberId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<NewsletterIssueDelivery>()
+            .HasOne(d => d.EmailLog)
+            .WithMany()
+            .HasForeignKey(d => d.EmailLogId)
+            .OnDelete(DeleteBehavior.SetNull);
 
         builder.Entity<Lesson>()
             .HasOne(l => l.Course)
