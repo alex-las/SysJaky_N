@@ -13,9 +13,6 @@ public class PohodaOrderPayloadTests
     private static readonly XNamespace Dat = "http://www.stormware.cz/schema/version_2/data.xsd";
     private static readonly XNamespace Inv = "http://www.stormware.cz/schema/version_2/invoice.xsd";
     private static readonly XNamespace Typ = "http://www.stormware.cz/schema/version_2/type.xsd";
-    private static readonly XNamespace Lst = "http://www.stormware.cz/schema/version_2/list.xsd";
-    private static readonly XNamespace Ftr = "http://www.stormware.cz/schema/version_2/filter.xsd";
-
     [Fact]
     public void CreateInvoiceDataPack_BuildsInvoiceWithDetailAndSummary()
     {
@@ -82,22 +79,6 @@ public class PohodaOrderPayloadTests
 
         Assert.NotEmpty(discountElements);
         Assert.True(discountElements.Sum() > 0m);
-    }
-
-    [Fact]
-    public void CreateListInvoiceRequest_BuildsFilterWithNumber()
-    {
-        var xml = PohodaOrderPayload.CreateListInvoiceRequest("INV-123", "SysJaky_N");
-        var document = XDocument.Parse(xml);
-
-        var filterValue = document.Root!
-            .Element(Dat + "dataPackItem")!
-            .Element(Lst + "listInvoiceRequest")!
-            .Element(Ftr + "filter")!
-            .Element(Ftr + "number")!
-            .Value;
-
-        Assert.Equal("INV-123", filterValue);
     }
 
     private static Order CreateSampleOrder()

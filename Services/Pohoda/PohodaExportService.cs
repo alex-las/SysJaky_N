@@ -17,7 +17,7 @@ namespace SysJaky_N.Services.Pohoda;
 
 public sealed class PohodaExportService : IPohodaExportService
 {
-    private readonly PohodaXmlClient _xmlClient;
+    private readonly IPohodaClient _xmlClient;
     private readonly PohodaXmlBuilder _xmlBuilder;
     private readonly ILogger<PohodaExportService> _logger;
     private readonly ApplicationDbContext _dbContext;
@@ -29,7 +29,7 @@ public sealed class PohodaExportService : IPohodaExportService
     private static readonly JsonSerializerOptions AuditSerializerOptions = new(JsonSerializerDefaults.Web);
 
     public PohodaExportService(
-        PohodaXmlClient xmlClient,
+        IPohodaClient xmlClient,
         PohodaXmlBuilder xmlBuilder,
         ApplicationDbContext dbContext,
         TimeProvider timeProvider,
@@ -238,12 +238,32 @@ public sealed class PohodaExportService : IPohodaExportService
 
         try
         {
-            await _xmlClient.ListInvoiceAsync(order.InvoiceNumber, cancellationToken).ConfigureAwait(false);
+            var filter = CreateInvoiceFilter(order);
+            await FetchInvoiceStatusesAsync(filter, cancellationToken).ConfigureAwait(false);
         }
         catch (Exception ex)
         {
             _logger.LogWarning(ex, "Failed to refresh invoice {InvoiceNumber} for order {OrderId}.", order.InvoiceNumber, order.Id);
         }
+    }
+
+    private static PohodaListFilter CreateInvoiceFilter(Order order)
+    {
+        var createdDate = DateOnly.FromDateTime(order.CreatedAt);
+        return new PohodaListFilter
+        {
+            Number = order.InvoiceNumber,
+            VariableSymbol = order.Id.ToString(CultureInfo.InvariantCulture),
+            DateFrom = createdDate,
+            DateTo = createdDate
+        };
+    }
+
+    private Task<IReadOnlyCollection<InvoiceStatus>> FetchInvoiceStatusesAsync(
+        PohodaListFilter filter,
+        CancellationToken cancellationToken)
+    {
+        return _xmlClient.ListInvoicesAsync(filter, cancellationToken);
     }
 
     private async Task HandleDisabledIntegrationAsync(PohodaExportJob job, Order order, string payload, CancellationToken cancellationToken)

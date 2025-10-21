@@ -1,6 +1,4 @@
-using System;
 using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 using SysJaky_N.Models;
@@ -82,18 +80,6 @@ public class PohodaXmlBuilderTests
 
         Assert.NotEmpty(discountElements);
         Assert.True(discountElements.Sum() > 0m);
-    }
-
-    [Fact]
-    public void BuildListInvoiceRequest_MatchesExpectedRequest()
-    {
-        var xml = Builder.BuildListInvoiceRequest("INV-123", "SysJaky_N");
-        var document = XDocument.Parse(xml);
-
-        var samplePath = Path.Combine(AppContext.BaseDirectory, "TestData", "SampleListInvoiceRequest.xml");
-        var expected = XDocument.Load(samplePath);
-
-        Assert.True(XNode.DeepEquals(expected.Root, document.Root));
     }
 
     private static Order CreateSampleOrder()

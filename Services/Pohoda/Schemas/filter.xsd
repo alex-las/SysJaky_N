@@ -8,9 +8,15 @@
     <xs:complexType>
       <xs:sequence>
         <xs:element ref="ftr:number" minOccurs="0" />
+        <xs:element ref="ftr:dateFrom" minOccurs="0" />
+        <xs:element ref="ftr:dateTill" minOccurs="0" />
+        <xs:element ref="ftr:symVar" minOccurs="0" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
 
   <xs:element name="number" type="xs:string" />
+  <xs:element name="dateFrom" type="xs:date" />
+  <xs:element name="dateTill" type="xs:date" />
+  <xs:element name="symVar" type="xs:string" />
 </xs:schema>

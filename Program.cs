@@ -216,7 +216,9 @@ try
     builder.Services.AddSingleton<IReadOnlyCollection<XmlSchema>>(_ => PohodaXmlSchemaProvider.DefaultSchemas);
     builder.Services.AddSingleton<PohodaXmlBuilder>();
     builder.Services.AddSingleton<PohodaResponseParser>();
-    builder.Services.AddHttpClient<PohodaXmlClient>((sp, client) =>
+    builder.Services.AddSingleton<PohodaListRequestBuilder>();
+    builder.Services.AddSingleton<PohodaListParser>();
+    builder.Services.AddHttpClient<IPohodaClient, PohodaXmlClient>((sp, client) =>
     {
         var options = sp.GetRequiredService<IOptions<PohodaXmlOptions>>().Value;
         if (Uri.TryCreate(options.BaseUrl, UriKind.Absolute, out var uri))

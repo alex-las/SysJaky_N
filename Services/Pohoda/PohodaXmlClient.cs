@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -7,7 +8,7 @@ using Microsoft.Extensions.Options;
 
 namespace SysJaky_N.Services.Pohoda;
 
-public sealed class PohodaXmlClient
+public sealed class PohodaXmlClient : IPohodaClient
 {
     private readonly HttpClient _httpClient;
     private readonly PohodaXmlOptions _options;
@@ -15,24 +16,32 @@ public sealed class PohodaXmlClient
     private readonly ILogger<PohodaXmlClient> _logger;
     private readonly Encoding _encoding;
     private readonly PohodaResponseParser _responseParser;
+    private readonly PohodaListRequestBuilder _listRequestBuilder;
+    private readonly PohodaListParser _listParser;
 
     public PohodaXmlClient(
         HttpClient httpClient,
         IOptions<PohodaXmlOptions> options,
         PohodaXmlBuilder builder,
         PohodaResponseParser responseParser,
+        PohodaListRequestBuilder listRequestBuilder,
+        PohodaListParser listParser,
         ILogger<PohodaXmlClient> logger)
     {
         ArgumentNullException.ThrowIfNull(httpClient);
         ArgumentNullException.ThrowIfNull(options);
         ArgumentNullException.ThrowIfNull(builder);
         ArgumentNullException.ThrowIfNull(responseParser);
+        ArgumentNullException.ThrowIfNull(listRequestBuilder);
+        ArgumentNullException.ThrowIfNull(listParser);
         ArgumentNullException.ThrowIfNull(logger);
 
         _httpClient = httpClient;
         _options = options.Value;
         _builder = builder;
         _responseParser = responseParser;
+        _listRequestBuilder = listRequestBuilder;
+        _listParser = listParser;
         _logger = logger;
         _encoding = CreateEncoding(_options.EncodingName);
     }
@@ -41,25 +50,7 @@ public sealed class PohodaXmlClient
     {
         ArgumentException.ThrowIfNullOrEmpty(dataPack);
 
-        var endpoint = BuildEndpointUri("xml");
-        using var response = await SendWithRetryAsync(() => CreateRequest(HttpMethod.Post, endpoint, dataPack), cancellationToken)
-            .ConfigureAwait(false);
-        var content = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
-
-        if (!response.IsSuccessStatusCode)
-        {
-            throw new PohodaXmlException($"Pohoda XML request failed with status {(int)response.StatusCode} {response.ReasonPhrase}.", content);
-        }
-
-        var parsed = _responseParser.Parse(content);
-        EnsureSuccess(parsed, content);
-
-        if (parsed.Warnings.Count > 0)
-        {
-            _logger.LogWarning(
-                "Pohoda response returned warnings: {Warnings}",
-                string.Join("; ", parsed.Warnings));
-        }
+        var (_, parsed) = await SendDataPackAsync(dataPack, cancellationToken).ConfigureAwait(false);
 
         _logger.LogDebug(
             "Pohoda invoice sent successfully with document number {DocumentNumber} and ID {DocumentId}.",
@@ -68,12 +59,25 @@ public sealed class PohodaXmlClient
         return parsed;
     }
 
-    public async Task<PohodaResponse> ListInvoiceAsync(string externalId, CancellationToken cancellationToken = default)
+    public async Task<IReadOnlyCollection<InvoiceStatus>> ListInvoicesAsync(
+        PohodaListFilter filter,
+        CancellationToken cancellationToken = default)
     {
-        ArgumentException.ThrowIfNullOrEmpty(externalId);
+        ArgumentNullException.ThrowIfNull(filter);
 
-        var dataPack = _builder.BuildListInvoiceRequest(externalId, _options.Application);
-        return await SendInvoiceAsync(dataPack, cancellationToken).ConfigureAwait(false);
+        var request = _listRequestBuilder.Build(filter, applicationName: _options.Application);
+        var (content, _) = await SendDataPackAsync(request, cancellationToken).ConfigureAwait(false);
+        var invoices = _listParser.Parse(content);
+
+        _logger.LogDebug(
+            "Retrieved {InvoiceCount} invoices from Pohoda using filters: number={Number}, symVar={SymVar}, from={DateFrom}, to={DateTo}.",
+            invoices.Count,
+            filter.Number ?? "",
+            filter.VariableSymbol ?? "",
+            filter.DateFrom?.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture) ?? "",
+            filter.DateTo?.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture) ?? "");
+
+        return invoices;
     }
 
     public async Task<bool> CheckStatusAsync(CancellationToken cancellationToken = default)
@@ -160,6 +164,33 @@ public sealed class PohodaXmlClient
         }
 
         throw new PohodaXmlException("Pohoda XML request failed after all retry attempts.");
+    }
+
+    private async Task<(string RawContent, PohodaResponse Parsed)> SendDataPackAsync(
+        string dataPack,
+        CancellationToken cancellationToken)
+    {
+        var endpoint = BuildEndpointUri("xml");
+        using var response = await SendWithRetryAsync(() => CreateRequest(HttpMethod.Post, endpoint, dataPack), cancellationToken)
+            .ConfigureAwait(false);
+        var content = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new PohodaXmlException($"Pohoda XML request failed with status {(int)response.StatusCode} {response.ReasonPhrase}.", content);
+        }
+
+        var parsed = _responseParser.Parse(content);
+        EnsureSuccess(parsed, content);
+
+        if (parsed.Warnings.Count > 0)
+        {
+            _logger.LogWarning(
+                "Pohoda response returned warnings: {Warnings}",
+                string.Join("; ", parsed.Warnings));
+        }
+
+        return (content, parsed);
     }
 
     private static bool ShouldRetry(HttpResponseMessage response)
