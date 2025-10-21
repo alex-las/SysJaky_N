@@ -20,4 +20,6 @@ public class NewsletterSectionCategory
     public ICollection<NewsletterSection> Sections { get; set; } = new List<NewsletterSection>();
 
     public ICollection<NewsletterIssueCategory> IssueCategories { get; set; } = new List<NewsletterIssueCategory>();
+
+    public ICollection<NewsletterTemplateRegion> TemplateRegions { get; set; } = new List<NewsletterTemplateRegion>();
 }

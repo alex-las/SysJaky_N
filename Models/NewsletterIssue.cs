@@ -7,6 +7,11 @@ public class NewsletterIssue
     public int Id { get; set; }
 
     [Required]
+    public int NewsletterTemplateId { get; set; }
+
+    public NewsletterTemplate NewsletterTemplate { get; set; } = default!;
+
+    [Required]
     [MaxLength(180)]
     public string Subject { get; set; } = string.Empty;
 

@@ -53,6 +53,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<NewsletterSectionCategory> NewsletterSectionCategories { get; set; } = default!;
     public DbSet<NewsletterIssueSection> NewsletterIssueSections { get; set; } = default!;
     public DbSet<NewsletterIssueCategory> NewsletterIssueCategories { get; set; } = default!;
+    public DbSet<NewsletterTemplate> NewsletterTemplates { get; set; } = default!;
+    public DbSet<NewsletterTemplateRegion> NewsletterTemplateRegions { get; set; } = default!;
 
 
     protected override void OnModelCreating(ModelBuilder builder)
@@ -198,6 +200,30 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .WithMany(l => l.ProgressRecords)
             .HasForeignKey(lp => lp.LessonId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<NewsletterTemplate>()
+            .HasMany(template => template.Regions)
+            .WithOne(region => region.NewsletterTemplate)
+            .HasForeignKey(region => region.NewsletterTemplateId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<NewsletterTemplateRegion>()
+            .HasOne(region => region.Category)
+            .WithMany(category => category.TemplateRegions)
+            .HasForeignKey(region => region.NewsletterSectionCategoryId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<NewsletterIssue>()
+            .HasOne(issue => issue.NewsletterTemplate)
+            .WithMany()
+            .HasForeignKey(issue => issue.NewsletterTemplateId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.Entity<NewsletterIssueSection>()
+            .HasOne(section => section.TemplateRegion)
+            .WithMany(region => region.IssueSections)
+            .HasForeignKey(section => section.NewsletterTemplateRegionId)
+            .OnDelete(DeleteBehavior.SetNull);
 
         builder.Entity<LessonProgress>()
             .HasOne(lp => lp.User)

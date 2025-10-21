@@ -10,5 +10,9 @@ public class NewsletterIssueSection
 
     public NewsletterSection NewsletterSection { get; set; } = default!;
 
+    public int? NewsletterTemplateRegionId { get; set; }
+
+    public NewsletterTemplateRegion? TemplateRegion { get; set; }
+
     public int SortOrder { get; set; }
 }
