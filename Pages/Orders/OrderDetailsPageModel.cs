@@ -18,6 +18,7 @@ using SysJaky_N.Authorization;
 using SysJaky_N.Data;
 using SysJaky_N.Models;
 using SysJaky_N.Services;
+using SysJaky_N.Services.Pohoda;
 
 namespace SysJaky_N.Pages.Orders;
 
@@ -29,6 +30,7 @@ public abstract class OrderDetailsPageModel : PageModel
     private readonly IConverter _converter;
     private readonly IRazorViewEngine _viewEngine;
     private readonly ITempDataProvider _tempDataProvider;
+    private readonly IPohodaExportService _pohodaExportService;
 
     protected OrderDetailsPageModel(
         ApplicationDbContext context,
@@ -36,7 +38,8 @@ public abstract class OrderDetailsPageModel : PageModel
         PaymentService paymentService,
         IConverter converter,
         IRazorViewEngine viewEngine,
-        ITempDataProvider tempDataProvider)
+        ITempDataProvider tempDataProvider,
+        IPohodaExportService pohodaExportService)
     {
         _context = context;
         _configuration = configuration;
@@ -44,6 +47,7 @@ public abstract class OrderDetailsPageModel : PageModel
         _converter = converter;
         _viewEngine = viewEngine;
         _tempDataProvider = tempDataProvider;
+        _pohodaExportService = pohodaExportService;
     }
 
     public Order Order { get; protected set; } = default!;
@@ -136,6 +140,7 @@ public abstract class OrderDetailsPageModel : PageModel
         System.IO.File.WriteAllBytes(filePath, pdf);
         order.InvoicePath = $"/invoices/{fileName}";
         await _context.SaveChangesAsync();
+        await _pohodaExportService.MarkInvoiceGeneratedAsync(order, filePath);
 
         return File(pdf, "application/pdf", fileName);
     }
