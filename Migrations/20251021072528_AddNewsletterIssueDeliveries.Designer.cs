@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SysJaky_N.Data;
 
@@ -11,9 +12,11 @@ using SysJaky_N.Data;
 namespace SysJaky_N.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251021072528_AddNewsletterIssueDeliveries")]
+    partial class AddNewsletterIssueDeliveries
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1479,53 +1482,6 @@ namespace SysJaky_N.Migrations
                     b.ToTable("PaymentIds");
                 });
 
-            modelBuilder.Entity("SysJaky_N.Models.PohodaExportJob", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AttemptCount")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedAtUtc")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<DateTime?>("FailedAtUtc")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<DateTime?>("LastAttemptAtUtc")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("LastError")
-                        .HasMaxLength(2000)
-                        .HasColumnType("varchar(2000)");
-
-                    b.Property<DateTime?>("NextAttemptAtUtc")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<int>("OrderId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<DateTime?>("SucceededAtUtc")
-                        .HasColumnType("datetime(6)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OrderId")
-                        .IsUnique();
-
-                    b.HasIndex("Status", "NextAttemptAtUtc");
-
-                    b.ToTable("PohodaExportJobs");
-                });
-
             modelBuilder.Entity("SysJaky_N.Models.PriceSchedule", b =>
                 {
                     b.Property<int>("Id")
@@ -2213,17 +2169,6 @@ namespace SysJaky_N.Migrations
                         .IsRequired();
 
                     b.Navigation("Course");
-
-                    b.Navigation("Order");
-                });
-
-            modelBuilder.Entity("SysJaky_N.Models.PohodaExportJob", b =>
-                {
-                    b.HasOne("SysJaky_N.Models.Order", "Order")
-                        .WithOne()
-                        .HasForeignKey("SysJaky_N.Models.PohodaExportJob", "OrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
 
                     b.Navigation("Order");
                 });

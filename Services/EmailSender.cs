@@ -39,7 +39,12 @@ public enum EmailTemplate
 
 public interface IEmailSender
 {
-    Task SendEmailAsync<TModel>(string to, EmailTemplate template, TModel model, CancellationToken cancellationToken = default);
+    Task<EmailLog> SendEmailAsync<TModel>(
+        string to,
+        EmailTemplate template,
+        TModel model,
+        CancellationToken cancellationToken = default,
+        string? renderedHtml = null);
 }
 
 public class EmailSender : IEmailSender
@@ -125,7 +130,12 @@ public class EmailSender : IEmailSender
         };
     }
 
-    public async Task SendEmailAsync<TModel>(string to, EmailTemplate template, TModel model, CancellationToken cancellationToken = default)
+    public async Task<EmailLog> SendEmailAsync<TModel>(
+        string to,
+        EmailTemplate template,
+        TModel model,
+        CancellationToken cancellationToken = default,
+        string? renderedHtml = null)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(to);
         ArgumentNullException.ThrowIfNull(model);
@@ -154,20 +164,29 @@ public class EmailSender : IEmailSender
 
         _context.EmailLogs.Add(log);
 
+        string? body = renderedHtml;
+
         try
         {
-            var body = await _razorLightEngine.CompileRenderAsync(descriptor.ViewName, model);
+            body ??= await _razorLightEngine.CompileRenderAsync(descriptor.ViewName, model);
+            log.RenderedHtml = body;
             var subject = descriptor.SubjectFactory(model!);
 
             await SendMimeMessageAsync(to, subject, body, cancellationToken);
 
             log.Status = NormalizeStatus(_localizer["Status.Sent"].Value);
+            return log;
         }
         catch (Exception ex)
         {
+            if (body is not null && string.IsNullOrEmpty(log.RenderedHtml))
+            {
+                log.RenderedHtml = body;
+            }
+
             log.Status = NormalizeStatus(_localizer["Status.Failed", ex.Message].Value);
             _logger.LogError(ex, "Failed to send email using template {Template} to {Recipient}.", template, to);
-            throw;
+            throw new EmailSendException($"Failed to send email using template {template} to {to}.", ex, log);
         }
         finally
         {
@@ -197,5 +216,16 @@ public class EmailSender : IEmailSender
     {
         const int maxLength = 256;
         return status.Length <= maxLength ? status : status[..maxLength];
+    }
+
+    public sealed class EmailSendException : Exception
+    {
+        public EmailSendException(string message, Exception innerException, EmailLog emailLog)
+            : base(message, innerException)
+        {
+            EmailLog = emailLog ?? throw new ArgumentNullException(nameof(emailLog));
+        }
+
+        public EmailLog EmailLog { get; }
     }
 }

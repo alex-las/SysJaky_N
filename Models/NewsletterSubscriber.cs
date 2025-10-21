@@ -25,4 +25,6 @@ public class NewsletterSubscriber
     public DateTime? ConsentGivenAtUtc { get; set; }
 
     public ICollection<NewsletterSubscriberCategory> PreferredCategories { get; set; } = new List<NewsletterSubscriberCategory>();
+
+    public ICollection<NewsletterIssueDelivery> Deliveries { get; set; } = new List<NewsletterIssueDelivery>();
 }

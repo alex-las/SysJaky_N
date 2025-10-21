@@ -1,0 +1,115 @@
+@page "{id:int}"
+@model SysJaky_N.Pages.Admin.Newsletters.DetailsModel
+@using System.Text.Encodings.Web
+
+<h1 class="mb-4">@ViewData["Title"]</h1>
+
+<a class="btn btn-outline-secondary btn-sm mb-4" asp-page="Index">&larr; Zpět na přehled</a>
+
+<section class="mb-5">
+    <div class="card">
+        <div class="card-body">
+            <h2 class="h4 mb-3">Informace o newsletteru</h2>
+            <dl class="row mb-0">
+                <dt class="col-sm-3">Předmět</dt>
+                <dd class="col-sm-9">@Model.Issue.Subject</dd>
+                <dt class="col-sm-3">Preheader</dt>
+                <dd class="col-sm-9">@(string.IsNullOrWhiteSpace(Model.Issue.Preheader) ? Html.Raw("<span class=\"text-muted\">Neuvedeno</span>") : Model.Issue.Preheader)</dd>
+                <dt class="col-sm-3">Šablona</dt>
+                <dd class="col-sm-9">@Model.Issue.NewsletterTemplate?.Name</dd>
+                <dt class="col-sm-3">Vytvořeno</dt>
+                <dd class="col-sm-9">@Model.Issue.CreatedAtUtc.ToLocalTime().ToString("g")</dd>
+                <dt class="col-sm-3">Odesláno</dt>
+                <dd class="col-sm-9">
+                    @if (Model.Issue.SentAtUtc.HasValue)
+                    {
+                        @Model.Issue.SentAtUtc.Value.ToLocalTime().ToString("g")
+                    }
+                    else if (Model.Issue.ScheduledForUtc.HasValue)
+                    {
+                        <span class="text-muted">Naplánováno na @Model.Issue.ScheduledForUtc.Value.ToLocalTime().ToString("g")</span>
+                    }
+                    else
+                    {
+                        <span class="text-muted">Neodesláno</span>
+                    }
+                </dd>
+                <dt class="col-sm-3">Kategorie</dt>
+                <dd class="col-sm-9">
+                    @if (Model.Issue.Categories.Count == 0)
+                    {
+                        <span class="text-muted">Bez kategorií</span>
+                    }
+                    else
+                    {
+                        foreach (var category in Model.Issue.Categories)
+                        {
+                            <span class="badge bg-secondary me-1">@category.NewsletterSectionCategory?.Name</span>
+                        }
+                    }
+                </dd>
+            </dl>
+        </div>
+    </div>
+</section>
+
+<section>
+    <h2 class="h4 mb-3">Historie doručení</h2>
+    @if (Model.Deliveries.Count == 0)
+    {
+        <p class="text-muted">Pro tento newsletter zatím neexistují žádné záznamy o doručení.</p>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-striped align-middle">
+                <thead>
+                    <tr>
+                        <th>Příjemce</th>
+                        <th>Stav</th>
+                        <th>Odesláno</th>
+                        <th>ID logu</th>
+                        <th>Archivovaný HTML</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var delivery in Model.Deliveries)
+                    {
+                        <tr>
+                            <td>
+                                <div>@delivery.RecipientEmail</div>
+                                <small class="text-muted">ID odběratele: @delivery.NewsletterSubscriberId</small>
+                            </td>
+                            <td>@delivery.Status</td>
+                            <td>@delivery.SentUtc.ToLocalTime().ToString("g")</td>
+                            <td>
+                                @if (delivery.EmailLogId.HasValue)
+                                {
+                                    <code>@delivery.EmailLogId.Value</code>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">-</span>
+                                }
+                            </td>
+                            <td>
+                                <details>
+                                    <summary>Zobrazit HTML</summary>
+                                    @if (string.IsNullOrEmpty(delivery.RenderedHtml))
+                                    {
+                                        <p class="text-muted mb-0">HTML není k dispozici.</p>
+                                    }
+                                    else
+                                    {
+                                        var encoded = HtmlEncoder.Default.Encode(delivery.RenderedHtml);
+                                        <pre class="small bg-light border rounded p-3 text-break">@Html.Raw(encoded)</pre>
+                                    }
+                                </details>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</section>

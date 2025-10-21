@@ -180,6 +180,7 @@
                                 }
                             </td>
                             <td class="text-end">
+                                <a class="btn btn-outline-secondary btn-sm me-1" asp-page="Details" asp-route-id="@issue.Id">Detail</a>
                                 <form method="post" asp-page-handler="SendIssue" class="d-inline">
                                     <input type="hidden" name="id" value="@issue.Id" />
                                     <button type="submit" class="btn btn-outline-primary btn-sm">Odeslat</button>

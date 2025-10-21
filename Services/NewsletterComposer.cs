@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using RazorLight;
 using SysJaky_N.Data;
 using SysJaky_N.EmailTemplates.Models;
 using SysJaky_N.Models;
@@ -15,12 +16,19 @@ public sealed class NewsletterComposer : INewsletterComposer
 {
     private readonly ApplicationDbContext _context;
     private readonly IEmailSender _emailSender;
+    private readonly IRazorLightEngine _razorLightEngine;
     private readonly ILogger<NewsletterComposer> _logger;
+    private const string NewsletterTemplateViewName = "NewsletterIssue.cshtml";
 
-    public NewsletterComposer(ApplicationDbContext context, IEmailSender emailSender, ILogger<NewsletterComposer> logger)
+    public NewsletterComposer(
+        ApplicationDbContext context,
+        IEmailSender emailSender,
+        IRazorLightEngine razorLightEngine,
+        ILogger<NewsletterComposer> logger)
     {
         _context = context;
         _emailSender = emailSender;
+        _razorLightEngine = razorLightEngine;
         _logger = logger;
     }
 
@@ -180,14 +188,63 @@ public sealed class NewsletterComposer : INewsletterComposer
                 Regions = emailRegions
             };
 
+            var delivery = new NewsletterIssueDelivery
+            {
+                NewsletterIssueId = issue.Id,
+                NewsletterSubscriberId = subscriber.Id,
+                RecipientEmail = subscriber.Email,
+                SentUtc = DateTime.UtcNow,
+                Status = NormalizeStatus("Pending")
+            };
+
+            _context.NewsletterIssueDeliveries.Add(delivery);
+
+            var renderSucceeded = false;
+            var renderedHtml = string.Empty;
+
             try
             {
-                await _emailSender.SendEmailAsync(subscriber.Email, EmailTemplate.NewsletterIssue, model, cancellationToken)
+                renderedHtml = await _razorLightEngine
+                    .CompileRenderAsync(NewsletterTemplateViewName, model)
                     .ConfigureAwait(false);
-                sentCount++;
+                delivery.RenderedHtml = renderedHtml;
+                renderSucceeded = true;
             }
             catch (Exception ex)
             {
+                delivery.Status = NormalizeStatus($"Rendering failed: {ex.Message}");
+                _logger.LogError(ex, "Failed to render newsletter issue {IssueId} for subscriber {SubscriberId}.", issueId, subscriber.Id);
+                continue;
+            }
+
+            if (!renderSucceeded)
+            {
+                continue;
+            }
+
+            try
+            {
+                var log = await _emailSender
+                    .SendEmailAsync(subscriber.Email, EmailTemplate.NewsletterIssue, model, cancellationToken, renderedHtml)
+                    .ConfigureAwait(false);
+
+                delivery.EmailLogId = log.Id;
+                delivery.Status = log.Status;
+                delivery.SentUtc = log.SentUtc;
+                sentCount++;
+            }
+            catch (EmailSender.EmailSendException ex)
+            {
+                var log = ex.EmailLog;
+                delivery.EmailLogId = log.Id;
+                delivery.Status = log.Status;
+                delivery.SentUtc = log.SentUtc;
+                _logger.LogError(ex, "Failed to send newsletter issue {IssueId} to subscriber {SubscriberId}.", issueId, subscriber.Id);
+            }
+            catch (Exception ex)
+            {
+                delivery.Status = NormalizeStatus($"Failed to send: {ex.Message}");
+                delivery.SentUtc = DateTime.UtcNow;
                 _logger.LogError(ex, "Failed to send newsletter issue {IssueId} to subscriber {SubscriberId}.", issueId, subscriber.Id);
             }
         }
@@ -200,5 +257,11 @@ public sealed class NewsletterComposer : INewsletterComposer
         await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
         return sentCount;
+    }
+
+    private static string NormalizeStatus(string status)
+    {
+        const int maxLength = 256;
+        return status.Length <= maxLength ? status : status[..maxLength];
     }
 }

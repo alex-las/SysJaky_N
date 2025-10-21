@@ -31,4 +31,6 @@ public class NewsletterIssue
     public ICollection<NewsletterIssueSection> Sections { get; set; } = new List<NewsletterIssueSection>();
 
     public ICollection<NewsletterIssueCategory> Categories { get; set; } = new List<NewsletterIssueCategory>();
+
+    public ICollection<NewsletterIssueDelivery> Deliveries { get; set; } = new List<NewsletterIssueDelivery>();
 }
