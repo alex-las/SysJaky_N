@@ -257,7 +257,7 @@ public static class PohodaOrderPayload
     private static string FormatDecimal(decimal value)
         => value.ToString("0.##", CultureInfo.InvariantCulture);
 
-    private static string WriteDocument(XDocument document)
+    internal static string WriteDocument(XDocument document)
     {
         var settings = new XmlWriterSettings
         {

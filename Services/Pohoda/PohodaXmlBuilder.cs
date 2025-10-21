@@ -30,12 +30,4 @@ public sealed class PohodaXmlBuilder
         return xml;
     }
 
-    public string BuildListInvoiceRequest(string externalId, string? applicationName = null)
-    {
-        ArgumentException.ThrowIfNullOrEmpty(externalId);
-
-        var xml = PohodaOrderPayload.CreateListInvoiceRequest(externalId, applicationName);
-        PohodaOrderPayload.ValidateAgainstXsd(xml, _schemas);
-        return xml;
-    }
 }

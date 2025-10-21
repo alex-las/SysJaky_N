@@ -12,6 +12,9 @@
       <lst:requestInvoice />
       <ftr:filter>
         <ftr:number>INV-123</ftr:number>
+        <ftr:dateFrom>2024-01-15</ftr:dateFrom>
+        <ftr:dateTill>2024-01-15</ftr:dateTill>
+        <ftr:symVar>42</ftr:symVar>
       </ftr:filter>
     </lst:listInvoiceRequest>
   </dat:dataPackItem>
