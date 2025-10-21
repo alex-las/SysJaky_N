@@ -294,7 +294,7 @@ public sealed class PohodaExportService : IPohodaExportService
             directory = "temp";
         }
 
-        if (directory.StartsWith('/', StringComparison.Ordinal) || directory.StartsWith('\\', StringComparison.Ordinal))
+        if (directory.StartsWith("/", StringComparison.Ordinal) || directory.StartsWith("\\", StringComparison.Ordinal))
         {
             directory = directory.TrimStart('/', '\\');
             return Path.Combine(_contentRootPath, directory);
