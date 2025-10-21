@@ -76,4 +76,8 @@
   <ItemGroup>
     <Compile Remove="SysJaky_N.Tests/**/*.cs" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Logs\" />
+  </ItemGroup>
 </Project>
