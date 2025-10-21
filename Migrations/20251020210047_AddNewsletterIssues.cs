@@ -12,10 +12,6 @@ namespace SysJaky_N.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropIndex(
-                name: "IX_coursecategory_translations_CategoryId",
-                table: "coursecategory_translations");
-
             migrationBuilder.UpdateData(
                 table: "coursecategory_translations",
                 keyColumn: "Locale",
@@ -224,11 +220,6 @@ namespace SysJaky_N.Migrations
                 oldMaxLength: 10)
                 .Annotation("MySql:CharSet", "utf8mb4")
                 .OldAnnotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_coursecategory_translations_CategoryId",
-                table: "coursecategory_translations",
-                column: "CategoryId");
         }
     }
 }
