@@ -659,6 +659,10 @@ public class IndexModel : PageModel
         {
             TempData["CartError"] = result.ErrorMessage;
         }
+        else
+        {
+            TempData["CartSuccess"] = _localizer["CartAddSuccess"].Value;
+        }
         return RedirectToPage();
     }
 }

@@ -23,6 +23,7 @@
         priceDisplay = course.PriceDisplay,
         durationDisplay = course.DurationDisplay,
         detailsUrl = course.DetailsUrl,
+        addToCartUrl = course.AddToCartUrl,
         wishlistUrl = course.WishlistUrl,
         isoStandard = course.IsoStandard,
         norms = course.Norms,
@@ -92,10 +93,15 @@
 
 @if (TempData["CartError"] is string cartError && !string.IsNullOrWhiteSpace(cartError))
 {
-    <div class="alert alert-danger" role="alert">@cartError</div>
+    <div class="rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-800" role="alert">@cartError</div>
 }
 
-<div class="space-y-6" x-data="courseFilters()">
+@if (TempData["CartSuccess"] is string cartSuccess && !string.IsNullOrWhiteSpace(cartSuccess))
+{
+    <div class="rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-800" role="status">@cartSuccess</div>
+}
+
+<div class="mx-auto max-w-7xl space-y-6" x-data="courseFilters()">
     <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
         <div class="grid gap-6 lg:grid-cols-12">
             <label class="flex flex-col gap-2 lg:col-span-5">
@@ -256,20 +262,33 @@
                                         </template>
                                     </div>
                                 </div>
-                                <div class="mt-6 flex flex-col gap-3">
+                                <div class="mt-6 flex flex-col gap-4">
                                     <div class="flex items-center justify-between">
                                         <span class="text-sm text-slate-500" x-text="course.durationDisplay"></span>
                                         <a class="inline-flex items-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-500"
                                            :href="course.detailsUrl"
                                            x-text="detailsLabel"></a>
                                     </div>
-                                    <form method="post" x-show="course.wishlistUrl" :action="course.wishlistUrl" class="inline-flex">
-                                        @Html.AntiForgeryToken()
-                                        <button type="submit" class="inline-flex items-center gap-2 rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-600 transition hover:border-blue-500 hover:text-blue-600">
-                                            <i class="bi bi-heart" aria-hidden="true"></i>
-                                            <span x-text="wishlistLabel"></span>
-                                        </button>
-                                    </form>
+                                    <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                                        <template x-if="course.addToCartUrl">
+                                            <form method="post" :action="course.addToCartUrl" class="inline-flex w-full sm:w-auto">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="courseId" :value="course.id" />
+                                                <button type="submit"
+                                                        class="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600">
+                                                    <i class="bi bi-cart-plus" aria-hidden="true"></i>
+                                                    <span>@Localizer["AddToCartLabel"]</span>
+                                                </button>
+                                            </form>
+                                        </template>
+                                        <form method="post" x-show="course.wishlistUrl" :action="course.wishlistUrl" class="inline-flex w-full sm:w-auto">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-600 transition hover:border-blue-500 hover:text-blue-600">
+                                                <i class="bi bi-heart" aria-hidden="true"></i>
+                                                <span x-text="wishlistLabel"></span>
+                                            </button>
+                                        </form>
+                                    </div>
                                 </div>
                             </article>
                         </template>
@@ -393,6 +412,7 @@
                     priceDisplay: rawCourse.priceDisplay || rawCourse.PriceDisplay || '',
                     durationDisplay: rawCourse.durationDisplay || rawCourse.DurationDisplay || '',
                     detailsUrl: detailsUrl,
+                    addToCartUrl: rawCourse.addToCartUrl || rawCourse.AddToCartUrl || '',
                     wishlistUrl: wishlistUrl,
                     isoStandard: isoStandard,
                     norms: norms,
