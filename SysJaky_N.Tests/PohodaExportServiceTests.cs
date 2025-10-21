@@ -171,7 +171,7 @@ public class PohodaExportServiceTests
             var encoding = Encoding.GetEncoding(options.EncodingName);
             var content = await File.ReadAllTextAsync(filePath, encoding);
 
-            Assert.Contains($"Order-{order.Id}", content);
+            Assert.Contains($"Invoice-{order.Id}", content);
         }
         finally
         {
