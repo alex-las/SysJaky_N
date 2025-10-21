@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -43,7 +44,8 @@ public class PohodaExportServiceTests
             Username = "user",
             Password = "pass",
             Application = "SysJaky_N",
-            TimeoutSeconds = 30
+            TimeoutSeconds = 30,
+            RetryCount = 0
         };
 
         var context = CreateDbContext();
@@ -63,7 +65,8 @@ public class PohodaExportServiceTests
             CreateListBuilder(),
             CreateListParser(),
             NullLogger<PohodaXmlClient>.Instance);
-        var service = new PohodaExportService(client, builder, context, TimeProvider.System, Options.Create(options), new NoopAuditService(), CreateHostEnvironment(), NullLogger<PohodaExportService>.Instance);
+        var idempotencyStore = CreateIdempotencyStore(context);
+        var service = new PohodaExportService(client, builder, context, TimeProvider.System, Options.Create(options), new NoopAuditService(), CreateHostEnvironment(), idempotencyStore, NullLogger<PohodaExportService>.Instance);
 
         await service.ExportOrderAsync(job);
 
@@ -87,7 +90,8 @@ public class PohodaExportServiceTests
             Username = "user",
             Password = "pass",
             Application = "SysJaky_N",
-            TimeoutSeconds = 30
+            TimeoutSeconds = 30,
+            RetryCount = 0
         };
 
         var client = new PohodaXmlClient(
@@ -123,7 +127,8 @@ public class PohodaExportServiceTests
             Password = "pass",
             Application = "SysJaky_N",
             ExportWorkerBatchSize = 5,
-            TimeoutSeconds = 30
+            TimeoutSeconds = 30,
+            RetryCount = 0
         };
 
         var context = CreateDbContext();
@@ -141,7 +146,23 @@ public class PohodaExportServiceTests
             CreateListBuilder(),
             CreateListParser(),
             NullLogger<PohodaXmlClient>.Instance);
-        var service = new PohodaExportService(client, builder, context, TimeProvider.System, Options.Create(options), new NoopAuditService(), CreateHostEnvironment(), NullLogger<PohodaExportService>.Instance);
+        var clientOptions = (PohodaXmlOptions)typeof(PohodaXmlClient)
+            .GetField("_options", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)!
+            .GetValue(client)!;
+        Assert.Equal(0, clientOptions.RetryCount);
+        var parser = CreateListParser();
+        var parsed = parser.Parse(CreateListInvoiceResponse(order.Id, "INV-42"));
+        Assert.Contains(parsed, status => status.SymVar == order.Id.ToString(CultureInfo.InvariantCulture));
+        var filter = new PohodaListFilter
+        {
+            VariableSymbol = order.Id.ToString(CultureInfo.InvariantCulture),
+            DateFrom = DateOnly.FromDateTime(order.CreatedAt),
+            DateTo = DateOnly.FromDateTime(order.CreatedAt)
+        };
+        var listRequestTemplate = CreateListBuilder().Build(filter, options.Application);
+        Assert.Contains("listInvoiceRequest", listRequestTemplate, StringComparison.OrdinalIgnoreCase);
+        var idempotencyStore = CreateIdempotencyStore(context);
+        var service = new PohodaExportService(client, builder, context, TimeProvider.System, Options.Create(options), new NoopAuditService(), CreateHostEnvironment(), idempotencyStore, NullLogger<PohodaExportService>.Instance);
 
         var services = new Microsoft.Extensions.DependencyInjection.ServiceCollection();
         services.AddSingleton(context);
@@ -192,7 +213,8 @@ public class PohodaExportServiceTests
             CreateListBuilder(),
             CreateListParser(),
             NullLogger<PohodaXmlClient>.Instance);
-        var service = new PohodaExportService(client, builder, context, TimeProvider.System, Options.Create(options), new NoopAuditService(), CreateHostEnvironment(), NullLogger<PohodaExportService>.Instance);
+        var idempotencyStore = CreateIdempotencyStore(context);
+        var service = new PohodaExportService(client, builder, context, TimeProvider.System, Options.Create(options), new NoopAuditService(), CreateHostEnvironment(), idempotencyStore, NullLogger<PohodaExportService>.Instance);
 
         try
         {
@@ -219,6 +241,60 @@ public class PohodaExportServiceTests
         }
     }
 
+    [Fact]
+    public async Task ExportOrderAsync_WhenTimeoutThenInvoiceExists_CompletesWithoutResend()
+    {
+        var options = new PohodaXmlOptions
+        {
+            BaseUrl = "https://pohoda.example.com",
+            Username = "user",
+            Password = "pass",
+            Application = "SysJaky_N",
+            TimeoutSeconds = 30
+        };
+
+        var context = CreateDbContext();
+        var order = CreateOrder();
+        context.Orders.Add(order);
+        var job = new PohodaExportJob { OrderId = order.Id, Order = order };
+        context.PohodaExportJobs.Add(job);
+        await context.SaveChangesAsync();
+
+        var builder = CreateBuilder();
+        var client = new TestPohodaClient(order.Id);
+        var idempotencyStore = CreateIdempotencyStore(context);
+        var service = new PohodaExportService(
+            client,
+            builder,
+            context,
+            TimeProvider.System,
+            Options.Create(options),
+            new NoopAuditService(),
+            CreateHostEnvironment(),
+            idempotencyStore,
+            NullLogger<PohodaExportService>.Instance);
+
+        await service.QueueOrderAsync(order);
+
+        await service.ExportOrderAsync(job);
+
+        Assert.Equal(PohodaExportJobStatus.Pending, job.Status);
+        Assert.Equal(1, job.AttemptCount);
+        Assert.Equal(1, client.SendInvoiceCallCount);
+        Assert.Equal(1, client.ListInvoiceCallCount);
+
+        await service.ExportOrderAsync(job);
+
+        Assert.Equal(2, job.AttemptCount);
+        Assert.Equal(1, client.SendInvoiceCallCount);
+        Assert.Equal(2, client.ListInvoiceCallCount);
+
+        Assert.Equal(PohodaExportJobStatus.Succeeded, job.Status);
+        Assert.Equal("INV-42", order.InvoiceNumber);
+        Assert.Equal("INV-42", job.DocumentNumber);
+        var record = context.PohodaIdempotencyRecords.Single();
+        Assert.Equal(PohodaIdempotencyStatus.Succeeded, record.Status);
+    }
     [Fact]
     public async Task ExportOrderAsync_WhenDisabled_UsesContentRootTempDirectory()
     {
@@ -252,7 +328,8 @@ public class PohodaExportServiceTests
             CreateListParser(),
             NullLogger<PohodaXmlClient>.Instance);
         var environment = CreateHostEnvironment(contentRoot);
-        var service = new PohodaExportService(client, builder, context, TimeProvider.System, Options.Create(options), new NoopAuditService(), environment, NullLogger<PohodaExportService>.Instance);
+        var idempotencyStore = CreateIdempotencyStore(context);
+        var service = new PohodaExportService(client, builder, context, TimeProvider.System, Options.Create(options), new NoopAuditService(), environment, idempotencyStore, NullLogger<PohodaExportService>.Instance);
 
         try
         {
@@ -312,6 +389,7 @@ public class PohodaExportServiceTests
             Options.Create(options),
             new NoopAuditService(),
             environment,
+            CreateIdempotencyStore(context),
             NullLogger<PohodaExportService>.Instance);
 
         var method = typeof(PohodaExportService).GetMethod(
@@ -342,6 +420,9 @@ public class PohodaExportServiceTests
 
     private static PohodaListParser CreateListParser()
         => new();
+
+    private static IPohodaIdempotencyStore CreateIdempotencyStore(ApplicationDbContext context)
+        => new PohodaIdempotencyStore(context, TimeProvider.System, NullLogger<PohodaIdempotencyStore>.Instance);
 
     private static Order CreateOrder()
     {
@@ -383,17 +464,89 @@ public class PohodaExportServiceTests
         return order;
     }
 
+    private static string CreateListInvoiceResponse(int orderId, string invoiceNumber)
+    {
+        var symVar = orderId.ToString(CultureInfo.InvariantCulture);
+        return $"<?xml version=\"1.0\" encoding=\"UTF-8\"?><rsp:responsePack xmlns:rsp=\"http://www.stormware.cz/schema/version_2/response.xsd\" state=\"ok\"><rsp:responsePackItem id=\"InvoiceList\" state=\"ok\"><lst:listInvoiceResponse xmlns:lst=\"http://www.stormware.cz/schema/version_2/list.xsd\"><lst:listInvoice><inv:invoice xmlns:inv=\"http://www.stormware.cz/schema/version_2/invoice.xsd\"><inv:invoiceHeader><inv:number><typ:numberAssigned xmlns:typ=\"http://www.stormware.cz/schema/version_2/type.xsd\">{invoiceNumber}</typ:numberAssigned></inv:number><inv:symVar>{symVar}</inv:symVar></inv:invoiceHeader></inv:invoice></lst:listInvoice></lst:listInvoiceResponse></rsp:responsePackItem></rsp:responsePack>";
+    }
+
+    private sealed class TestPohodaClient : IPohodaClient
+    {
+        private readonly string _invoiceNumber = "INV-42";
+        private readonly string _symVar;
+
+        public TestPohodaClient(int orderId)
+        {
+            _symVar = orderId.ToString(CultureInfo.InvariantCulture);
+        }
+
+        public int SendInvoiceCallCount { get; private set; }
+
+        public int ListInvoiceCallCount { get; private set; }
+
+        public Task<PohodaResponse> SendInvoiceAsync(string dataPack, CancellationToken cancellationToken = default)
+        {
+            SendInvoiceCallCount += 1;
+
+            if (SendInvoiceCallCount == 1)
+            {
+                throw new TaskCanceledException("Simulated timeout.");
+            }
+
+            throw new InvalidOperationException("Invoice resend should not occur in this scenario.");
+        }
+
+        public Task<IReadOnlyCollection<InvoiceStatus>> ListInvoicesAsync(
+            PohodaListFilter filter,
+            CancellationToken cancellationToken = default)
+        {
+            ListInvoiceCallCount += 1;
+
+            if (ListInvoiceCallCount == 1)
+            {
+                return Task.FromResult<IReadOnlyCollection<InvoiceStatus>>(Array.Empty<InvoiceStatus>());
+            }
+
+            var status = new InvoiceStatus(
+                _invoiceNumber,
+                _symVar,
+                0m,
+                true,
+                null,
+                null);
+
+            return Task.FromResult<IReadOnlyCollection<InvoiceStatus>>(new[] { status });
+        }
+
+        public Task<bool> CheckStatusAsync(CancellationToken cancellationToken = default)
+            => Task.FromResult(true);
+    }
+
     private sealed class TestHttpMessageHandler : HttpMessageHandler
     {
         public IList<HttpRequestMessage> Requests { get; } = new List<HttpRequestMessage>();
+        public IList<string> Payloads { get; } = new List<string>();
 
-        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        public Func<HttpRequestMessage, CancellationToken, Task<HttpResponseMessage>>? OnSendAsync { get; set; }
+
+        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             Requests.Add(request);
 
+            if (request.Content is not null)
+            {
+                var payload = await request.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
+                Payloads.Add(payload);
+            }
+
+            if (OnSendAsync is not null)
+            {
+                return await OnSendAsync(request, cancellationToken).ConfigureAwait(false);
+            }
+
             if (request.Method == HttpMethod.Get)
             {
-                return Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK));
+                return new HttpResponseMessage(HttpStatusCode.OK);
             }
 
             var content = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><rsp:responsePack xmlns:rsp=\"http://www.stormware.cz/schema/version_2/response.xsd\" state=\"ok\"><rsp:responsePackItem id=\"Invoice\" state=\"ok\" documentNumber=\"INV-42\" documentId=\"12345\"><rsp:invoiceResponse><inv:invoice xmlns:inv=\"http://www.stormware.cz/schema/version_2/invoice.xsd\"><inv:invoiceHeader><inv:number><typ:numberAssigned xmlns:typ=\"http://www.stormware.cz/schema/version_2/type.xsd\">INV-42</typ:numberAssigned></inv:number></inv:invoiceHeader></inv:invoice></rsp:invoiceResponse></rsp:responsePackItem></rsp:responsePack>";
@@ -402,7 +555,7 @@ public class PohodaExportServiceTests
                 Content = new StringContent(content)
             };
 
-            return Task.FromResult(response);
+            return response;
         }
     }
 

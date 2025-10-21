@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
@@ -24,6 +25,7 @@ public sealed class PohodaExportService : IPohodaExportService
     private readonly TimeProvider _timeProvider;
     private readonly PohodaXmlOptions _options;
     private readonly IAuditService _auditService;
+    private readonly IPohodaIdempotencyStore _idempotencyStore;
     private readonly string _contentRootPath;
 
     private static readonly JsonSerializerOptions AuditSerializerOptions = new(JsonSerializerDefaults.Web);
@@ -36,6 +38,7 @@ public sealed class PohodaExportService : IPohodaExportService
         IOptions<PohodaXmlOptions> options,
         IAuditService auditService,
         IHostEnvironment hostEnvironment,
+        IPohodaIdempotencyStore idempotencyStore,
         ILogger<PohodaExportService> logger)
     {
         _xmlClient = xmlClient ?? throw new ArgumentNullException(nameof(xmlClient));
@@ -45,6 +48,7 @@ public sealed class PohodaExportService : IPohodaExportService
         _options = (options ?? throw new ArgumentNullException(nameof(options))).Value;
         _auditService = auditService ?? throw new ArgumentNullException(nameof(auditService));
         var environment = hostEnvironment ?? throw new ArgumentNullException(nameof(hostEnvironment));
+        _idempotencyStore = idempotencyStore ?? throw new ArgumentNullException(nameof(idempotencyStore));
         _contentRootPath = string.IsNullOrWhiteSpace(environment.ContentRootPath)
             ? AppContext.BaseDirectory
             : environment.ContentRootPath;
@@ -90,6 +94,12 @@ public sealed class PohodaExportService : IPohodaExportService
             existingJob.Warnings = null;
         }
 
+        await _idempotencyStore.UpsertAsync(
+            order.Id,
+            CreateDataPackId(order),
+            PohodaIdempotencyStatus.Pending,
+            cancellationToken).ConfigureAwait(false);
+
         await _dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
         await LogAuditEventAsync(
@@ -119,6 +129,8 @@ public sealed class PohodaExportService : IPohodaExportService
         {
             var reason = $"Order {job.OrderId} not found.";
             MarkJobAsFailed(job, reason);
+            await _idempotencyStore.UpdateStatusAsync(job.OrderId, PohodaIdempotencyStatus.Failed, cancellationToken)
+                .ConfigureAwait(false);
             await _dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
             using (BeginPohodaExportScope(job, null))
@@ -154,6 +166,9 @@ public sealed class PohodaExportService : IPohodaExportService
 
         await _dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
+        await _idempotencyStore.UpdateStatusAsync(order.Id, PohodaIdempotencyStatus.InProgress, cancellationToken)
+            .ConfigureAwait(false);
+
         var invoice = OrderToInvoiceMapper.Map(order);
         var payload = _xmlBuilder.BuildIssuedInvoiceXml(invoice, _options.Application);
 
@@ -161,6 +176,17 @@ public sealed class PohodaExportService : IPohodaExportService
         {
             await HandleDisabledIntegrationAsync(job, order, payload, cancellationToken).ConfigureAwait(false);
             return;
+        }
+
+        if (job.AttemptCount > 1)
+        {
+            var completedBeforeRetry = await TryCompleteFromExistingInvoiceAsync(order, job, cancellationToken)
+                .ConfigureAwait(false);
+
+            if (completedBeforeRetry)
+            {
+                return;
+            }
         }
 
         try
@@ -183,6 +209,9 @@ public sealed class PohodaExportService : IPohodaExportService
 
             await _dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
+            await _idempotencyStore.UpdateStatusAsync(order.Id, PohodaIdempotencyStatus.Succeeded, cancellationToken)
+                .ConfigureAwait(false);
+
             using (BeginPohodaExportScope(job, order))
             {
                 _logger.LogInformation(
@@ -202,7 +231,25 @@ public sealed class PohodaExportService : IPohodaExportService
         }
         catch (Exception ex)
         {
-            HandleJobFailure(job, attemptStartedAtUtc, _timeProvider.GetUtcNow().UtcDateTime, ex);
+            if (IsTimeoutException(ex, cancellationToken))
+            {
+                var completed = await TryCompleteFromExistingInvoiceAsync(order, job, cancellationToken)
+                    .ConfigureAwait(false);
+
+                if (completed)
+                {
+                    return;
+                }
+            }
+
+            var attemptCompletedAtUtc = _timeProvider.GetUtcNow().UtcDateTime;
+            HandleJobFailure(job, attemptStartedAtUtc, attemptCompletedAtUtc, ex);
+
+            var status = job.Status == PohodaExportJobStatus.Failed
+                ? PohodaIdempotencyStatus.Failed
+                : PohodaIdempotencyStatus.Pending;
+
+            await _idempotencyStore.UpdateStatusAsync(order.Id, status, cancellationToken).ConfigureAwait(false);
             await _dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
             using (BeginPohodaExportScope(job, order))
@@ -247,6 +294,9 @@ public sealed class PohodaExportService : IPohodaExportService
         }
     }
 
+    private static string CreateDataPackId(Order order)
+        => $"Invoice-{order.Id.ToString(CultureInfo.InvariantCulture)}";
+
     private static PohodaListFilter CreateInvoiceFilter(Order order)
     {
         var createdDate = DateOnly.FromDateTime(order.CreatedAt);
@@ -266,6 +316,132 @@ public sealed class PohodaExportService : IPohodaExportService
         return _xmlClient.ListInvoicesAsync(filter, cancellationToken);
     }
 
+    private async Task<bool> TryCompleteFromExistingInvoiceAsync(
+        Order order,
+        PohodaExportJob job,
+        CancellationToken cancellationToken)
+    {
+        var filter = CreateInvoiceFilter(order);
+        IReadOnlyCollection<InvoiceStatus> invoices;
+
+        try
+        {
+            invoices = await FetchInvoiceStatusesAsync(filter, cancellationToken).ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            using (BeginPohodaExportScope(job, order))
+            {
+                _logger.LogWarning(ex, "Failed to check existing invoice for order {OrderId}.", order.Id);
+            }
+
+            await LogAuditEventAsync(
+                action: "PohodaInvoiceCheckFailed",
+                job: job,
+                order: order,
+                result: "Failed",
+                error: ex.Message).ConfigureAwait(false);
+
+            return false;
+        }
+
+        var match = FindMatchingInvoice(invoices, order, job);
+
+        using (BeginPohodaExportScope(job, order))
+        {
+            if (match is not null)
+            {
+                _logger.LogInformation(
+                    "Existing invoice {InvoiceNumber} confirmed for order {OrderId} during retry.",
+                    match.Number ?? order.InvoiceNumber ?? job.DocumentNumber ?? "(unknown)",
+                    order.Id);
+            }
+            else
+            {
+                _logger.LogInformation(
+                    "No existing invoice found for order {OrderId} during retry check.",
+                    order.Id);
+            }
+        }
+
+        await LogAuditEventAsync(
+            action: "PohodaInvoiceCheck",
+            job: job,
+            order: order,
+            result: match is not null ? "InvoiceFound" : "InvoiceNotFound",
+            error: match is null ? "Invoice not found during timeout verification." : null).ConfigureAwait(false);
+
+        if (match is null)
+        {
+            return false;
+        }
+
+        if (!string.IsNullOrWhiteSpace(match.Number))
+        {
+            order.InvoiceNumber = match.Number;
+            job.DocumentNumber = match.Number;
+        }
+
+        job.Status = PohodaExportJobStatus.Succeeded;
+        job.SucceededAtUtc = _timeProvider.GetUtcNow().UtcDateTime;
+        job.LastError = null;
+        job.NextAttemptAtUtc = null;
+        job.FailedAtUtc = null;
+        job.Warnings = null;
+
+        await _idempotencyStore.UpdateStatusAsync(order.Id, PohodaIdempotencyStatus.Succeeded, cancellationToken)
+            .ConfigureAwait(false);
+        await _dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+
+        await LogAuditEventAsync(
+            action: "PohodaExportSucceeded",
+            job: job,
+            order: order,
+            result: "SucceededExistingInvoice").ConfigureAwait(false);
+
+        return true;
+    }
+
+    private static InvoiceStatus? FindMatchingInvoice(
+        IReadOnlyCollection<InvoiceStatus> invoices,
+        Order order,
+        PohodaExportJob job)
+    {
+        if (invoices.Count == 0)
+        {
+            return null;
+        }
+
+        var variableSymbol = order.Id.ToString(CultureInfo.InvariantCulture);
+        var knownNumbers = new[]
+            {
+                order.InvoiceNumber,
+                job.DocumentNumber
+            }
+            .Where(value => !string.IsNullOrWhiteSpace(value))
+            .Select(value => value!.Trim())
+            .ToArray();
+
+        return invoices.FirstOrDefault(status =>
+            (!string.IsNullOrWhiteSpace(status.SymVar) && string.Equals(status.SymVar, variableSymbol, StringComparison.OrdinalIgnoreCase))
+            || (!string.IsNullOrWhiteSpace(status.Number) && knownNumbers.Any(number => string.Equals(number, status.Number, StringComparison.OrdinalIgnoreCase))));
+    }
+
+    private static bool IsTimeoutException(Exception exception, CancellationToken cancellationToken)
+    {
+        if (exception is OperationCanceledException operationCanceled)
+        {
+            if (cancellationToken.IsCancellationRequested && operationCanceled.CancellationToken == cancellationToken)
+            {
+                return false;
+            }
+
+            return exception is TaskCanceledException;
+        }
+
+        return exception is TaskCanceledException or TimeoutException;
+    }
+
     private async Task HandleDisabledIntegrationAsync(PohodaExportJob job, Order order, string payload, CancellationToken cancellationToken)
     {
         var filePath = await SaveExportToFileAsync(order, payload, cancellationToken).ConfigureAwait(false);
@@ -280,6 +456,9 @@ public sealed class PohodaExportService : IPohodaExportService
         job.Warnings = null;
 
         await _dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+
+        await _idempotencyStore.UpdateStatusAsync(order.Id, PohodaIdempotencyStatus.Succeeded, cancellationToken)
+            .ConfigureAwait(false);
 
         using (BeginPohodaExportScope(job, order))
         {

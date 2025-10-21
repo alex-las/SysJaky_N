@@ -231,6 +231,7 @@ try
             client.Timeout = TimeSpan.FromSeconds(options.TimeoutSeconds);
         }
     });
+    builder.Services.AddScoped<IPohodaIdempotencyStore, PohodaIdempotencyStore>();
     builder.Services.AddScoped<IPohodaExportService, PohodaExportService>();
     builder.Services.AddHostedService<PohodaExportWorker>();
     builder.Services.Configure<GzipCompressionProviderOptions>(options =>
