@@ -51,7 +51,8 @@ public class PohodaExportServiceTests
         await context.SaveChangesAsync();
 
         var client = new PohodaXmlClient(httpClient, Options.Create(options), NullLogger<PohodaXmlClient>.Instance);
-        var service = new PohodaExportService(client, context, TimeProvider.System, Options.Create(options), new NoopAuditService(), NullLogger<PohodaExportService>.Instance);
+        var mapper = new OrderToInvoiceMapper();
+        var service = new PohodaExportService(client, context, TimeProvider.System, Options.Create(options), new NoopAuditService(), mapper, NullLogger<PohodaExportService>.Instance);
 
         await service.ExportOrderAsync(job);
 
@@ -111,7 +112,8 @@ public class PohodaExportServiceTests
         await context.SaveChangesAsync();
 
         var client = new PohodaXmlClient(httpClient, Options.Create(options), NullLogger<PohodaXmlClient>.Instance);
-        var service = new PohodaExportService(client, context, TimeProvider.System, Options.Create(options), new NoopAuditService(), NullLogger<PohodaExportService>.Instance);
+        var mapper = new OrderToInvoiceMapper();
+        var service = new PohodaExportService(client, context, TimeProvider.System, Options.Create(options), new NoopAuditService(), mapper, NullLogger<PohodaExportService>.Instance);
 
         var services = new Microsoft.Extensions.DependencyInjection.ServiceCollection();
         services.AddSingleton(context);

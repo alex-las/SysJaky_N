@@ -18,6 +18,7 @@ public sealed class PohodaExportService : IPohodaExportService
     private readonly TimeProvider _timeProvider;
     private readonly PohodaXmlOptions _options;
     private readonly IAuditService _auditService;
+    private readonly OrderToInvoiceMapper _orderToInvoiceMapper;
 
     private static readonly JsonSerializerOptions AuditSerializerOptions = new(JsonSerializerDefaults.Web);
 
@@ -27,6 +28,7 @@ public sealed class PohodaExportService : IPohodaExportService
         TimeProvider timeProvider,
         IOptions<PohodaXmlOptions> options,
         IAuditService auditService,
+        OrderToInvoiceMapper orderToInvoiceMapper,
         ILogger<PohodaExportService> logger)
     {
         _xmlClient = xmlClient ?? throw new ArgumentNullException(nameof(xmlClient));
@@ -34,6 +36,7 @@ public sealed class PohodaExportService : IPohodaExportService
         _timeProvider = timeProvider ?? throw new ArgumentNullException(nameof(timeProvider));
         _options = (options ?? throw new ArgumentNullException(nameof(options))).Value;
         _auditService = auditService ?? throw new ArgumentNullException(nameof(auditService));
+        _orderToInvoiceMapper = orderToInvoiceMapper ?? throw new ArgumentNullException(nameof(orderToInvoiceMapper));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
@@ -137,7 +140,8 @@ public sealed class PohodaExportService : IPohodaExportService
 
         await _dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
-        var payload = PohodaOrderPayload.CreateInvoiceDataPack(order, _options.Application);
+        var invoice = _orderToInvoiceMapper.Map(order);
+        var payload = PohodaOrderPayload.CreateInvoiceDataPack(invoice, _options.Application);
         try
         {
             var response = await _xmlClient.SendInvoiceAsync(payload, cancellationToken).ConfigureAwait(false);

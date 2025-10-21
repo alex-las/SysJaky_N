@@ -223,6 +223,7 @@ try
             client.Timeout = TimeSpan.FromSeconds(options.TimeoutSeconds);
         }
     });
+    builder.Services.AddSingleton<OrderToInvoiceMapper>();
     builder.Services.AddScoped<IPohodaExportService, PohodaExportService>();
     builder.Services.AddHostedService<PohodaExportWorker>();
     builder.Services.Configure<GzipCompressionProviderOptions>(options =>

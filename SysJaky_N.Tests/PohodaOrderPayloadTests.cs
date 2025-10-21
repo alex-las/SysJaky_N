@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Linq;
 using System.Xml.Linq;
 using SysJaky_N.Models;
+using SysJaky_N.Models.Billing;
 using SysJaky_N.Services.Pohoda;
 using Xunit;
 
@@ -18,8 +19,10 @@ public class PohodaOrderPayloadTests
     public void CreateInvoiceDataPack_BuildsInvoiceWithDetailAndSummary()
     {
         var order = CreateSampleOrder();
+        var mapper = new OrderToInvoiceMapper();
+        var invoice = mapper.Map(order);
 
-        var xml = PohodaOrderPayload.CreateInvoiceDataPack(order, "SysJaky_N");
+        var xml = PohodaOrderPayload.CreateInvoiceDataPack(invoice, "SysJaky_N");
 
         Assert.Contains("encoding=\"windows-1250\"", xml, StringComparison.OrdinalIgnoreCase);
 
@@ -29,30 +32,30 @@ public class PohodaOrderPayloadTests
         Assert.Equal("dataPack", root!.Name.LocalName);
         Assert.Equal("2.0", root.Attribute("version")?.Value);
 
-        var invoice = root.Element(Dat + "dataPackItem")?.Element(Inv + "invoice");
-        Assert.NotNull(invoice);
+        var invoiceElement = root.Element(Dat + "dataPackItem")?.Element(Inv + "invoice");
+        Assert.NotNull(invoiceElement);
 
-        var header = invoice!.Element(Inv + "invoiceHeader");
+        var header = invoiceElement!.Element(Inv + "invoiceHeader");
         Assert.NotNull(header);
-        Assert.Equal($"Objednávka {order.Id}", header!.Element(Inv + "text")?.Value);
-        Assert.Equal(order.PaymentConfirmation, header.Element(Inv + "symSpec")?.Value);
-        Assert.Equal(order.InvoicePath, header.Element(Inv + "note")?.Value);
+        Assert.Equal(invoice.Header.Text, header!.Element(Inv + "text")?.Value);
+        Assert.Equal(invoice.Header.SpecificSymbol, header.Element(Inv + "symSpec")?.Value);
+        Assert.Equal(invoice.Header.Note, header.Element(Inv + "note")?.Value);
 
-        var detail = invoice.Element(Inv + "invoiceDetail");
+        var detail = invoiceElement.Element(Inv + "invoiceDetail");
         Assert.NotNull(detail);
         var items = detail!.Elements(Inv + "invoiceItem").ToList();
-        Assert.Equal(order.Items.Count, items.Count);
+        Assert.Equal(invoice.Items.Count, items.Count);
 
         var firstItem = items.First();
-        Assert.Equal(order.Items[0].Course!.Title, firstItem.Element(Inv + "text")?.Value);
-        Assert.Equal(order.Items[0].Quantity.ToString(CultureInfo.InvariantCulture), firstItem.Element(Inv + "quantity")?.Value);
+        Assert.Equal(invoice.Items[0].Name, firstItem.Element(Inv + "text")?.Value);
+        Assert.Equal(invoice.Items[0].Quantity.ToString(CultureInfo.InvariantCulture), firstItem.Element(Inv + "quantity")?.Value);
 
         var currency = firstItem.Element(Inv + "homeCurrency");
-        Assert.Equal(order.Items[0].UnitPriceExclVat.ToString("0.##", CultureInfo.InvariantCulture), currency?.Element(Typ + "unitPrice")?.Value);
+        Assert.Equal(invoice.Items[0].UnitPriceExclVat.ToString("0.##", CultureInfo.InvariantCulture), currency?.Element(Typ + "unitPrice")?.Value);
 
-        var summary = invoice.Element(Inv + "invoiceSummary");
+        var summary = invoiceElement.Element(Inv + "invoiceSummary");
         Assert.NotNull(summary);
-        Assert.Equal(order.Total.ToString("0.##", CultureInfo.InvariantCulture), summary!.Descendants(Typ + "priceSum").Single().Value);
+        Assert.Equal(invoice.Summary.TotalInclVat.ToString("0.##", CultureInfo.InvariantCulture), summary!.Descendants(Typ + "priceSum").Single().Value);
     }
 
     [Fact]
@@ -61,8 +64,10 @@ public class PohodaOrderPayloadTests
         var order = CreateSampleOrder();
         order.TotalPrice = 400m;
         order.Total = 363m;
+        var mapper = new OrderToInvoiceMapper();
+        var invoice = mapper.Map(order);
 
-        var xml = PohodaOrderPayload.CreateInvoiceDataPack(order, "SysJaky_N");
+        var xml = PohodaOrderPayload.CreateInvoiceDataPack(invoice, "SysJaky_N");
         var document = XDocument.Parse(xml);
         var detail = document.Root!
             .Element(Dat + "dataPackItem")!
