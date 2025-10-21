@@ -33,7 +33,8 @@ public enum EmailTemplate
     WaitlistSeatAvailable,
     CourseReminder,
     CourseReviewRequest,
-    NewsletterConfirmation
+    NewsletterConfirmation,
+    NewsletterIssue
 }
 
 public interface IEmailSender
@@ -112,7 +113,15 @@ public class EmailSender : IEmailSender
             [EmailTemplate.NewsletterConfirmation] = new(
                 "NewsletterConfirmation.cshtml",
                 typeof(NewsletterConfirmationEmailModel),
-                _ => _localizer["Subject.NewsletterConfirmation"].Value)
+                _ => _localizer["Subject.NewsletterConfirmation"].Value),
+            [EmailTemplate.NewsletterIssue] = new(
+                "NewsletterIssue.cshtml",
+                typeof(NewsletterIssueEmailModel),
+                model =>
+                {
+                    var data = (NewsletterIssueEmailModel)model;
+                    return data.Subject;
+                })
         };
     }
 

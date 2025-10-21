@@ -48,6 +48,11 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<CourseCategoryTranslation> coursecategory_translations { get; set; } = default!;
     public DbSet<NewsletterSubscriber> NewsletterSubscribers { get; set; } = default!;
     public DbSet<NewsletterSubscriberCategory> NewsletterSubscriberCategories { get; set; } = default!;
+    public DbSet<NewsletterIssue> NewsletterIssues { get; set; } = default!;
+    public DbSet<NewsletterSection> NewsletterSections { get; set; } = default!;
+    public DbSet<NewsletterSectionCategory> NewsletterSectionCategories { get; set; } = default!;
+    public DbSet<NewsletterIssueSection> NewsletterIssueSections { get; set; } = default!;
+    public DbSet<NewsletterIssueCategory> NewsletterIssueCategories { get; set; } = default!;
 
 
     protected override void OnModelCreating(ModelBuilder builder)
@@ -231,6 +236,73 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .HasOne(nsc => nsc.CourseCategory)
             .WithMany(cc => cc.NewsletterSubscriberCategories)
             .HasForeignKey(nsc => nsc.CourseCategoryId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<NewsletterSectionCategory>()
+            .ToTable("NewsletterSectionCategories");
+
+        builder.Entity<NewsletterSectionCategory>()
+            .HasIndex(category => category.Name)
+            .IsUnique();
+
+        builder.Entity<NewsletterSectionCategory>()
+            .HasOne(category => category.CourseCategory)
+            .WithMany()
+            .HasForeignKey(category => category.CourseCategoryId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        builder.Entity<NewsletterSection>()
+            .ToTable("NewsletterSections");
+
+        builder.Entity<NewsletterSection>()
+            .HasOne(section => section.Category)
+            .WithMany(category => category.Sections)
+            .HasForeignKey(section => section.NewsletterSectionCategoryId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<NewsletterSection>()
+            .HasIndex(section => new { section.NewsletterSectionCategoryId, section.SortOrder });
+
+        builder.Entity<NewsletterIssue>()
+            .ToTable("NewsletterIssues");
+
+        builder.Entity<NewsletterIssue>()
+            .HasIndex(issue => issue.CreatedAtUtc);
+
+        builder.Entity<NewsletterIssueSection>()
+            .ToTable("NewsletterIssueSections");
+
+        builder.Entity<NewsletterIssueSection>()
+            .HasKey(section => new { section.NewsletterIssueId, section.NewsletterSectionId });
+
+        builder.Entity<NewsletterIssueSection>()
+            .HasOne(section => section.NewsletterIssue)
+            .WithMany(issue => issue.Sections)
+            .HasForeignKey(section => section.NewsletterIssueId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<NewsletterIssueSection>()
+            .HasOne(section => section.NewsletterSection)
+            .WithMany(section => section.IssueSections)
+            .HasForeignKey(section => section.NewsletterSectionId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<NewsletterIssueCategory>()
+            .ToTable("NewsletterIssueCategories");
+
+        builder.Entity<NewsletterIssueCategory>()
+            .HasKey(category => new { category.NewsletterIssueId, category.NewsletterSectionCategoryId });
+
+        builder.Entity<NewsletterIssueCategory>()
+            .HasOne(category => category.NewsletterIssue)
+            .WithMany(issue => issue.Categories)
+            .HasForeignKey(category => category.NewsletterIssueId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<NewsletterIssueCategory>()
+            .HasOne(category => category.NewsletterSectionCategory)
+            .WithMany(category => category.IssueCategories)
+            .HasForeignKey(category => category.NewsletterSectionCategoryId)
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.Entity<CourseTag>()
