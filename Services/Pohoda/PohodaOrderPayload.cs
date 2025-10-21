@@ -3,8 +3,7 @@ using System.IO;
 using System.Text;
 using System.Xml;
 using System.Xml.Linq;
-using System.Linq;
-using SysJaky_N.Models;
+using SysJaky_N.Models.Billing;
 
 namespace SysJaky_N.Services.Pohoda;
 
@@ -24,21 +23,19 @@ public static class PohodaOrderPayload
         Windows1250Encoding = Encoding.GetEncoding("windows-1250");
     }
 
-    public static string CreateInvoiceDataPack(Order order, string? applicationName = null)
+    public static string CreateInvoiceDataPack(Invoice invoice, string? applicationName = null)
     {
-        ArgumentNullException.ThrowIfNull(order);
+        ArgumentNullException.ThrowIfNull(invoice);
 
-        var items = MapOrderItems(order);
-
-        var header = BuildInvoiceHeader(order);
-        var detail = BuildInvoiceDetail(items);
-        var summary = BuildInvoiceSummary(order, items);
+        var header = BuildInvoiceHeader(invoice.Header);
+        var detail = BuildInvoiceDetail(invoice.Items);
+        var summary = BuildInvoiceSummary(invoice.Summary);
 
         var dataPack = new XElement(Dat + "dataPack",
             new XAttribute(XNamespace.Xmlns + "dat", Dat),
             new XAttribute(XNamespace.Xmlns + "inv", Inv),
             new XAttribute(XNamespace.Xmlns + "typ", Typ),
-            new XAttribute("id", $"Order-{order.Id}"),
+            new XAttribute("id", $"Invoice-{invoice.Header.OrderNumber}"),
             new XAttribute("version", "2.0"));
 
         if (!string.IsNullOrWhiteSpace(applicationName))
@@ -47,8 +44,8 @@ public static class PohodaOrderPayload
         }
 
         dataPack.Add(
-            new XElement(Dat + "dataPackItem",
-                new XAttribute("id", $"Invoice-{order.Id}"),
+                new XElement(Dat + "dataPackItem",
+                new XAttribute("id", $"Invoice-{invoice.Header.OrderNumber}"),
                 new XAttribute("version", "2.0"),
                 new XElement(Inv + "invoice",
                     header,
@@ -91,35 +88,33 @@ public static class PohodaOrderPayload
         return WriteDocument(document);
     }
 
-    private static XElement BuildInvoiceHeader(Order order)
+    private static XElement BuildInvoiceHeader(InvoiceHeader header)
     {
-        var header = new XElement(Inv + "invoiceHeader",
-            new XElement(Inv + "invoiceType", "issuedInvoice"),
-            new XElement(Inv + "numberOrder", order.Id.ToString(CultureInfo.InvariantCulture)),
-            new XElement(Inv + "text", $"Objednávka {order.Id}"),
-            new XElement(Inv + "date", order.CreatedAt.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)),
-            new XElement(Inv + "dateTax", order.CreatedAt.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)),
-            new XElement(Inv + "dateDue", order.CreatedAt.AddDays(14).ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)),
-            new XElement(Inv + "symVar", order.Id.ToString(CultureInfo.InvariantCulture)));
+        var headerElement = new XElement(Inv + "invoiceHeader",
+            new XElement(Inv + "invoiceType", header.InvoiceType),
+            new XElement(Inv + "numberOrder", header.OrderNumber),
+            new XElement(Inv + "text", header.Text),
+            new XElement(Inv + "date", header.Date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)),
+            new XElement(Inv + "dateTax", header.TaxDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)),
+            new XElement(Inv + "dateDue", header.DueDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)),
+            new XElement(Inv + "symVar", header.VariableSymbol));
 
-        if (!string.IsNullOrWhiteSpace(order.PaymentConfirmation))
+        if (!string.IsNullOrWhiteSpace(header.SpecificSymbol))
         {
-            header.Add(new XElement(Inv + "symSpec", order.PaymentConfirmation));
+            headerElement.Add(new XElement(Inv + "symSpec", header.SpecificSymbol));
         }
 
-        if (!string.IsNullOrWhiteSpace(order.UserId))
+        if (header.Customer is not null)
         {
-            header.Add(new XElement(Inv + "partnerIdentity",
-                new XElement(Typ + "address",
-                    new XElement(Typ + "company", order.UserId))));
+            headerElement.Add(new XElement(Inv + "partnerIdentity", BuildCustomerAddress(header.Customer)));
         }
 
-        if (!string.IsNullOrWhiteSpace(order.InvoicePath))
+        if (!string.IsNullOrWhiteSpace(header.Note))
         {
-            header.Add(new XElement(Inv + "note", order.InvoicePath));
+            headerElement.Add(new XElement(Inv + "note", header.Note));
         }
 
-        return header;
+        return headerElement;
     }
 
     private static XElement BuildInvoiceDetail(IReadOnlyList<InvoiceItem> items)
@@ -149,129 +144,56 @@ public static class PohodaOrderPayload
         return detail;
     }
 
-    private static XElement BuildInvoiceSummary(Order order, IReadOnlyList<InvoiceItem> items)
+    private static XElement BuildInvoiceSummary(VatSummary summary)
     {
-        var total = items.Aggregate(new SummaryTotals(), (acc, item) => acc with
-        {
-            TotalExclVat = acc.TotalExclVat + item.TotalExclVat,
-            TotalVat = acc.TotalVat + item.VatAmount,
-            HighRateExclVat = acc.HighRateExclVat + (item.Rate == VatRate.High ? item.TotalExclVat : 0m),
-            HighRateVat = acc.HighRateVat + (item.Rate == VatRate.High ? item.VatAmount : 0m),
-            LowRateExclVat = acc.LowRateExclVat + (item.Rate == VatRate.Low ? item.TotalExclVat : 0m),
-            LowRateVat = acc.LowRateVat + (item.Rate == VatRate.Low ? item.VatAmount : 0m),
-            NoneRateExclVat = acc.NoneRateExclVat + (item.Rate == VatRate.None ? item.TotalExclVat : 0m)
-        });
-
-        var summary = new XElement(Inv + "invoiceSummary",
+        var summaryElement = new XElement(Inv + "invoiceSummary",
             new XElement(Inv + "round", "none"),
             new XElement(Inv + "homeCurrency",
-                total.NoneRateExclVat > 0m ? new XElement(Typ + "priceNone", FormatDecimal(total.NoneRateExclVat)) : null,
-                total.LowRateExclVat > 0m ? new XElement(Typ + "priceLow", FormatDecimal(total.LowRateExclVat)) : null,
-                total.LowRateVat > 0m ? new XElement(Typ + "priceLowVAT", FormatDecimal(total.LowRateVat)) : null,
-                total.HighRateExclVat > 0m ? new XElement(Typ + "priceHigh", FormatDecimal(total.HighRateExclVat)) : null,
-                total.HighRateVat > 0m ? new XElement(Typ + "priceHighVAT", FormatDecimal(total.HighRateVat)) : null,
-                new XElement(Typ + "priceSum", FormatDecimal(order.Total))));
+                summary.NoneRateBase is > 0m ? new XElement(Typ + "priceNone", FormatDecimal(summary.NoneRateBase.Value)) : null,
+                summary.LowRateBase is > 0m ? new XElement(Typ + "priceLow", FormatDecimal(summary.LowRateBase.Value)) : null,
+                summary.LowRateVat is > 0m ? new XElement(Typ + "priceLowVAT", FormatDecimal(summary.LowRateVat.Value)) : null,
+                summary.HighRateBase is > 0m ? new XElement(Typ + "priceHigh", FormatDecimal(summary.HighRateBase.Value)) : null,
+                summary.HighRateVat is > 0m ? new XElement(Typ + "priceHighVAT", FormatDecimal(summary.HighRateVat.Value)) : null,
+                new XElement(Typ + "priceSum", FormatDecimal(summary.TotalInclVat))));
 
-        return summary;
+        return summaryElement;
     }
 
-    private static IReadOnlyList<InvoiceItem> MapOrderItems(Order order)
+    private static XElement BuildCustomerAddress(CustomerIdentity identity)
     {
-        var items = order.Items ?? new List<OrderItem>();
-        if (items.Count == 0)
+        var address = new XElement(Typ + "address");
+
+        if (!string.IsNullOrWhiteSpace(identity.Company))
         {
-            return Array.Empty<InvoiceItem>();
+            address.Add(new XElement(Typ + "company", identity.Company));
         }
 
-        var discountTotal = Math.Max(order.TotalPrice - order.Total, 0m);
-        var roundedItems = items
-            .Select(item => new
-            {
-                Item = item,
-                Total = RoundCurrency(item.Total),
-                Vat = RoundCurrency(item.Vat)
-            })
-            .ToList();
-
-        var grossSum = roundedItems.Sum(i => i.Total);
-        var mapped = new List<InvoiceItem>(roundedItems.Count);
-        decimal allocatedDiscount = 0m;
-
-        for (var i = 0; i < roundedItems.Count; i++)
+        if (!string.IsNullOrWhiteSpace(identity.Name))
         {
-            var current = roundedItems[i];
-            var item = current.Item;
-            var totalInclVat = current.Total;
-            var vatAmount = current.Vat;
-            var totalExclVat = RoundCurrency(totalInclVat - vatAmount);
-            var rate = DetermineVatRate(totalExclVat, vatAmount);
-
-            var itemDiscount = 0m;
-            if (discountTotal > 0m && grossSum > 0m)
-            {
-                if (i == roundedItems.Count - 1)
-                {
-                    itemDiscount = RoundCurrency(discountTotal - allocatedDiscount);
-                }
-                else
-                {
-                    var ratio = totalInclVat / grossSum;
-                    itemDiscount = RoundCurrency(discountTotal * ratio);
-                    allocatedDiscount += itemDiscount;
-                }
-            }
-
-            var quantity = Math.Max(1, item.Quantity);
-            var unitPriceExclVat = quantity == 0
-                ? totalExclVat
-                : RoundCurrency(item.UnitPriceExclVat);
-
-            var invoiceItem = new InvoiceItem(
-                Name: item.Course?.Title ?? $"Course #{item.CourseId}",
-                Quantity: quantity,
-                UnitPriceExclVat: unitPriceExclVat,
-                TotalExclVat: totalExclVat,
-                VatAmount: vatAmount,
-                TotalInclVat: totalInclVat,
-                Discount: itemDiscount,
-                Rate: rate);
-
-            mapped.Add(invoiceItem);
+            address.Add(new XElement(Typ + "name", identity.Name));
         }
 
-        if (discountTotal > 0m && mapped.Count > 0)
+        if (!string.IsNullOrWhiteSpace(identity.Street))
         {
-            var sum = mapped.Sum(p => p.Discount);
-            var delta = RoundCurrency(discountTotal - sum);
-            if (delta != 0m)
-            {
-                var last = mapped[^1];
-                mapped[^1] = last with { Discount = RoundCurrency(last.Discount + delta) };
-            }
+            address.Add(new XElement(Typ + "street", identity.Street));
         }
 
-        return mapped;
-    }
-
-    private static VatRate DetermineVatRate(decimal baseAmount, decimal vatAmount)
-    {
-        if (baseAmount == 0m)
+        if (!string.IsNullOrWhiteSpace(identity.City))
         {
-            return VatRate.None;
+            address.Add(new XElement(Typ + "city", identity.City));
         }
 
-        var rate = vatAmount / baseAmount * 100m;
-        if (rate >= 20m)
+        if (!string.IsNullOrWhiteSpace(identity.Zip))
         {
-            return VatRate.High;
+            address.Add(new XElement(Typ + "zip", identity.Zip));
         }
 
-        if (rate >= 10m)
+        if (!string.IsNullOrWhiteSpace(identity.Country))
         {
-            return VatRate.Low;
+            address.Add(new XElement(Typ + "country", identity.Country));
         }
 
-        return VatRate.None;
+        return address;
     }
 
     private static string MapVatRate(VatRate rate) => rate switch
@@ -283,9 +205,6 @@ public static class PohodaOrderPayload
 
     private static string FormatDecimal(decimal value)
         => value.ToString("0.##", CultureInfo.InvariantCulture);
-
-    private static decimal RoundCurrency(decimal value)
-        => Math.Round(value, 2, MidpointRounding.AwayFromZero);
 
     private static string WriteDocument(XDocument document)
     {
@@ -304,38 +223,5 @@ public static class PohodaOrderPayload
         }
 
         return Windows1250Encoding.GetString(stream.ToArray());
-    }
-
-    private sealed record InvoiceItem(
-        string Name,
-        int Quantity,
-        decimal UnitPriceExclVat,
-        decimal TotalExclVat,
-        decimal VatAmount,
-        decimal TotalInclVat,
-        decimal Discount,
-        VatRate Rate)
-    {
-        public decimal DiscountPercentage => TotalInclVat == 0m
-            ? 0m
-            : RoundCurrency(Discount / TotalInclVat * 100m);
-    }
-
-    private sealed record SummaryTotals
-    {
-        public decimal TotalExclVat { get; init; }
-        public decimal TotalVat { get; init; }
-        public decimal HighRateExclVat { get; init; }
-        public decimal HighRateVat { get; init; }
-        public decimal LowRateExclVat { get; init; }
-        public decimal LowRateVat { get; init; }
-        public decimal NoneRateExclVat { get; init; }
-    }
-
-    private enum VatRate
-    {
-        None,
-        Low,
-        High
     }
 }
