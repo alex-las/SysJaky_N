@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using SysJaky_N.Services.Pohoda;
 using Xunit;
 
@@ -18,14 +19,14 @@ public class PohodaListParserTests
 
         Assert.Equal(2, statuses.Count);
 
-        var first = Assert.Contains(statuses, status => status.Number == "INV-123");
+        var first = statuses.First(status => status.Number == "INV-123");
         Assert.Equal("42", first.SymVar);
         Assert.Equal(1500.00m, first.Total);
         Assert.True(first.Paid);
         Assert.Equal(new DateOnly(2024, 1, 31), first.DueDate);
         Assert.Equal(new DateOnly(2024, 2, 2), first.PaidAt);
 
-        var second = Assert.Contains(statuses, status => status.Number == "INV-124");
+        var second = statuses.First(status => status.Number == "INV-124");
         Assert.Equal("43", second.SymVar);
         Assert.Equal(2500.50m, second.Total);
         Assert.False(second.Paid);

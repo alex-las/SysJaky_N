@@ -55,6 +55,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<NewsletterIssueSection> NewsletterIssueSections { get; set; } = default!;
     public DbSet<NewsletterIssueCategory> NewsletterIssueCategories { get; set; } = default!;
     public DbSet<PohodaExportJob> PohodaExportJobs { get; set; } = default!;
+    public DbSet<PohodaIdempotencyRecord> PohodaIdempotencyRecords { get; set; } = default!;
     public DbSet<NewsletterTemplate> NewsletterTemplates { get; set; } = default!;
     public DbSet<NewsletterTemplateRegion> NewsletterTemplateRegions { get; set; } = default!;
 
@@ -479,5 +480,21 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .WithOne()
             .HasForeignKey<PohodaExportJob>(j => j.OrderId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<PohodaIdempotencyRecord>()
+            .Property(r => r.Status)
+            .HasConversion<string>();
+
+        builder.Entity<PohodaIdempotencyRecord>()
+            .Property(r => r.DataPackId)
+            .HasMaxLength(255);
+
+        builder.Entity<PohodaIdempotencyRecord>()
+            .HasIndex(r => r.OrderId)
+            .IsUnique();
+
+        builder.Entity<PohodaIdempotencyRecord>()
+            .HasIndex(r => r.DataPackId)
+            .IsUnique();
     }
 }
