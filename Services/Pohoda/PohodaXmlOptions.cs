@@ -20,6 +20,18 @@ public sealed class PohodaXmlOptions
 
     public string Instance { get; set; } = string.Empty;
 
+    public string Company { get; set; } = string.Empty;
+
+    [Required]
+    [StringLength(50)]
+    public string EncodingName { get; set; } = "windows-1250";
+
+    [Range(1, 600)]
+    public int TimeoutSeconds { get; set; } = 100;
+
+    [Range(0, 10)]
+    public int RetryCount { get; set; } = 3;
+
     public bool CheckDuplicity { get; set; } = true;
 
     public TimeSpan ExportWorkerInterval { get; set; } = TimeSpan.FromSeconds(30);
