@@ -140,7 +140,8 @@ public sealed class PohodaExportService : IPohodaExportService
 
         await _dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
-        var payload = PohodaOrderPayload.CreateInvoiceDataPack(order, _options.Application);
+        var invoice = OrderToInvoiceMapper.Map(order);
+        var payload = PohodaOrderPayload.CreateInvoiceDataPack(invoice, _options.Application);
 
         if (!_options.Enabled)
         {
