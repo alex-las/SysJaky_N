@@ -456,6 +456,18 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .HasMaxLength(2000);
 
         builder.Entity<PohodaExportJob>()
+            .Property(j => j.DocumentNumber)
+            .HasMaxLength(255);
+
+        builder.Entity<PohodaExportJob>()
+            .Property(j => j.DocumentId)
+            .HasMaxLength(255);
+
+        builder.Entity<PohodaExportJob>()
+            .Property(j => j.Warnings)
+            .HasMaxLength(2000);
+
+        builder.Entity<PohodaExportJob>()
             .HasIndex(j => j.OrderId)
             .IsUnique();
 

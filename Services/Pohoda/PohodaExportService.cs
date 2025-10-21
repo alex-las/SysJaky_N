@@ -85,6 +85,9 @@ public sealed class PohodaExportService : IPohodaExportService
             existingJob.LastError = null;
             existingJob.AttemptCount = 0;
             existingJob.LastAttemptAtUtc = null;
+            existingJob.DocumentNumber = null;
+            existingJob.DocumentId = null;
+            existingJob.Warnings = null;
         }
 
         await _dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
@@ -164,10 +167,14 @@ public sealed class PohodaExportService : IPohodaExportService
         {
             var response = await _xmlClient.SendInvoiceAsync(payload, cancellationToken).ConfigureAwait(false);
 
-            if (!string.IsNullOrWhiteSpace(response.InvoiceNumber))
+            if (!string.IsNullOrWhiteSpace(response.DocumentNumber))
             {
-                order.InvoiceNumber = response.InvoiceNumber;
+                order.InvoiceNumber = response.DocumentNumber;
             }
+
+            job.DocumentNumber = response.DocumentNumber;
+            job.DocumentId = response.DocumentId;
+            job.Warnings = response.Warnings.Count > 0 ? string.Join("\n", response.Warnings) : null;
 
             job.Status = PohodaExportJobStatus.Succeeded;
             job.SucceededAtUtc = _timeProvider.GetUtcNow().UtcDateTime;
@@ -178,14 +185,20 @@ public sealed class PohodaExportService : IPohodaExportService
 
             using (BeginPohodaExportScope(job, order))
             {
-                _logger.LogInformation("Exported order {OrderId} to Pohoda (job {JobId}) with invoice {InvoiceNumber}.", order.Id, job.Id, order.InvoiceNumber);
+                _logger.LogInformation(
+                    "Exported order {OrderId} to Pohoda (job {JobId}) with document {DocumentNumber} (ID: {DocumentId}).",
+                    order.Id,
+                    job.Id,
+                    job.DocumentNumber ?? order.InvoiceNumber,
+                    job.DocumentId);
             }
 
             await LogAuditEventAsync(
                 action: "PohodaExportSucceeded",
                 job: job,
                 order: order,
-                result: "Succeeded").ConfigureAwait(false);
+                result: "Succeeded",
+                response: response).ConfigureAwait(false);
         }
         catch (Exception ex)
         {
@@ -242,6 +255,9 @@ public sealed class PohodaExportService : IPohodaExportService
         job.LastError = null;
         job.NextAttemptAtUtc = null;
         job.FailedAtUtc = null;
+        job.DocumentNumber = null;
+        job.DocumentId = null;
+        job.Warnings = null;
 
         await _dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
@@ -374,7 +390,13 @@ public sealed class PohodaExportService : IPohodaExportService
         }) ?? NullDisposable.Instance;
     }
 
-    private async Task LogAuditEventAsync(string action, PohodaExportJob job, Order? order, string result, string? error = null)
+    private async Task LogAuditEventAsync(
+        string action,
+        PohodaExportJob job,
+        Order? order,
+        string result,
+        string? error = null,
+        PohodaResponse? response = null)
     {
         var auditPayload = new
         {
@@ -387,8 +409,21 @@ public sealed class PohodaExportService : IPohodaExportService
             job.SucceededAtUtc,
             job.FailedAtUtc,
             job.LastError,
+            job.DocumentNumber,
+            job.DocumentId,
+            job.Warnings,
             Result = result,
             Error = error,
+            Response = response is null
+                ? null
+                : new
+                {
+                    response.State,
+                    response.DocumentNumber,
+                    response.DocumentId,
+                    response.Warnings,
+                    response.Errors
+                },
             Order = order is null
                 ? null
                 : new
