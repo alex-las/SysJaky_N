@@ -204,9 +204,15 @@ try
         options.Level = CompressionLevel.SmallestSize;
     });
 
-    builder.Services.Configure<PohodaSqlOptions>(builder.Configuration.GetSection("PohodaSql"));
-    builder.Services.AddSingleton<IPohodaSqlOptions>(sp => sp.GetRequiredService<IOptions<PohodaSqlOptions>>().Value);
-    builder.Services.AddSingleton<PohodaSqlClient>();
+    builder.Services.Configure<PohodaXmlOptions>(builder.Configuration.GetSection(PohodaXmlOptions.SectionName));
+    builder.Services.AddHttpClient<PohodaXmlClient>((sp, client) =>
+    {
+        var options = sp.GetRequiredService<IOptions<PohodaXmlOptions>>().Value;
+        if (Uri.TryCreate(options.BaseUrl, UriKind.Absolute, out var uri))
+        {
+            client.BaseAddress = uri;
+        }
+    });
     builder.Services.AddScoped<IPohodaExportService, PohodaExportService>();
     builder.Services.AddHostedService<PohodaExportWorker>();
     builder.Services.Configure<GzipCompressionProviderOptions>(options =>

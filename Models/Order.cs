@@ -35,6 +35,8 @@ public class Order
 
     public string? InvoicePath { get; set; }
 
+    public string? InvoiceNumber { get; set; }
+
     [DataType(DataType.DateTime)]
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 }
