@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.IO;
 using System.Text;
@@ -147,7 +148,35 @@ public sealed class PohodaExportService : IPohodaExportService
 
         await _dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
-        var payload = PohodaOrderPayload.CreateInvoiceDataPack(order, _options.Application);
+        string payload;
+        try
+        {
+            var invoice = OrderToInvoiceMapper.Map(order);
+            payload = PohodaOrderPayload.CreateInvoiceDataPack(invoice, _options.Application);
+        }
+        catch (ValidationException ex)
+        {
+            MarkJobAsFailed(job, ex.Message);
+            await _dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+
+            using (BeginPohodaExportScope(job, order))
+            {
+                _logger.LogWarning(
+                    ex,
+                    "Failed to map order {OrderId} to Pohoda invoice (job {JobId}).",
+                    order.Id,
+                    job.Id);
+            }
+
+            await LogAuditEventAsync(
+                action: "PohodaExportFailed",
+                job: job,
+                order: order,
+                result: "Failed",
+                error: ex.Message).ConfigureAwait(false);
+
+            return;
+        }
 
         if (!_options.Enabled)
         {
@@ -294,7 +323,7 @@ public sealed class PohodaExportService : IPohodaExportService
             directory = "temp";
         }
 
-        if (directory.StartsWith('/', StringComparison.Ordinal) || directory.StartsWith('\\', StringComparison.Ordinal))
+        if (directory.StartsWith("/", StringComparison.Ordinal) || directory.StartsWith("\\", StringComparison.Ordinal))
         {
             directory = directory.TrimStart('/', '\\');
             return Path.Combine(_contentRootPath, directory);
