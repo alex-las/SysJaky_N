@@ -202,6 +202,8 @@ try
 
     builder.Services.Configure<PohodaSqlOptions>(builder.Configuration.GetSection("PohodaSql"));
     builder.Services.AddSingleton<IPohodaSqlOptions>(sp => sp.GetRequiredService<IOptions<PohodaSqlOptions>>().Value);
+    builder.Services.AddSingleton<PohodaSqlClient>();
+    builder.Services.AddScoped<IPohodaExportService, PohodaExportService>();
     builder.Services.Configure<GzipCompressionProviderOptions>(options =>
     {
         options.Level = CompressionLevel.SmallestSize;

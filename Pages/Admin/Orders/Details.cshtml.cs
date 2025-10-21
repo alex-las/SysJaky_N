@@ -9,6 +9,7 @@ using SysJaky_N.Authorization;
 using SysJaky_N.Data;
 using SysJaky_N.Pages.Orders;
 using SysJaky_N.Services;
+using SysJaky_N.Services.Pohoda;
 
 namespace SysJaky_N.Pages.Admin.Orders;
 
@@ -24,8 +25,9 @@ public class DetailsModel : OrderDetailsPageModel
         IConverter converter,
         IRazorViewEngine viewEngine,
         ITempDataProvider tempDataProvider,
-        IStringLocalizer<DetailsModel> localizer)
-        : base(context, configuration, paymentService, converter, viewEngine, tempDataProvider)
+        IStringLocalizer<DetailsModel> localizer,
+        IPohodaExportService pohodaExportService)
+        : base(context, configuration, paymentService, converter, viewEngine, tempDataProvider, pohodaExportService)
     {
         _localizer = localizer;
     }

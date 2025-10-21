@@ -7,6 +7,7 @@ using Stripe;
 using Stripe.Checkout;
 using SysJaky_N.Data;
 using SysJaky_N.Models;
+using SysJaky_N.Services.Pohoda;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Security.Cryptography;
@@ -26,6 +27,7 @@ public class PaymentService
     private readonly ApplicationDbContext _context;
     private readonly ILogger<PaymentService> _logger;
     private readonly IStringLocalizer<PaymentService> _localizer;
+    private readonly IPohodaExportService _pohodaExportService;
 
     public bool IsEnabled => _options.Enabled;
 
@@ -33,12 +35,14 @@ public class PaymentService
         IOptions<PaymentGatewayOptions> options,
         ApplicationDbContext context,
         ILogger<PaymentService> logger,
-        IStringLocalizer<PaymentService> localizer)
+        IStringLocalizer<PaymentService> localizer,
+        IPohodaExportService pohodaExportService)
     {
         _options = options.Value;
         _context = context;
         _logger = logger;
         _localizer = localizer;
+        _pohodaExportService = pohodaExportService;
 
         if (_options.Enabled)
             StripeConfiguration.ApiKey = _options.ApiKey;
@@ -125,6 +129,7 @@ public class PaymentService
             var tokensCreated = EnsureSeatTokensCreated(order);
             if (updatedConfirmation || tokensCreated)
             {
+                await _pohodaExportService.QueueOrderAsync(order);
                 await _context.SaveChangesAsync();
             }
             return;
@@ -138,6 +143,7 @@ public class PaymentService
 
             EnsureSeatTokensCreated(order);
 
+            await _pohodaExportService.QueueOrderAsync(order);
             await _context.SaveChangesAsync();
             await transaction.CommitAsync();
         }
