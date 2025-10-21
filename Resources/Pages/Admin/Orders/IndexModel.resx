@@ -102,4 +102,7 @@
   <data name="OrderStatusRefunded" xml:space="preserve">
     <value>Vráceno</value>
   </data>
+  <data name="PohodaExportJobsLink" xml:space="preserve">
+    <value>Fronta exportů do Pohody</value>
+  </data>
 </root>

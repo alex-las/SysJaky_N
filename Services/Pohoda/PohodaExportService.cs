@@ -1,7 +1,11 @@
+using System.Collections.Generic;
+using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using SysJaky_N.Data;
+using SysJaky_N.Logging;
 using SysJaky_N.Models;
+using SysJaky_N.Services;
 
 namespace SysJaky_N.Services.Pohoda;
 
@@ -12,18 +16,23 @@ public sealed class PohodaExportService : IPohodaExportService
     private readonly ApplicationDbContext _dbContext;
     private readonly TimeProvider _timeProvider;
     private readonly IPohodaSqlOptions _options;
+    private readonly IAuditService _auditService;
+
+    private static readonly JsonSerializerOptions AuditSerializerOptions = new(JsonSerializerDefaults.Web);
 
     public PohodaExportService(
         PohodaSqlClient sqlClient,
         ApplicationDbContext dbContext,
         TimeProvider timeProvider,
         IPohodaSqlOptions options,
+        IAuditService auditService,
         ILogger<PohodaExportService> logger)
     {
         _sqlClient = sqlClient ?? throw new ArgumentNullException(nameof(sqlClient));
         _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         _timeProvider = timeProvider ?? throw new ArgumentNullException(nameof(timeProvider));
         _options = options ?? throw new ArgumentNullException(nameof(options));
+        _auditService = auditService ?? throw new ArgumentNullException(nameof(auditService));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
@@ -37,9 +46,11 @@ public sealed class PohodaExportService : IPohodaExportService
 
         var now = _timeProvider.GetUtcNow().UtcDateTime;
 
+        PohodaExportJob jobRecord;
+
         if (existingJob is null)
         {
-            var job = new PohodaExportJob
+            jobRecord = new PohodaExportJob
             {
                 OrderId = order.Id,
                 Status = PohodaExportJobStatus.Pending,
@@ -47,10 +58,11 @@ public sealed class PohodaExportService : IPohodaExportService
                 NextAttemptAtUtc = now
             };
 
-            await _dbContext.PohodaExportJobs.AddAsync(job, cancellationToken).ConfigureAwait(false);
+            await _dbContext.PohodaExportJobs.AddAsync(jobRecord, cancellationToken).ConfigureAwait(false);
         }
         else
         {
+            jobRecord = existingJob;
             existingJob.Status = PohodaExportJobStatus.Pending;
             existingJob.NextAttemptAtUtc = now;
             existingJob.FailedAtUtc = null;
@@ -61,6 +73,12 @@ public sealed class PohodaExportService : IPohodaExportService
         }
 
         await _dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+
+        await LogAuditEventAsync(
+            action: "PohodaExportQueued",
+            job: jobRecord,
+            order: order,
+            result: "Queued").ConfigureAwait(false);
     }
 
     public async Task ExportOrderAsync(PohodaExportJob job, CancellationToken cancellationToken = default)
@@ -81,8 +99,21 @@ public sealed class PohodaExportService : IPohodaExportService
 
         if (order is null)
         {
-            MarkJobAsFailed(job, $"Order {job.OrderId} not found.");
+            var reason = $"Order {job.OrderId} not found.";
+            MarkJobAsFailed(job, reason);
             await _dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+
+            using (BeginPohodaExportScope(job, null))
+            {
+                _logger.LogWarning("Attempted to export missing order {OrderId} (job {JobId}).", job.OrderId, job.Id);
+            }
+
+            await LogAuditEventAsync(
+                action: "PohodaExportFailed",
+                job: job,
+                order: null,
+                result: "Failed",
+                error: reason).ConfigureAwait(false);
             return;
         }
 
@@ -117,17 +148,36 @@ public sealed class PohodaExportService : IPohodaExportService
 
             await _dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
-            _logger.LogInformation("Exported order {OrderId} to Pohoda (job {JobId}).", order.Id, job.Id);
+            using (BeginPohodaExportScope(job, order))
+            {
+                _logger.LogInformation("Exported order {OrderId} to Pohoda (job {JobId}).", order.Id, job.Id);
+            }
+
+            await LogAuditEventAsync(
+                action: "PohodaExportSucceeded",
+                job: job,
+                order: order,
+                result: "Succeeded").ConfigureAwait(false);
         }
         catch (Exception ex)
         {
             HandleJobFailure(job, attemptStartedAtUtc, _timeProvider.GetUtcNow().UtcDateTime, ex);
             await _dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
-            _logger.LogWarning(ex,
-                "Failed to export order {OrderId} to Pohoda on attempt {Attempt}.",
-                order.Id,
-                job.AttemptCount);
+            using (BeginPohodaExportScope(job, order))
+            {
+                _logger.LogWarning(ex,
+                    "Failed to export order {OrderId} to Pohoda on attempt {Attempt}.",
+                    order.Id,
+                    job.AttemptCount);
+            }
+
+            await LogAuditEventAsync(
+                action: "PohodaExportFailed",
+                job: job,
+                order: order,
+                result: "Failed",
+                error: ex.Message).ConfigureAwait(false);
         }
     }
 
@@ -180,5 +230,69 @@ public sealed class PohodaExportService : IPohodaExportService
         job.FailedAtUtc = now;
         job.LastError = reason;
         job.NextAttemptAtUtc = null;
+    }
+
+    private IDisposable BeginPohodaExportScope(PohodaExportJob job, Order? order)
+    {
+        return _logger.BeginScope(new Dictionary<string, object?>
+        {
+            ["EventName"] = LogEventNames.PohodaExportJob,
+            ["PohodaJobId"] = job.Id,
+            ["OrderId"] = order?.Id ?? job.OrderId,
+            ["PohodaJobStatus"] = job.Status.ToString()
+        }) ?? NullDisposable.Instance;
+    }
+
+    private async Task LogAuditEventAsync(string action, PohodaExportJob job, Order? order, string result, string? error = null)
+    {
+        var auditPayload = new
+        {
+            JobId = job.Id,
+            JobStatus = job.Status.ToString(),
+            job.AttemptCount,
+            job.CreatedAtUtc,
+            job.LastAttemptAtUtc,
+            job.NextAttemptAtUtc,
+            job.SucceededAtUtc,
+            job.FailedAtUtc,
+            job.LastError,
+            Result = result,
+            Error = error,
+            Order = order is null
+                ? null
+                : new
+                {
+                    order.Id,
+                    Status = order.Status.ToString(),
+                    order.Total,
+                    order.UserId
+                }
+        };
+
+        try
+        {
+            var serialized = JsonSerializer.Serialize(auditPayload, AuditSerializerOptions);
+            await _auditService.LogAsync(null, action, serialized).ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            using (BeginPohodaExportScope(job, order))
+            {
+                _logger.LogError(ex, "Failed to write audit log for Pohoda export job {JobId}.", job.Id);
+            }
+        }
+    }
+
+    private sealed class NullDisposable : IDisposable
+    {
+        public static readonly NullDisposable Instance = new();
+
+        private NullDisposable()
+        {
+        }
+
+        public void Dispose()
+        {
+        }
     }
 }

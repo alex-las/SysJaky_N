@@ -102,4 +102,7 @@
   <data name="OrderStatusRefunded" xml:space="preserve">
     <value>Refunded</value>
   </data>
+  <data name="PohodaExportJobsLink" xml:space="preserve">
+    <value>Pohoda export queue</value>
+  </data>
 </root>

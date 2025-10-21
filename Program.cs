@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using DinkToPdf;
 using DinkToPdf.Contracts;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.Razor;
@@ -20,6 +21,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
 using Serilog;
 using Serilog.Events;
+using System.Text.Json;
 using SysJaky_N.Logging;
 using SysJaky_N.Hubs;
 using SysJaky_N.Middleware;
@@ -33,6 +35,7 @@ using Microsoft.AspNetCore.ResponseCompression;
 using CompressionLevel = System.IO.Compression.CompressionLevel;
 using System.Globalization;
 using SysJaky_N.Services.Pohoda;
+using SysJaky_N.HealthChecks;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
@@ -114,6 +117,7 @@ try
             .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
             .MinimumLevel.Override("Microsoft.EntityFrameworkCore", LogEventLevel.Warning)
             .Enrich.FromLogContext()
+            .Enrich.WithProperty("Application", "SysJaky_N")
             .WriteTo.Console()
             .WriteTo.File(
                 path: "Logs/application-.log",
@@ -272,6 +276,9 @@ try
     builder.Services.Configure<AltchaOptions>(builder.Configuration.GetSection("Altcha"));
     builder.Services.AddSingleton<IAltchaService, AltchaService>();
 
+    builder.Services.AddHealthChecks()
+        .AddCheck<PohodaExportBacklogHealthCheck>("pohoda_export_backlog");
+
     builder.Services.Configure<ForwardedHeadersOptions>(opts =>
     {
         opts.ForwardedHeaders =
@@ -396,6 +403,30 @@ try
     app.MapGet("/Account/Dashboard", () => Results.Redirect("/Account/Manage", true));
     app.MapGet("/Orders", () => Results.Redirect("/Account/Manage#orders", true));
     app.MapGet("/Orders/Index", () => Results.Redirect("/Account/Manage#orders", true));
+
+    app.MapHealthChecks("/health/pohoda-export", new HealthCheckOptions
+    {
+        ResponseWriter = async (context, report) =>
+        {
+            context.Response.ContentType = "application/json";
+            var response = new
+            {
+                status = report.Status.ToString(),
+                totalDuration = report.TotalDuration,
+                entries = report.Entries.ToDictionary(
+                    entry => entry.Key,
+                    entry => new
+                    {
+                        status = entry.Value.Status.ToString(),
+                        description = entry.Value.Description,
+                        data = entry.Value.Data
+                    })
+            };
+
+            await context.Response.WriteAsync(
+                JsonSerializer.Serialize(response, new JsonSerializerOptions(JsonSerializerDefaults.Web)));
+        }
+    });
     app.MapGet("/Orders/Edit/{id:int}", (int id) => Results.Redirect($"/Admin/Orders/Edit/{id}", true));
     app.MapPost("/payment/webhook", async (HttpRequest request, PaymentService paymentService) =>
     {
