@@ -198,8 +198,8 @@ public class EmailSender : IEmailSender
     protected virtual async Task SendMimeMessageAsync(string to, string subject, string body, CancellationToken cancellationToken)
     {
         var message = new MimeMessage();
-        message.From.Add(MailboxAddress.Parse(_options.From));
-        message.To.Add(MailboxAddress.Parse(to));
+        message.From.Add(ParseMailboxAddress(_options.From, nameof(_options.From)));
+        message.To.Add(ParseMailboxAddress(to, nameof(to)));
         message.Subject = subject;
         message.Body = new TextPart("html") { Text = body };
 
@@ -208,6 +208,25 @@ public class EmailSender : IEmailSender
         await client.AuthenticateAsync(_options.User, _options.Password, cancellationToken);
         await client.SendAsync(message, cancellationToken);
         await client.DisconnectAsync(true, cancellationToken);
+    }
+
+    private static MailboxAddress ParseMailboxAddress(string value, string parameterName)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            throw new ArgumentException($"Email address parameter '{parameterName}' cannot be null or whitespace.", parameterName);
+        }
+
+        var normalized = value.Trim();
+
+        try
+        {
+            return MailboxAddress.Parse(normalized);
+        }
+        catch (ParseException ex)
+        {
+            throw new FormatException($"The email address provided for '{parameterName}' is invalid.", ex);
+        }
     }
 
     private sealed record EmailTemplateDescriptor(string ViewName, Type ModelType, Func<object, string> SubjectFactory);
