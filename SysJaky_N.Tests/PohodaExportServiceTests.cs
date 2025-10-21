@@ -54,13 +54,17 @@ public class PohodaExportServiceTests
         await context.SaveChangesAsync();
 
         var builder = CreateBuilder();
-        var client = new PohodaXmlClient(httpClient, Options.Create(options), builder, NullLogger<PohodaXmlClient>.Instance);
+        var parser = new PohodaResponseParser();
+        var client = new PohodaXmlClient(httpClient, Options.Create(options), builder, parser, NullLogger<PohodaXmlClient>.Instance);
         var service = new PohodaExportService(client, builder, context, TimeProvider.System, Options.Create(options), new NoopAuditService(), CreateHostEnvironment(), NullLogger<PohodaExportService>.Instance);
 
         await service.ExportOrderAsync(job);
 
         Assert.Equal(PohodaExportJobStatus.Succeeded, job.Status);
         Assert.Equal("INV-42", order.InvoiceNumber);
+        Assert.Equal("INV-42", job.DocumentNumber);
+        Assert.Equal("12345", job.DocumentId);
+        Assert.Null(job.Warnings);
         Assert.Contains(handler.Requests, r => r.RequestUri!.AbsolutePath.EndsWith("/xml", StringComparison.OrdinalIgnoreCase));
     }
 
@@ -79,7 +83,7 @@ public class PohodaExportServiceTests
             TimeoutSeconds = 30
         };
 
-        var client = new PohodaXmlClient(httpClient, Options.Create(options), CreateBuilder(), NullLogger<PohodaXmlClient>.Instance);
+        var client = new PohodaXmlClient(httpClient, Options.Create(options), CreateBuilder(), new PohodaResponseParser(), NullLogger<PohodaXmlClient>.Instance);
 
         await client.CheckStatusAsync();
 
@@ -115,7 +119,7 @@ public class PohodaExportServiceTests
         await context.SaveChangesAsync();
 
         var builder = CreateBuilder();
-        var client = new PohodaXmlClient(httpClient, Options.Create(options), builder, NullLogger<PohodaXmlClient>.Instance);
+        var client = new PohodaXmlClient(httpClient, Options.Create(options), builder, new PohodaResponseParser(), NullLogger<PohodaXmlClient>.Instance);
         var service = new PohodaExportService(client, builder, context, TimeProvider.System, Options.Create(options), new NoopAuditService(), CreateHostEnvironment(), NullLogger<PohodaExportService>.Instance);
 
         var services = new Microsoft.Extensions.DependencyInjection.ServiceCollection();
@@ -159,7 +163,7 @@ public class PohodaExportServiceTests
         await context.SaveChangesAsync();
 
         var builder = CreateBuilder();
-        var client = new PohodaXmlClient(httpClient, Options.Create(options), builder, NullLogger<PohodaXmlClient>.Instance);
+        var client = new PohodaXmlClient(httpClient, Options.Create(options), builder, new PohodaResponseParser(), NullLogger<PohodaXmlClient>.Instance);
         var service = new PohodaExportService(client, builder, context, TimeProvider.System, Options.Create(options), new NoopAuditService(), CreateHostEnvironment(), NullLogger<PohodaExportService>.Instance);
 
         try
@@ -211,7 +215,7 @@ public class PohodaExportServiceTests
         await context.SaveChangesAsync();
 
         var builder = CreateBuilder();
-        var client = new PohodaXmlClient(httpClient, Options.Create(options), builder, NullLogger<PohodaXmlClient>.Instance);
+        var client = new PohodaXmlClient(httpClient, Options.Create(options), builder, new PohodaResponseParser(), NullLogger<PohodaXmlClient>.Instance);
         var environment = CreateHostEnvironment(contentRoot);
         var service = new PohodaExportService(client, builder, context, TimeProvider.System, Options.Create(options), new NoopAuditService(), environment, NullLogger<PohodaExportService>.Instance);
 
@@ -256,7 +260,7 @@ public class PohodaExportServiceTests
 
         var context = CreateDbContext();
         var builder = CreateBuilder();
-        var client = new PohodaXmlClient(httpClient, Options.Create(options), builder, NullLogger<PohodaXmlClient>.Instance);
+        var client = new PohodaXmlClient(httpClient, Options.Create(options), builder, new PohodaResponseParser(), NullLogger<PohodaXmlClient>.Instance);
         var environment = CreateHostEnvironment();
         var service = new PohodaExportService(
             client,
@@ -344,7 +348,7 @@ public class PohodaExportServiceTests
                 return Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK));
             }
 
-            var content = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><rsp:responsePack xmlns:rsp=\"http://www.stormware.cz/schema/version_2/response.xsd\" state=\"ok\"><rsp:responsePackItem id=\"Invoice\" state=\"ok\"><rsp:invoiceResponse><inv:invoice xmlns:inv=\"http://www.stormware.cz/schema/version_2/invoice.xsd\"><inv:invoiceHeader><inv:number><typ:numberAssigned xmlns:typ=\"http://www.stormware.cz/schema/version_2/type.xsd\">INV-42</typ:numberAssigned></inv:number></inv:invoiceHeader></inv:invoice></rsp:invoiceResponse></rsp:responsePackItem></rsp:responsePack>";
+            var content = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><rsp:responsePack xmlns:rsp=\"http://www.stormware.cz/schema/version_2/response.xsd\" state=\"ok\"><rsp:responsePackItem id=\"Invoice\" state=\"ok\" documentNumber=\"INV-42\" documentId=\"12345\"><rsp:invoiceResponse><inv:invoice xmlns:inv=\"http://www.stormware.cz/schema/version_2/invoice.xsd\"><inv:invoiceHeader><inv:number><typ:numberAssigned xmlns:typ=\"http://www.stormware.cz/schema/version_2/type.xsd\">INV-42</typ:numberAssigned></inv:number></inv:invoiceHeader></inv:invoice></rsp:invoiceResponse></rsp:responsePackItem></rsp:responsePack>";
             var response = new HttpResponseMessage(HttpStatusCode.OK)
             {
                 Content = new StringContent(content)

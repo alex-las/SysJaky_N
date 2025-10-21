@@ -94,6 +94,9 @@ public class PohodaExportJobsModel : PageModel
         job.FailedAtUtc = null;
         job.LastError = null;
         job.LastAttemptAtUtc = null;
+        job.DocumentNumber = null;
+        job.DocumentId = null;
+        job.Warnings = null;
 
         await _dbContext.SaveChangesAsync(cancellationToken);
 

@@ -2,7 +2,6 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
-using System.Xml.Linq;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -15,26 +14,30 @@ public sealed class PohodaXmlClient
     private readonly PohodaXmlBuilder _builder;
     private readonly ILogger<PohodaXmlClient> _logger;
     private readonly Encoding _encoding;
+    private readonly PohodaResponseParser _responseParser;
 
     public PohodaXmlClient(
         HttpClient httpClient,
         IOptions<PohodaXmlOptions> options,
         PohodaXmlBuilder builder,
+        PohodaResponseParser responseParser,
         ILogger<PohodaXmlClient> logger)
     {
         ArgumentNullException.ThrowIfNull(httpClient);
         ArgumentNullException.ThrowIfNull(options);
         ArgumentNullException.ThrowIfNull(builder);
+        ArgumentNullException.ThrowIfNull(responseParser);
         ArgumentNullException.ThrowIfNull(logger);
 
         _httpClient = httpClient;
         _options = options.Value;
         _builder = builder;
+        _responseParser = responseParser;
         _logger = logger;
         _encoding = CreateEncoding(_options.EncodingName);
     }
 
-    public async Task<PohodaXmlResponse> SendInvoiceAsync(string dataPack, CancellationToken cancellationToken = default)
+    public async Task<PohodaResponse> SendInvoiceAsync(string dataPack, CancellationToken cancellationToken = default)
     {
         ArgumentException.ThrowIfNullOrEmpty(dataPack);
 
@@ -48,12 +51,24 @@ public sealed class PohodaXmlClient
             throw new PohodaXmlException($"Pohoda XML request failed with status {(int)response.StatusCode} {response.ReasonPhrase}.", content);
         }
 
-        var parsed = ParseResponse(content);
-        _logger.LogDebug("Pohoda invoice sent successfully with invoice number {InvoiceNumber}.", parsed.InvoiceNumber);
+        var parsed = _responseParser.Parse(content);
+        EnsureSuccess(parsed, content);
+
+        if (parsed.Warnings.Count > 0)
+        {
+            _logger.LogWarning(
+                "Pohoda response returned warnings: {Warnings}",
+                string.Join("; ", parsed.Warnings));
+        }
+
+        _logger.LogDebug(
+            "Pohoda invoice sent successfully with document number {DocumentNumber} and ID {DocumentId}.",
+            parsed.DocumentNumber,
+            parsed.DocumentId);
         return parsed;
     }
 
-    public async Task<PohodaXmlResponse> ListInvoiceAsync(string externalId, CancellationToken cancellationToken = default)
+    public async Task<PohodaResponse> ListInvoiceAsync(string externalId, CancellationToken cancellationToken = default)
     {
         ArgumentException.ThrowIfNullOrEmpty(externalId);
 
@@ -185,51 +200,23 @@ public sealed class PohodaXmlClient
         return new Uri(baseUri, relativePath);
     }
 
-    private static PohodaXmlResponse ParseResponse(string content)
+    private static void EnsureSuccess(PohodaResponse response, string rawContent)
     {
-        if (string.IsNullOrWhiteSpace(content))
+        static bool IsSuccessState(string state)
+            => string.Equals(state, "ok", StringComparison.OrdinalIgnoreCase)
+               || string.Equals(state, "warning", StringComparison.OrdinalIgnoreCase);
+
+        if (IsSuccessState(response.State) && response.Errors.Count == 0)
         {
-            throw new PohodaXmlException("Pohoda XML response was empty.", content);
+            return;
         }
 
-        var document = XDocument.Parse(content);
-        var root = document.Root ?? throw new PohodaXmlException("Pohoda XML response did not contain a root element.", content);
+        var message = response.Errors.Count > 0
+            ? string.Join("; ", response.Errors)
+            : $"Pohoda XML response returned state '{response.State}'.";
 
-        var state = (string?)root.Attribute("state") ?? string.Empty;
-        if (!string.Equals(state, "ok", StringComparison.OrdinalIgnoreCase))
-        {
-            var message = (string?)root.Attribute("stateDetail") ?? (string?)root.Attribute("stateInfo") ?? "Unknown error";
-            throw new PohodaXmlException($"Pohoda XML response returned state '{state}'. {message}", content);
-        }
-
-        var invoiceNumber = ExtractInvoiceNumber(root);
-        return new PohodaXmlResponse(invoiceNumber, content);
+        throw new PohodaXmlException(message, rawContent);
     }
-
-    private static string? ExtractInvoiceNumber(XElement root)
-    {
-        var numberElement = root
-            .Descendants()
-            .FirstOrDefault(e => string.Equals(e.Name.LocalName, "numberAssigned", StringComparison.OrdinalIgnoreCase)
-                                 || string.Equals(e.Name.LocalName, "numberRequested", StringComparison.OrdinalIgnoreCase)
-                                 || string.Equals(e.Name.LocalName, "invoiceNumber", StringComparison.OrdinalIgnoreCase)
-                                 || string.Equals(e.Name.LocalName, "number", StringComparison.OrdinalIgnoreCase));
-
-        return numberElement?.Value.Trim();
-    }
-}
-
-public sealed class PohodaXmlResponse
-{
-    public PohodaXmlResponse(string? invoiceNumber, string rawContent)
-    {
-        InvoiceNumber = string.IsNullOrWhiteSpace(invoiceNumber) ? null : invoiceNumber;
-        RawContent = rawContent;
-    }
-
-    public string? InvoiceNumber { get; }
-
-    public string RawContent { get; }
 }
 
 public sealed class PohodaXmlException : Exception

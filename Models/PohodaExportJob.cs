@@ -23,6 +23,12 @@ public class PohodaExportJob
     public DateTime? FailedAtUtc { get; set; }
 
     public string? LastError { get; set; }
+
+    public string? DocumentNumber { get; set; }
+
+    public string? DocumentId { get; set; }
+
+    public string? Warnings { get; set; }
 }
 
 public enum PohodaExportJobStatus
