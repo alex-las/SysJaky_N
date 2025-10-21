@@ -1,0 +1,322 @@
+@page
+@model SysJaky_N.Pages.Admin.Newsletters.IndexModel
+
+<h1 class="mb-4">@ViewData["Title"]</h1>
+
+@if (!ViewContext.ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger">
+        <ul class="mb-0">
+            @foreach (var error in ViewContext.ViewData.ModelState.Values.SelectMany(v => v.Errors))
+            {
+                <li>@error.ErrorMessage</li>
+            }
+        </ul>
+    </div>
+}
+
+@if (!string.IsNullOrWhiteSpace(Model.StatusMessage))
+{
+    <div class="alert alert-success">@Model.StatusMessage</div>
+}
+
+<section class="mb-5">
+    <h2 class="h4">Nová kategorie sekcí</h2>
+    <form method="post" asp-page-handler="SaveCategory" class="card card-body mb-4">
+        <div class="row g-3">
+            <div class="col-md-4">
+                <label class="form-label" for="NewCategoryName">Název</label>
+                <input class="form-control" id="NewCategoryName" name="Name" maxlength="128" required />
+            </div>
+            <div class="col-md-4">
+                <label class="form-label" for="NewCategoryDescription">Popis</label>
+                <input class="form-control" id="NewCategoryDescription" name="Description" maxlength="256" />
+            </div>
+            <div class="col-md-4">
+                <label class="form-label" for="NewCategoryCourseCategoryId">Přiřazená kategorie kurzů</label>
+                <select class="form-select" id="NewCategoryCourseCategoryId" name="CourseCategoryId">
+                    <option value="">Bez vazby</option>
+                    @foreach (var option in Model.CourseCategoryOptions)
+                    {
+                        <option value="@option.Value">@option.Text</option>
+                    }
+                </select>
+            </div>
+        </div>
+        <div class="mt-3">
+            <button type="submit" class="btn btn-primary">Vytvořit kategorii</button>
+        </div>
+    </form>
+
+    <h3 class="h5">Existující kategorie</h3>
+    @if (Model.Categories.Count == 0)
+    {
+        <p class="text-muted">Zatím nebyly vytvořeny žádné kategorie.</p>
+    }
+    else
+    {
+        <div class="list-group">
+            @foreach (var category in Model.Categories)
+            {
+                <div class="list-group-item">
+                    <form method="post" asp-page-handler="SaveCategory" class="row g-3 align-items-end">
+                        <input type="hidden" name="Id" value="@category.Id" />
+                        <div class="col-md-3">
+                            <label class="form-label" for="CategoryName_@category.Id">Název</label>
+                            <input class="form-control" id="CategoryName_@category.Id" name="Name" value="@category.Name" maxlength="128" required />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label" for="CategoryDescription_@category.Id">Popis</label>
+                            <input class="form-control" id="CategoryDescription_@category.Id" name="Description" value="@category.Description" maxlength="256" />
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label" for="CategoryCourseCategoryId_@category.Id">Kategorie kurzů</label>
+                            <select class="form-select" id="CategoryCourseCategoryId_@category.Id" name="CourseCategoryId">
+                                <option value="">Bez vazby</option>
+                                @foreach (var option in Model.CourseCategoryOptions)
+                                {
+                                    <option value="@option.Value" selected="@(option.Value == category.CourseCategoryId?.ToString() ? "selected" : null)">@option.Text</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-2 d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">Uložit</button>
+                            <button type="submit" class="btn btn-outline-danger" formaction="?handler=DeleteCategory" formmethod="post" name="id" value="@category.Id" onclick="return confirm('Opravdu chcete kategorii odstranit?');">Smazat</button>
+                        </div>
+                    </form>
+                </div>
+            }
+        </div>
+    }
+</section>
+
+<section class="mb-5">
+    <h2 class="h4">Nová sekce</h2>
+    <form method="post" asp-page-handler="SaveSection" class="card card-body mb-4">
+        <input type="hidden" name="Id" value="" />
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label class="form-label" for="NewSectionTitle">Nadpis</label>
+                <input class="form-control" id="NewSectionTitle" name="Title" maxlength="180" required />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label" for="NewSectionCategory">Kategorie</label>
+                <select class="form-select" id="NewSectionCategory" name="NewsletterSectionCategoryId" required>
+                    @foreach (var option in Model.SectionCategoryOptions)
+                    {
+                        <option value="@option.Value">@option.Text</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label" for="NewSectionSortOrder">Pořadí</label>
+                <input type="number" class="form-control" id="NewSectionSortOrder" name="SortOrder" min="0" value="0" />
+            </div>
+        </div>
+        <div class="mt-3">
+            <label class="form-label" for="NewSectionContent">Obsah</label>
+            <textarea class="form-control" id="NewSectionContent" name="HtmlContent" rows="6" required></textarea>
+        </div>
+        <div class="form-check mt-3">
+            <input type="hidden" name="IsPublished" value="false" />
+            <input class="form-check-input" type="checkbox" id="NewSectionIsPublished" name="IsPublished" value="true" />
+            <label class="form-check-label" for="NewSectionIsPublished">Publikovat</label>
+        </div>
+        <div class="mt-3">
+            <button type="submit" class="btn btn-primary">Vytvořit sekci</button>
+        </div>
+    </form>
+
+    <h3 class="h5">Existující sekce</h3>
+    @if (Model.Sections.Count == 0)
+    {
+        <p class="text-muted">Zatím nebyly vytvořeny žádné sekce.</p>
+    }
+    else
+    {
+        @foreach (var newsletterSection in Model.Sections)
+        {
+            <details class="mb-3">
+                <summary class="d-flex justify-content-between align-items-center">
+                    <span>
+                        <strong>@newsletterSection.Title</strong>
+                        <span class="text-muted">(@newsletterSection.Category?.Name)</span>
+                    </span>
+                    <span class="badge bg-secondary">Pořadí: @newsletterSection.SortOrder</span>
+                </summary>
+                <div class="mt-3">
+                    <form method="post" asp-page-handler="SaveSection" class="card card-body">
+                        <input type="hidden" name="Id" value="@newsletterSection.Id" />
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label" for="SectionTitle_@newsletterSection.Id">Nadpis</label>
+                                <input class="form-control" id="SectionTitle_@newsletterSection.Id" name="Title" value="@newsletterSection.Title" maxlength="180" required />
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label" for="SectionCategory_@newsletterSection.Id">Kategorie</label>
+                                <select class="form-select" id="SectionCategory_@newsletterSection.Id" name="NewsletterSectionCategoryId" required>
+                                    @foreach (var option in Model.SectionCategoryOptions)
+                                    {
+                                        <option value="@option.Value" selected="@(option.Value == newsletterSection.NewsletterSectionCategoryId.ToString() ? "selected" : null)">@option.Text</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label" for="SectionSortOrder_@newsletterSection.Id">Pořadí</label>
+                                <input type="number" class="form-control" id="SectionSortOrder_@newsletterSection.Id" name="SortOrder" min="0" value="@newsletterSection.SortOrder" />
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            <label class="form-label" for="SectionContent_@newsletterSection.Id">Obsah</label>
+                            <textarea class="form-control" id="SectionContent_@newsletterSection.Id" name="HtmlContent" rows="6" required>@newsletterSection.HtmlContent</textarea>
+                        </div>
+                        <div class="form-check mt-3">
+                            <input type="hidden" name="IsPublished" value="false" />
+                            <input class="form-check-input" type="checkbox" id="SectionIsPublished_@newsletterSection.Id" name="IsPublished" value="true" @(newsletterSection.IsPublished ? "checked" : null) />
+                            <label class="form-check-label" for="SectionIsPublished_@newsletterSection.Id">Publikováno</label>
+                        </div>
+                        <div class="mt-3 d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">Uložit sekci</button>
+                            <button type="submit" class="btn btn-outline-danger" formaction="?handler=DeleteSection" formmethod="post" name="id" value="@newsletterSection.Id" onclick="return confirm('Opravdu chcete sekci odstranit?');">Smazat</button>
+                        </div>
+                    </form>
+                </div>
+            </details>
+        }
+    }
+</section>
+
+<section class="mb-5">
+    <h2 class="h4">Nový newsletter</h2>
+    <form method="post" asp-page-handler="CreateIssue" class="card card-body mb-4">
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label class="form-label" for="IssueSubject">Předmět</label>
+                <input class="form-control" id="IssueSubject" name="Subject" maxlength="180" required />
+            </div>
+            <div class="col-md-6">
+                <label class="form-label" for="IssuePreheader">Preheader</label>
+                <input class="form-control" id="IssuePreheader" name="Preheader" maxlength="180" />
+            </div>
+        </div>
+        <div class="mt-3">
+            <label class="form-label" for="IssueIntro">Úvodní text</label>
+            <textarea class="form-control" id="IssueIntro" name="IntroHtml" rows="4"></textarea>
+        </div>
+        <div class="mt-3">
+            <label class="form-label" for="IssueOutro">Závěrečný text</label>
+            <textarea class="form-control" id="IssueOutro" name="OutroHtml" rows="4"></textarea>
+        </div>
+        <div class="row g-3 mt-3">
+            <div class="col-md-6">
+                <label class="form-label" for="IssueCategories">Kategorie v newsletteru</label>
+                <select class="form-select" id="IssueCategories" name="SelectedCategoryIds" multiple size="6" required>
+                    @foreach (var option in Model.SectionCategoryOptions)
+                    {
+                        <option value="@option.Value">@option.Text</option>
+                    }
+                </select>
+                <small class="text-muted">Vyberte kategorie, pro které má být newsletter připraven.</small>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label" for="IssueSections">Sekce</label>
+                <select class="form-select" id="IssueSections" name="SelectedSectionIds" multiple size="6" required>
+                    @foreach (var option in Model.SectionOptions)
+                    {
+                        <option value="@option.Value">@option.Text</option>
+                    }
+                </select>
+                <small class="text-muted">Vyberte publikované sekce, které se mají do newsletteru zařadit.</small>
+            </div>
+        </div>
+        <div class="mt-3">
+            <label class="form-label" for="IssueScheduledForUtc">Plánované odeslání (UTC)</label>
+            <input type="datetime-local" class="form-control" id="IssueScheduledForUtc" name="ScheduledForUtc" />
+        </div>
+        <div class="mt-3">
+            <button type="submit" class="btn btn-primary">Vytvořit newsletter</button>
+        </div>
+    </form>
+
+    <h3 class="h5">Připravené newslettery</h3>
+    @if (Model.Issues.Count == 0)
+    {
+        <p class="text-muted">Zatím nebyly vytvořeny žádné newslettery.</p>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-striped align-middle">
+                <thead>
+                    <tr>
+                        <th>Předmět</th>
+                        <th>Vytvořeno</th>
+                        <th>Odesláno</th>
+                        <th>Kategorie</th>
+                        <th>Sekce</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var issue in Model.Issues)
+                    {
+                        <tr>
+                            <td>@issue.Subject</td>
+                            <td>@issue.CreatedAtUtc.ToLocalTime().ToString("g")</td>
+                            <td>
+                                @if (issue.SentAtUtc.HasValue)
+                                {
+                                    @issue.SentAtUtc.Value.ToLocalTime().ToString("g")
+                                }
+                                else if (issue.ScheduledForUtc.HasValue)
+                                {
+                                    <span class="text-muted">Naplánováno na @issue.ScheduledForUtc.Value.ToLocalTime().ToString("g")</span>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">Neodesláno</span>
+                                }
+                            </td>
+                            <td>
+                                @if (issue.Categories.Count == 0)
+                                {
+                                    <span class="text-muted">Žádné</span>
+                                }
+                                else
+                                {
+                                    <ul class="mb-0">
+                                        @foreach (var category in issue.Categories)
+                                        {
+                                            <li>@category.NewsletterSectionCategory.Name</li>
+                                        }
+                                    </ul>
+                                }
+                            </td>
+                            <td>
+                                @if (issue.Sections.Count == 0)
+                                {
+                                    <span class="text-muted">Žádné</span>
+                                }
+                                else
+                                {
+                                    <ul class="mb-0">
+                                        @foreach (var issueSection in issue.Sections.OrderBy(s => s.SortOrder))
+                                        {
+                                            <li>@issueSection.NewsletterSection.Title</li>
+                                        }
+                                    </ul>
+                                }
+                            </td>
+                            <td class="text-end">
+                                <form method="post" asp-page-handler="SendIssue" class="d-inline">
+                                    <input type="hidden" name="id" value="@issue.Id" />
+                                    <button type="submit" class="btn btn-outline-primary btn-sm">Odeslat</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</section>
