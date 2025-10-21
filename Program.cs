@@ -204,13 +204,23 @@ try
         options.Level = CompressionLevel.SmallestSize;
     });
 
-    builder.Services.Configure<PohodaXmlOptions>(builder.Configuration.GetSection(PohodaXmlOptions.SectionName));
+    builder.Services
+        .AddOptions<PohodaXmlOptions>()
+        .Bind(builder.Configuration.GetSection(PohodaXmlOptions.SectionName))
+        .ValidateDataAnnotations()
+        .ValidateOnStart();
+    builder.Services.AddSingleton(sp => sp.GetRequiredService<IOptions<PohodaXmlOptions>>().Value);
     builder.Services.AddHttpClient<PohodaXmlClient>((sp, client) =>
     {
         var options = sp.GetRequiredService<IOptions<PohodaXmlOptions>>().Value;
         if (Uri.TryCreate(options.BaseUrl, UriKind.Absolute, out var uri))
         {
             client.BaseAddress = uri;
+        }
+
+        if (options.TimeoutSeconds > 0)
+        {
+            client.Timeout = TimeSpan.FromSeconds(options.TimeoutSeconds);
         }
     });
     builder.Services.AddScoped<IPohodaExportService, PohodaExportService>();

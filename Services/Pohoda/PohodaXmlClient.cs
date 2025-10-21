@@ -1,3 +1,4 @@
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -9,11 +10,10 @@ namespace SysJaky_N.Services.Pohoda;
 
 public sealed class PohodaXmlClient
 {
-    private static readonly Encoding Windows1250Encoding = CreateEncoding();
-
     private readonly HttpClient _httpClient;
     private readonly PohodaXmlOptions _options;
     private readonly ILogger<PohodaXmlClient> _logger;
+    private readonly Encoding _encoding;
 
     public PohodaXmlClient(HttpClient httpClient, IOptions<PohodaXmlOptions> options, ILogger<PohodaXmlClient> logger)
     {
@@ -24,6 +24,7 @@ public sealed class PohodaXmlClient
         _httpClient = httpClient;
         _options = options.Value;
         _logger = logger;
+        _encoding = CreateEncoding(_options.EncodingName);
     }
 
     public async Task<PohodaXmlResponse> SendInvoiceAsync(string dataPack, CancellationToken cancellationToken = default)
@@ -31,9 +32,8 @@ public sealed class PohodaXmlClient
         ArgumentException.ThrowIfNullOrEmpty(dataPack);
 
         var endpoint = BuildEndpointUri("xml");
-        using var request = CreateRequest(HttpMethod.Post, endpoint, dataPack);
-
-        using var response = await _httpClient.SendAsync(request, cancellationToken).ConfigureAwait(false);
+        using var response = await SendWithRetryAsync(() => CreateRequest(HttpMethod.Post, endpoint, dataPack), cancellationToken)
+            .ConfigureAwait(false);
         var content = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 
         if (!response.IsSuccessStatusCode)
@@ -57,9 +57,8 @@ public sealed class PohodaXmlClient
     public async Task<bool> CheckStatusAsync(CancellationToken cancellationToken = default)
     {
         var endpoint = BuildEndpointUri("status");
-        using var request = CreateRequest(HttpMethod.Get, endpoint, content: null);
-
-        using var response = await _httpClient.SendAsync(request, cancellationToken).ConfigureAwait(false);
+        using var response = await SendWithRetryAsync(() => CreateRequest(HttpMethod.Get, endpoint, content: null), cancellationToken)
+            .ConfigureAwait(false);
         return response.IsSuccessStatusCode;
     }
 
@@ -69,10 +68,10 @@ public sealed class PohodaXmlClient
 
         if (content is not null)
         {
-            request.Content = new StringContent(content, Windows1250Encoding, "text/xml");
+            request.Content = new StringContent(content, _encoding, "text/xml");
         }
 
-        var credentials = Convert.ToBase64String(Windows1250Encoding.GetBytes($"{_options.Username}:{_options.Password}"));
+        var credentials = Convert.ToBase64String(_encoding.GetBytes($"{_options.Username}:{_options.Password}"));
         request.Headers.TryAddWithoutValidation("STW-Authorization", $"Basic {credentials}");
 
         if (!string.IsNullOrWhiteSpace(_options.Application))
@@ -85,16 +84,92 @@ public sealed class PohodaXmlClient
             request.Headers.TryAddWithoutValidation("STW-Instance", _options.Instance);
         }
 
+        if (!string.IsNullOrWhiteSpace(_options.Company))
+        {
+            request.Headers.TryAddWithoutValidation("STW-Company", _options.Company);
+        }
+
         request.Headers.TryAddWithoutValidation("STW-Check-Duplicity", _options.CheckDuplicity ? "true" : "false");
 
         request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("text/xml"));
         return request;
     }
 
-    private static Encoding CreateEncoding()
+    private async Task<HttpResponseMessage> SendWithRetryAsync(Func<HttpRequestMessage> requestFactory, CancellationToken cancellationToken)
+    {
+        var totalAttempts = Math.Max(0, _options.RetryCount) + 1;
+
+        for (var attempt = 1; attempt <= totalAttempts; attempt++)
+        {
+            var request = requestFactory();
+            try
+            {
+                var response = await _httpClient.SendAsync(request, cancellationToken).ConfigureAwait(false);
+
+                if (response.IsSuccessStatusCode || attempt == totalAttempts || !ShouldRetry(response))
+                {
+                    return response;
+                }
+
+                _logger.LogWarning(
+                    "Pohoda XML request failed with status {StatusCode}. Retrying attempt {Attempt} of {TotalAttempts}.",
+                    (int)response.StatusCode,
+                    attempt,
+                    totalAttempts);
+                response.Dispose();
+            }
+            catch (Exception ex) when (IsTransient(ex) && attempt < totalAttempts)
+            {
+                _logger.LogWarning(
+                    ex,
+                    "Transient error when calling Pohoda XML (attempt {Attempt} of {TotalAttempts}).",
+                    attempt,
+                    totalAttempts);
+            }
+            finally
+            {
+                request.Dispose();
+            }
+
+            if (attempt < totalAttempts)
+            {
+                await Task.Delay(TimeSpan.FromSeconds(1), cancellationToken).ConfigureAwait(false);
+            }
+        }
+
+        throw new PohodaXmlException("Pohoda XML request failed after all retry attempts.");
+    }
+
+    private static bool ShouldRetry(HttpResponseMessage response)
+    {
+        var statusCode = (int)response.StatusCode;
+        if (statusCode == (int)HttpStatusCode.RequestTimeout)
+        {
+            return true;
+        }
+
+        return statusCode >= 500 && statusCode != (int)HttpStatusCode.NotImplemented;
+    }
+
+    private static bool IsTransient(Exception exception)
+    {
+        return exception is HttpRequestException or TaskCanceledException;
+    }
+
+    private static Encoding CreateEncoding(string encodingName)
     {
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-        return Encoding.GetEncoding("windows-1250");
+        var fallbackEncoding = "windows-1250";
+        var name = string.IsNullOrWhiteSpace(encodingName) ? fallbackEncoding : encodingName;
+
+        try
+        {
+            return Encoding.GetEncoding(name);
+        }
+        catch (ArgumentException)
+        {
+            return Encoding.GetEncoding(fallbackEncoding);
+        }
     }
 
     private Uri BuildEndpointUri(string relativePath)

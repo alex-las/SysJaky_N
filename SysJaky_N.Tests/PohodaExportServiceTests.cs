@@ -39,7 +39,8 @@ public class PohodaExportServiceTests
             BaseUrl = "https://pohoda.example.com",
             Username = "user",
             Password = "pass",
-            Application = "SysJaky_N"
+            Application = "SysJaky_N",
+            TimeoutSeconds = 30
         };
 
         var context = CreateDbContext();
@@ -70,7 +71,8 @@ public class PohodaExportServiceTests
             BaseUrl = "https://pohoda.example.com",
             Username = "user",
             Password = "pass",
-            Application = "SysJaky_N"
+            Application = "SysJaky_N",
+            TimeoutSeconds = 30
         };
 
         var client = new PohodaXmlClient(httpClient, Options.Create(options), NullLogger<PohodaXmlClient>.Instance);
@@ -80,7 +82,9 @@ public class PohodaExportServiceTests
         var request = Assert.Single(handler.Requests);
         Assert.True(request.Headers.TryGetValues("STW-Authorization", out var values));
         var header = Assert.Single(values);
-        var expectedCredentials = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{options.Username}:{options.Password}"));
+        Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+        var expectedEncoding = Encoding.GetEncoding(options.EncodingName);
+        var expectedCredentials = Convert.ToBase64String(expectedEncoding.GetBytes($"{options.Username}:{options.Password}"));
         Assert.Equal($"Basic {expectedCredentials}", header);
         _output.WriteLine("Authorization header: {0}", header);
     }
@@ -96,7 +100,8 @@ public class PohodaExportServiceTests
             Username = "user",
             Password = "pass",
             Application = "SysJaky_N",
-            ExportWorkerBatchSize = 5
+            ExportWorkerBatchSize = 5,
+            TimeoutSeconds = 30
         };
 
         var context = CreateDbContext();

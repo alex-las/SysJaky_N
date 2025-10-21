@@ -12,7 +12,11 @@ The following keys must be provided for the integration to work:
 - `Username` and `Password` – Credentials for the Pohoda XML API.
 - `Application` – Identifier of the calling application used in the XML data pack header.
 - `Instance` – Optional instance name; leave empty if not required by the server.
+- `Company` – Optional company identifier forwarded to Pohoda in the HTTP headers.
 - `CheckDuplicity` – Whether the server should prevent duplicate imports (`true`/`false`).
+- `EncodingName` – Text encoding used for requests (default `windows-1250`).
+- `TimeoutSeconds` – HTTP timeout configured for the Pohoda XML client.
+- `RetryCount` – Number of times the HTTP call is retried by the client factory.
 
 In addition to the connection settings, the section also controls the behaviour of the
 background export worker:
@@ -35,6 +39,10 @@ dotnet user-secrets set "PohodaXml:Password" "your-password"
 
 Provide the remaining keys as needed. The worker configuration is optional – defaults are applied
 when the values are omitted or invalid.
+
+The HTTP-related configuration (`EncodingName`, `TimeoutSeconds`, `RetryCount`) is validated on
+application start. When an invalid value is provided the application fails fast, allowing you to fix
+the configuration before any background jobs run.
 
 ## Deployment
 
