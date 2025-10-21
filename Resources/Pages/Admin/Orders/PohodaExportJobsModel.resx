@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Title" xml:space="preserve">
+    <value>Exporty do Pohody</value>
+  </data>
+  <data name="Summary_Pending" xml:space="preserve">
+    <value>Čekající</value>
+  </data>
+  <data name="Summary_InProgress" xml:space="preserve">
+    <value>Probíhá</value>
+  </data>
+  <data name="Summary_Succeeded" xml:space="preserve">
+    <value>Úspěšné</value>
+  </data>
+  <data name="Summary_Failed" xml:space="preserve">
+    <value>Chybové</value>
+  </data>
+  <data name="TableJobId" xml:space="preserve">
+    <value>Job</value>
+  </data>
+  <data name="TableOrderId" xml:space="preserve">
+    <value>Objednávka</value>
+  </data>
+  <data name="TableCustomer" xml:space="preserve">
+    <value>Zákazník</value>
+  </data>
+  <data name="TableStatus" xml:space="preserve">
+    <value>Stav</value>
+  </data>
+  <data name="TableAttempts" xml:space="preserve">
+    <value>Pokusy</value>
+  </data>
+  <data name="TableCreated" xml:space="preserve">
+    <value>Vytvořeno</value>
+  </data>
+  <data name="TableLastAttempt" xml:space="preserve">
+    <value>Poslední pokus</value>
+  </data>
+  <data name="TableNextAttempt" xml:space="preserve">
+    <value>Další pokus</value>
+  </data>
+  <data name="TableLastError" xml:space="preserve">
+    <value>Poslední chyba</value>
+  </data>
+  <data name="TableActions" xml:space="preserve">
+    <value>Akce</value>
+  </data>
+  <data name="TableEmpty" xml:space="preserve">
+    <value>Žádné exportní joby zatím nejsou.</value>
+  </data>
+  <data name="CustomerUnknown" xml:space="preserve">
+    <value>Neznámý zákazník</value>
+  </data>
+  <data name="ActionRetry" xml:space="preserve">
+    <value>Znovu naplánovat</value>
+  </data>
+  <data name="ActionForce" xml:space="preserve">
+    <value>Vynutit export</value>
+  </data>
+  <data name="TableNote" xml:space="preserve">
+    <value>Zobrazuje posledních 100 exportních jobů do Pohody.</value>
+  </data>
+  <data name="Status_Pending" xml:space="preserve">
+    <value>Čeká</value>
+  </data>
+  <data name="Status_InProgress" xml:space="preserve">
+    <value>Probíhá</value>
+  </data>
+  <data name="Status_Succeeded" xml:space="preserve">
+    <value>Úspěšné</value>
+  </data>
+  <data name="Status_Failed" xml:space="preserve">
+    <value>Chyba</value>
+  </data>
+  <data name="StatusJobNotFound" xml:space="preserve">
+    <value>Exportní job s ID {0} nebyl nalezen.</value>
+  </data>
+  <data name="StatusJobRequeued" xml:space="preserve">
+    <value>Job {0} byl znovu naplánován.</value>
+  </data>
+  <data name="StatusJobExecuted" xml:space="preserve">
+    <value>Job {0} byl úspěšně spuštěn.</value>
+  </data>
+  <data name="StatusJobExecutionFailed" xml:space="preserve">
+    <value>Job {0} se nepodařilo spustit. Zkontrolujte logy.</value>
+  </data>
+</root>

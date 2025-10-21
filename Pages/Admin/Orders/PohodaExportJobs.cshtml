@@ -1,0 +1,88 @@
+@page
+@model SysJaky_N.Pages.Admin.Orders.PohodaExportJobsModel
+@using Microsoft.Extensions.Localization
+@using SysJaky_N.Models
+@inject IStringLocalizer<SysJaky_N.Pages.Admin.Orders.PohodaExportJobsModel> Localizer
+@{
+    ViewData["Title"] = Localizer["Title"];
+}
+
+<h1 class="mb-4">@Localizer["Title"]</h1>
+
+@if (!string.IsNullOrWhiteSpace(Model.StatusMessage))
+{
+    <div class="alert alert-info">@Model.StatusMessage</div>
+}
+
+<div class="row g-3 mb-4">
+    @foreach (var status in Enum.GetValues<PohodaExportJobStatus>())
+    {
+        Model.StatusCounts.TryGetValue(status, out var count);
+        <div class="col-sm-6 col-lg-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <p class="text-uppercase text-muted small mb-1">@Localizer[$"Summary_{status}"]</p>
+                    <p class="fs-4 fw-semibold mb-0">@count</p>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<div class="table-responsive">
+    <table class="table align-middle">
+        <thead>
+            <tr>
+                <th>@Localizer["TableJobId"]</th>
+                <th>@Localizer["TableOrderId"]</th>
+                <th>@Localizer["TableCustomer"]</th>
+                <th>@Localizer["TableStatus"]</th>
+                <th>@Localizer["TableAttempts"]</th>
+                <th>@Localizer["TableCreated"]</th>
+                <th>@Localizer["TableLastAttempt"]</th>
+                <th>@Localizer["TableNextAttempt"]</th>
+                <th>@Localizer["TableLastError"]</th>
+                <th class="text-end">@Localizer["TableActions"]</th>
+            </tr>
+        </thead>
+        <tbody>
+        @if (Model.Jobs.Count == 0)
+        {
+            <tr>
+                <td colspan="10" class="text-center text-muted py-5">@Localizer["TableEmpty"]</td>
+            </tr>
+        }
+        else
+        {
+            foreach (var job in Model.Jobs)
+            {
+                <tr>
+                    <td>@job.Id</td>
+                    <td>
+                        <a asp-page="Details" asp-route-id="@job.OrderId" class="text-decoration-none">
+                            @job.OrderId
+                        </a>
+                    </td>
+                    <td>@(string.IsNullOrWhiteSpace(job.CustomerEmail) ? Localizer["CustomerUnknown"] : job.CustomerEmail)</td>
+                    <td>@Localizer[$"Status_{job.Status}"]</td>
+                    <td>@job.AttemptCount</td>
+                    <td>@job.CreatedAtUtc.ToLocalTime().ToString("g")</td>
+                    <td>@(job.LastAttemptAtUtc.HasValue ? job.LastAttemptAtUtc.Value.ToLocalTime().ToString("g") : "–")</td>
+                    <td>@(job.NextAttemptAtUtc.HasValue ? job.NextAttemptAtUtc.Value.ToLocalTime().ToString("g") : "–")</td>
+                    <td class="text-break">@(!string.IsNullOrWhiteSpace(job.LastError) ? job.LastError : "–")</td>
+                    <td class="text-end">
+                        <form method="post" asp-page-handler="Retry" asp-route-id="@job.Id" class="d-inline">
+                            <button type="submit" class="btn btn-sm btn-outline-secondary">@Localizer["ActionRetry"]</button>
+                        </form>
+                        <form method="post" asp-page-handler="Force" asp-route-id="@job.Id" class="d-inline ms-2">
+                            <button type="submit" class="btn btn-sm btn-primary">@Localizer["ActionForce"]</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        }
+        </tbody>
+    </table>
+</div>
+
+<p class="text-muted">@Localizer["TableNote"]</p>

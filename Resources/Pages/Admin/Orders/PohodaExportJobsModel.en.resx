@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Title" xml:space="preserve">
+    <value>Pohoda exports</value>
+  </data>
+  <data name="Summary_Pending" xml:space="preserve">
+    <value>Pending</value>
+  </data>
+  <data name="Summary_InProgress" xml:space="preserve">
+    <value>In progress</value>
+  </data>
+  <data name="Summary_Succeeded" xml:space="preserve">
+    <value>Succeeded</value>
+  </data>
+  <data name="Summary_Failed" xml:space="preserve">
+    <value>Failed</value>
+  </data>
+  <data name="TableJobId" xml:space="preserve">
+    <value>Job</value>
+  </data>
+  <data name="TableOrderId" xml:space="preserve">
+    <value>Order</value>
+  </data>
+  <data name="TableCustomer" xml:space="preserve">
+    <value>Customer</value>
+  </data>
+  <data name="TableStatus" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="TableAttempts" xml:space="preserve">
+    <value>Attempts</value>
+  </data>
+  <data name="TableCreated" xml:space="preserve">
+    <value>Created</value>
+  </data>
+  <data name="TableLastAttempt" xml:space="preserve">
+    <value>Last attempt</value>
+  </data>
+  <data name="TableNextAttempt" xml:space="preserve">
+    <value>Next attempt</value>
+  </data>
+  <data name="TableLastError" xml:space="preserve">
+    <value>Last error</value>
+  </data>
+  <data name="TableActions" xml:space="preserve">
+    <value>Actions</value>
+  </data>
+  <data name="TableEmpty" xml:space="preserve">
+    <value>No export jobs found.</value>
+  </data>
+  <data name="CustomerUnknown" xml:space="preserve">
+    <value>Unknown customer</value>
+  </data>
+  <data name="ActionRetry" xml:space="preserve">
+    <value>Requeue</value>
+  </data>
+  <data name="ActionForce" xml:space="preserve">
+    <value>Force export</value>
+  </data>
+  <data name="TableNote" xml:space="preserve">
+    <value>Showing the 100 most recent Pohoda export jobs.</value>
+  </data>
+  <data name="Status_Pending" xml:space="preserve">
+    <value>Pending</value>
+  </data>
+  <data name="Status_InProgress" xml:space="preserve">
+    <value>In progress</value>
+  </data>
+  <data name="Status_Succeeded" xml:space="preserve">
+    <value>Succeeded</value>
+  </data>
+  <data name="Status_Failed" xml:space="preserve">
+    <value>Failed</value>
+  </data>
+  <data name="StatusJobNotFound" xml:space="preserve">
+    <value>Export job with ID {0} was not found.</value>
+  </data>
+  <data name="StatusJobRequeued" xml:space="preserve">
+    <value>Job {0} has been requeued.</value>
+  </data>
+  <data name="StatusJobExecuted" xml:space="preserve">
+    <value>Job {0} was executed successfully.</value>
+  </data>
+  <data name="StatusJobExecutionFailed" xml:space="preserve">
+    <value>Job {0} could not be executed. Check the logs.</value>
+  </data>
+</root>
