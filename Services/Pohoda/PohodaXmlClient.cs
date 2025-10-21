@@ -73,7 +73,7 @@ public sealed class PohodaXmlClient
         }
 
         var credentials = Convert.ToBase64String(Windows1250Encoding.GetBytes($"{_options.Username}:{_options.Password}"));
-        request.Headers.TryAddWithoutValidation("STW-Authorization", credentials);
+        request.Headers.TryAddWithoutValidation("STW-Authorization", $"Basic {credentials}");
 
         if (!string.IsNullOrWhiteSpace(_options.Application))
         {

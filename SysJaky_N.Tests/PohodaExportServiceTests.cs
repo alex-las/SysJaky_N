@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -14,11 +15,19 @@ using SysJaky_N.Models;
 using SysJaky_N.Services;
 using SysJaky_N.Services.Pohoda;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace SysJaky_N.Tests;
 
 public class PohodaExportServiceTests
 {
+    private readonly ITestOutputHelper _output;
+
+    public PohodaExportServiceTests(ITestOutputHelper output)
+    {
+        _output = output;
+    }
+
     [Fact]
     public async Task ExportOrderAsync_SendsInvoiceAndStoresInvoiceNumber()
     {
@@ -48,6 +57,32 @@ public class PohodaExportServiceTests
         Assert.Equal(PohodaExportJobStatus.Succeeded, job.Status);
         Assert.Equal("INV-42", order.InvoiceNumber);
         Assert.Contains(handler.Requests, r => r.RequestUri!.AbsolutePath.EndsWith("/xml", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task CreateRequest_AddsBasicAuthorizationPrefix()
+    {
+        var handler = new TestHttpMessageHandler();
+        var httpClient = new HttpClient(handler);
+
+        var options = new PohodaXmlOptions
+        {
+            BaseUrl = "https://pohoda.example.com",
+            Username = "user",
+            Password = "pass",
+            Application = "SysJaky_N"
+        };
+
+        var client = new PohodaXmlClient(httpClient, Options.Create(options), NullLogger<PohodaXmlClient>.Instance);
+
+        await client.CheckStatusAsync();
+
+        var request = Assert.Single(handler.Requests);
+        Assert.True(request.Headers.TryGetValues("STW-Authorization", out var values));
+        var header = Assert.Single(values);
+        var expectedCredentials = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{options.Username}:{options.Password}"));
+        Assert.Equal($"Basic {expectedCredentials}", header);
+        _output.WriteLine("Authorization header: {0}", header);
     }
 
     [Fact]
