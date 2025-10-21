@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://www.stormware.cz/schema/version_2/type.xsd"
+           xmlns:typ="http://www.stormware.cz/schema/version_2/type.xsd"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified">
+  <xs:element name="address">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="company" type="xs:string" minOccurs="0" />
+        <xs:element name="name" type="xs:string" minOccurs="0" />
+        <xs:element name="street" type="xs:string" minOccurs="0" />
+        <xs:element name="city" type="xs:string" minOccurs="0" />
+        <xs:element name="zip" type="xs:string" minOccurs="0" />
+        <xs:element name="country" type="xs:string" minOccurs="0" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:simpleType name="decimalType">
+    <xs:restriction base="xs:decimal">
+      <xs:fractionDigits value="2" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:element name="unitPrice" type="typ:decimalType" />
+  <xs:element name="price" type="typ:decimalType" />
+  <xs:element name="priceVAT" type="typ:decimalType" />
+  <xs:element name="priceSum" type="typ:decimalType" />
+  <xs:element name="priceNone" type="typ:decimalType" />
+  <xs:element name="priceLow" type="typ:decimalType" />
+  <xs:element name="priceLowVAT" type="typ:decimalType" />
+  <xs:element name="priceHigh" type="typ:decimalType" />
+  <xs:element name="priceHighVAT" type="typ:decimalType" />
+</xs:schema>

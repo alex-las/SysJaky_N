@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="windows-1250"?>
+<dat:dataPack xmlns:dat="http://www.stormware.cz/schema/version_2/data.xsd"
+              xmlns:inv="http://www.stormware.cz/schema/version_2/invoice.xsd"
+              xmlns:typ="http://www.stormware.cz/schema/version_2/type.xsd"
+              xmlns:lst="http://www.stormware.cz/schema/version_2/list.xsd"
+              xmlns:ftr="http://www.stormware.cz/schema/version_2/filter.xsd"
+              id="ListInvoice-INV-123"
+              version="2.0"
+              application="SysJaky_N">
+  <dat:dataPackItem id="InvoiceList-INV-123" version="2.0">
+    <lst:listInvoiceRequest version="2.0" invoiceType="issuedInvoice" invoiceVersion="2.0">
+      <lst:requestInvoice />
+      <ftr:filter>
+        <ftr:number>INV-123</ftr:number>
+      </ftr:filter>
+    </lst:listInvoiceRequest>
+  </dat:dataPackItem>
+</dat:dataPack>

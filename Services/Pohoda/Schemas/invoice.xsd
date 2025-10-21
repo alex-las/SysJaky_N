@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://www.stormware.cz/schema/version_2/invoice.xsd"
+           xmlns:inv="http://www.stormware.cz/schema/version_2/invoice.xsd"
+           xmlns:typ="http://www.stormware.cz/schema/version_2/type.xsd"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified">
+  <xs:import namespace="http://www.stormware.cz/schema/version_2/type.xsd" />
+
+  <xs:simpleType name="vatRateType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="none" />
+      <xs:enumeration value="low" />
+      <xs:enumeration value="high" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:element name="invoice">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="inv:invoiceHeader" />
+        <xs:element ref="inv:invoiceDetail" />
+        <xs:element ref="inv:invoiceSummary" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="invoiceHeader">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="invoiceType" type="xs:string" />
+        <xs:element name="numberOrder" type="xs:string" />
+        <xs:element name="text" type="xs:string" />
+        <xs:element name="date" type="xs:date" />
+        <xs:element name="dateTax" type="xs:date" />
+        <xs:element name="dateDue" type="xs:date" />
+        <xs:element name="symVar" type="xs:string" />
+        <xs:element name="symSpec" type="xs:string" minOccurs="0" />
+        <xs:element name="partnerIdentity" minOccurs="0">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element ref="typ:address" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="note" type="xs:string" minOccurs="0" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="invoiceDetail">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="invoiceItem" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="text" type="xs:string" />
+              <xs:element name="quantity" type="xs:decimal" />
+              <xs:element name="rateVAT" type="inv:vatRateType" />
+              <xs:element name="homeCurrency">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element ref="typ:unitPrice" />
+                    <xs:element ref="typ:price" />
+                    <xs:element ref="typ:priceVAT" />
+                    <xs:element ref="typ:priceSum" />
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="discountPercentage" type="xs:decimal" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="invoiceSummary">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="round" type="xs:string" />
+        <xs:element name="homeCurrency">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element ref="typ:priceNone" minOccurs="0" />
+              <xs:element ref="typ:priceLow" minOccurs="0" />
+              <xs:element ref="typ:priceLowVAT" minOccurs="0" />
+              <xs:element ref="typ:priceHigh" minOccurs="0" />
+              <xs:element ref="typ:priceHighVAT" minOccurs="0" />
+              <xs:element ref="typ:priceSum" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
