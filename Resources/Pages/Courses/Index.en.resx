@@ -192,4 +192,10 @@
   <data name="RemoveFilter" xml:space="preserve">
     <value>Remove filter</value>
   </data>
+  <data name="AddToCartLabel" xml:space="preserve">
+    <value>Add to cart</value>
+  </data>
+  <data name="CartAddSuccess" xml:space="preserve">
+    <value>The course was added to your cart.</value>
+  </data>
 </root>

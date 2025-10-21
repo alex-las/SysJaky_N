@@ -192,4 +192,10 @@
   <data name="RemoveFilter" xml:space="preserve">
     <value>Odebrat filtr</value>
   </data>
+  <data name="AddToCartLabel" xml:space="preserve">
+    <value>Přidat do košíku</value>
+  </data>
+  <data name="CartAddSuccess" xml:space="preserve">
+    <value>Kurz byl přidán do košíku.</value>
+  </data>
 </root>
