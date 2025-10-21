@@ -32,6 +32,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.ResponseCompression;
 using CompressionLevel = System.IO.Compression.CompressionLevel;
 using System.Globalization;
+using SysJaky_N.Services.Pohoda;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
@@ -198,6 +199,9 @@ try
     {
         options.Level = CompressionLevel.SmallestSize;
     });
+
+    builder.Services.Configure<PohodaSqlOptions>(builder.Configuration.GetSection("PohodaSql"));
+    builder.Services.AddSingleton<IPohodaSqlOptions>(sp => sp.GetRequiredService<IOptions<PohodaSqlOptions>>().Value);
     builder.Services.Configure<GzipCompressionProviderOptions>(options =>
     {
         options.Level = CompressionLevel.SmallestSize;
