@@ -25,4 +25,10 @@
     <ProjectReference Include="..\SysJaky_N.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="TestData/*.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

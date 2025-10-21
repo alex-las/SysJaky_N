@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://www.stormware.cz/schema/version_2/data.xsd"
+           xmlns:dat="http://www.stormware.cz/schema/version_2/data.xsd"
+           xmlns:inv="http://www.stormware.cz/schema/version_2/invoice.xsd"
+           xmlns:lst="http://www.stormware.cz/schema/version_2/list.xsd"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified">
+  <xs:import namespace="http://www.stormware.cz/schema/version_2/invoice.xsd" />
+  <xs:import namespace="http://www.stormware.cz/schema/version_2/list.xsd" />
+
+  <xs:element name="dataPack">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="dat:dataPackItem" maxOccurs="unbounded" />
+      </xs:sequence>
+      <xs:attribute name="id" type="xs:string" use="required" />
+      <xs:attribute name="version" type="xs:string" use="required" />
+      <xs:attribute name="application" type="xs:string" use="optional" />
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="dataPackItem">
+    <xs:complexType>
+      <xs:choice>
+        <xs:element ref="inv:invoice" />
+        <xs:element ref="lst:listInvoiceRequest" />
+      </xs:choice>
+      <xs:attribute name="id" type="xs:string" use="required" />
+      <xs:attribute name="version" type="xs:string" use="required" />
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

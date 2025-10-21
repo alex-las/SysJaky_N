@@ -1,8 +1,11 @@
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.IO;
 using System.Text;
 using System.Xml;
 using System.Xml.Linq;
+using System.Xml.Schema;
 using SysJaky_N.Models.Billing;
 
 namespace SysJaky_N.Services.Pohoda;
@@ -80,12 +83,60 @@ public static class PohodaOrderPayload
                 new XAttribute("version", "2.0"),
                 new XElement(Lst + "listInvoiceRequest",
                     new XAttribute("version", "2.0"),
-                    new XElement(Lst + "invoiceType", "issuedInvoice"),
-                    new XElement(Lst + "filter",
+                    new XAttribute("invoiceType", "issuedInvoice"),
+                    new XAttribute("invoiceVersion", "2.0"),
+                    new XElement(Lst + "requestInvoice"),
+                    new XElement(Ftr + "filter",
                         new XElement(Ftr + "number", externalId)))));
 
         var document = new XDocument(new XDeclaration("1.0", "windows-1250", null), dataPack);
         return WriteDocument(document);
+    }
+
+    public static void ValidateAgainstXsd(string xml, IEnumerable<XmlSchema> schemas)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(xml);
+
+        if (schemas is null)
+        {
+            throw new ArgumentNullException(nameof(schemas));
+        }
+
+        var materialized = schemas as ICollection<XmlSchema> ?? schemas.ToList();
+        if (materialized.Count == 0)
+        {
+            return;
+        }
+
+        var settings = new XmlReaderSettings
+        {
+            ValidationType = ValidationType.Schema
+        };
+
+        foreach (var schema in materialized)
+        {
+            settings.Schemas.Add(schema);
+        }
+
+        var errors = new List<string>();
+        settings.ValidationEventHandler += (_, args) =>
+        {
+            if (args.Severity == XmlSeverityType.Error)
+            {
+                errors.Add(args.Message);
+            }
+        };
+
+        using var stringReader = new StringReader(xml);
+        using var reader = XmlReader.Create(stringReader, settings);
+        while (reader.Read())
+        {
+        }
+
+        if (errors.Count > 0)
+        {
+            throw new XmlSchemaValidationException($"XML validation failed: {string.Join("; ", errors)}");
+        }
     }
 
     private static XElement BuildInvoiceHeader(InvoiceHeader header)
