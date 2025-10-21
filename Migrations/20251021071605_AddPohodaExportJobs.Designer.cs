@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SysJaky_N.Data;
 
@@ -11,9 +12,11 @@ using SysJaky_N.Data;
 namespace SysJaky_N.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251021071605_AddPohodaExportJobs")]
+    partial class AddPohodaExportJobs
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1067,9 +1070,6 @@ namespace SysJaky_N.Migrations
                     b.Property<string>("IntroHtml")
                         .HasColumnType("longtext");
 
-                    b.Property<int>("NewsletterTemplateId")
-                        .HasColumnType("int");
-
                     b.Property<string>("OutroHtml")
                         .HasColumnType("longtext");
 
@@ -1091,8 +1091,6 @@ namespace SysJaky_N.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CreatedAtUtc");
-
-                    b.HasIndex("NewsletterTemplateId");
 
                     b.ToTable("NewsletterIssues", (string)null);
                 });
@@ -1120,17 +1118,12 @@ namespace SysJaky_N.Migrations
                     b.Property<int>("NewsletterSectionId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("NewsletterTemplateRegionId")
-                        .HasColumnType("int");
-
                     b.Property<int>("SortOrder")
                         .HasColumnType("int");
 
                     b.HasKey("NewsletterIssueId", "NewsletterSectionId");
 
                     b.HasIndex("NewsletterSectionId");
-
-                    b.HasIndex("NewsletterTemplateRegionId");
 
                     b.ToTable("NewsletterIssueSections", (string)null);
                 });
@@ -1258,80 +1251,6 @@ namespace SysJaky_N.Migrations
                     b.HasIndex("CourseCategoryId");
 
                     b.ToTable("NewsletterSubscriberCategories", (string)null);
-                });
-
-            modelBuilder.Entity("SysJaky_N.Models.NewsletterTemplate", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("BackgroundColor")
-                        .IsRequired()
-                        .HasMaxLength(16)
-                        .HasColumnType("varchar(16)");
-
-                    b.Property<string>("BaseLayoutHtml")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<DateTime>("CreatedAtUtc")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(128)
-                        .HasColumnType("varchar(128)");
-
-                    b.Property<string>("PrimaryColor")
-                        .IsRequired()
-                        .HasMaxLength(16)
-                        .HasColumnType("varchar(16)");
-
-                    b.Property<string>("SecondaryColor")
-                        .IsRequired()
-                        .HasMaxLength(16)
-                        .HasColumnType("varchar(16)");
-
-                    b.Property<DateTime>("UpdatedAtUtc")
-                        .HasColumnType("datetime(6)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("NewsletterTemplates");
-                });
-
-            modelBuilder.Entity("SysJaky_N.Models.NewsletterTemplateRegion", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(128)
-                        .HasColumnType("varchar(128)");
-
-                    b.Property<int>("NewsletterSectionCategoryId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("NewsletterTemplateId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SortOrder")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NewsletterSectionCategoryId");
-
-                    b.HasIndex("NewsletterTemplateId");
-
-                    b.ToTable("NewsletterTemplateRegions");
                 });
 
             modelBuilder.Entity("SysJaky_N.Models.Order", b =>
@@ -1993,17 +1912,6 @@ namespace SysJaky_N.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("SysJaky_N.Models.NewsletterIssue", b =>
-                {
-                    b.HasOne("SysJaky_N.Models.NewsletterTemplate", "NewsletterTemplate")
-                        .WithMany()
-                        .HasForeignKey("NewsletterTemplateId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("NewsletterTemplate");
-                });
-
             modelBuilder.Entity("SysJaky_N.Models.NewsletterIssueCategory", b =>
                 {
                     b.HasOne("SysJaky_N.Models.NewsletterIssue", "NewsletterIssue")
@@ -2037,16 +1945,9 @@ namespace SysJaky_N.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SysJaky_N.Models.NewsletterTemplateRegion", "TemplateRegion")
-                        .WithMany("IssueSections")
-                        .HasForeignKey("NewsletterTemplateRegionId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
                     b.Navigation("NewsletterIssue");
 
                     b.Navigation("NewsletterSection");
-
-                    b.Navigation("TemplateRegion");
                 });
 
             modelBuilder.Entity("SysJaky_N.Models.NewsletterSection", b =>
@@ -2087,25 +1988,6 @@ namespace SysJaky_N.Migrations
                     b.Navigation("CourseCategory");
 
                     b.Navigation("NewsletterSubscriber");
-                });
-
-            modelBuilder.Entity("SysJaky_N.Models.NewsletterTemplateRegion", b =>
-                {
-                    b.HasOne("SysJaky_N.Models.NewsletterSectionCategory", "Category")
-                        .WithMany("TemplateRegions")
-                        .HasForeignKey("NewsletterSectionCategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("SysJaky_N.Models.NewsletterTemplate", "NewsletterTemplate")
-                        .WithMany("Regions")
-                        .HasForeignKey("NewsletterTemplateId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Category");
-
-                    b.Navigation("NewsletterTemplate");
                 });
 
             modelBuilder.Entity("SysJaky_N.Models.Order", b =>
@@ -2320,23 +2202,11 @@ namespace SysJaky_N.Migrations
                     b.Navigation("IssueCategories");
 
                     b.Navigation("Sections");
-
-                    b.Navigation("TemplateRegions");
                 });
 
             modelBuilder.Entity("SysJaky_N.Models.NewsletterSubscriber", b =>
                 {
                     b.Navigation("PreferredCategories");
-                });
-
-            modelBuilder.Entity("SysJaky_N.Models.NewsletterTemplate", b =>
-                {
-                    b.Navigation("Regions");
-                });
-
-            modelBuilder.Entity("SysJaky_N.Models.NewsletterTemplateRegion", b =>
-                {
-                    b.Navigation("IssueSections");
                 });
 
             modelBuilder.Entity("SysJaky_N.Models.Order", b =>

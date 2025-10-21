@@ -8,7 +8,7 @@ public interface IPohodaExportService
 {
     Task QueueOrderAsync(Order order, CancellationToken cancellationToken = default);
 
-    Task ExportOrderAsync(Order order, CancellationToken cancellationToken = default);
+    Task ExportOrderAsync(PohodaExportJob job, CancellationToken cancellationToken = default);
 
     Task MarkInvoiceGeneratedAsync(Order order, string invoiceNumber, CancellationToken cancellationToken = default);
 }
