@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://www.stormware.cz/schema/version_2/filter.xsd"
+           xmlns="http://www.stormware.cz/schema/version_2/filter.xsd"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified">
+  <xs:element name="filter">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="number" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

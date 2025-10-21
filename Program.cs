@@ -212,6 +212,9 @@ try
         .ValidateDataAnnotations()
         .ValidateOnStart();
     builder.Services.AddSingleton(sp => sp.GetRequiredService<IOptions<PohodaXmlOptions>>().Value);
+    builder.Services.AddSingleton(sp => new PohodaXmlBuilder(
+        sp.GetRequiredService<PohodaXmlOptions>(),
+        PohodaXmlSchemas.Default));
     builder.Services.AddHttpClient<PohodaXmlClient>((sp, client) =>
     {
         var options = sp.GetRequiredService<IOptions<PohodaXmlOptions>>().Value;

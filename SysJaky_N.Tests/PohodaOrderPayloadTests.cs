@@ -1,7 +1,9 @@
 using System;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Xml.Linq;
+using System.Xml.Schema;
 using SysJaky_N.Models;
 using SysJaky_N.Services.Pohoda;
 using Xunit;
@@ -13,6 +15,11 @@ public class PohodaOrderPayloadTests
     private static readonly XNamespace Dat = "http://www.stormware.cz/schema/version_2/data.xsd";
     private static readonly XNamespace Inv = "http://www.stormware.cz/schema/version_2/invoice.xsd";
     private static readonly XNamespace Typ = "http://www.stormware.cz/schema/version_2/type.xsd";
+    private static readonly XNamespace Lst = "http://www.stormware.cz/schema/version_2/list.xsd";
+    private static readonly XNamespace Ftr = "http://www.stormware.cz/schema/version_2/filter.xsd";
+
+    private static PohodaXmlBuilder CreateBuilder()
+        => new(new PohodaXmlOptions { Application = "SysJaky_N" }, PohodaXmlSchemas.Default);
 
     [Fact]
     public void CreateInvoiceDataPack_BuildsInvoiceWithDetailAndSummary()
@@ -20,7 +27,8 @@ public class PohodaOrderPayloadTests
         var order = CreateSampleOrder();
 
         var mappedInvoice = OrderToInvoiceMapper.Map(order);
-        var xml = PohodaOrderPayload.CreateInvoiceDataPack(mappedInvoice, "SysJaky_N");
+        var builder = CreateBuilder();
+        var xml = builder.BuildIssuedInvoiceXml(mappedInvoice);
 
         Assert.Contains("encoding=\"windows-1250\"", xml, StringComparison.OrdinalIgnoreCase);
 
@@ -64,7 +72,8 @@ public class PohodaOrderPayloadTests
         order.Total = 363m;
 
         var mappedInvoice = OrderToInvoiceMapper.Map(order);
-        var xml = PohodaOrderPayload.CreateInvoiceDataPack(mappedInvoice, "SysJaky_N");
+        var builder = CreateBuilder();
+        var xml = builder.BuildIssuedInvoiceXml(mappedInvoice);
         var document = XDocument.Parse(xml);
         var detail = document.Root!
             .Element(Dat + "dataPackItem")!
@@ -85,17 +94,50 @@ public class PohodaOrderPayloadTests
     [Fact]
     public void CreateListInvoiceRequest_BuildsFilterWithNumber()
     {
-        var xml = PohodaOrderPayload.CreateListInvoiceRequest("INV-123", "SysJaky_N");
+        var builder = CreateBuilder();
+        var xml = builder.BuildListInvoiceRequest("INV-123");
         var document = XDocument.Parse(xml);
 
-        var filterValue = document.Root!
+        var request = document.Root!
             .Element(Dat + "dataPackItem")!
-            .Element("{http://www.stormware.cz/schema/version_2/list.xsd}listInvoiceRequest")!
-            .Element("{http://www.stormware.cz/schema/version_2/list.xsd}filter")!
-            .Element("{http://www.stormware.cz/schema/version_2/filter.xsd}number")!
+            .Element(Lst + "listInvoiceRequest");
+
+        Assert.Equal("issuedInvoice", request!.Attribute("invoiceType")?.Value);
+        Assert.Equal("2.0", request.Attribute("invoiceVersion")?.Value);
+
+        var filterValue = request
+            .Element(Lst + "requestInvoice")!
+            .Element(Ftr + "filter")!
+            .Element(Ftr + "number")!
             .Value;
 
         Assert.Equal("INV-123", filterValue);
+    }
+
+    [Fact]
+    public void BuildListInvoiceRequest_MatchesSamplePayload()
+    {
+        var builder = CreateBuilder();
+        var xml = builder.BuildListInvoiceRequest("INV-123");
+
+        var fixturePath = Path.Combine(AppContext.BaseDirectory, "Fixtures", "Pohoda", "listInvoiceRequest.xml");
+        Assert.True(File.Exists(fixturePath), $"Missing fixture at {fixturePath}.");
+
+        var expected = File.ReadAllText(fixturePath);
+        Assert.Equal(expected.Trim(), xml.Trim());
+    }
+
+    [Fact]
+    public void ValidateAgainstXsd_ThrowsForMissingAttributes()
+    {
+        var invalidDocument = PohodaOrderPayload.CreateListInvoiceRequestDocument("INV-123", "SysJaky_N");
+        invalidDocument.Root!
+            .Element(Dat + "dataPackItem")!
+            .Element(Lst + "listInvoiceRequest")!
+            .Attribute("invoiceType")!
+            .Remove();
+
+        Assert.Throws<XmlSchemaValidationException>(() => PohodaOrderPayload.ValidateAgainstXsd(invalidDocument, PohodaXmlSchemas.Default));
     }
 
     private static Order CreateSampleOrder()

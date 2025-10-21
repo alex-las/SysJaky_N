@@ -3,6 +3,7 @@ using System.IO;
 using System.Text;
 using System.Xml;
 using System.Xml.Linq;
+using System.Xml.Schema;
 using SysJaky_N.Models.Billing;
 
 namespace SysJaky_N.Services.Pohoda;
@@ -25,6 +26,18 @@ public static class PohodaOrderPayload
 
     public static string CreateInvoiceDataPack(Invoice invoice, string? applicationName = null)
     {
+        var document = CreateInvoiceDataPackDocument(invoice, applicationName);
+        return WriteDocument(document);
+    }
+
+    public static string CreateListInvoiceRequest(string externalId, string? applicationName = null)
+    {
+        var document = CreateListInvoiceRequestDocument(externalId, applicationName);
+        return WriteDocument(document);
+    }
+
+    internal static XDocument CreateInvoiceDataPackDocument(Invoice invoice, string? applicationName = null)
+    {
         ArgumentNullException.ThrowIfNull(invoice);
 
         var header = BuildInvoiceHeader(invoice.Header);
@@ -35,6 +48,8 @@ public static class PohodaOrderPayload
             new XAttribute(XNamespace.Xmlns + "dat", Dat),
             new XAttribute(XNamespace.Xmlns + "inv", Inv),
             new XAttribute(XNamespace.Xmlns + "typ", Typ),
+            new XAttribute(XNamespace.Xmlns + "lst", Lst),
+            new XAttribute(XNamespace.Xmlns + "ftr", Ftr),
             new XAttribute("id", $"Invoice-{invoice.Header.OrderNumber}"),
             new XAttribute("version", "2.0"));
 
@@ -44,7 +59,7 @@ public static class PohodaOrderPayload
         }
 
         dataPack.Add(
-                new XElement(Dat + "dataPackItem",
+            new XElement(Dat + "dataPackItem",
                 new XAttribute("id", $"Invoice-{invoice.Header.OrderNumber}"),
                 new XAttribute("version", "2.0"),
                 new XElement(Inv + "invoice",
@@ -52,11 +67,10 @@ public static class PohodaOrderPayload
                     detail,
                     summary)));
 
-        var document = new XDocument(new XDeclaration("1.0", "windows-1250", null), dataPack);
-        return WriteDocument(document);
+        return new XDocument(new XDeclaration("1.0", "windows-1250", null), dataPack);
     }
 
-    public static string CreateListInvoiceRequest(string externalId, string? applicationName = null)
+    internal static XDocument CreateListInvoiceRequestDocument(string externalId, string? applicationName = null)
     {
         ArgumentException.ThrowIfNullOrEmpty(externalId);
 
@@ -80,12 +94,51 @@ public static class PohodaOrderPayload
                 new XAttribute("version", "2.0"),
                 new XElement(Lst + "listInvoiceRequest",
                     new XAttribute("version", "2.0"),
-                    new XElement(Lst + "invoiceType", "issuedInvoice"),
-                    new XElement(Lst + "filter",
-                        new XElement(Ftr + "number", externalId)))));
+                    new XAttribute("invoiceType", "issuedInvoice"),
+                    new XAttribute("invoiceVersion", "2.0"),
+                    new XElement(Lst + "requestInvoice",
+                        new XElement(Ftr + "filter",
+                            new XElement(Ftr + "number", externalId))))));
 
-        var document = new XDocument(new XDeclaration("1.0", "windows-1250", null), dataPack);
-        return WriteDocument(document);
+        return new XDocument(new XDeclaration("1.0", "windows-1250", null), dataPack);
+    }
+
+    public static void ValidateAgainstXsd(XDocument document, IEnumerable<XmlSchema> schemas)
+    {
+        ArgumentNullException.ThrowIfNull(document);
+        ArgumentNullException.ThrowIfNull(schemas);
+
+        var schemaSet = new XmlSchemaSet();
+        var hasSchema = false;
+
+        foreach (var schema in schemas)
+        {
+            if (schema is null)
+            {
+                continue;
+            }
+
+            schemaSet.Add(schema);
+            hasSchema = true;
+        }
+
+        if (!hasSchema)
+        {
+            throw new ArgumentException("At least one XML schema must be provided for validation.", nameof(schemas));
+        }
+
+        var errors = new StringBuilder();
+        void ValidationEventHandler(object? sender, ValidationEventArgs args)
+        {
+            errors.AppendLine(args.Message);
+        }
+
+        document.Validate(schemaSet, ValidationEventHandler, true);
+
+        if (errors.Length > 0)
+        {
+            throw new XmlSchemaValidationException($"Pohoda XML validation failed:{Environment.NewLine}{errors}");
+        }
     }
 
     private static XElement BuildInvoiceHeader(InvoiceHeader header)
@@ -206,7 +259,7 @@ public static class PohodaOrderPayload
     private static string FormatDecimal(decimal value)
         => value.ToString("0.##", CultureInfo.InvariantCulture);
 
-    private static string WriteDocument(XDocument document)
+    internal static string WriteDocument(XDocument document)
     {
         var settings = new XmlWriterSettings
         {

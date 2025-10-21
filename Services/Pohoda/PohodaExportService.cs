@@ -16,6 +16,7 @@ namespace SysJaky_N.Services.Pohoda;
 public sealed class PohodaExportService : IPohodaExportService
 {
     private readonly PohodaXmlClient _xmlClient;
+    private readonly PohodaXmlBuilder _xmlBuilder;
     private readonly ILogger<PohodaExportService> _logger;
     private readonly ApplicationDbContext _dbContext;
     private readonly TimeProvider _timeProvider;
@@ -26,6 +27,7 @@ public sealed class PohodaExportService : IPohodaExportService
 
     public PohodaExportService(
         PohodaXmlClient xmlClient,
+        PohodaXmlBuilder xmlBuilder,
         ApplicationDbContext dbContext,
         TimeProvider timeProvider,
         IOptions<PohodaXmlOptions> options,
@@ -33,6 +35,7 @@ public sealed class PohodaExportService : IPohodaExportService
         ILogger<PohodaExportService> logger)
     {
         _xmlClient = xmlClient ?? throw new ArgumentNullException(nameof(xmlClient));
+        _xmlBuilder = xmlBuilder ?? throw new ArgumentNullException(nameof(xmlBuilder));
         _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         _timeProvider = timeProvider ?? throw new ArgumentNullException(nameof(timeProvider));
         _options = (options ?? throw new ArgumentNullException(nameof(options))).Value;
@@ -141,7 +144,7 @@ public sealed class PohodaExportService : IPohodaExportService
         await _dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
         var invoice = OrderToInvoiceMapper.Map(order);
-        var payload = PohodaOrderPayload.CreateInvoiceDataPack(invoice, _options.Application);
+        var payload = _xmlBuilder.BuildIssuedInvoiceXml(invoice);
 
         if (!_options.Enabled)
         {

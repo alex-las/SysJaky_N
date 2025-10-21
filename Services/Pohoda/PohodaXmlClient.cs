@@ -13,17 +13,20 @@ public sealed class PohodaXmlClient
     private readonly HttpClient _httpClient;
     private readonly PohodaXmlOptions _options;
     private readonly ILogger<PohodaXmlClient> _logger;
+    private readonly PohodaXmlBuilder _builder;
     private readonly Encoding _encoding;
 
-    public PohodaXmlClient(HttpClient httpClient, IOptions<PohodaXmlOptions> options, ILogger<PohodaXmlClient> logger)
+    public PohodaXmlClient(HttpClient httpClient, IOptions<PohodaXmlOptions> options, ILogger<PohodaXmlClient> logger, PohodaXmlBuilder builder)
     {
         ArgumentNullException.ThrowIfNull(httpClient);
         ArgumentNullException.ThrowIfNull(options);
         ArgumentNullException.ThrowIfNull(logger);
+        ArgumentNullException.ThrowIfNull(builder);
 
         _httpClient = httpClient;
         _options = options.Value;
         _logger = logger;
+        _builder = builder;
         _encoding = CreateEncoding(_options.EncodingName);
     }
 
@@ -50,7 +53,7 @@ public sealed class PohodaXmlClient
     {
         ArgumentException.ThrowIfNullOrEmpty(externalId);
 
-        var dataPack = PohodaOrderPayload.CreateListInvoiceRequest(externalId, _options.Application);
+        var dataPack = _builder.BuildListInvoiceRequest(externalId);
         return await SendInvoiceAsync(dataPack, cancellationToken).ConfigureAwait(false);
     }
 

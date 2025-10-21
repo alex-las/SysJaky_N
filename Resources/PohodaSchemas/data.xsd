@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:lst="http://www.stormware.cz/schema/version_2/list.xsd"
+           targetNamespace="http://www.stormware.cz/schema/version_2/data.xsd"
+           xmlns="http://www.stormware.cz/schema/version_2/data.xsd"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified">
+  <xs:import namespace="http://www.stormware.cz/schema/version_2/list.xsd" schemaLocation="list.xsd" />
+  <xs:element name="dataPack">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="dataPackItem" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:any processContents="lax" minOccurs="1" maxOccurs="1" />
+            </xs:sequence>
+            <xs:attribute name="id" type="xs:string" use="required" />
+            <xs:attribute name="version" type="xs:string" use="required" />
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+      <xs:attribute name="id" type="xs:string" use="required" />
+      <xs:attribute name="version" type="xs:string" use="required" />
+      <xs:attribute name="application" type="xs:string" use="optional" />
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

@@ -25,4 +25,10 @@
     <ProjectReference Include="..\SysJaky_N.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Fixtures\Pohoda\*.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
