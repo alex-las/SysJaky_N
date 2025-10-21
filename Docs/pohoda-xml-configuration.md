@@ -65,3 +65,7 @@ the configuration before any background jobs run.
 For production deployments configure the same keys via environment variables, Azure Key Vault or
 another secrets provider. Make sure the `PohodaXml` section is available before the application
 starts so that the `PohodaXmlOptions` binding succeeds.
+
+## Operational guidance
+
+Pro provozní zásahy, řešení incidentů a kontakty sleduj [Pohoda mServer Runbook](./POHODA-RUNBOOK.md).
