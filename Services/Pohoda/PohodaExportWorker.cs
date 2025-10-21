@@ -11,12 +11,12 @@ public sealed class PohodaExportWorker : ScopedRecurringBackgroundService<Pohoda
 {
     private readonly ILogger<PohodaExportWorker> _logger;
     private readonly TimeProvider _timeProvider;
-    private readonly IPohodaSqlOptions _options;
+    private readonly PohodaXmlOptions _options;
 
     public PohodaExportWorker(
         IServiceScopeFactory scopeFactory,
         ILogger<PohodaExportWorker> logger,
-        IOptions<PohodaSqlOptions> options,
+        IOptions<PohodaXmlOptions> options,
         TimeProvider timeProvider)
         : base(scopeFactory, logger, CreateDelayProvider(options.Value))
     {
@@ -69,7 +69,7 @@ public sealed class PohodaExportWorker : ScopedRecurringBackgroundService<Pohoda
 
     protected override string FailureMessage => "An error occurred while exporting orders to Pohoda.";
 
-    private static Func<DateTime, CancellationToken, ValueTask<TimeSpan>> CreateDelayProvider(PohodaSqlOptions options)
+    private static Func<DateTime, CancellationToken, ValueTask<TimeSpan>> CreateDelayProvider(PohodaXmlOptions options)
     {
         var interval = options.ExportWorkerInterval <= TimeSpan.Zero
             ? TimeSpan.FromSeconds(30)

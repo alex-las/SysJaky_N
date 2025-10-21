@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using SysJaky_N.Data;
 using SysJaky_N.Logging;
 using SysJaky_N.Models;
@@ -11,27 +12,27 @@ namespace SysJaky_N.Services.Pohoda;
 
 public sealed class PohodaExportService : IPohodaExportService
 {
-    private readonly PohodaSqlClient _sqlClient;
+    private readonly PohodaXmlClient _xmlClient;
     private readonly ILogger<PohodaExportService> _logger;
     private readonly ApplicationDbContext _dbContext;
     private readonly TimeProvider _timeProvider;
-    private readonly IPohodaSqlOptions _options;
+    private readonly PohodaXmlOptions _options;
     private readonly IAuditService _auditService;
 
     private static readonly JsonSerializerOptions AuditSerializerOptions = new(JsonSerializerDefaults.Web);
 
     public PohodaExportService(
-        PohodaSqlClient sqlClient,
+        PohodaXmlClient xmlClient,
         ApplicationDbContext dbContext,
         TimeProvider timeProvider,
-        IPohodaSqlOptions options,
+        IOptions<PohodaXmlOptions> options,
         IAuditService auditService,
         ILogger<PohodaExportService> logger)
     {
-        _sqlClient = sqlClient ?? throw new ArgumentNullException(nameof(sqlClient));
+        _xmlClient = xmlClient ?? throw new ArgumentNullException(nameof(xmlClient));
         _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         _timeProvider = timeProvider ?? throw new ArgumentNullException(nameof(timeProvider));
-        _options = options ?? throw new ArgumentNullException(nameof(options));
+        _options = (options ?? throw new ArgumentNullException(nameof(options))).Value;
         _auditService = auditService ?? throw new ArgumentNullException(nameof(auditService));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
@@ -136,10 +137,15 @@ public sealed class PohodaExportService : IPohodaExportService
 
         await _dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
-        var payload = PohodaOrderPayload.FromOrder(order);
+        var payload = PohodaOrderPayload.CreateInvoiceDataPack(order, _options.Application);
         try
         {
-            await _sqlClient.InsertOrderAsync(payload, cancellationToken).ConfigureAwait(false);
+            var response = await _xmlClient.SendInvoiceAsync(payload, cancellationToken).ConfigureAwait(false);
+
+            if (!string.IsNullOrWhiteSpace(response.InvoiceNumber))
+            {
+                order.InvoiceNumber = response.InvoiceNumber;
+            }
 
             job.Status = PohodaExportJobStatus.Succeeded;
             job.SucceededAtUtc = _timeProvider.GetUtcNow().UtcDateTime;
@@ -150,7 +156,7 @@ public sealed class PohodaExportService : IPohodaExportService
 
             using (BeginPohodaExportScope(job, order))
             {
-                _logger.LogInformation("Exported order {OrderId} to Pohoda (job {JobId}).", order.Id, job.Id);
+                _logger.LogInformation("Exported order {OrderId} to Pohoda (job {JobId}) with invoice {InvoiceNumber}.", order.Id, job.Id, order.InvoiceNumber);
             }
 
             await LogAuditEventAsync(
@@ -181,15 +187,23 @@ public sealed class PohodaExportService : IPohodaExportService
         }
     }
 
-    public Task MarkInvoiceGeneratedAsync(Order order, string invoiceNumber, CancellationToken cancellationToken = default)
+    public async Task MarkInvoiceGeneratedAsync(Order order, string invoicePath, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(order);
-        if (string.IsNullOrWhiteSpace(invoiceNumber))
+        _ = invoicePath;
+        if (string.IsNullOrWhiteSpace(order.InvoiceNumber))
         {
-            throw new ArgumentException("Invoice number must be provided.", nameof(invoiceNumber));
+            return;
         }
 
-        return _sqlClient.MarkInvoiceGeneratedAsync(order.Id, invoiceNumber, cancellationToken);
+        try
+        {
+            await _xmlClient.ListInvoiceAsync(order.InvoiceNumber, cancellationToken).ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Failed to refresh invoice {InvoiceNumber} for order {OrderId}.", order.InvoiceNumber, order.Id);
+        }
     }
 
     private void HandleJobFailure(
@@ -265,7 +279,8 @@ public sealed class PohodaExportService : IPohodaExportService
                     order.Id,
                     Status = order.Status.ToString(),
                     order.Total,
-                    order.UserId
+                    order.UserId,
+                    order.InvoiceNumber
                 }
         };
 
