@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -130,6 +131,55 @@ public class PohodaExportServiceTests
         Assert.Equal(PohodaExportJobStatus.Succeeded, job.Status);
         Assert.Equal("INV-42", order.InvoiceNumber);
         Assert.NotEmpty(handler.Requests);
+    }
+
+    [Fact]
+    public async Task ExportOrderAsync_WhenDisabled_WritesPayloadToExportDirectory()
+    {
+        var handler = new TestHttpMessageHandler();
+        var httpClient = new HttpClient(handler);
+
+        var exportDirectory = Path.Combine(Path.GetTempPath(), "SysJaky_N.Tests", Guid.NewGuid().ToString("N"));
+        var options = new PohodaXmlOptions
+        {
+            Enabled = false,
+            ExportDirectory = exportDirectory,
+            Application = "SysJaky_N"
+        };
+
+        var context = CreateDbContext();
+        var order = CreateOrder();
+        context.Orders.Add(order);
+        var job = new PohodaExportJob { OrderId = order.Id, Order = order };
+        context.PohodaExportJobs.Add(job);
+        await context.SaveChangesAsync();
+
+        var client = new PohodaXmlClient(httpClient, Options.Create(options), NullLogger<PohodaXmlClient>.Instance);
+        var service = new PohodaExportService(client, context, TimeProvider.System, Options.Create(options), new NoopAuditService(), NullLogger<PohodaExportService>.Instance);
+
+        try
+        {
+            await service.ExportOrderAsync(job);
+
+            Assert.Equal(PohodaExportJobStatus.Succeeded, job.Status);
+
+            Assert.True(Directory.Exists(exportDirectory));
+            var files = Directory.GetFiles(exportDirectory);
+            var filePath = Assert.Single(files);
+
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+            var encoding = Encoding.GetEncoding(options.EncodingName);
+            var content = await File.ReadAllTextAsync(filePath, encoding);
+
+            Assert.Contains($"Order-{order.Id}", content);
+        }
+        finally
+        {
+            if (Directory.Exists(exportDirectory))
+            {
+                Directory.Delete(exportDirectory, recursive: true);
+            }
+        }
     }
 
     private static ApplicationDbContext CreateDbContext()

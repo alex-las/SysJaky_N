@@ -1,4 +1,7 @@
 using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Text;
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -138,6 +141,13 @@ public sealed class PohodaExportService : IPohodaExportService
         await _dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
         var payload = PohodaOrderPayload.CreateInvoiceDataPack(order, _options.Application);
+
+        if (!_options.Enabled)
+        {
+            await HandleDisabledIntegrationAsync(job, order, payload, cancellationToken).ConfigureAwait(false);
+            return;
+        }
+
         try
         {
             var response = await _xmlClient.SendInvoiceAsync(payload, cancellationToken).ConfigureAwait(false);
@@ -196,6 +206,11 @@ public sealed class PohodaExportService : IPohodaExportService
             return;
         }
 
+        if (!_options.Enabled)
+        {
+            return;
+        }
+
         try
         {
             await _xmlClient.ListInvoiceAsync(order.InvoiceNumber, cancellationToken).ConfigureAwait(false);
@@ -203,6 +218,79 @@ public sealed class PohodaExportService : IPohodaExportService
         catch (Exception ex)
         {
             _logger.LogWarning(ex, "Failed to refresh invoice {InvoiceNumber} for order {OrderId}.", order.InvoiceNumber, order.Id);
+        }
+    }
+
+    private async Task HandleDisabledIntegrationAsync(PohodaExportJob job, Order order, string payload, CancellationToken cancellationToken)
+    {
+        var filePath = await SaveExportToFileAsync(order, payload, cancellationToken).ConfigureAwait(false);
+
+        job.Status = PohodaExportJobStatus.Succeeded;
+        job.SucceededAtUtc = _timeProvider.GetUtcNow().UtcDateTime;
+        job.LastError = null;
+        job.NextAttemptAtUtc = null;
+        job.FailedAtUtc = null;
+
+        await _dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+
+        using (BeginPohodaExportScope(job, order))
+        {
+            _logger.LogInformation(
+                "Pohoda integration disabled. Export for order {OrderId} stored at {FilePath} (job {JobId}).",
+                order.Id,
+                filePath,
+                job.Id);
+        }
+
+        await LogAuditEventAsync(
+            action: "PohodaExportSavedToFile",
+            job: job,
+            order: order,
+            result: "SavedToFile").ConfigureAwait(false);
+    }
+
+    private async Task<string> SaveExportToFileAsync(Order order, string payload, CancellationToken cancellationToken)
+    {
+        var directory = string.IsNullOrWhiteSpace(_options.ExportDirectory)
+            ? "/temp"
+            : _options.ExportDirectory;
+
+        string targetDirectory;
+        try
+        {
+            targetDirectory = Path.GetFullPath(directory);
+        }
+        catch (Exception ex)
+        {
+            throw new InvalidOperationException($"Failed to resolve Pohoda export directory '{directory}'.", ex);
+        }
+
+        Directory.CreateDirectory(targetDirectory);
+
+        var timestamp = _timeProvider.GetUtcNow().UtcDateTime.ToString("yyyyMMddHHmmssfff", CultureInfo.InvariantCulture);
+        var fileName = $"pohoda-order-{order.Id}-{timestamp}.xml";
+        var filePath = Path.Combine(targetDirectory, fileName);
+
+        var encoding = CreateEncoding(_options.EncodingName);
+        var data = encoding.GetBytes(payload);
+        await File.WriteAllBytesAsync(filePath, data, cancellationToken).ConfigureAwait(false);
+
+        return filePath;
+    }
+
+    private static Encoding CreateEncoding(string encodingName)
+    {
+        Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+        var fallbackEncoding = "windows-1250";
+        var name = string.IsNullOrWhiteSpace(encodingName) ? fallbackEncoding : encodingName;
+
+        try
+        {
+            return Encoding.GetEncoding(name);
+        }
+        catch (ArgumentException)
+        {
+            return Encoding.GetEncoding(fallbackEncoding);
         }
     }
 
