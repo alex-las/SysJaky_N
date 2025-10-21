@@ -6,7 +6,11 @@ this integration is stored in the **PohodaXml** section of the application setti
 
 ## Required settings
 
-The following keys must be provided for the integration to work:
+The `Enabled` flag controls whether the application talks to the Pohoda mServer. It defaults to
+`true`. When set to `false`, the integration is disabled and export files are generated locally (see
+[Offline exports](#offline-exports)).
+
+When the integration is enabled the following keys must be provided:
 
 - `BaseUrl` – Base address of the Pohoda mServer (e.g. `https://pohoda.example.com`).
 - `Username` and `Password` – Credentials for the Pohoda XML API.
@@ -25,6 +29,8 @@ background export worker:
 - `ExportWorkerBatchSize` – Maximum number of jobs processed in a single run.
 - `MaxRetryAttempts` – Maximum number of retries per job.
 - `RetryBaseDelay` / `RetryMaxDelay` – Exponential backoff configuration for retries.
+- `ExportDirectory` – Target directory for locally generated exports when the integration is disabled
+  (defaults to `/temp`).
 
 ## Local development
 
@@ -39,6 +45,14 @@ dotnet user-secrets set "PohodaXml:Password" "your-password"
 
 Provide the remaining keys as needed. The worker configuration is optional – defaults are applied
 when the values are omitted or invalid.
+
+## Offline exports
+
+When `PohodaXml:Enabled` is set to `false` no HTTP calls are made to the Pohoda mServer. Instead,
+the background worker saves the XML data packs for each processed order to the directory specified
+by `PohodaXml:ExportDirectory` (default `/temp`). This allows testing the export pipeline without
+valid credentials. The files use the Windows-1250 encoding and are named using the pattern
+`pohoda-order-<orderId>-<timestamp>.xml`.
 
 The HTTP-related configuration (`EncodingName`, `TimeoutSeconds`, `RetryCount`) is validated on
 application start. When an invalid value is provided the application fails fast, allowing you to fix

@@ -204,6 +204,8 @@ try
         options.Level = CompressionLevel.SmallestSize;
     });
 
+    builder.Services.AddSingleton<IValidateOptions<PohodaXmlOptions>, PohodaXmlOptionsValidator>();
+
     builder.Services
         .AddOptions<PohodaXmlOptions>()
         .Bind(builder.Configuration.GetSection(PohodaXmlOptions.SectionName))

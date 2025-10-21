@@ -6,14 +6,15 @@ public sealed class PohodaXmlOptions
 {
     public const string SectionName = "PohodaXml";
 
-    [Required]
+    public bool Enabled { get; set; } = true;
+
+    public string ExportDirectory { get; set; } = "/temp";
+
     [Url]
     public string BaseUrl { get; set; } = string.Empty;
 
-    [Required]
     public string Username { get; set; } = string.Empty;
 
-    [Required]
     public string Password { get; set; } = string.Empty;
 
     public string Application { get; set; } = string.Empty;
