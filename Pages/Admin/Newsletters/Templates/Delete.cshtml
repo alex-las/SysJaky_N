@@ -1,0 +1,34 @@
+@page "{id:int}"
+@model SysJaky_N.Pages.Admin.Newsletters.Templates.DeleteModel
+
+<h1 class="mb-4">Smazat šablonu</h1>
+
+@if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
+{
+    <div class="alert alert-danger">@Model.ErrorMessage</div>
+}
+
+<div class="card">
+    <div class="card-body">
+        <h2 class="h5">@Model.Template?.Name</h2>
+        <dl class="row mb-0">
+            <dt class="col-sm-4">Primární barva</dt>
+            <dd class="col-sm-8">@Model.Template?.PrimaryColor</dd>
+            <dt class="col-sm-4">Sekundární barva</dt>
+            <dd class="col-sm-8">@Model.Template?.SecondaryColor</dd>
+            <dt class="col-sm-4">Pozadí</dt>
+            <dd class="col-sm-8">@Model.Template?.BackgroundColor</dd>
+            <dt class="col-sm-4">Počet oblastí</dt>
+            <dd class="col-sm-8">@Model.Template?.Regions.Count</dd>
+            <dt class="col-sm-4">Počet newsletterů</dt>
+            <dd class="col-sm-8">@Model.IssueCount</dd>
+        </dl>
+    </div>
+</div>
+
+<form method="post" class="mt-4">
+    <input type="hidden" name="id" value="@Model.Template?.Id" />
+    <p class="text-danger">Tuto akci nelze vrátit zpět. Pokud je šablona přiřazena k existujícím newsletterům, je nutné je nejprve upravit.</p>
+    <button type="submit" class="btn btn-danger">Smazat</button>
+    <a asp-page="Index" class="btn btn-outline-secondary">Zpět</a>
+</form>

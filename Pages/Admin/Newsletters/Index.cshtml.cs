@@ -7,6 +7,7 @@ using System.ComponentModel.DataAnnotations;
 using SysJaky_N.Data;
 using SysJaky_N.Models;
 using SysJaky_N.Services;
+using System.Text.Json;
 
 namespace SysJaky_N.Pages.Admin.Newsletters;
 
@@ -15,6 +16,7 @@ public class IndexModel : PageModel
 {
     private readonly ApplicationDbContext _context;
     private readonly INewsletterComposer _newsletterComposer;
+    private static readonly JsonSerializerOptions SerializerOptions = new(JsonSerializerDefaults.Web);
 
     public IndexModel(ApplicationDbContext context, INewsletterComposer newsletterComposer)
     {
@@ -28,11 +30,19 @@ public class IndexModel : PageModel
 
     public IList<NewsletterIssue> Issues { get; private set; } = new List<NewsletterIssue>();
 
+    public IList<NewsletterTemplate> Templates { get; private set; } = new List<NewsletterTemplate>();
+
     public IList<SelectListItem> CourseCategoryOptions { get; private set; } = new List<SelectListItem>();
 
     public IList<SelectListItem> SectionCategoryOptions { get; private set; } = new List<SelectListItem>();
 
-    public IList<SelectListItem> SectionOptions { get; private set; } = new List<SelectListItem>();
+    public string TemplateClientDataJson { get; private set; } = "[]";
+
+    public string PublishedSectionsClientJson { get; private set; } = "{}";
+
+    public string IssueRegionSelectionsJson { get; private set; } = "[]";
+
+    public IssueInputModel IssueForm { get; private set; } = new IssueInputModel();
 
     [TempData]
     public string? StatusMessage { get; set; }
@@ -40,6 +50,7 @@ public class IndexModel : PageModel
     public async Task OnGetAsync(CancellationToken cancellationToken)
     {
         ViewData["Title"] = "Newsletter";
+        IssueForm = new IssueInputModel();
         await LoadAsync(cancellationToken).ConfigureAwait(false);
     }
 
@@ -209,19 +220,36 @@ public class IndexModel : PageModel
     public async Task<IActionResult> OnPostCreateIssueAsync(IssueInputModel input, CancellationToken cancellationToken)
     {
         input.Subject = input.Subject?.Trim() ?? string.Empty;
+        input.Regions ??= new List<IssueRegionInputModel>();
+        IssueForm = input;
+
         if (string.IsNullOrWhiteSpace(input.Subject))
         {
             ModelState.AddModelError(nameof(IssueInputModel.Subject), "Předmět je povinný.");
         }
 
-        if (input.SelectedCategoryIds is null || input.SelectedCategoryIds.Count == 0)
+        NewsletterTemplate? template = null;
+        if (input.NewsletterTemplateId is int templateId && templateId > 0)
         {
-            ModelState.AddModelError(nameof(IssueInputModel.SelectedCategoryIds), "Vyberte alespoň jednu kategorii.");
+            template = await _context.NewsletterTemplates
+                .Include(t => t.Regions)
+                    .ThenInclude(r => r.Category)
+                .FirstOrDefaultAsync(t => t.Id == templateId, cancellationToken)
+                .ConfigureAwait(false);
+
+            if (template is null)
+            {
+                ModelState.AddModelError(nameof(IssueInputModel.NewsletterTemplateId), "Vybraná šablona neexistuje.");
+            }
+        }
+        else
+        {
+            ModelState.AddModelError(nameof(IssueInputModel.NewsletterTemplateId), "Vyberte šablonu pro newsletter.");
         }
 
-        if (input.SelectedSectionIds is null || input.SelectedSectionIds.Count == 0)
+        if (template is not null && template.Regions.Count == 0)
         {
-            ModelState.AddModelError(nameof(IssueInputModel.SelectedSectionIds), "Vyberte alespoň jednu sekci.");
+            ModelState.AddModelError(nameof(IssueInputModel.NewsletterTemplateId), "Šablona musí obsahovat alespoň jednu oblast.");
         }
 
         if (!ModelState.IsValid)
@@ -230,8 +258,42 @@ public class IndexModel : PageModel
             return Page();
         }
 
-        var distinctCategoryIds = input.SelectedCategoryIds!.Distinct().ToArray();
-        var distinctSectionIds = input.SelectedSectionIds!.Distinct().ToArray();
+        var orderedRegions = template!.Regions
+            .OrderBy(region => region.SortOrder)
+            .ThenBy(region => region.Name)
+            .ToList();
+
+        var regionCategoryLookup = orderedRegions.ToDictionary(region => region.Id, region => region.NewsletterSectionCategoryId);
+
+        var regionSelections = new Dictionary<int, List<int>>();
+        var orderedPairs = new List<(int RegionId, int SectionId)>();
+
+        foreach (var region in orderedRegions)
+        {
+            var regionInput = input.Regions.FirstOrDefault(r => r.TemplateRegionId == region.Id);
+            var selectedIds = regionInput?.SelectedSectionIds ?? new List<int>();
+            var cleanedIds = selectedIds
+                .Where(id => id > 0)
+                .Distinct()
+                .ToList();
+
+            regionSelections[region.Id] = cleanedIds;
+
+            foreach (var sectionId in cleanedIds)
+            {
+                orderedPairs.Add((region.Id, sectionId));
+            }
+        }
+
+        if (orderedPairs.Count == 0)
+        {
+            ModelState.AddModelError(string.Empty, "Vyberte alespoň jednu sekci pro newsletter.");
+        }
+
+        var distinctSectionIds = orderedPairs
+            .Select(pair => pair.SectionId)
+            .Distinct()
+            .ToArray();
 
         var selectedSections = await _context.NewsletterSections
             .AsNoTracking()
@@ -247,21 +309,32 @@ public class IndexModel : PageModel
 
         if (selectedSections.Count != distinctSectionIds.Length)
         {
-            ModelState.AddModelError(nameof(IssueInputModel.SelectedSectionIds), "Vybrané sekce nebyly nalezeny.");
+            ModelState.AddModelError(string.Empty, "Některé z vybraných sekcí nebyly nalezeny.");
         }
 
-        var allowedCategorySet = distinctCategoryIds.ToHashSet();
+        var sectionLookup = selectedSections.ToDictionary(section => section.Id);
 
-        foreach (var section in selectedSections)
+        foreach (var (regionId, sectionId) in orderedPairs)
         {
-            if (!allowedCategorySet.Contains(section.NewsletterSectionCategoryId))
+            if (!sectionLookup.TryGetValue(sectionId, out var section))
             {
-                ModelState.AddModelError(nameof(IssueInputModel.SelectedSectionIds), "Sekce musí odpovídat vybraným kategoriím.");
+                continue;
+            }
+
+            if (!regionCategoryLookup.TryGetValue(regionId, out var expectedCategoryId))
+            {
+                ModelState.AddModelError(string.Empty, "Vybraná oblast šablony nebyla nalezena.");
+                continue;
+            }
+
+            if (section.NewsletterSectionCategoryId != expectedCategoryId)
+            {
+                ModelState.AddModelError(string.Empty, "Sekce musí odpovídat kategoriím vybraným v šabloně.");
             }
 
             if (!section.IsPublished)
             {
-                ModelState.AddModelError(nameof(IssueInputModel.SelectedSectionIds), "Do newsletteru lze přidat pouze publikované sekce.");
+                ModelState.AddModelError(string.Empty, "Do newsletteru lze přidat pouze publikované sekce.");
             }
         }
 
@@ -271,16 +344,23 @@ public class IndexModel : PageModel
             return Page();
         }
 
+        var now = DateTime.UtcNow;
         var issue = new NewsletterIssue
         {
+            NewsletterTemplateId = template.Id,
             Subject = input.Subject,
             Preheader = string.IsNullOrWhiteSpace(input.Preheader) ? null : input.Preheader.Trim(),
             IntroHtml = string.IsNullOrWhiteSpace(input.IntroHtml) ? null : input.IntroHtml,
             OutroHtml = string.IsNullOrWhiteSpace(input.OutroHtml) ? null : input.OutroHtml,
-            CreatedAtUtc = DateTime.UtcNow,
+            CreatedAtUtc = now,
             ScheduledForUtc = input.ScheduledForUtc
         };
-        foreach (var categoryId in distinctCategoryIds)
+
+        var categoryIds = orderedRegions
+            .Select(region => region.NewsletterSectionCategoryId)
+            .Distinct();
+
+        foreach (var categoryId in categoryIds)
         {
             issue.Categories.Add(new NewsletterIssueCategory
             {
@@ -288,14 +368,23 @@ public class IndexModel : PageModel
             });
         }
 
-        for (var index = 0; index < distinctSectionIds.Length; index++)
+        var sortOrder = 0;
+        foreach (var region in orderedRegions)
         {
-            var sectionId = distinctSectionIds[index];
-            issue.Sections.Add(new NewsletterIssueSection
+            if (!regionSelections.TryGetValue(region.Id, out var sectionIds) || sectionIds.Count == 0)
             {
-                NewsletterSectionId = sectionId,
-                SortOrder = index
-            });
+                continue;
+            }
+
+            foreach (var sectionId in sectionIds)
+            {
+                issue.Sections.Add(new NewsletterIssueSection
+                {
+                    NewsletterSectionId = sectionId,
+                    NewsletterTemplateRegionId = region.Id,
+                    SortOrder = sortOrder++
+                });
+            }
         }
 
         _context.NewsletterIssues.Add(issue);
@@ -317,6 +406,7 @@ public class IndexModel : PageModel
     private async Task LoadAsync(CancellationToken cancellationToken)
     {
         ViewData["Title"] = "Newsletter";
+        IssueForm ??= new IssueInputModel();
         Categories = await _context.NewsletterSectionCategories
             .AsNoTracking()
             .Include(category => category.CourseCategory)
@@ -332,13 +422,24 @@ public class IndexModel : PageModel
             .ToListAsync(cancellationToken)
             .ConfigureAwait(false);
 
+        Templates = await _context.NewsletterTemplates
+            .AsNoTracking()
+            .Include(template => template.Regions)
+                .ThenInclude(region => region.Category)
+            .OrderBy(template => template.Name)
+            .ToListAsync(cancellationToken)
+            .ConfigureAwait(false);
+
         Issues = await _context.NewsletterIssues
             .AsNoTracking()
+            .Include(issue => issue.NewsletterTemplate)
             .Include(issue => issue.Categories)
                 .ThenInclude(issueCategory => issueCategory.NewsletterSectionCategory)
             .Include(issue => issue.Sections)
                 .ThenInclude(issueSection => issueSection.NewsletterSection)
                 .ThenInclude(section => section.Category)
+            .Include(issue => issue.Sections)
+                .ThenInclude(issueSection => issueSection.TemplateRegion)
             .OrderByDescending(issue => issue.CreatedAtUtc)
             .ToListAsync(cancellationToken)
             .ConfigureAwait(false);
@@ -362,14 +463,60 @@ public class IndexModel : PageModel
             })
             .ToList();
 
-        SectionOptions = Sections
-            .Where(section => section.IsPublished)
-            .Select(section => new SelectListItem
+        var templateClientData = Templates
+            .Select(template => new
             {
-                Value = section.Id.ToString(),
-                Text = $"{section.Title} ({section.Category?.Name})"
+                id = template.Id,
+                name = template.Name,
+                primaryColor = template.PrimaryColor,
+                secondaryColor = template.SecondaryColor,
+                backgroundColor = template.BackgroundColor,
+                regions = template.Regions
+                    .OrderBy(region => region.SortOrder)
+                    .ThenBy(region => region.Name)
+                    .Select(region => new
+                    {
+                        id = region.Id,
+                        name = region.Name,
+                        categoryId = region.NewsletterSectionCategoryId,
+                        categoryName = region.Category?.Name
+                    })
+                    .ToList()
             })
             .ToList();
+
+        TemplateClientDataJson = JsonSerializer.Serialize(templateClientData, SerializerOptions);
+
+        var sectionsClientData = Sections
+            .Where(section => section.IsPublished)
+            .GroupBy(section => section.NewsletterSectionCategoryId)
+            .ToDictionary(
+                group => group.Key,
+                group => new
+                {
+                    categoryName = group.First().Category?.Name,
+                    sections = group
+                        .OrderBy(section => section.SortOrder)
+                        .ThenBy(section => section.Title)
+                        .Select(section => new
+                        {
+                            id = section.Id,
+                            title = section.Title
+                        })
+                        .ToList()
+                });
+
+        PublishedSectionsClientJson = JsonSerializer.Serialize(sectionsClientData, SerializerOptions);
+
+        var regionSelections = IssueForm.Regions
+            .Select(region => new
+            {
+                templateRegionId = region.TemplateRegionId,
+                selectedSectionIds = region.SelectedSectionIds?.Where(id => id > 0).ToArray() ?? Array.Empty<int>()
+            })
+            .ToList();
+
+        IssueRegionSelectionsJson = JsonSerializer.Serialize(regionSelections, SerializerOptions);
     }
 
     public sealed class CategoryInputModel
@@ -421,7 +568,14 @@ public class IndexModel : PageModel
 
         public DateTime? ScheduledForUtc { get; set; }
 
-        public List<int> SelectedCategoryIds { get; set; } = new();
+        public int? NewsletterTemplateId { get; set; }
+
+        public List<IssueRegionInputModel> Regions { get; set; } = new();
+    }
+
+    public sealed class IssueRegionInputModel
+    {
+        public int TemplateRegionId { get; set; }
 
         public List<int> SelectedSectionIds { get; set; } = new();
     }

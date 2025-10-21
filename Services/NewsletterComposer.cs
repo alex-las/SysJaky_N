@@ -27,9 +27,14 @@ public sealed class NewsletterComposer : INewsletterComposer
     public async Task<int> ComposeAndSendIssueAsync(int issueId, CancellationToken cancellationToken = default)
     {
         var issue = await _context.NewsletterIssues
+            .Include(i => i.NewsletterTemplate)
+                .ThenInclude(template => template.Regions)
+                    .ThenInclude(region => region.Category)
             .Include(i => i.Sections)
                 .ThenInclude(section => section.NewsletterSection)
                 .ThenInclude(section => section.Category)
+            .Include(i => i.Sections)
+                .ThenInclude(section => section.TemplateRegion)
             .Include(i => i.Categories)
                 .ThenInclude(category => category.NewsletterSectionCategory)
             .FirstOrDefaultAsync(i => i.Id == issueId, cancellationToken)
@@ -47,10 +52,9 @@ public sealed class NewsletterComposer : INewsletterComposer
 
         var baseSections = issue.Sections
             .OrderBy(section => section.SortOrder)
-            .Select(section => section.NewsletterSection)
-            .Where(section => section.IsPublished)
-            .Where(section => !string.IsNullOrWhiteSpace(section.HtmlContent))
-            .Where(section => allowedCategoryIds.Contains(section.NewsletterSectionCategoryId))
+            .Where(section => section.NewsletterSection.IsPublished)
+            .Where(section => !string.IsNullOrWhiteSpace(section.NewsletterSection.HtmlContent))
+            .Where(section => allowedCategoryIds.Contains(section.NewsletterSection.NewsletterSectionCategoryId))
             .ToList();
 
         if (baseSections.Count == 0)
@@ -69,6 +73,8 @@ public sealed class NewsletterComposer : INewsletterComposer
 
         var sentCount = 0;
 
+        const int UnassignedRegionKey = -1;
+
         foreach (var subscriber in subscribers)
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -77,39 +83,101 @@ public sealed class NewsletterComposer : INewsletterComposer
                 .Select(category => category.CourseCategoryId)
                 .ToHashSet();
 
-            var personalizedSections = new List<NewsletterIssueEmailSectionModel>();
+            var groupedSections = new Dictionary<int, List<(NewsletterIssueEmailSectionModel Section, string? CategoryName)>>();
 
-            foreach (var section in baseSections)
+            foreach (var issueSection in baseSections)
             {
-                var sectionCategory = section.Category;
-                if (sectionCategory is null)
+                var section = issueSection.NewsletterSection;
+                var category = section.Category;
+
+                if (category is null)
                 {
                     continue;
                 }
 
-                if (sectionCategory.CourseCategoryId.HasValue && !subscriberCategoryIds.Contains(sectionCategory.CourseCategoryId.Value))
+                if (category.CourseCategoryId.HasValue && !subscriberCategoryIds.Contains(category.CourseCategoryId.Value))
                 {
                     continue;
                 }
 
-                personalizedSections.Add(new NewsletterIssueEmailSectionModel(
-                    section.Title,
-                    section.HtmlContent,
-                    sectionCategory.Name));
+                var emailSection = new NewsletterIssueEmailSectionModel(section.Title, section.HtmlContent);
+                var key = issueSection.NewsletterTemplateRegionId ?? UnassignedRegionKey;
+
+                if (!groupedSections.TryGetValue(key, out var list))
+                {
+                    list = new List<(NewsletterIssueEmailSectionModel, string?)>();
+                    groupedSections[key] = list;
+                }
+
+                list.Add((emailSection, category.Name));
             }
 
-            if (personalizedSections.Count == 0)
+            if (groupedSections.Count == 0)
             {
                 continue;
             }
+
+            var emailRegions = new List<NewsletterIssueEmailRegionModel>();
+            var templateRegions = issue.NewsletterTemplate?.Regions
+                .OrderBy(region => region.SortOrder)
+                .ThenBy(region => region.Name)
+                .ToList();
+
+            if (templateRegions is not null)
+            {
+                foreach (var region in templateRegions)
+                {
+                    if (!groupedSections.TryGetValue(region.Id, out var sectionTuples) || sectionTuples.Count == 0)
+                    {
+                        continue;
+                    }
+
+                    emailRegions.Add(new NewsletterIssueEmailRegionModel
+                    {
+                        Name = region.Name,
+                        CategoryName = region.Category?.Name,
+                        Sections = sectionTuples.Select(tuple => tuple.Section).ToList()
+                    });
+
+                    groupedSections.Remove(region.Id);
+                }
+            }
+
+            foreach (var leftover in groupedSections.Values)
+            {
+                foreach (var categoryGroup in leftover.GroupBy(tuple => tuple.CategoryName ?? "Obsah"))
+                {
+                    emailRegions.Add(new NewsletterIssueEmailRegionModel
+                    {
+                        Name = categoryGroup.Key,
+                        CategoryName = categoryGroup.Key,
+                        Sections = categoryGroup.Select(tuple => tuple.Section).ToList()
+                    });
+                }
+            }
+
+            if (emailRegions.Count == 0)
+            {
+                continue;
+            }
+
+            var templateModel = new NewsletterTemplateEmailModel
+            {
+                Name = issue.NewsletterTemplate?.Name ?? "Newsletter",
+                PrimaryColor = issue.NewsletterTemplate?.PrimaryColor ?? "#2563eb",
+                SecondaryColor = issue.NewsletterTemplate?.SecondaryColor ?? "#facc15",
+                BackgroundColor = issue.NewsletterTemplate?.BackgroundColor ?? "#f9fafb",
+                BaseLayoutHtml = issue.NewsletterTemplate?.BaseLayoutHtml ?? string.Empty
+            };
 
             var model = new NewsletterIssueEmailModel
             {
                 Subject = issue.Subject,
                 Preheader = issue.Preheader,
                 IntroHtml = issue.IntroHtml,
-                Sections = personalizedSections,
-                OutroHtml = issue.OutroHtml
+                OutroHtml = issue.OutroHtml,
+                Template = templateModel,
+                Regions = emailRegions
             };
 
             try
