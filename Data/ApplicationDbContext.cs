@@ -53,6 +53,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<NewsletterSectionCategory> NewsletterSectionCategories { get; set; } = default!;
     public DbSet<NewsletterIssueSection> NewsletterIssueSections { get; set; } = default!;
     public DbSet<NewsletterIssueCategory> NewsletterIssueCategories { get; set; } = default!;
+    public DbSet<PohodaExportJob> PohodaExportJobs { get; set; } = default!;
 
 
     protected override void OnModelCreating(ModelBuilder builder)
@@ -397,5 +398,26 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         builder.Entity<ChatbotSettings>()
             .Property(s => s.AutoInitialize)
             .HasDefaultValue(true);
+
+        builder.Entity<PohodaExportJob>()
+            .Property(j => j.Status)
+            .HasConversion<string>();
+
+        builder.Entity<PohodaExportJob>()
+            .Property(j => j.LastError)
+            .HasMaxLength(2000);
+
+        builder.Entity<PohodaExportJob>()
+            .HasIndex(j => j.OrderId)
+            .IsUnique();
+
+        builder.Entity<PohodaExportJob>()
+            .HasIndex(j => new { j.Status, j.NextAttemptAtUtc });
+
+        builder.Entity<PohodaExportJob>()
+            .HasOne(j => j.Order)
+            .WithOne()
+            .HasForeignKey<PohodaExportJob>(j => j.OrderId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }
