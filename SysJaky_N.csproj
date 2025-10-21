@@ -7,6 +7,7 @@
     <EnableDefaultEmbeddedResourceItems>true</EnableDefaultEmbeddedResourceItems>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
+    <PreserveCompilationContext>true</PreserveCompilationContext>
   </PropertyGroup>
 
   <!--<ItemGroup>
@@ -75,5 +76,9 @@
 
   <ItemGroup>
     <Compile Remove="SysJaky_N.Tests/**/*.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Logs\" />
   </ItemGroup>
 </Project>
