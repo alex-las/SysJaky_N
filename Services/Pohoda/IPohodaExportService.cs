@@ -11,4 +11,6 @@ public interface IPohodaExportService
     Task ExportOrderAsync(PohodaExportJob job, CancellationToken cancellationToken = default);
 
     Task MarkInvoiceGeneratedAsync(Order order, string invoicePath, CancellationToken cancellationToken = default);
+
+    Task<int> ProcessPendingJobsAsync(int? maxJobs = null, CancellationToken cancellationToken = default);
 }

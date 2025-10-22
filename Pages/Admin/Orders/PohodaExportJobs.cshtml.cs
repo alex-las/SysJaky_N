@@ -132,6 +132,16 @@ public class PohodaExportJobsModel : PageModel
         return RedirectToPage();
     }
 
+    public async Task<IActionResult> OnPostProcessPendingAsync(CancellationToken cancellationToken)
+    {
+        var processed = await _pohodaExportService
+            .ProcessPendingJobsAsync(cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+
+        StatusMessage = _localizer["StatusProcessedPending", processed];
+        return RedirectToPage();
+    }
+
     public sealed class PohodaExportJobRow
     {
         public int Id { get; init; }
