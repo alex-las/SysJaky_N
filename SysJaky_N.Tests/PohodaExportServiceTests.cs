@@ -64,7 +64,9 @@ public class PohodaExportServiceTests
             parser,
             CreateListBuilder(),
             CreateListParser(),
-            NullLogger<PohodaXmlClient>.Instance);
+            NullLogger<PohodaXmlClient>.Instance,
+            CreatePayloadSanitizer(),
+            new PrometheusPohodaMetrics());
         var idempotencyStore = CreateIdempotencyStore(context);
         var service = new PohodaExportService(client, builder, context, TimeProvider.System, Options.Create(options), new NoopAuditService(), CreateHostEnvironment(), idempotencyStore, NullLogger<PohodaExportService>.Instance);
 
@@ -101,7 +103,9 @@ public class PohodaExportServiceTests
             new PohodaResponseParser(),
             CreateListBuilder(),
             CreateListParser(),
-            NullLogger<PohodaXmlClient>.Instance);
+            NullLogger<PohodaXmlClient>.Instance,
+            CreatePayloadSanitizer(),
+            new PrometheusPohodaMetrics());
 
         await client.CheckStatusAsync();
 
@@ -145,7 +149,9 @@ public class PohodaExportServiceTests
             new PohodaResponseParser(),
             CreateListBuilder(),
             CreateListParser(),
-            NullLogger<PohodaXmlClient>.Instance);
+            NullLogger<PohodaXmlClient>.Instance,
+            CreatePayloadSanitizer(),
+            new PrometheusPohodaMetrics());
         var clientOptions = (PohodaXmlOptions)typeof(PohodaXmlClient)
             .GetField("_options", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)!
             .GetValue(client)!;
@@ -212,7 +218,9 @@ public class PohodaExportServiceTests
             new PohodaResponseParser(),
             CreateListBuilder(),
             CreateListParser(),
-            NullLogger<PohodaXmlClient>.Instance);
+            NullLogger<PohodaXmlClient>.Instance,
+            CreatePayloadSanitizer(),
+            new PrometheusPohodaMetrics());
         var idempotencyStore = CreateIdempotencyStore(context);
         var service = new PohodaExportService(client, builder, context, TimeProvider.System, Options.Create(options), new NoopAuditService(), CreateHostEnvironment(), idempotencyStore, NullLogger<PohodaExportService>.Instance);
 
@@ -326,7 +334,9 @@ public class PohodaExportServiceTests
             new PohodaResponseParser(),
             CreateListBuilder(),
             CreateListParser(),
-            NullLogger<PohodaXmlClient>.Instance);
+            NullLogger<PohodaXmlClient>.Instance,
+            CreatePayloadSanitizer(),
+            new PrometheusPohodaMetrics());
         var environment = CreateHostEnvironment(contentRoot);
         var idempotencyStore = CreateIdempotencyStore(context);
         var service = new PohodaExportService(client, builder, context, TimeProvider.System, Options.Create(options), new NoopAuditService(), environment, idempotencyStore, NullLogger<PohodaExportService>.Instance);
@@ -379,7 +389,9 @@ public class PohodaExportServiceTests
             new PohodaResponseParser(),
             CreateListBuilder(),
             CreateListParser(),
-            NullLogger<PohodaXmlClient>.Instance);
+            NullLogger<PohodaXmlClient>.Instance,
+            CreatePayloadSanitizer(),
+            new PrometheusPohodaMetrics());
         var environment = CreateHostEnvironment();
         var service = new PohodaExportService(
             client,
@@ -420,6 +432,14 @@ public class PohodaExportServiceTests
 
     private static PohodaListParser CreateListParser()
         => new();
+
+    private static PohodaPayloadSanitizer CreatePayloadSanitizer()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "SysJaky_N.Tests", "PohodaPayloads", Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(root);
+        var environment = CreateHostEnvironment(root);
+        return new PohodaPayloadSanitizer(environment, TimeProvider.System, NullLogger<PohodaPayloadSanitizer>.Instance);
+    }
 
     private static IPohodaIdempotencyStore CreateIdempotencyStore(ApplicationDbContext context)
         => new PohodaIdempotencyStore(context, TimeProvider.System, NullLogger<PohodaIdempotencyStore>.Instance);
@@ -484,7 +504,10 @@ public class PohodaExportServiceTests
 
         public int ListInvoiceCallCount { get; private set; }
 
-        public Task<PohodaResponse> SendInvoiceAsync(string dataPack, CancellationToken cancellationToken = default)
+        public Task<PohodaResponse> SendInvoiceAsync(
+            string dataPack,
+            string correlationId,
+            CancellationToken cancellationToken = default)
         {
             SendInvoiceCallCount += 1;
 
@@ -565,12 +588,16 @@ public class PohodaExportServiceTests
     }
 
     private static IHostEnvironment CreateHostEnvironment(string? contentRoot = null)
-        => new TestHostEnvironment
+    {
+        var root = contentRoot ?? Directory.GetCurrentDirectory();
+        Directory.CreateDirectory(root);
+        return new TestHostEnvironment
         {
             EnvironmentName = Environments.Development,
             ApplicationName = "SysJaky_N",
-            ContentRootPath = contentRoot ?? Directory.GetCurrentDirectory()
+            ContentRootPath = root
         };
+    }
 
     private sealed class TestHostEnvironment : IHostEnvironment
     {

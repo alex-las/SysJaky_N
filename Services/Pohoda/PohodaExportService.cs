@@ -13,6 +13,7 @@ using SysJaky_N.Data;
 using SysJaky_N.Logging;
 using SysJaky_N.Models;
 using SysJaky_N.Services;
+using Serilog.Context;
 
 namespace SysJaky_N.Services.Pohoda;
 
@@ -172,15 +173,18 @@ public sealed class PohodaExportService : IPohodaExportService
         var invoice = OrderToInvoiceMapper.Map(order);
         var payload = _xmlBuilder.BuildIssuedInvoiceXml(invoice, _options.Application);
 
+        var correlationId = CreateCorrelationId(job);
+        using var correlationScope = LogContext.PushProperty("CorrelationId", correlationId);
+
         if (!_options.Enabled)
         {
-            await HandleDisabledIntegrationAsync(job, order, payload, cancellationToken).ConfigureAwait(false);
+            await HandleDisabledIntegrationAsync(job, order, payload, correlationId, cancellationToken).ConfigureAwait(false);
             return;
         }
 
         if (job.AttemptCount > 1)
         {
-            var completedBeforeRetry = await TryCompleteFromExistingInvoiceAsync(order, job, cancellationToken)
+            var completedBeforeRetry = await TryCompleteFromExistingInvoiceAsync(order, job, correlationId, cancellationToken)
                 .ConfigureAwait(false);
 
             if (completedBeforeRetry)
@@ -191,7 +195,7 @@ public sealed class PohodaExportService : IPohodaExportService
 
         try
         {
-            var response = await _xmlClient.SendInvoiceAsync(payload, cancellationToken).ConfigureAwait(false);
+            var response = await _xmlClient.SendInvoiceAsync(payload, correlationId, cancellationToken).ConfigureAwait(false);
 
             if (!string.IsNullOrWhiteSpace(response.DocumentNumber))
             {
@@ -227,13 +231,15 @@ public sealed class PohodaExportService : IPohodaExportService
                 job: job,
                 order: order,
                 result: "Succeeded",
-                response: response).ConfigureAwait(false);
+                response: response,
+                payloadLog: response.PayloadLog,
+                correlationId: correlationId).ConfigureAwait(false);
         }
         catch (Exception ex)
         {
             if (IsTimeoutException(ex, cancellationToken))
             {
-                var completed = await TryCompleteFromExistingInvoiceAsync(order, job, cancellationToken)
+                var completed = await TryCompleteFromExistingInvoiceAsync(order, job, correlationId, cancellationToken)
                     .ConfigureAwait(false);
 
                 if (completed)
@@ -265,7 +271,9 @@ public sealed class PohodaExportService : IPohodaExportService
                 job: job,
                 order: order,
                 result: "Failed",
-                error: ex.Message).ConfigureAwait(false);
+                error: ex.Message,
+                payloadLog: (ex as PohodaXmlException)?.PayloadLog,
+                correlationId: correlationId).ConfigureAwait(false);
         }
     }
 
@@ -297,6 +305,9 @@ public sealed class PohodaExportService : IPohodaExportService
     private static string CreateDataPackId(Order order)
         => $"Invoice-{order.Id.ToString(CultureInfo.InvariantCulture)}";
 
+    private static string CreateCorrelationId(PohodaExportJob job)
+        => $"pohoda-export-{job.Id}-attempt-{Math.Max(1, job.AttemptCount)}";
+
     private static PohodaListFilter CreateInvoiceFilter(Order order)
     {
         var createdDate = DateOnly.FromDateTime(order.CreatedAt);
@@ -319,6 +330,7 @@ public sealed class PohodaExportService : IPohodaExportService
     private async Task<bool> TryCompleteFromExistingInvoiceAsync(
         Order order,
         PohodaExportJob job,
+        string correlationId,
         CancellationToken cancellationToken)
     {
         var filter = CreateInvoiceFilter(order);
@@ -340,7 +352,8 @@ public sealed class PohodaExportService : IPohodaExportService
                 job: job,
                 order: order,
                 result: "Failed",
-                error: ex.Message).ConfigureAwait(false);
+                error: ex.Message,
+                correlationId: correlationId).ConfigureAwait(false);
 
             return false;
         }
@@ -369,7 +382,8 @@ public sealed class PohodaExportService : IPohodaExportService
             job: job,
             order: order,
             result: match is not null ? "InvoiceFound" : "InvoiceNotFound",
-            error: match is null ? "Invoice not found during timeout verification." : null).ConfigureAwait(false);
+            error: match is null ? "Invoice not found during timeout verification." : null,
+            correlationId: correlationId).ConfigureAwait(false);
 
         if (match is null)
         {
@@ -397,7 +411,8 @@ public sealed class PohodaExportService : IPohodaExportService
             action: "PohodaExportSucceeded",
             job: job,
             order: order,
-            result: "SucceededExistingInvoice").ConfigureAwait(false);
+            result: "SucceededExistingInvoice",
+            correlationId: correlationId).ConfigureAwait(false);
 
         return true;
     }
@@ -442,7 +457,12 @@ public sealed class PohodaExportService : IPohodaExportService
         return exception is TaskCanceledException or TimeoutException;
     }
 
-    private async Task HandleDisabledIntegrationAsync(PohodaExportJob job, Order order, string payload, CancellationToken cancellationToken)
+    private async Task HandleDisabledIntegrationAsync(
+        PohodaExportJob job,
+        Order order,
+        string payload,
+        string correlationId,
+        CancellationToken cancellationToken)
     {
         var filePath = await SaveExportToFileAsync(order, payload, cancellationToken).ConfigureAwait(false);
 
@@ -473,7 +493,8 @@ public sealed class PohodaExportService : IPohodaExportService
             action: "PohodaExportSavedToFile",
             job: job,
             order: order,
-            result: "SavedToFile").ConfigureAwait(false);
+            result: "SavedToFile",
+            correlationId: correlationId).ConfigureAwait(false);
     }
 
     private async Task<string> SaveExportToFileAsync(Order order, string payload, CancellationToken cancellationToken)
@@ -595,8 +616,12 @@ public sealed class PohodaExportService : IPohodaExportService
         Order? order,
         string result,
         string? error = null,
-        PohodaResponse? response = null)
+        PohodaResponse? response = null,
+        PohodaPayloadLog? payloadLog = null,
+        string? correlationId = null)
     {
+        payloadLog ??= response?.PayloadLog;
+
         var auditPayload = new
         {
             JobId = job.Id,
@@ -613,6 +638,14 @@ public sealed class PohodaExportService : IPohodaExportService
             job.Warnings,
             Result = result,
             Error = error,
+            CorrelationId = correlationId,
+            PayloadLog = payloadLog is null
+                ? null
+                : new
+                {
+                    payloadLog.RequestPath,
+                    payloadLog.ResponsePath
+                },
             Response = response is null
                 ? null
                 : new

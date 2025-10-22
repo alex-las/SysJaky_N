@@ -254,13 +254,15 @@ public sealed class PohodaResponse
         string? documentNumber,
         string? documentId,
         IReadOnlyList<string> warnings,
-        IReadOnlyList<string> errors)
+        IReadOnlyList<string> errors,
+        PohodaPayloadLog? payloadLog = null)
     {
         State = string.IsNullOrWhiteSpace(state) ? "ok" : state;
         DocumentNumber = string.IsNullOrWhiteSpace(documentNumber) ? null : documentNumber;
         DocumentId = string.IsNullOrWhiteSpace(documentId) ? null : documentId;
         Warnings = warnings ?? Array.Empty<string>();
         Errors = errors ?? Array.Empty<string>();
+        PayloadLog = payloadLog;
     }
 
     public string State { get; }
@@ -272,4 +274,6 @@ public sealed class PohodaResponse
     public IReadOnlyList<string> Warnings { get; }
 
     public IReadOnlyList<string> Errors { get; }
+
+    public PohodaPayloadLog? PayloadLog { get; }
 }
