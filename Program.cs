@@ -454,6 +454,19 @@ try
                 JsonSerializer.Serialize(response, new JsonSerializerOptions(JsonSerializerDefaults.Web)));
         }
     });
+    app.MapGet("/health/pohoda", async (
+        IPohodaClient pohodaClient,
+        CancellationToken cancellationToken) =>
+    {
+        var healthy = await pohodaClient.CheckStatusAsync(cancellationToken).ConfigureAwait(false);
+        return healthy
+            ? Results.Content("{\"status\":\"Healthy\"}", "application/json")
+            : Results.Content(
+                "{\"status\":\"Unhealthy\"}",
+                "application/json",
+                contentEncoding: System.Text.Encoding.UTF8,
+                statusCode: StatusCodes.Status503ServiceUnavailable);
+    });
     app.MapGet("/Orders/Edit/{id:int}", (int id) => Results.Redirect($"/Admin/Orders/Edit/{id}", true));
     app.MapPost("/payment/webhook", async (HttpRequest request, PaymentService paymentService) =>
     {
