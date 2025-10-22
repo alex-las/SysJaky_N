@@ -7,7 +7,6 @@ using System.Net.Http.Headers;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using SysJaky_N.Controllers;
-using SysJaky_N.Models.Billing;
 using SysJaky_N.Services.Pohoda;
 
 namespace SysJaky_N.Tests;
