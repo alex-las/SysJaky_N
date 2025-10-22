@@ -4,13 +4,12 @@ using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Linq;
 using SysJaky_N.Models;
-using SysJaky_N.Models.Billing;
 
 namespace SysJaky_N.Services.Pohoda;
 
 public static class OrderToInvoiceMapper
 {
-    public static Invoice Map(Order order)
+    public static InvoiceDto Map(Order order)
     {
         ArgumentNullException.ThrowIfNull(order);
 
@@ -22,7 +21,17 @@ public static class OrderToInvoiceMapper
         }
 
         var summary = BuildSummary(items, order);
-        var invoice = new Invoice(header, items, summary);
+        var invoice = InvoiceDto.Create(
+            header,
+            items,
+            summary.TotalExclVat,
+            summary.TotalVat,
+            summary.TotalInclVat,
+            summary.NoneRateBase,
+            summary.LowRateBase,
+            summary.LowRateVat,
+            summary.HighRateBase,
+            summary.HighRateVat);
         Validate(invoice);
         return invoice;
     }
@@ -128,7 +137,7 @@ public static class OrderToInvoiceMapper
         return mapped;
     }
 
-    private static VatSummary BuildSummary(IReadOnlyList<InvoiceItem> items, Order order)
+    private static InvoiceSummary BuildSummary(IReadOnlyList<InvoiceItem> items, Order order)
     {
         var totals = items.Aggregate(new SummaryTotals(), (acc, item) => acc with
         {
@@ -143,18 +152,18 @@ public static class OrderToInvoiceMapper
 
         var totalInclVat = RoundCurrency(order.Total);
 
-        return new VatSummary(
-            TotalExclVat: RoundCurrency(totals.TotalExclVat),
-            TotalVat: RoundCurrency(totals.TotalVat),
-            TotalInclVat: totalInclVat,
-            NoneRateBase: totals.NoneRateBase > 0m ? RoundCurrency(totals.NoneRateBase) : null,
-            LowRateBase: totals.LowRateBase > 0m ? RoundCurrency(totals.LowRateBase) : null,
-            LowRateVat: totals.LowRateVat > 0m ? RoundCurrency(totals.LowRateVat) : null,
-            HighRateBase: totals.HighRateBase > 0m ? RoundCurrency(totals.HighRateBase) : null,
-            HighRateVat: totals.HighRateVat > 0m ? RoundCurrency(totals.HighRateVat) : null);
+        return new InvoiceSummary(
+            RoundCurrency(totals.TotalExclVat),
+            RoundCurrency(totals.TotalVat),
+            totalInclVat,
+            totals.NoneRateBase > 0m ? RoundCurrency(totals.NoneRateBase) : null,
+            totals.LowRateBase > 0m ? RoundCurrency(totals.LowRateBase) : null,
+            totals.LowRateVat > 0m ? RoundCurrency(totals.LowRateVat) : null,
+            totals.HighRateBase > 0m ? RoundCurrency(totals.HighRateBase) : null,
+            totals.HighRateVat > 0m ? RoundCurrency(totals.HighRateVat) : null);
     }
 
-    private static void Validate(Invoice invoice)
+    private static void Validate(InvoiceDto invoice)
     {
         ValidateObject(invoice);
         ValidateObject(invoice.Header);
@@ -172,8 +181,6 @@ public static class OrderToInvoiceMapper
         {
             throw new ValidationException("Invoice must contain at least one item.");
         }
-
-        ValidateObject(invoice.Summary);
     }
 
     private static void ValidateObject(object instance)
@@ -216,4 +223,14 @@ public static class OrderToInvoiceMapper
         public decimal LowRateVat { get; init; }
         public decimal NoneRateBase { get; init; }
     }
+
+    private sealed record InvoiceSummary(
+        decimal TotalExclVat,
+        decimal TotalVat,
+        decimal TotalInclVat,
+        decimal? NoneRateBase,
+        decimal? LowRateBase,
+        decimal? LowRateVat,
+        decimal? HighRateBase,
+        decimal? HighRateVat);
 }

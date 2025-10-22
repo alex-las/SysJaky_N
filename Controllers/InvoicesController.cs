@@ -5,7 +5,6 @@ using System.Threading;
 using System.Xml.Schema;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using SysJaky_N.Models.Billing;
 using SysJaky_N.Services.Pohoda;
 
 namespace SysJaky_N.Controllers;
@@ -158,7 +157,7 @@ public sealed class InvoicesController : ControllerBase
         return StatusCode(statusCode, problem);
     }
 
-    private static Invoice MapInvoice(CreateInvoiceRequest request)
+    private static InvoiceDto MapInvoice(CreateInvoiceRequest request)
     {
         if (request.Header is null)
         {
@@ -209,7 +208,9 @@ public sealed class InvoicesController : ControllerBase
                 item.Rate))
             .ToList();
 
-        var summary = new VatSummary(
+        return InvoiceDto.Create(
+            header,
+            items,
             request.Summary.TotalExclVat,
             request.Summary.TotalVat,
             request.Summary.TotalInclVat,
@@ -218,8 +219,6 @@ public sealed class InvoicesController : ControllerBase
             request.Summary.LowRateVat,
             request.Summary.HighRateBase,
             request.Summary.HighRateVat);
-
-        return Invoice.Create(header, items, summary);
     }
 
     public sealed record InvoiceCreatedResponse(

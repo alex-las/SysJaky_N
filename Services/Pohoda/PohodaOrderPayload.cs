@@ -1,12 +1,12 @@
+using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.IO;
 using System.Text;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Schema;
-using SysJaky_N.Models.Billing;
+using System.Linq;
 
 namespace SysJaky_N.Services.Pohoda;
 
@@ -26,13 +26,13 @@ public static class PohodaOrderPayload
         Windows1250Encoding = Encoding.GetEncoding("windows-1250");
     }
 
-    public static string CreateInvoiceDataPack(Invoice invoice, string? applicationName = null)
+    public static string CreateInvoiceDataPack(InvoiceDto invoice, string? applicationName = null)
     {
         ArgumentNullException.ThrowIfNull(invoice);
 
         var header = BuildInvoiceHeader(invoice.Header);
         var detail = BuildInvoiceDetail(invoice.Items);
-        var summary = BuildInvoiceSummary(invoice.Summary);
+        var summary = BuildInvoiceSummary(invoice);
 
         var dataPack = new XElement(Dat + "dataPack",
             new XAttribute(XNamespace.Xmlns + "dat", Dat),
@@ -195,17 +195,17 @@ public static class PohodaOrderPayload
         return detail;
     }
 
-    private static XElement BuildInvoiceSummary(VatSummary summary)
+    private static XElement BuildInvoiceSummary(InvoiceDto invoice)
     {
         var summaryElement = new XElement(Inv + "invoiceSummary",
             new XElement(Inv + "round", "none"),
             new XElement(Inv + "homeCurrency",
-                summary.NoneRateBase is > 0m ? new XElement(Typ + "priceNone", FormatDecimal(summary.NoneRateBase.Value)) : null,
-                summary.LowRateBase is > 0m ? new XElement(Typ + "priceLow", FormatDecimal(summary.LowRateBase.Value)) : null,
-                summary.LowRateVat is > 0m ? new XElement(Typ + "priceLowVAT", FormatDecimal(summary.LowRateVat.Value)) : null,
-                summary.HighRateBase is > 0m ? new XElement(Typ + "priceHigh", FormatDecimal(summary.HighRateBase.Value)) : null,
-                summary.HighRateVat is > 0m ? new XElement(Typ + "priceHighVAT", FormatDecimal(summary.HighRateVat.Value)) : null,
-                new XElement(Typ + "priceSum", FormatDecimal(summary.TotalInclVat))));
+                invoice.NoneRateBase is > 0m ? new XElement(Typ + "priceNone", FormatDecimal(invoice.NoneRateBase.Value)) : null,
+                invoice.LowRateBase is > 0m ? new XElement(Typ + "priceLow", FormatDecimal(invoice.LowRateBase.Value)) : null,
+                invoice.LowRateVat is > 0m ? new XElement(Typ + "priceLowVAT", FormatDecimal(invoice.LowRateVat.Value)) : null,
+                invoice.HighRateBase is > 0m ? new XElement(Typ + "priceHigh", FormatDecimal(invoice.HighRateBase.Value)) : null,
+                invoice.HighRateVat is > 0m ? new XElement(Typ + "priceHighVAT", FormatDecimal(invoice.HighRateVat.Value)) : null,
+                new XElement(Typ + "priceSum", FormatDecimal(invoice.TotalInclVat))));
 
         return summaryElement;
     }

@@ -18,7 +18,7 @@ public class OrderToInvoiceMapperTests
         Assert.NotNull(invoice.Header);
         Assert.Equal($"Objednávka {order.Id}", invoice.Header.Text);
         Assert.Equal(order.Items.Count, invoice.Items.Count);
-        Assert.Equal(order.Total, invoice.Summary.TotalInclVat);
+        Assert.Equal(order.Total, invoice.TotalInclVat);
     }
 
     [Fact]
