@@ -1,10 +1,13 @@
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Serilog.Context;
 
 namespace SysJaky_N.Services.Pohoda;
 
@@ -14,6 +17,8 @@ public sealed class PohodaXmlClient : IPohodaClient
     private readonly PohodaXmlOptions _options;
     private readonly PohodaXmlBuilder _builder;
     private readonly ILogger<PohodaXmlClient> _logger;
+    private readonly PohodaPayloadSanitizer _payloadSanitizer;
+    private readonly IPohodaMetrics _metrics;
     private readonly Encoding _encoding;
     private readonly PohodaResponseParser _responseParser;
     private readonly PohodaListRequestBuilder _listRequestBuilder;
@@ -26,7 +31,9 @@ public sealed class PohodaXmlClient : IPohodaClient
         PohodaResponseParser responseParser,
         PohodaListRequestBuilder listRequestBuilder,
         PohodaListParser listParser,
-        ILogger<PohodaXmlClient> logger)
+        ILogger<PohodaXmlClient> logger,
+        PohodaPayloadSanitizer payloadSanitizer,
+        IPohodaMetrics metrics)
     {
         ArgumentNullException.ThrowIfNull(httpClient);
         ArgumentNullException.ThrowIfNull(options);
@@ -35,6 +42,8 @@ public sealed class PohodaXmlClient : IPohodaClient
         ArgumentNullException.ThrowIfNull(listRequestBuilder);
         ArgumentNullException.ThrowIfNull(listParser);
         ArgumentNullException.ThrowIfNull(logger);
+        ArgumentNullException.ThrowIfNull(payloadSanitizer);
+        ArgumentNullException.ThrowIfNull(metrics);
 
         _httpClient = httpClient;
         _options = options.Value;
@@ -43,14 +52,27 @@ public sealed class PohodaXmlClient : IPohodaClient
         _listRequestBuilder = listRequestBuilder;
         _listParser = listParser;
         _logger = logger;
+        _payloadSanitizer = payloadSanitizer;
+        _metrics = metrics;
         _encoding = CreateEncoding(_options.EncodingName);
     }
 
-    public async Task<PohodaResponse> SendInvoiceAsync(string dataPack, CancellationToken cancellationToken = default)
+    public async Task<PohodaResponse> SendInvoiceAsync(
+        string dataPack,
+        string correlationId,
+        CancellationToken cancellationToken = default)
     {
         ArgumentException.ThrowIfNullOrEmpty(dataPack);
 
-        var (_, parsed) = await SendDataPackAsync(dataPack, cancellationToken).ConfigureAwait(false);
+        var scopedCorrelation = string.IsNullOrWhiteSpace(correlationId)
+            ? $"pohoda-{Guid.NewGuid():N}"
+            : correlationId;
+
+        using var correlationScope = LogContext.PushProperty("CorrelationId", scopedCorrelation);
+
+        var result = await SendDataPackAsync(dataPack, scopedCorrelation, true, cancellationToken)
+            .ConfigureAwait(false);
+        var parsed = result.Response;
 
         _logger.LogDebug(
             "Pohoda invoice sent successfully with document number {DocumentNumber} and ID {DocumentId}.",
@@ -66,8 +88,12 @@ public sealed class PohodaXmlClient : IPohodaClient
         ArgumentNullException.ThrowIfNull(filter);
 
         var request = _listRequestBuilder.Build(filter, applicationName: _options.Application);
-        var (content, _) = await SendDataPackAsync(request, cancellationToken).ConfigureAwait(false);
-        var invoices = _listParser.Parse(content);
+        var correlationId = $"pohoda-list-{Guid.NewGuid():N}";
+        using var correlationScope = LogContext.PushProperty("CorrelationId", correlationId);
+
+        var result = await SendDataPackAsync(request, correlationId, false, cancellationToken)
+            .ConfigureAwait(false);
+        var invoices = _listParser.Parse(result.RawContent);
 
         _logger.LogDebug(
             "Retrieved {InvoiceCount} invoices from Pohoda using filters: number={Number}, symVar={SymVar}, from={DateFrom}, to={DateTo}.",
@@ -166,31 +192,117 @@ public sealed class PohodaXmlClient : IPohodaClient
         throw new PohodaXmlException("Pohoda XML request failed after all retry attempts.");
     }
 
-    private async Task<(string RawContent, PohodaResponse Parsed)> SendDataPackAsync(
+    private async Task<PohodaDataPackResult> SendDataPackAsync(
         string dataPack,
+        string correlationId,
+        bool trackMetrics,
         CancellationToken cancellationToken)
     {
         var endpoint = BuildEndpointUri("xml");
-        using var response = await SendWithRetryAsync(() => CreateRequest(HttpMethod.Post, endpoint, dataPack), cancellationToken)
-            .ConfigureAwait(false);
-        var content = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
+        var stopwatch = Stopwatch.StartNew();
+        var requestSize = _encoding.GetByteCount(dataPack);
+        HttpResponseMessage response;
 
-        if (!response.IsSuccessStatusCode)
+        try
         {
-            throw new PohodaXmlException($"Pohoda XML request failed with status {(int)response.StatusCode} {response.ReasonPhrase}.", content);
+            response = await SendWithRetryAsync(() => CreateRequest(HttpMethod.Post, endpoint, dataPack), cancellationToken)
+                .ConfigureAwait(false);
+        }
+        catch (PohodaXmlException)
+        {
+            stopwatch.Stop();
+
+            if (trackMetrics)
+            {
+                _metrics.ObserveExportFailure(stopwatch.Elapsed);
+            }
+
+            throw;
         }
 
-        var parsed = _responseParser.Parse(content);
-        EnsureSuccess(parsed, content);
-
-        if (parsed.Warnings.Count > 0)
+        using (response)
         {
-            _logger.LogWarning(
-                "Pohoda response returned warnings: {Warnings}",
-                string.Join("; ", parsed.Warnings));
-        }
+            var content = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
+            stopwatch.Stop();
+            var responseSize = _encoding.GetByteCount(content);
 
-        return (content, parsed);
+            var payloadLog = await SanitizePayloadAsync(dataPack, content, correlationId, cancellationToken)
+                .ConfigureAwait(false);
+
+            _logger.LogInformation(
+                "Pohoda XML request completed with status {StatusCode} in {ElapsedMilliseconds} ms (request {RequestSizeBytes} B, response {ResponseSizeBytes} B).",
+                (int)response.StatusCode,
+                stopwatch.Elapsed.TotalMilliseconds,
+                requestSize,
+                responseSize);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                if (trackMetrics)
+                {
+                    _metrics.ObserveExportFailure(stopwatch.Elapsed);
+                }
+
+                throw new PohodaXmlException(
+                    $"Pohoda XML request failed with status {(int)response.StatusCode} {response.ReasonPhrase}.",
+                    content,
+                    payloadLog);
+            }
+
+            PohodaResponse parsed;
+
+            try
+            {
+                parsed = _responseParser.Parse(content);
+            }
+            catch (PohodaXmlException ex)
+            {
+                if (trackMetrics)
+                {
+                    _metrics.ObserveExportFailure(stopwatch.Elapsed);
+                }
+
+                throw ex.PayloadLog is not null
+                    ? ex
+                    : new PohodaXmlException(ex.Message, ex.Payload ?? content, payloadLog, ex);
+            }
+
+            try
+            {
+                EnsureSuccess(parsed, content, payloadLog);
+            }
+            catch (PohodaXmlException)
+            {
+                if (trackMetrics)
+                {
+                    _metrics.ObserveExportFailure(stopwatch.Elapsed);
+                }
+
+                throw;
+            }
+
+            if (parsed.Warnings.Count > 0)
+            {
+                _logger.LogWarning(
+                    "Pohoda response returned warnings: {Warnings}",
+                    string.Join("; ", parsed.Warnings));
+            }
+
+            if (trackMetrics)
+            {
+                _metrics.ObserveExportSuccess(stopwatch.Elapsed);
+            }
+
+            var responseWithPayload = new PohodaResponse(
+                parsed.State,
+                parsed.DocumentNumber,
+                parsed.DocumentId,
+                parsed.Warnings,
+                parsed.Errors,
+                payloadLog);
+
+            return new PohodaDataPackResult(content, responseWithPayload, payloadLog, stopwatch.Elapsed, requestSize, responseSize);
+        }
     }
 
     private static bool ShouldRetry(HttpResponseMessage response)
@@ -231,7 +343,7 @@ public sealed class PohodaXmlClient : IPohodaClient
         return new Uri(baseUri, relativePath);
     }
 
-    private static void EnsureSuccess(PohodaResponse response, string rawContent)
+    private static void EnsureSuccess(PohodaResponse response, string rawContent, PohodaPayloadLog? payloadLog)
     {
         static bool IsSuccessState(string state)
             => string.Equals(state, "ok", StringComparison.OrdinalIgnoreCase)
@@ -246,17 +358,50 @@ public sealed class PohodaXmlClient : IPohodaClient
             ? string.Join("; ", response.Errors)
             : $"Pohoda XML response returned state '{response.State}'.";
 
-        throw new PohodaXmlException(message, rawContent);
+        throw new PohodaXmlException(message, rawContent, payloadLog);
     }
+
+    private async Task<PohodaPayloadLog?> SanitizePayloadAsync(
+        string request,
+        string response,
+        string correlationId,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            return await _payloadSanitizer.SaveAsync(request, response, correlationId, cancellationToken)
+                .ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Failed to store sanitized Pohoda payloads for correlation {CorrelationId}.", correlationId);
+            return null;
+        }
+    }
+
+    private sealed record PohodaDataPackResult(
+        string RawContent,
+        PohodaResponse Response,
+        PohodaPayloadLog? PayloadLog,
+        TimeSpan Duration,
+        int RequestSizeBytes,
+        int ResponseSizeBytes);
 }
 
 public sealed class PohodaXmlException : Exception
 {
-    public PohodaXmlException(string message, string? payload = null)
-        : base(message)
+    public PohodaXmlException(
+        string message,
+        string? payload = null,
+        PohodaPayloadLog? payloadLog = null,
+        Exception? innerException = null)
+        : base(message, innerException)
     {
         Payload = payload;
+        PayloadLog = payloadLog;
     }
 
     public string? Payload { get; }
+
+    public PohodaPayloadLog? PayloadLog { get; }
 }

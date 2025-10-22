@@ -218,6 +218,8 @@ try
     builder.Services.AddSingleton<PohodaResponseParser>();
     builder.Services.AddSingleton<PohodaListRequestBuilder>();
     builder.Services.AddSingleton<PohodaListParser>();
+    builder.Services.AddSingleton<PohodaPayloadSanitizer>();
+    builder.Services.AddSingleton<IPohodaMetrics, PrometheusPohodaMetrics>();
     builder.Services.AddHttpClient<IPohodaClient, PohodaXmlClient>((sp, client) =>
     {
         var options = sp.GetRequiredService<IOptions<PohodaXmlOptions>>().Value;
