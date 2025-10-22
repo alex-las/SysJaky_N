@@ -9,6 +9,7 @@ using SysJaky_N.Data;
 using SysJaky_N.Extensions;
 using SysJaky_N.Models;
 using SysJaky_N.Services;
+using SysJaky_N.Services.Pohoda;
 using SysJaky_N.EmailTemplates.Models;
 using EmailTemplate = SysJaky_N.Services.EmailTemplate;
 
@@ -23,6 +24,7 @@ public class CartModel : PageModel
     private readonly IAuditService _auditService;
     private readonly CartService _cartService;
     private readonly IStringLocalizer<CartModel> _localizer;
+    private readonly IPohodaExportService _pohodaExportService;
 
     private const decimal VatRate = 0.21m;
 
@@ -32,7 +34,8 @@ public class CartModel : PageModel
         IEmailSender emailSender,
         IAuditService auditService,
         CartService cartService,
-        IStringLocalizer<CartModel> localizer)
+        IStringLocalizer<CartModel> localizer,
+        IPohodaExportService pohodaExportService)
     {
         _context = context;
         _userManager = userManager;
@@ -40,6 +43,7 @@ public class CartModel : PageModel
         _auditService = auditService;
         _cartService = cartService;
         _localizer = localizer;
+        _pohodaExportService = pohodaExportService;
     }
 
     public List<CartItemView> Items { get; set; } = new();
@@ -135,6 +139,7 @@ public class CartModel : PageModel
         }
 
         await _context.SaveChangesAsync();
+        await _pohodaExportService.QueueOrderAsync(order);
         await _auditService.LogAsync(user.Id, "OrderCreated", $"Order {order.Id} created");
         await _emailSender.SendEmailAsync(
             user.Email!,

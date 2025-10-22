@@ -35,9 +35,6 @@ public class PohodaExportServiceTests
     [Fact]
     public async Task ExportOrderAsync_SendsInvoiceAndStoresInvoiceNumber()
     {
-        var handler = new TestHttpMessageHandler();
-        var httpClient = new HttpClient(handler);
-
         var options = new PohodaXmlOptions
         {
             BaseUrl = "https://pohoda.example.com",
@@ -250,6 +247,78 @@ public class PohodaExportServiceTests
     }
 
     [Fact]
+    public async Task QueueOrderAsync_WhenDisabled_ExportsImmediatelyToTempDirectory()
+    {
+        var handler = new TestHttpMessageHandler();
+        var httpClient = new HttpClient(handler);
+
+        var exportDirectory = Path.Combine(Path.GetTempPath(), "SysJaky_N.Tests", Guid.NewGuid().ToString("N"));
+        var options = new PohodaXmlOptions
+        {
+            Enabled = false,
+            ExportDirectory = exportDirectory,
+            Application = "SysJaky_N"
+        };
+
+        var context = CreateDbContext();
+        var order = CreateOrder(128);
+        context.Orders.Add(order);
+        await context.SaveChangesAsync();
+
+        var builder = CreateBuilder();
+        var client = new PohodaXmlClient(
+            httpClient,
+            Options.Create(options),
+            builder,
+            new PohodaResponseParser(),
+            CreateListBuilder(),
+            CreateListParser(),
+            NullLogger<PohodaXmlClient>.Instance,
+            CreatePayloadSanitizer(),
+            new PrometheusPohodaMetrics());
+        var environment = CreateHostEnvironment();
+        var idempotencyStore = CreateIdempotencyStore(context);
+        var service = new PohodaExportService(
+            client,
+            builder,
+            context,
+            TimeProvider.System,
+            Options.Create(options),
+            new NoopAuditService(),
+            environment,
+            idempotencyStore,
+            NullLogger<PohodaExportService>.Instance);
+
+        try
+        {
+            await service.QueueOrderAsync(order);
+
+            var job = context.PohodaExportJobs.Single();
+            Assert.Equal(PohodaExportJobStatus.Succeeded, job.Status);
+
+            var idempotencyRecord = context.PohodaIdempotencyRecords.Single();
+            Assert.Equal(PohodaIdempotencyStatus.Succeeded, idempotencyRecord.Status);
+
+            Assert.True(Directory.Exists(exportDirectory));
+            var filePath = Assert.Single(Directory.GetFiles(exportDirectory));
+
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+            var encoding = Encoding.GetEncoding(options.EncodingName);
+            var content = await File.ReadAllTextAsync(filePath, encoding);
+
+            Assert.Contains($"Invoice-{order.Id}", content);
+            Assert.Empty(handler.Requests);
+        }
+        finally
+        {
+            if (Directory.Exists(exportDirectory))
+            {
+                Directory.Delete(exportDirectory, recursive: true);
+            }
+        }
+    }
+
+    [Fact]
     public async Task ExportOrderAsync_WhenTimeoutThenInvoiceExists_CompletesWithoutResend()
     {
         var options = new PohodaXmlOptions
@@ -302,6 +371,59 @@ public class PohodaExportServiceTests
         Assert.Equal("INV-42", job.DocumentNumber);
         var record = context.PohodaIdempotencyRecords.Single();
         Assert.Equal(PohodaIdempotencyStatus.Succeeded, record.Status);
+    }
+
+    [Fact]
+    public async Task ProcessPendingJobsAsync_ProcessesPendingExports()
+    {
+        var handler = new TestHttpMessageHandler();
+        var httpClient = new HttpClient(handler);
+
+        var options = new PohodaXmlOptions
+        {
+            BaseUrl = "https://pohoda.example.com",
+            Username = "user",
+            Password = "pass",
+            Application = "SysJaky_N",
+            TimeoutSeconds = 30,
+            RetryCount = 0
+        };
+
+        var context = CreateDbContext();
+        var firstOrder = CreateOrder(200);
+        var secondOrder = CreateOrder(201);
+        context.Orders.AddRange(firstOrder, secondOrder);
+        await context.SaveChangesAsync();
+
+        var builder = CreateBuilder();
+        var client = new ImmediateSuccessPohodaClient();
+        var idempotencyStore = CreateIdempotencyStore(context);
+        var service = new PohodaExportService(
+            client,
+            builder,
+            context,
+            TimeProvider.System,
+            Options.Create(options),
+            new NoopAuditService(),
+            CreateHostEnvironment(),
+            idempotencyStore,
+            NullLogger<PohodaExportService>.Instance);
+
+        await service.QueueOrderAsync(firstOrder);
+        await service.QueueOrderAsync(secondOrder);
+
+        var processed = await service.ProcessPendingJobsAsync(cancellationToken: CancellationToken.None);
+
+        Assert.Equal(2, processed);
+
+        var jobs = context.PohodaExportJobs.OrderBy(j => j.OrderId).ToList();
+        Assert.All(jobs, job => Assert.Equal(PohodaExportJobStatus.Succeeded, job.Status));
+        Assert.All(new[] { firstOrder, secondOrder }, order =>
+        {
+            Assert.NotNull(order.InvoiceNumber);
+            Assert.Contains(order.InvoiceNumber!, client.DocumentNumbers);
+        });
+        Assert.Equal(2, client.SendInvoiceCallCount);
     }
     [Fact]
     public async Task ExportOrderAsync_WhenDisabled_UsesContentRootTempDirectory()
@@ -444,11 +566,11 @@ public class PohodaExportServiceTests
     private static IPohodaIdempotencyStore CreateIdempotencyStore(ApplicationDbContext context)
         => new PohodaIdempotencyStore(context, TimeProvider.System, NullLogger<PohodaIdempotencyStore>.Instance);
 
-    private static Order CreateOrder()
+    private static Order CreateOrder(int id = 42)
     {
         var order = new Order
         {
-            Id = 42,
+            Id = id,
             CreatedAt = DateTime.UtcNow,
             PriceExclVat = 300m,
             Vat = 63m,
@@ -459,8 +581,8 @@ public class PohodaExportServiceTests
 
         order.Items.Add(new OrderItem
         {
-            Id = 1,
-            OrderId = 42,
+            Id = id * 10 + 1,
+            OrderId = id,
             CourseId = 100,
             Course = new Course { Id = 100, Title = "Course A" },
             Quantity = 1,
@@ -471,8 +593,8 @@ public class PohodaExportServiceTests
 
         order.Items.Add(new OrderItem
         {
-            Id = 2,
-            OrderId = 42,
+            Id = id * 10 + 2,
+            OrderId = id,
             CourseId = 200,
             Course = new Course { Id = 200, Title = "Course B" },
             Quantity = 2,
@@ -488,6 +610,38 @@ public class PohodaExportServiceTests
     {
         var symVar = orderId.ToString(CultureInfo.InvariantCulture);
         return $"<?xml version=\"1.0\" encoding=\"UTF-8\"?><rsp:responsePack xmlns:rsp=\"http://www.stormware.cz/schema/version_2/response.xsd\" state=\"ok\"><rsp:responsePackItem id=\"InvoiceList\" state=\"ok\"><lst:listInvoiceResponse xmlns:lst=\"http://www.stormware.cz/schema/version_2/list.xsd\"><lst:listInvoice><inv:invoice xmlns:inv=\"http://www.stormware.cz/schema/version_2/invoice.xsd\"><inv:invoiceHeader><inv:number><typ:numberAssigned xmlns:typ=\"http://www.stormware.cz/schema/version_2/type.xsd\">{invoiceNumber}</typ:numberAssigned></inv:number><inv:symVar>{symVar}</inv:symVar></inv:invoiceHeader></inv:invoice></lst:listInvoice></lst:listInvoiceResponse></rsp:responsePackItem></rsp:responsePack>";
+    }
+
+    private sealed class ImmediateSuccessPohodaClient : IPohodaClient
+    {
+        public int SendInvoiceCallCount { get; private set; }
+
+        public List<string> DocumentNumbers { get; } = new();
+
+        public Task<PohodaResponse> SendInvoiceAsync(
+            string dataPack,
+            string correlationId,
+            CancellationToken cancellationToken = default)
+        {
+            SendInvoiceCallCount += 1;
+            var documentNumber = $"INV-{SendInvoiceCallCount}";
+            DocumentNumbers.Add(documentNumber);
+            var response = new PohodaResponse(
+                state: "ok",
+                documentNumber: documentNumber,
+                documentId: $"DOC-{SendInvoiceCallCount}",
+                warnings: Array.Empty<string>(),
+                errors: Array.Empty<string>());
+            return Task.FromResult(response);
+        }
+
+        public Task<IReadOnlyCollection<InvoiceStatus>> ListInvoicesAsync(
+            PohodaListFilter filter,
+            CancellationToken cancellationToken = default)
+            => Task.FromResult<IReadOnlyCollection<InvoiceStatus>>(Array.Empty<InvoiceStatus>());
+
+        public Task<bool> CheckStatusAsync(CancellationToken cancellationToken = default)
+            => Task.FromResult(true);
     }
 
     private sealed class TestPohodaClient : IPohodaClient

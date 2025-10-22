@@ -69,6 +69,9 @@
   <data name="ActionForce" xml:space="preserve">
     <value>Force export</value>
   </data>
+  <data name="ActionProcessPending" xml:space="preserve">
+    <value>Process pending jobs</value>
+  </data>
   <data name="TableNote" xml:space="preserve">
     <value>Showing the 100 most recent Pohoda export jobs.</value>
   </data>
@@ -95,5 +98,8 @@
   </data>
   <data name="StatusJobExecutionFailed" xml:space="preserve">
     <value>Job {0} could not be executed. Check the logs.</value>
+  </data>
+  <data name="StatusProcessedPending" xml:space="preserve">
+    <value>Processed {0} jobs.</value>
   </data>
 </root>

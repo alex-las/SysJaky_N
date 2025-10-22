@@ -75,7 +75,8 @@ public sealed class PohodaExportService : IPohodaExportService
                 OrderId = order.Id,
                 Status = PohodaExportJobStatus.Pending,
                 CreatedAtUtc = now,
-                NextAttemptAtUtc = now
+                NextAttemptAtUtc = now,
+                Order = order
             };
 
             await _dbContext.PohodaExportJobs.AddAsync(jobRecord, cancellationToken).ConfigureAwait(false);
@@ -93,6 +94,7 @@ public sealed class PohodaExportService : IPohodaExportService
             existingJob.DocumentNumber = null;
             existingJob.DocumentId = null;
             existingJob.Warnings = null;
+            existingJob.Order = order;
         }
 
         await _idempotencyStore.UpsertAsync(
@@ -108,6 +110,68 @@ public sealed class PohodaExportService : IPohodaExportService
             job: jobRecord,
             order: order,
             result: "Queued").ConfigureAwait(false);
+
+        if (!_options.Enabled)
+        {
+            await ExportOrderAsync(jobRecord, cancellationToken).ConfigureAwait(false);
+        }
+    }
+
+    public async Task<int> ProcessPendingJobsAsync(int? maxJobs = null, CancellationToken cancellationToken = default)
+    {
+        var limit = maxJobs.HasValue ? Math.Max(0, maxJobs.Value) : (int?)null;
+
+        if (limit == 0)
+        {
+            return 0;
+        }
+
+        var now = _timeProvider.GetUtcNow().UtcDateTime;
+
+        var query = _dbContext.PohodaExportJobs
+            .Where(job => job.Status == PohodaExportJobStatus.Pending)
+            .Where(job => job.NextAttemptAtUtc == null || job.NextAttemptAtUtc <= now)
+            .OrderBy(job => job.CreatedAtUtc)
+            .ThenBy(job => job.Id)
+            .Include(job => job.Order)
+                .ThenInclude(order => order!.Items)
+                    .ThenInclude(item => item.Course);
+
+        if (limit.HasValue)
+        {
+            query = query.Take(limit.Value);
+        }
+
+        var jobs = await query.ToListAsync(cancellationToken).ConfigureAwait(false);
+
+        if (jobs.Count == 0)
+        {
+            return 0;
+        }
+
+        var processed = 0;
+
+        foreach (var job in jobs)
+        {
+            try
+            {
+                await ExportOrderAsync(job, cancellationToken).ConfigureAwait(false);
+                processed += 1;
+            }
+            catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                using (BeginPohodaExportScope(job, job.Order))
+                {
+                    _logger.LogError(ex, "Manual Pohoda export processing failed for job {JobId}.", job.Id);
+                }
+            }
+        }
+
+        return processed;
     }
 
     public async Task ExportOrderAsync(PohodaExportJob job, CancellationToken cancellationToken = default)
