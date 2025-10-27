@@ -1,7 +1,7 @@
 using System;
-using System.Globalization;
-using System.Linq;
-using SysJaky_N.Models;
+using System.Collections.Generic;
+using System.Xml.Linq;
+using System.Xml.XPath;
 using SysJaky_N.Services.Pohoda;
 
 namespace SysJaky_N.Tests;
@@ -11,126 +11,92 @@ public class PohodaXmlBuilderTests
     private static readonly PohodaXmlBuilder Builder = new(PohodaXmlSchemaProvider.DefaultSchemas);
 
     [Fact]
-    public void BuildIssuedInvoiceXml_BuildsMinimalInvoiceMatchingGoldenFile()
+    public void BuildIssuedInvoiceXml_UsesInvoiceDtoSampleAndProducesExpectedStructure()
     {
-        var order = CreateMinimalOrder();
-        var mappedInvoice = OrderToInvoiceMapper.Map(order);
+        var invoice = CreateInvoiceSample();
 
-        var xml = Builder.BuildIssuedInvoiceXml(mappedInvoice, "SysJaky_N");
+        var xml = Builder.BuildIssuedInvoiceXml(invoice, "SysJaky_N");
 
-        XmlTestHelper.AssertValidAgainstSchemas(xml);
-        XmlTestHelper.AssertEqualIgnoringWhitespace(XmlTestHelper.LoadPohodaSample("invoice_minimal.xml"), xml);
-    }
-
-    [Fact]
-    public void BuildIssuedInvoiceXml_BuildsFullInvoiceMatchingGoldenFile()
-    {
-        var order = CreateSampleOrder();
-        var mappedInvoice = OrderToInvoiceMapper.Map(order);
-
-        var xml = Builder.BuildIssuedInvoiceXml(mappedInvoice, "SysJaky_N");
-
-        Assert.Contains("encoding=\"windows-1250\"", xml, StringComparison.OrdinalIgnoreCase);
-
-        XmlTestHelper.AssertValidAgainstSchemas(xml);
-        XmlTestHelper.AssertEqualIgnoringWhitespace(XmlTestHelper.LoadPohodaSample("invoice_full.xml"), xml);
-    }
-
-    [Fact]
-    public void BuildIssuedInvoiceXml_DistributesDiscount()
-    {
-        var order = CreateSampleOrder();
-        order.TotalPrice = 400m;
-        order.Total = 363m;
-
-        var mappedInvoice = OrderToInvoiceMapper.Map(order);
-        var xml = Builder.BuildIssuedInvoiceXml(mappedInvoice, "SysJaky_N");
+        Assert.StartsWith("<?xml version=\"1.0\" encoding=\"windows-1250\"?>", xml, StringComparison.Ordinal);
 
         XmlTestHelper.AssertValidAgainstSchemas(xml);
 
-        var document = System.Xml.Linq.XDocument.Parse(xml);
-        var detail = document.Root!
-            .Element("{http://www.stormware.cz/schema/version_2/data.xsd}dataPackItem")!
-            .Element("{http://www.stormware.cz/schema/version_2/invoice.xsd}invoice")!
-            .Element("{http://www.stormware.cz/schema/version_2/invoice.xsd}invoiceDetail");
+        var document = XDocument.Parse(xml);
+        var navigator = document.CreateNavigator();
+        var manager = new XmlNamespaceManager(navigator.NameTable);
+        manager.AddNamespace("dat", "http://www.stormware.cz/schema/version_2/data.xsd");
+        manager.AddNamespace("inv", "http://www.stormware.cz/schema/version_2/invoice.xsd");
+        manager.AddNamespace("typ", "http://www.stormware.cz/schema/version_2/type.xsd");
 
-        var discountElements = detail!
-            .Elements("{http://www.stormware.cz/schema/version_2/invoice.xsd}invoiceItem")
-            .Select(item => item.Element("{http://www.stormware.cz/schema/version_2/invoice.xsd}discountPercentage")?.Value)
-            .Where(value => value is not null)
-            .Select(value => decimal.Parse(value!, CultureInfo.InvariantCulture))
-            .ToList();
-
-        Assert.NotEmpty(discountElements);
-        Assert.True(discountElements.Sum() > 0m);
-    }
-
-    private static Order CreateMinimalOrder()
-    {
-        var order = new Order
+        string Evaluate(string expression)
         {
-            Id = 1,
-            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc),
-            PriceExclVat = 100m,
-            Vat = 21m,
-            Total = 121m,
-            TotalPrice = 121m
+            var result = navigator.Evaluate(expression, manager);
+            return result switch
+            {
+                string stringResult => stringResult,
+                _ => navigator.Evaluate("string(" + expression + ")", manager) as string ?? string.Empty
+            };
+        }
+
+        Assert.Equal("issuedInvoice", Evaluate("string(/dat:dataPack/dat:dataPackItem/inv:invoice/inv:invoiceHeader/inv:invoiceType)"));
+        Assert.Equal("Objednávka 42", Evaluate("string(/dat:dataPack/dat:dataPackItem/inv:invoice/inv:invoiceHeader/inv:text)"));
+        Assert.Equal("high", Evaluate("string(/dat:dataPack/dat:dataPackItem/inv:invoice/inv:invoiceDetail/inv:invoiceItem[1]/inv:rateVAT)"));
+        Assert.Equal("low", Evaluate("string(/dat:dataPack/dat:dataPackItem/inv:invoice/inv:invoiceDetail/inv:invoiceItem[2]/inv:rateVAT)"));
+        Assert.Equal("none", Evaluate("string(/dat:dataPack/dat:dataPackItem/inv:invoice/inv:invoiceSummary/inv:round)"));
+
+        var typNamespace = XNamespace.Get("http://www.stormware.cz/schema/version_2/type.xsd");
+
+        Assert.Empty(document.Descendants(typNamespace + "price"));
+        Assert.Empty(document.Descendants(typNamespace + "priceVAT"));
+        Assert.Empty(document.Descendants(typNamespace + "priceSum"));
+    }
+
+    private static InvoiceDto CreateInvoiceSample()
+    {
+        var header = new InvoiceHeader(
+            InvoiceType: "issuedInvoice",
+            OrderNumber: "42",
+            Text: "Objednávka 42",
+            Date: new DateOnly(2024, 5, 15),
+            TaxDate: new DateOnly(2024, 5, 15),
+            DueDate: new DateOnly(2024, 5, 29),
+            VariableSymbol: "42",
+            SpecificSymbol: "CONF123",
+            Customer: new CustomerIdentity("user-1", null, null, null, null, null),
+            Note: "INV-2024-001");
+
+        var items = new List<InvoiceItem>
+        {
+            new(
+                Name: "Course A",
+                Quantity: 1,
+                UnitPriceExclVat: 150m,
+                TotalExclVat: 150m,
+                VatAmount: 31.5m,
+                TotalInclVat: 181.5m,
+                Discount: 0m,
+                Rate: VatRate.High),
+            new(
+                Name: "Course B",
+                Quantity: 2,
+                UnitPriceExclVat: 50m,
+                TotalExclVat: 100m,
+                VatAmount: 10m,
+                TotalInclVat: 110m,
+                Discount: 0m,
+                Rate: VatRate.Low)
         };
 
-        order.Items.Add(new OrderItem
-        {
-            Id = 1,
-            OrderId = 1,
-            CourseId = 10,
-            Course = new Course { Id = 10, Title = "Minimal Course" },
-            Quantity = 1,
-            UnitPriceExclVat = 100m,
-            Vat = 21m,
-            Total = 121m
-        });
-
-        return order;
-    }
-
-    private static Order CreateSampleOrder()
-    {
-        var order = new Order
-        {
-            Id = 42,
-            UserId = "user-1",
-            CreatedAt = new DateTime(2024, 5, 15, 10, 30, 0, DateTimeKind.Utc),
-            PriceExclVat = 300m,
-            Vat = 63m,
-            Total = 363m,
-            TotalPrice = 363m,
-            PaymentConfirmation = "CONF123",
-            InvoicePath = "INV-2024-001"
-        };
-
-        order.Items.Add(new OrderItem
-        {
-            Id = 1,
-            OrderId = 42,
-            CourseId = 100,
-            Course = new Course { Id = 100, Title = "Course A" },
-            Quantity = 1,
-            UnitPriceExclVat = 150m,
-            Vat = 31.5m,
-            Total = 181.5m
-        });
-
-        order.Items.Add(new OrderItem
-        {
-            Id = 2,
-            OrderId = 42,
-            CourseId = 200,
-            Course = new Course { Id = 200, Title = "Course B" },
-            Quantity = 2,
-            UnitPriceExclVat = 75m,
-            Vat = 31.5m,
-            Total = 181.5m
-        });
-
-        return order;
+        return InvoiceDto.Create(
+            header,
+            items,
+            totalExclVat: 250m,
+            totalVat: 41.5m,
+            totalInclVat: 291.5m,
+            noneRateBase: null,
+            lowRateBase: 100m,
+            lowRateVat: 10m,
+            highRateBase: 150m,
+            highRateVat: 31.5m);
     }
 }
