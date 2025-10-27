@@ -148,9 +148,6 @@ public sealed class PohodaXmlBuilder
 
             writer.WriteStartElement("inv", "homeCurrency", invNamespace);
             writer.WriteElementString("typ", "unitPrice", typNamespace, FormatDecimal(item.UnitPriceExclVat));
-            writer.WriteElementString("typ", "price", typNamespace, FormatDecimal(item.TotalExclVat));
-            writer.WriteElementString("typ", "priceVAT", typNamespace, FormatDecimal(item.VatAmount));
-            writer.WriteElementString("typ", "priceSum", typNamespace, FormatDecimal(item.TotalInclVat));
             writer.WriteEndElement();
 
             if (item.Discount > 0m)
