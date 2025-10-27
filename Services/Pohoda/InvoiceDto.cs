@@ -2,33 +2,32 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 
 namespace SysJaky_N.Services.Pohoda;
 
 public enum VatRate
 {
-    None,
+    High,
     Low,
-    High
+    None
 }
 
 public sealed record CustomerIdentity(
-    [property: StringLength(255)] string? Company,
-    [property: StringLength(255)] string? Name,
-    [property: StringLength(255)] string? Street,
-    [property: StringLength(255)] string? City,
-    [property: StringLength(32)] string? Zip,
-    [property: StringLength(64)] string? Country);
+    string? Company,
+    string? Name,
+    string? Street,
+    string? City,
+    string? Zip,
+    string? Country);
 
 public sealed record InvoiceItem(
-    [property: Required, StringLength(255)] string Name,
-    [property: Range(1, int.MaxValue)] int Quantity,
-    [property: Range(typeof(decimal), PohodaInvoiceValidationConstants.DecimalMinimum, PohodaInvoiceValidationConstants.DecimalMaximum)] decimal UnitPriceExclVat,
-    [property: Range(typeof(decimal), PohodaInvoiceValidationConstants.DecimalMinimum, PohodaInvoiceValidationConstants.DecimalMaximum)] decimal TotalExclVat,
-    [property: Range(typeof(decimal), PohodaInvoiceValidationConstants.DecimalMinimum, PohodaInvoiceValidationConstants.DecimalMaximum)] decimal VatAmount,
-    [property: Range(typeof(decimal), PohodaInvoiceValidationConstants.DecimalMinimum, PohodaInvoiceValidationConstants.DecimalMaximum)] decimal TotalInclVat,
-    [property: Range(typeof(decimal), PohodaInvoiceValidationConstants.DecimalMinimum, PohodaInvoiceValidationConstants.DecimalMaximum)] decimal Discount,
+    string Name,
+    int Quantity,
+    decimal UnitPriceExclVat,
+    decimal TotalExclVat,
+    decimal VatAmount,
+    decimal TotalInclVat,
+    decimal Discount,
     VatRate Rate)
 {
     public decimal DiscountPercentage => TotalInclVat == 0m
@@ -37,28 +36,28 @@ public sealed record InvoiceItem(
 }
 
 public sealed record InvoiceHeader(
-    [property: Required, StringLength(64)] string InvoiceType,
-    [property: Required, StringLength(64)] string OrderNumber,
-    [property: Required, StringLength(256)] string Text,
-    [property: DataType(DataType.Date)] DateOnly Date,
-    [property: DataType(DataType.Date)] DateOnly TaxDate,
-    [property: DataType(DataType.Date)] DateOnly DueDate,
-    [property: Required, StringLength(32)] string VariableSymbol,
-    [property: StringLength(32)] string? SpecificSymbol,
+    string InvoiceType,
+    string OrderNumber,
+    string Text,
+    DateOnly Date,
+    DateOnly TaxDate,
+    DateOnly DueDate,
+    string VariableSymbol,
+    string? SpecificSymbol,
     CustomerIdentity? Customer,
-    [property: StringLength(512)] string? Note);
+    string? Note);
 
 public sealed record InvoiceDto(
-    [property: Required] InvoiceHeader Header,
-    [property: Required] IReadOnlyList<InvoiceItem> Items,
-    [property: Range(typeof(decimal), PohodaInvoiceValidationConstants.DecimalMinimum, PohodaInvoiceValidationConstants.DecimalMaximum)] decimal TotalExclVat,
-    [property: Range(typeof(decimal), PohodaInvoiceValidationConstants.DecimalMinimum, PohodaInvoiceValidationConstants.DecimalMaximum)] decimal TotalVat,
-    [property: Range(typeof(decimal), PohodaInvoiceValidationConstants.DecimalMinimum, PohodaInvoiceValidationConstants.DecimalMaximum)] decimal TotalInclVat,
-    [property: Range(typeof(decimal), PohodaInvoiceValidationConstants.DecimalMinimum, PohodaInvoiceValidationConstants.DecimalMaximum)] decimal? NoneRateBase,
-    [property: Range(typeof(decimal), PohodaInvoiceValidationConstants.DecimalMinimum, PohodaInvoiceValidationConstants.DecimalMaximum)] decimal? LowRateBase,
-    [property: Range(typeof(decimal), PohodaInvoiceValidationConstants.DecimalMinimum, PohodaInvoiceValidationConstants.DecimalMaximum)] decimal? LowRateVat,
-    [property: Range(typeof(decimal), PohodaInvoiceValidationConstants.DecimalMinimum, PohodaInvoiceValidationConstants.DecimalMaximum)] decimal? HighRateBase,
-    [property: Range(typeof(decimal), PohodaInvoiceValidationConstants.DecimalMinimum, PohodaInvoiceValidationConstants.DecimalMaximum)] decimal? HighRateVat)
+    InvoiceHeader Header,
+    IReadOnlyList<InvoiceItem> Items,
+    decimal TotalExclVat,
+    decimal TotalVat,
+    decimal TotalInclVat,
+    decimal? NoneRateBase,
+    decimal? LowRateBase,
+    decimal? LowRateVat,
+    decimal? HighRateBase,
+    decimal? HighRateVat)
 {
     public static InvoiceDto Create(
         InvoiceHeader header,
@@ -75,14 +74,14 @@ public sealed record InvoiceDto(
         ArgumentNullException.ThrowIfNull(header);
         ArgumentNullException.ThrowIfNull(items);
 
-        var materializedItems = items as IList<InvoiceItem> ?? items.ToList();
+        var materializedItems = items as IList<InvoiceItem> ?? new List<InvoiceItem>(items);
         if (materializedItems.Count == 0)
         {
             throw new ValidationException("Invoice must contain at least one item.");
         }
 
         IReadOnlyList<InvoiceItem> readOnlyItems = materializedItems as IReadOnlyList<InvoiceItem>
-            ?? new ReadOnlyCollection<InvoiceItem>(materializedItems.ToList());
+            ?? new ReadOnlyCollection<InvoiceItem>(new List<InvoiceItem>(materializedItems));
 
         return new InvoiceDto(
             header,
@@ -96,10 +95,4 @@ public sealed record InvoiceDto(
             highRateBase,
             highRateVat);
     }
-}
-
-internal static class PohodaInvoiceValidationConstants
-{
-    public const string DecimalMinimum = "0";
-    public const string DecimalMaximum = "79228162514264337593543950335";
 }
